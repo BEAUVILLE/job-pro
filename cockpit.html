@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#061b14"/>
+  <title>DIGIY JOBS PRO — Cockpit</title>
+
+  <script src="./guard.js"></script>
+
+  <style>
+    :root{
+      --bg:#061b14; --bg2:#0a2b1f; --line:rgba(255,255,255,.14);
+      --text:#eafff1; --muted:rgba(234,255,241,.72);
+      --gold:#facc15; --ok:#22c55e; --bad:#fb7185;
+      --shadow:0 18px 55px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto;
+      background:
+        radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+      padding:16px;
+    }
+    .wrap{max-width:1180px;margin:0 auto}
+    .top{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
+      border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .ico{
+      width:48px;height:48px;border-radius:50%;
+      display:grid;place-items:center;
+      background:radial-gradient(circle at 30% 0,var(--gold),transparent 60%);
+      color:#062015;font-weight:1000;border:1px solid rgba(250,204,21,.35);
+    }
+    h1{margin:0;font-size:16px;letter-spacing:.10em}
+    .sub{margin-top:5px;font-size:12px;color:var(--muted);line-height:1.4}
+    .pill{
+      border:1px solid var(--line); background:rgba(250,204,21,.10);
+      padding:7px 10px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap;
+    }
+
+    .grid{display:grid;gap:12px;margin-top:12px}
+    @media(min-width:1020px){ .grid{grid-template-columns:1.2fr .8fr} }
+
+    .card{
+      background:linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
+      border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow);
+      padding:14px;
+    }
+    .title{font-weight:1000;letter-spacing:.08em;font-size:12px;color:rgba(234,255,241,.85)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{
+      flex:1; min-width:210px;
+      padding:12px 14px;border-radius:14px;border:1px solid var(--line);
+      background:rgba(0,0,0,.18); color:var(--text);
+      font-weight:1000; cursor:pointer;
+    }
+    .btn:hover{border-color:rgba(250,204,21,.55)}
+    .btn.primary{
+      background:linear-gradient(90deg,var(--ok),var(--gold));
+      color:#062015;border:none;
+    }
+    .btn.danger{
+      border-color:rgba(251,113,133,.35);
+      background:rgba(251,113,133,.10);
+    }
+
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .tab{
+      padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18); color:var(--text); font-weight:1000; cursor:pointer;
+    }
+    .tab.active{border-color:rgba(250,204,21,.55); background:rgba(250,204,21,.12)}
+
+    .kpis{display:grid;gap:10px;margin-top:10px}
+    @media(min-width:520px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+    .kpi{
+      padding:12px;border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+    }
+    .kpi .k{font-size:12px;color:var(--muted)}
+    .kpi .v{font-size:20px;font-weight:1000;margin-top:6px}
+    .kpi .s{font-size:12px;color:rgba(234,255,241,.78);margin-top:4px}
+
+    .split{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    select, input, textarea{
+      border-radius:14px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18); color:var(--text);
+      padding:10px 12px; outline:none; font-weight:900;
+      width:100%;
+    }
+    textarea{min-height:82px;resize:vertical;font-weight:700}
+
+    .list{margin-top:10px;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden}
+    .item{
+      padding:12px;border-top:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.14);
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+    }
+    .item:first-child{border-top:none}
+    .a{font-weight:1000}
+    .b{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+    .badge{
+      font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(250,204,21,.10);
+      white-space:nowrap;
+    }
+    .badge.ok{background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.35)}
+    .badge.bad{background:rgba(251,113,133,.12); border-color:rgba(251,113,133,.35)}
+    .badge.neutral{background:rgba(148,163,184,.10); border-color:rgba(148,163,184,.28)}
+    .tinybtn{
+      padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .tinybtn:hover{border-color:rgba(250,204,21,.55)}
+
+    .modal{
+      position:fixed; inset:0; display:none;
+      background:rgba(0,0,0,.55);
+      align-items:center; justify-content:center;
+      padding:18px;
+    }
+    .modal .box{
+      width:min(860px,94vw);
+      background:linear-gradient(145deg,rgba(11,42,31,.98),rgba(6,35,25,.98));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 24px 60px rgba(0,0,0,.65);
+    }
+    label{display:block;font-size:12px;color:var(--muted);margin:6px 0}
+    .fgrid{display:grid;gap:10px;margin-top:10px}
+    @media(min-width:820px){ .fgrid{grid-template-columns:1fr 1fr} }
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .actions button{
+      flex:1; min-width:190px;
+      padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(250,204,21,.12);
+      color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .actions .primary{
+      background:linear-gradient(90deg,var(--ok),var(--gold));
+      color:#062015;border:none;
+    }
+    .close{
+      margin-top:10px;width:100%;
+      padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);
+      color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+    .tiny{font-size:11px;color:rgba(234,255,241,.66)}
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">
+      <div class="ico">🦅</div>
+      <div>
+        <h1>💼 JOBS PRO — Cockpit</h1>
+        <div class="sub">
+          SLUG: <b id="slug">—</b> • OWNER: <b id="owner">—</b><br>
+          Statut: <b class="muted" id="stat">session OK</b>
+        </div>
+      </div>
+    </div>
+    <div class="pill">jobs_pro</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- LEFT -->
+    <div class="card">
+      <div class="title">⚡ ACTIONS</div>
+      <div class="row">
+        <button class="btn primary" id="btnNewOffer">➕ Nouvelle offre</button>
+        <button class="btn" id="btnNewCand">➕ Nouveau candidat</button>
+        <button class="btn" id="btnPulse">🔔 Inbox</button>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" id="tabOffers">📄 Offres</div>
+        <div class="tab" id="tabCands">👤 Candidats</div>
+      </div>
+
+      <div class="title" style="margin-top:10px">🌡️ TEMPÉRATURE JOBS</div>
+      <div class="kpis">
+        <div class="kpi">
+          <div class="k">Offres actives</div>
+          <div class="v" id="kOffers">—</div>
+          <div class="s">publiées</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Candidats</div>
+          <div class="v" id="kCands">—</div>
+          <div class="s">dans le pipeline</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Entretiens</div>
+          <div class="v" id="kInter">—</div>
+          <div class="s">planifiés</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Placés</div>
+          <div class="v" id="kPlaced">—</div>
+          <div class="s">validés</div>
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="split">
+        <div class="title" style="flex:1" id="listTitle">📄 OFFRES</div>
+        <select id="filter" style="max-width:260px">
+          <option value="all">Tout</option>
+        </select>
+        <input id="q" placeholder="Recherche…" style="max-width:260px">
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <div class="hint">
+        <b>V1 Terrain :</b> offres & candidats stockés localement par slug.<br>
+        <span class="tiny">V2 : Supabase + dossier + accompagnement Dakar/France.</span>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="card">
+      <div class="title">🛟 SUPPORT</div>
+      <div class="row">
+        <button class="btn" id="btnHelp">💬 WhatsApp Support</button>
+        <button class="btn" id="btnLogout">🚪 Déconnexion</button>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="title">🧩 OUTILS</div>
+      <div class="row">
+        <button class="btn" id="btnExport">⬇️ Export JSON</button>
+        <button class="btn danger" id="btnReset">🧹 Reset Démo</button>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="title">📌 Rappels DIGIY JOBS</div>
+      <div class="list" style="margin-top:10px">
+        <div class="item">
+          <div>
+            <div class="a">Accompagnement dossier</div>
+            <div class="b">Dakar + France, au cas par cas.</div>
+          </div>
+          <div class="badge neutral">Process</div>
+        </div>
+        <div class="item">
+          <div>
+            <div class="a">Logement sécurisé</div>
+            <div class="b">Employeur qui héberge ou accueil familial.</div>
+          </div>
+          <div class="badge neutral">Règle</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL OFFER -->
+<div class="modal" id="mOffer">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div style="font-weight:1000">➕ Nouvelle offre</div>
+      <div class="badge neutral" id="mSlugOffer">—</div>
+    </div>
+    <div class="fgrid">
+      <div>
+        <label>Titre</label>
+        <input id="o_title" placeholder="Ex: Serveur / Maçon / Chauffeur">
+      </div>
+      <div>
+        <label>Lieu</label>
+        <input id="o_city" placeholder="Ex: Dakar / Saly / France">
+      </div>
+      <div>
+        <label>Type</label>
+        <select id="o_type">
+          <option value="cdi">CDI</option>
+          <option value="cdd">CDD</option>
+          <option value="saisonnier">Saisonnier</option>
+          <option value="mission">Mission</option>
+        </select>
+      </div>
+      <div>
+        <label>Salaire (option)</label>
+        <input id="o_pay" placeholder="Ex: 120k / SMIC">
+      </div>
+    </div>
+    <div style="margin-top:6px">
+      <label>Description</label>
+      <textarea id="o_desc" placeholder="Missions, horaires, conditions, logement, etc."></textarea>
+    </div>
+    <div class="actions">
+      <button class="primary" id="o_save">✅ Enregistrer</button>
+      <button id="o_cancel">Annuler</button>
+    </div>
+    <button class="close" id="o_close">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL CAND -->
+<div class="modal" id="mCand">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div style="font-weight:1000">➕ Nouveau candidat</div>
+      <div class="badge neutral" id="mSlugCand">—</div>
+    </div>
+    <div class="fgrid">
+      <div>
+        <label>Nom</label>
+        <input id="c_name" placeholder="Ex: Awa Diop">
+      </div>
+      <div>
+        <label>Téléphone</label>
+        <input id="c_phone" placeholder="+221…">
+      </div>
+      <div>
+        <label>Métier</label>
+        <input id="c_job" placeholder="Ex: Serveur / Soudeur / Aide-soignant">
+      </div>
+      <div>
+        <label>Destination</label>
+        <select id="c_dest">
+          <option value="senegal">Sénégal</option>
+          <option value="france">France</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:6px">
+      <label>Note</label>
+      <textarea id="c_note" placeholder="Expérience, disponibilité, logement (famille/employeur), etc."></textarea>
+    </div>
+    <div class="actions">
+      <button class="primary" id="c_save">✅ Enregistrer</button>
+      <button id="c_cancel">Annuler</button>
+    </div>
+    <button class="close" id="c_close">Fermer</button>
+  </div>
+</div>
+
+<script>
+  const s = window.DIGIY_ACCESS || {};
+  const slug = (s.slug || "").toLowerCase();
+  document.getElementById("slug").textContent = s.slug || "—";
+  document.getElementById("owner").textContent = s.owner_id || "—";
+
+  const KEY_OFFERS = "DIGIY_JOBS_OFFERS::" + (slug || "noslug");
+  const KEY_CANDS  = "DIGIY_JOBS_CANDS::"  + (slug || "noslug");
+
+  let mode = "offers"; // offers | cands
+
+  function uid(){
+    return (crypto?.randomUUID ? crypto.randomUUID() : ("id_"+Math.random().toString(16).slice(2)+Date.now()));
+  }
+  function nowISO(){ return new Date().toISOString(); }
+  function load(key){ try{ return JSON.parse(localStorage.getItem(key) || "[]"); }catch(_){ return []; } }
+  function save(key, rows){ localStorage.setItem(key, JSON.stringify(rows)); }
+
+  function badge(st){
+    const map = {
+      active:["ACTIF","ok"],
+      paused:["PAUSE","neutral"],
+      closed:["CLOS","bad"],
+      new:["NOUVEAU","neutral"],
+      review:["DOSSIER","neutral"],
+      interview:["ENTRETIEN","ok"],
+      waiting:["ATTENTE","neutral"],
+      placed:["PLACÉ","ok"],
+      rejected:["REFUS","bad"],
+    };
+    const v = map[st] || [String(st||"—").toUpperCase(),"neutral"];
+    return `<span class="badge ${v[1]}">${v[0]}</span>`;
+  }
+  function matches(hay, q){
+    q = (q||"").trim().toLowerCase();
+    if(!q) return true;
+    return String(hay||"").toLowerCase().includes(q);
+  }
+
+  function setMode(m){
+    mode = m;
+    document.getElementById("tabOffers").classList.toggle("active", m==="offers");
+    document.getElementById("tabCands").classList.toggle("active", m==="cands");
+
+    document.getElementById("listTitle").textContent = (m==="offers") ? "📄 OFFRES" : "👤 CANDIDATS";
+
+    // filter options
+    const f = document.getElementById("filter");
+    f.innerHTML = "";
+    if(m==="offers"){
+      f.innerHTML = `
+        <option value="all">Toutes</option>
+        <option value="active">Actives</option>
+        <option value="paused">En pause</option>
+        <option value="closed">Closes</option>`;
+    }else{
+      f.innerHTML = `
+        <option value="all">Tous</option>
+        <option value="new">Nouveaux</option>
+        <option value="review">Dossier</option>
+        <option value="interview">Entretien</option>
+        <option value="waiting">Attente</option>
+        <option value="placed">Placés</option>
+        <option value="rejected">Refusés</option>`;
+    }
+    document.getElementById("q").value = "";
+    render();
+  }
+
+  function renderKPIs(){
+    const offers = load(KEY_OFFERS);
+    const cands = load(KEY_CANDS);
+
+    const offersActive = offers.filter(o=>o.status==="active").length;
+    const candsCount = cands.length;
+    const inter = cands.filter(c=>c.status==="interview").length;
+    const placed = cands.filter(c=>c.status==="placed").length;
+
+    document.getElementById("kOffers").textContent = String(offersActive);
+    document.getElementById("kCands").textContent = String(candsCount);
+    document.getElementById("kInter").textContent = String(inter);
+    document.getElementById("kPlaced").textContent = String(placed);
+  }
+
+  function render(){
+    renderKPIs();
+    const q = document.getElementById("q").value;
+    const f = document.getElementById("filter").value;
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    if(mode==="offers"){
+      let rows = load(KEY_OFFERS).sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+      if(f!=="all") rows = rows.filter(r=>r.status===f);
+      if(q) rows = rows.filter(r=>matches([r.title,r.city,r.type,r.pay,r.desc].join(" "), q));
+
+      if(rows.length===0){
+        list.innerHTML = `
+          <div class="item"><div>
+            <div class="a">Aucune offre</div>
+            <div class="b">Clique “Nouvelle offre” pour commencer.</div>
+          </div><div class="badge neutral">VIDE</div></div>`;
+        return;
+      }
+      for(const r of rows){
+        const title = `${r.title||"—"} • ${r.city||"—"} • ${r.type||"—"}`;
+        const sub = [
+          r.pay ? `Salaire: ${r.pay}` : null,
+          r.desc ? `Desc: ${r.desc}` : null,
+          `Créée: ${new Date(r.created_at).toLocaleString("fr-FR")}`
+        ].filter(Boolean).join("<br>");
+
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div style="flex:1">
+            <div class="a">${title}</div>
+            <div class="b">${sub}</div>
+            <div class="row" style="margin-top:10px">
+              <button class="tinybtn" data-mode="offers" data-act="active" data-id="${r.id}">🟢 Actif</button>
+              <button class="tinybtn" data-mode="offers" data-act="paused" data-id="${r.id}">⏸️ Pause</button>
+              <button class="tinybtn" data-mode="offers" data-act="closed" data-id="${r.id}">⛔ Clore</button>
+              <button class="tinybtn" data-mode="offers" data-act="del" data-id="${r.id}">🗑️ Supprimer</button>
+            </div>
+          </div>
+          <div>${badge(r.status)}</div>
+        `;
+        list.appendChild(el);
+      }
+    } else {
+      let rows = load(KEY_CANDS).sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+      if(f!=="all") rows = rows.filter(r=>r.status===f);
+      if(q) rows = rows.filter(r=>matches([r.name,r.phone,r.job,r.dest,r.note].join(" "), q));
+
+      if(rows.length===0){
+        list.innerHTML = `
+          <div class="item"><div>
+            <div class="a">Aucun candidat</div>
+            <div class="b">Clique “Nouveau candidat” pour commencer.</div>
+          </div><div class="badge neutral">VIDE</div></div>`;
+        return;
+      }
+      for(const r of rows){
+        const title = `${r.name||"—"} • ${r.job||"—"} • ${String(r.dest||"—").toUpperCase()}`;
+        const sub = [
+          `Tel: ${r.phone||"—"}`,
+          r.note ? `Note: ${r.note}` : null,
+          `Créé: ${new Date(r.created_at).toLocaleString("fr-FR")}`
+        ].filter(Boolean).join("<br>");
+
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div style="flex:1">
+            <div class="a">${title}</div>
+            <div class="b">${sub}</div>
+            <div class="row" style="margin-top:10px">
+              <button class="tinybtn" data-mode="cands" data-act="new" data-id="${r.id}">🆕</button>
+              <button class="tinybtn" data-mode="cands" data-act="review" data-id="${r.id}">📁 Dossier</button>
+              <button class="tinybtn" data-mode="cands" data-act="interview" data-id="${r.id}">🎤 Entretien</button>
+              <button class="tinybtn" data-mode="cands" data-act="waiting" data-id="${r.id}">⏳ Attente</button>
+              <button class="tinybtn" data-mode="cands" data-act="placed" data-id="${r.id}">✅ Placé</button>
+              <button class="tinybtn" data-mode="cands" data-act="rejected" data-id="${r.id}">⛔ Refus</button>
+              <button class="tinybtn" data-mode="cands" data-act="del" data-id="${r.id}">🗑️</button>
+            </div>
+          </div>
+          <div>${badge(r.status)}</div>
+        `;
+        list.appendChild(el);
+      }
+    }
+  }
+
+  function updateOffer(id, status){
+    const rows = load(KEY_OFFERS);
+    const i = rows.findIndex(x=>x.id===id);
+    if(i<0) return;
+    rows[i] = { ...rows[i], status, updated_at: nowISO() };
+    save(KEY_OFFERS, rows);
+    render();
+  }
+  function delOffer(id){
+    save(KEY_OFFERS, load(KEY_OFFERS).filter(x=>x.id!==id));
+    render();
+  }
+  function updateCand(id, status){
+    const rows = load(KEY_CANDS);
+    const i = rows.findIndex(x=>x.id===id);
+    if(i<0) return;
+    rows[i] = { ...rows[i], status, updated_at: nowISO() };
+    save(KEY_CANDS, rows);
+    render();
+  }
+  function delCand(id){
+    save(KEY_CANDS, load(KEY_CANDS).filter(x=>x.id!==id));
+    render();
+  }
+
+  // tabs
+  document.getElementById("tabOffers").onclick = ()=>setMode("offers");
+  document.getElementById("tabCands").onclick = ()=>setMode("cands");
+
+  // filters/search
+  document.getElementById("filter").onchange = render;
+  document.getElementById("q").oninput = render;
+
+  // actions list
+  document.addEventListener("click",(e)=>{
+    const b = e.target.closest("[data-act][data-mode]");
+    if(!b) return;
+    const id = b.getAttribute("data-id");
+    const act = b.getAttribute("data-act");
+    const m = b.getAttribute("data-mode");
+    if(m==="offers"){
+      if(act==="del") return delOffer(id);
+      return updateOffer(id, act);
+    } else {
+      if(act==="del") return delCand(id);
+      return updateCand(id, act);
+    }
+  });
+
+  // modals helpers
+  function modalOpen(id){ const m=document.getElementById(id); m.style.display="flex"; return m; }
+  function modalClose(id){ document.getElementById(id).style.display="none"; }
+
+  // OFFER modal
+  const mo = document.getElementById("mOffer");
+  document.getElementById("btnNewOffer").onclick = ()=>{
+    document.getElementById("mSlugOffer").textContent = slug || "—";
+    mo.style.display="flex";
+    setTimeout(()=>document.getElementById("o_title").focus(),150);
+  };
+  document.getElementById("o_cancel").onclick = ()=>modalClose("mOffer");
+  document.getElementById("o_close").onclick  = ()=>modalClose("mOffer");
+  mo.addEventListener("click",(e)=>{ if(e.target===mo) modalClose("mOffer"); });
+
+  document.getElementById("o_save").onclick = ()=>{
+    const r = {
+      id: uid(),
+      slug, owner_id: s.owner_id || null,
+      status: "active",
+      title: document.getElementById("o_title").value.trim(),
+      city: document.getElementById("o_city").value.trim(),
+      type: document.getElementById("o_type").value,
+      pay: document.getElementById("o_pay").value.trim(),
+      desc: document.getElementById("o_desc").value.trim(),
+      created_at: nowISO()
+    };
+    const rows = load(KEY_OFFERS);
+    rows.unshift(r);
+    save(KEY_OFFERS, rows);
+    ["o_title","o_city","o_pay","o_desc"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("o_type").value="cdi";
+    modalClose("mOffer");
+    setMode("offers");
+  };
+
+  // CAND modal
+  const mc = document.getElementById("mCand");
+  document.getElementById("btnNewCand").onclick = ()=>{
+    document.getElementById("mSlugCand").textContent = slug || "—";
+    mc.style.display="flex";
+    setTimeout(()=>document.getElementById("c_name").focus(),150);
+  };
+  document.getElementById("c_cancel").onclick = ()=>modalClose("mCand");
+  document.getElementById("c_close").onclick  = ()=>modalClose("mCand");
+  mc.addEventListener("click",(e)=>{ if(e.target===mc) modalClose("mCand"); });
+
+  document.getElementById("c_save").onclick = ()=>{
+    const r = {
+      id: uid(),
+      slug, owner_id: s.owner_id || null,
+      status: "new",
+      name: document.getElementById("c_name").value.trim(),
+      phone: document.getElementById("c_phone").value.trim(),
+      job: document.getElementById("c_job").value.trim(),
+      dest: document.getElementById("c_dest").value,
+      note: document.getElementById("c_note").value.trim(),
+      created_at: nowISO()
+    };
+    const rows = load(KEY_CANDS);
+    rows.unshift(r);
+    save(KEY_CANDS, rows);
+    ["c_name","c_phone","c_job","c_note"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("c_dest").value="senegal";
+    modalClose("mCand");
+    setMode("cands");
+  };
+
+  // pulse/support/logout/tools
+  document.getElementById("btnPulse").onclick = ()=>alert("🔔 Inbox: V2 pipeline dossier + notif.");
+  document.getElementById("btnHelp").onclick = ()=>{
+    const num = "+221771342889";
+    const txt = encodeURIComponent("DIGIY Support — JOBS PRO. Slug: " + (slug||"") + " • Besoin d’aide.");
+    location.href = "https://wa.me/" + num.replace("+","") + "?text=" + txt;
+  };
+  document.getElementById("btnLogout").onclick = ()=>{
+    localStorage.removeItem("DIGIY_ACCESS");
+    location.href = "./pin.html" + (slug ? ("?slug="+encodeURIComponent(slug)) : "");
+  };
+
+  document.getElementById("btnExport").onclick = ()=>{
+    const pack = { offers: load(KEY_OFFERS), candidates: load(KEY_CANDS) };
+    const blob = new Blob([JSON.stringify(pack,null,2)], { type:"application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "jobs-" + (slug||"pro") + ".json";
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
+  };
+  document.getElementById("btnReset").onclick = ()=>{
+    if(confirm("Reset démo pour ce slug ?")){
+      localStorage.removeItem(KEY_OFFERS);
+      localStorage.removeItem(KEY_CANDS);
+      render();
+    }
+  };
+
+  // init
+  setMode("offers");
+</script>
+</body>
+</html>
