@@ -1,38 +1,44 @@
-/* =========================================
-   DIGIY GUARD — Universel PRO
-========================================= */
+// guard.js — DIGIY Universal Access Gate
+(() => {
+  const SUPABASE_URL  = "https://XXXX.supabase.co";
+  const SUPABASE_ANON = "XXXX_ANON_KEY";
 
-(function(){
+  // ⚠️ À fixer par module
+  const MODULE_CODE = "LOC"; // ex: LOC / DRIVER / RESTO / POS
 
-  const SESSION_KEY = "DIGIY_ACCESS"; // session universelle
-  const MAX_AGE = 1000 * 60 * 60 * 8; // 8h
+  const qs = new URLSearchParams(location.search);
+  const phone = qs.get("phone") || "";
 
-  function getSession(){
-    try{
-      return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
-    }catch(_){
-      return null;
+  async function rpc(name, params) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_ANON,
+        "Authorization": `Bearer ${SUPABASE_ANON}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    });
+    const j = await r.json().catch(() => ({}));
+    return { ok: r.ok, status: r.status, data: j };
+  }
+
+  async function go() {
+    if (!phone) {
+      // Pas de phone -> renvoie vers ABOS (l’utilisateur choisira)
+      window.location.href = "https://beauville.github.io/abos/?module=" + encodeURIComponent(MODULE_CODE);
+      return;
     }
+
+    const res = await rpc("digiy_has_access", { p_phone: phone, p_module: MODULE_CODE });
+
+    if (res.ok && res.data === true) return; // ✅ accès OK
+
+    // ❌ pas d’accès -> ABOS
+    window.location.href =
+      "https://beauville.github.io/abos/?module=" + encodeURIComponent(MODULE_CODE) +
+      "&phone=" + encodeURIComponent(phone);
   }
 
-  function kick(){
-    // retour porte PIN
-    const slug = new URL(location.href).searchParams.get("slug");
-    location.href = "./pin.html" + (slug ? "?slug="+encodeURIComponent(slug) : "");
-  }
-
-  const s = getSession();
-
-  if(!s || !s.slug || !s.owner_id){
-    return kick();
-  }
-
-  if(Date.now() - (s.ts||0) > MAX_AGE){
-    localStorage.removeItem(SESSION_KEY);
-    return kick();
-  }
-
-  // ✅ session valide : pro continue
-  console.log("🦅 DIGIY GUARD OK", s.slug);
-
+  go();
 })();
