@@ -958,125 +958,494 @@
       }, 900);
     }
 
-    async function loadOffers(){
-      const { data, error } = await sb
-        .from('digiy_jobs_offers_pro')
-        .select('id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at')
-        .eq('workspace_slug', WORKSPACE_SLUG)
-        .eq('status', 'active')
-        .order('published_at', { ascending:false })
-        .order('created_at', { ascending:false });
+ <script>
+  const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      if (error) throw error;
-      state.offers = data || [];
-    }
+  const params = new URLSearchParams(location.search);
+  const WORKSPACE_SLUG = params.get('slug') || 'jobs-221771342889';
 
-    async function loadCandidates(){
-      let query = sb
-        .from('digiy_jobs_candidates_pro')
-        .select('id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at')
-        .order('created_at', { ascending:false });
+  const $ = (id) => document.getElementById(id);
 
-      const { data, error } = await query;
-      if (error) throw error;
+  const state = {
+    offers: [],
+    candidates: [],
+    filteredCandidates: [],
+    activeTab: 'candidates'
+  };
 
-      const offerIds = new Set(state.offers.map(o => o.id));
-      state.candidates = (data || []).filter(c => {
-        if (c.workspace_slug && c.workspace_slug === WORKSPACE_SLUG) return true;
-        if (c.offer_id && offerIds.has(c.offer_id)) return true;
-        return false;
-      });
-    }
-async function bootGuard() {
-  const session = await window.DIGIY_GUARD.ready();
-
-  if (!session.access) {
-    document.body.innerHTML = `
-      <div style="min-height:100vh;display:grid;place-items:center;background:#061b14;color:#eafff1;padding:24px;font-family:Inter,system-ui,sans-serif">
-        <div style="max-width:720px;width:100%;border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;background:rgba(255,255,255,.04)">
-          <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fde68a;font-weight:900;margin-bottom:10px">
-            DIGIY JOBS PRO
-          </div>
-          <h1 style="margin:0 0 12px;font-size:32px;line-height:1.05">Accès pro requis</h1>
-          <p style="margin:0 0 18px;color:rgba(234,255,241,.76);line-height:1.7">
-            Ce cockpit est réservé aux pros actifs. Tu peux voir l’esprit du module,
-            mais pour ouvrir le bureau réel, il faut un accès JOBS actif.
-          </p>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <a href="index.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#eafff1;text-decoration:none;font-weight:900">
-              Voir le mur public
-            </a>
-            <button id="goPayBtn" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border-radius:16px;border:none;background:linear-gradient(180deg,#facc15,#eab308);color:#171717;font-weight:900;cursor:pointer">
-              Activer mon accès JOBS
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.getElementById("goPayBtn")?.addEventListener("click", () => {
-      window.DIGIY_GUARD.goPay();
-    });
-
-    return false;
+  function escapeHtml(v=''){
+    return String(v)
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'","&#039;");
   }
 
-  return true;
-}    
-    (async () => {
-  const ok = await bootGuard();
-  if (!ok) return;
-  loadAll();
-})();
-
-        if (
-          state.activeTab === 'candidates' &&
-          state.filteredCandidates.length
-        ) {
-          hideStatusBox();
-        }
-      }catch(err){
-        console.error(err);
-        setStatusBox('error', 'Erreur de chargement. Vérifie le patch SQL, les policies RLS et le workspace slug.');
-      }
+  function formatDate(v){
+    if (!v) return '—';
+    try{
+      return new Intl.DateTimeFormat('fr-FR', {
+        dateStyle:'medium',
+        timeStyle:'short'
+      }).format(new Date(v));
+    }catch{
+      return v;
     }
+  }
 
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-action]');
-      if (!btn) return;
+  function normalizePhone(v=''){
+    return String(v).replace(/[^\d+]/g,'');
+  }
 
-      const action = btn.dataset.action;
+  function labelSector(v=''){
+    const map = {
+      build:'BTP',
+      beauty:'Beauté',
+      shop:'Boutique',
+      food:'Restauration',
+      service:'Services',
+      driver:'Chauffeur',
+      market:'Marché',
+      admin:'Admin'
+    };
+    return map[v] || v || 'Secteur';
+  }
 
-      if (action === 'set-status') {
-        updateCandidateStatus(btn.dataset.id, btn.dataset.status);
-        return;
-      }
+  function labelContract(v=''){
+    const map = {
+      cdi:'CDI',
+      cdd:'CDD',
+      mission:'Mission',
+      stage:'Stage',
+      freelance:'Freelance',
+      extra:'Extra'
+    };
+    return map[v] || v || 'Contrat';
+  }
 
-      if (action === 'filter-offer') {
-        $('offerFilter').value = btn.dataset.offerId || '';
-        setTab('candidates');
-        applyCandidateFilters();
-      }
-    });
+  function badgeStatus(status='new'){
+    const s = String(status || 'new').toLowerCase();
+    const cls =
+      s === 'accepted' ? 'green' :
+      s === 'rejected' ? 'red' :
+      s === 'call' ? 'blue' :
+      s === 'shortlist' ? 'orange' :
+      s === 'review' ? 'gold' :
+      '';
+    return `<span class="badge ${cls}">${escapeHtml(s)}</span>`;
+  }
+
+  function setStatusBox(type, text){
+    const box = $('statusBox');
+    box.className = type;
+    box.textContent = text;
+    box.classList.remove('hidden');
+  }
+
+  function hideStatusBox(){
+    $('statusBox').classList.add('hidden');
+  }
+
+  function setTab(tab){
+    state.activeTab = tab;
 
     document.querySelectorAll('.tab').forEach(btn => {
-      btn.addEventListener('click', () => setTab(btn.dataset.tab));
+      btn.classList.toggle('active', btn.dataset.tab === tab);
     });
 
-    $('searchInput').addEventListener('input', applyCandidateFilters);
-    $('statusFilter').addEventListener('change', applyCandidateFilters);
-    $('offerFilter').addEventListener('change', applyCandidateFilters);
+    $('tab-candidates').classList.toggle('hidden', tab !== 'candidates');
+    $('tab-offers').classList.toggle('hidden', tab !== 'offers');
+    $('tab-pipeline').classList.toggle('hidden', tab !== 'pipeline');
 
-    $('clearFiltersBtn').addEventListener('click', () => {
-      $('searchInput').value = '';
-      $('statusFilter').value = '';
-      $('offerFilter').value = '';
+    if (tab === 'pipeline') renderPipeline();
+    if (tab === 'offers') renderOffers();
+    if (tab === 'candidates') applyCandidateFilters();
+  }
+
+  function getOfferMap(){
+    return new Map(state.offers.map(o => [o.id, o]));
+  }
+
+  function computeStats(){
+    const all = state.candidates;
+    const count = (s) => all.filter(x => (x.status || 'new') === s).length;
+
+    $('statOffers').textContent = state.offers.length;
+    $('statCandidates').textContent = all.length;
+    $('statNew').textContent = count('new');
+    $('statReview').textContent = count('review');
+    $('statShortlist').textContent = count('shortlist');
+    $('statCall').textContent = count('call');
+    $('statAccepted').textContent = count('accepted');
+  }
+
+  function fillOfferFilter(){
+    $('offerFilter').innerHTML =
+      '<option value="">Toutes les missions</option>' +
+      state.offers.map(o => {
+        return `<option value="${escapeHtml(o.id)}">${escapeHtml(o.title || 'Mission')}</option>`;
+      }).join('');
+  }
+
+  function applyCandidateFilters(){
+    const q = $('searchInput').value.trim().toLowerCase();
+    const status = $('statusFilter').value.trim().toLowerCase();
+    const offerId = $('offerFilter').value.trim();
+
+    const offerMap = getOfferMap();
+
+    state.filteredCandidates = state.candidates.filter(c => {
+      const offer = offerMap.get(c.offer_id) || null;
+      const hay = [
+        c.full_name,
+        c.whatsapp_phone,
+        c.city,
+        c.country,
+        c.trade,
+        c.years_experience,
+        c.availability,
+        c.message,
+        c.source,
+        c.status,
+        offer?.title || ''
+      ].join(' ').toLowerCase();
+
+      if (q && !hay.includes(q)) return false;
+      if (status && String(c.status || 'new').toLowerCase() !== status) return false;
+      if (offerId && String(c.offer_id || '') !== offerId) return false;
+      return true;
+    });
+
+    renderCandidates();
+  }
+
+  function renderCandidates(){
+    const wrap = $('candidateCards');
+    if (!state.filteredCandidates.length) {
+      wrap.classList.add('hidden');
+      setStatusBox('empty', 'Aucune candidature ne correspond à ce filtre.');
+      return;
+    }
+
+    hideStatusBox();
+    wrap.classList.remove('hidden');
+
+    const offerMap = getOfferMap();
+
+    wrap.innerHTML = state.filteredCandidates.map(c => {
+      const offer = offerMap.get(c.offer_id) || null;
+      const waPhone = normalizePhone(c.whatsapp_phone || '');
+      const waLink = waPhone ? `https://wa.me/${encodeURIComponent(waPhone.replace('+',''))}` : '#';
+
+      return `
+        <article class="card">
+          <div class="card-top">
+            <div>
+              <h3 class="title">${escapeHtml(c.full_name || 'Candidat')}</h3>
+              <div class="meta">
+                ${escapeHtml(c.trade || 'Profil non précisé')} •
+                ${escapeHtml(c.city || 'Ville à préciser')} •
+                ${escapeHtml(c.country || 'Sénégal')}
+              </div>
+            </div>
+            <div class="badge-row">
+              ${badgeStatus(c.status || 'new')}
+            </div>
+          </div>
+
+          <div class="badge-row">
+            <span class="badge gold">${escapeHtml(offer?.title || 'Candidature spontanée')}</span>
+            <span class="badge">${escapeHtml(c.source || 'public_form')}</span>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini">
+              <div class="mini-label">WhatsApp</div>
+              <div class="mini-value">${escapeHtml(c.whatsapp_phone || '—')}</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Expérience</div>
+              <div class="mini-value">${escapeHtml(c.years_experience || '—')}</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Disponibilité</div>
+              <div class="mini-value">${escapeHtml(c.availability || '—')}</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Envoyé le</div>
+              <div class="mini-value">${escapeHtml(formatDate(c.created_at))}</div>
+            </div>
+          </div>
+
+          <div class="body" style="margin-top:12px;">${escapeHtml(c.message || 'Aucun message laissé.')}</div>
+
+          <div class="actions">
+            <a class="small-btn blue" href="${waLink}" target="_blank" rel="noopener">WhatsApp</a>
+            <button class="small-btn gold" data-action="set-status" data-id="${c.id}" data-status="review">review</button>
+            <button class="small-btn orange" data-action="set-status" data-id="${c.id}" data-status="shortlist">shortlist</button>
+            <button class="small-btn blue" data-action="set-status" data-id="${c.id}" data-status="call">call</button>
+            <button class="small-btn green" data-action="set-status" data-id="${c.id}" data-status="accepted">accepted</button>
+            <button class="small-btn red" data-action="set-status" data-id="${c.id}" data-status="rejected">rejected</button>
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
+  function renderOffers(){
+    const wrap = $('offerCards');
+    if (!state.offers.length) {
+      wrap.classList.add('hidden');
+      setStatusBox('empty', 'Aucune mission trouvée pour ce workspace.');
+      return;
+    }
+
+    hideStatusBox();
+    wrap.classList.remove('hidden');
+
+    const counts = {};
+    state.candidates.forEach(c => {
+      const key = c.offer_id || '__none__';
+      counts[key] = (counts[key] || 0) + 1;
+    });
+
+    wrap.innerHTML = state.offers.map(o => {
+      const linkedCount = counts[o.id] || 0;
+      return `
+        <article class="card">
+          <div class="card-top">
+            <div>
+              <h3 class="title">${escapeHtml(o.title || 'Mission')}</h3>
+              <div class="meta">
+                ${escapeHtml(labelSector(o.sector))} •
+                ${escapeHtml(labelContract(o.contract_type))} •
+                ${escapeHtml(o.city || 'Ville à préciser')} •
+                ${escapeHtml(o.pay || 'Rémunération à préciser')}
+              </div>
+            </div>
+            <div class="badge-row">
+              <span class="badge green">${linkedCount} candidature${linkedCount > 1 ? 's' : ''}</span>
+            </div>
+          </div>
+
+          <div class="body">${escapeHtml(o.description || 'Description à venir.')}</div>
+
+          <div class="mini-grid">
+            <div class="mini">
+              <div class="mini-label">Structure</div>
+              <div class="mini-value">${escapeHtml(o.employer_name || '—')}</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Publié</div>
+              <div class="mini-value">${escapeHtml(formatDate(o.published_at || o.created_at))}</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Logement</div>
+              <div class="mini-value">${o.has_housing ? 'Oui' : 'Non'}</div>
+            </div>
+            <div class="mini">
+              <div class="mini-label">Accueil familial</div>
+              <div class="mini-value">${o.has_family_welcome ? 'Oui' : 'Non'}</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="small-btn gold" data-action="filter-offer" data-offer-id="${o.id}">Voir candidats liés</button>
+            <a class="small-btn" href="mission.html?id=${encodeURIComponent(o.id)}" target="_blank" rel="noopener">Ouvrir fiche</a>
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
+  function renderPipeline(){
+    const wrap = $('pipelineGrid');
+    const buckets = ['new','review','shortlist','call','accepted','rejected'];
+
+    wrap.classList.remove('hidden');
+    wrap.innerHTML = buckets.map(status => {
+      const items = state.candidates.filter(c => (c.status || 'new') === status);
+      return `
+        <div class="pipe">
+          <h3>${escapeHtml(status)}</h3>
+          <div class="pipe-count">${items.length}</div>
+          <div class="pipe-list">
+            ${items.slice(0,5).map(c => `
+              <div class="pipe-item">
+                <strong>${escapeHtml(c.full_name || 'Candidat')}</strong><br/>
+                ${escapeHtml(c.trade || 'Profil')} • ${escapeHtml(c.city || 'Ville')}
+              </div>
+            `).join('') || '<div class="pipe-item">Aucun profil.</div>'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function updateCandidateStatus(id, status){
+    setStatusBox('loading', `Mise à jour vers "${status}"...`);
+
+    const { error } = await sb
+      .from('digiy_jobs_candidates_pro')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) {
+      console.error(error);
+      setStatusBox('error', `Impossible de mettre à jour le statut "${status}". Vérifie le patch SQL/RLS.`);
+      return;
+    }
+
+    const row = state.candidates.find(x => x.id === id);
+    if (row) row.status = status;
+
+    computeStats();
+
+    if (state.activeTab === 'candidates') applyCandidateFilters();
+    if (state.activeTab === 'offers') renderOffers();
+    if (state.activeTab === 'pipeline') renderPipeline();
+
+    setStatusBox('loading', `Statut mis à jour : ${status}`);
+    setTimeout(() => {
+      if (state.activeTab === 'candidates' && state.filteredCandidates.length) hideStatusBox();
+    }, 900);
+  }
+
+  async function loadOffers(){
+    const { data, error } = await sb
+      .from('digiy_jobs_offers_pro')
+      .select('id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at')
+      .eq('workspace_slug', WORKSPACE_SLUG)
+      .eq('status', 'active')
+      .order('published_at', { ascending:false })
+      .order('created_at', { ascending:false });
+
+    if (error) throw error;
+    state.offers = data || [];
+  }
+
+  async function loadCandidates(){
+    const { data, error } = await sb
+      .from('digiy_jobs_candidates_pro')
+      .select('id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at')
+      .order('created_at', { ascending:false });
+
+    if (error) throw error;
+
+    const offerIds = new Set(state.offers.map(o => o.id));
+    state.candidates = (data || []).filter(c => {
+      if (c.workspace_slug && c.workspace_slug === WORKSPACE_SLUG) return true;
+      if (c.offer_id && offerIds.has(c.offer_id)) return true;
+      return false;
+    });
+  }
+
+  async function loadAll(){
+    try{
+      $('workspaceChip').textContent = WORKSPACE_SLUG;
+      setStatusBox('loading', 'Chargement du cockpit...');
+      await loadOffers();
+      await loadCandidates();
+      computeStats();
+      fillOfferFilter();
       applyCandidateFilters();
-    });
+      renderOffers();
+      renderPipeline();
 
-    $('refreshBtn').addEventListener('click', loadAll);
+      if (state.activeTab === 'candidates' && state.filteredCandidates.length) {
+        hideStatusBox();
+      }
+    }catch(err){
+      console.error(err);
+      setStatusBox('error', 'Erreur de chargement. Vérifie le patch SQL, les policies RLS et le workspace slug.');
+    }
+  }
 
+  async function bootGuard() {
+    if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== 'function') {
+      setStatusBox('error', 'guard.js introuvable ou invalide.');
+      return false;
+    }
+
+    const session = await window.DIGIY_GUARD.ready();
+
+    if (!session.access) {
+      document.body.innerHTML = `
+        <div style="min-height:100vh;display:grid;place-items:center;background:#061b14;color:#eafff1;padding:24px;font-family:Inter,system-ui,sans-serif">
+          <div style="max-width:720px;width:100%;border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;background:rgba(255,255,255,.04)">
+            <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fde68a;font-weight:900;margin-bottom:10px">
+              DIGIY JOBS PRO
+            </div>
+            <h1 style="margin:0 0 12px;font-size:32px;line-height:1.05">Accès pro requis</h1>
+            <p style="margin:0 0 18px;color:rgba(234,255,241,.76);line-height:1.7">
+              Ce cockpit est réservé aux pros actifs. Tu peux voir l’esprit du module,
+              mais pour ouvrir le bureau réel, il faut un accès JOBS actif.
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <a href="index.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#eafff1;text-decoration:none;font-weight:900">
+                Voir le mur public
+              </a>
+              <button id="goPayBtn" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border-radius:16px;border:none;background:linear-gradient(180deg,#facc15,#eab308);color:#171717;font-weight:900;cursor:pointer">
+                Activer mon accès JOBS
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("goPayBtn")?.addEventListener("click", () => {
+        window.DIGIY_GUARD.goPay();
+      });
+
+      return false;
+    }
+
+    return true;
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+
+    if (action === 'set-status') {
+      updateCandidateStatus(btn.dataset.id, btn.dataset.status);
+      return;
+    }
+
+    if (action === 'filter-offer') {
+      $('offerFilter').value = btn.dataset.offerId || '';
+      setTab('candidates');
+      applyCandidateFilters();
+    }
+  });
+
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => setTab(btn.dataset.tab));
+  });
+
+  $('searchInput').addEventListener('input', applyCandidateFilters);
+  $('statusFilter').addEventListener('change', applyCandidateFilters);
+  $('offerFilter').addEventListener('change', applyCandidateFilters);
+
+  $('clearFiltersBtn').addEventListener('click', () => {
+    $('searchInput').value = '';
+    $('statusFilter').value = '';
+    $('offerFilter').value = '';
+    applyCandidateFilters();
+  });
+
+  $('refreshBtn').addEventListener('click', loadAll);
+
+  (async () => {
+    const ok = await bootGuard();
+    if (!ok) return;
     loadAll();
-  </script>
+  })();
+</script>
 </body>
 </html>
