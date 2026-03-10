@@ -4,8 +4,13 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>DIGIY JOBS PRO — Cockpit V2</title>
+  <title>DIGIY JOBS PRO — Cockpit V3 Supabase</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+  </script>
   <script src="./guard.js"></script>
 
   <style>
@@ -51,10 +56,8 @@
       border:1px solid var(--line);background:rgba(250,204,21,.10);
       padding:7px 10px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap;
     }
-
     .grid{display:grid;gap:12px;margin-top:12px}
     @media(min-width:1080px){ .grid{grid-template-columns:1.22fr .78fr} }
-
     .card{
       background:linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
       border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
@@ -70,30 +73,24 @@
     .btn.primary{background:linear-gradient(90deg,var(--ok),var(--gold));color:#062015;border:none}
     .btn.blue{background:linear-gradient(90deg,var(--blue),#7dd3fc);color:#062015;border:none}
     .btn.danger{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.10)}
-
     .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
     .tab{
       padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.18);color:var(--text);font-weight:1000;cursor:pointer;
     }
     .tab.active{border-color:rgba(250,204,21,.55);background:rgba(250,204,21,.12)}
-
     .kpis{display:grid;gap:10px;margin-top:10px}
     @media(min-width:520px){ .kpis{grid-template-columns:repeat(2,1fr)} }
-    .kpi{
-      padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);
-    }
+    .kpi{padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18)}
     .kpi .k{font-size:12px;color:var(--muted)}
     .kpi .v{font-size:20px;font-weight:1000;margin-top:6px}
     .kpi .s{font-size:12px;color:rgba(234,255,241,.78);margin-top:4px}
-
     .split{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     select,input,textarea{
       border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);
       color:var(--text);padding:10px 12px;outline:none;font-weight:900;width:100%;
     }
     textarea{min-height:92px;resize:vertical;font-weight:700}
-
     .list{margin-top:10px;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden}
     .item{
       padding:12px;border-top:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.14);
@@ -115,21 +112,14 @@
       color:var(--text);font-weight:1000;cursor:pointer;
     }
     .tinybtn:hover{border-color:rgba(250,204,21,.55)}
-
     .meta-grid{display:grid;gap:10px;margin-top:10px}
     @media(min-width:700px){ .meta-grid{grid-template-columns:repeat(2,1fr)} }
-    .meta{
-      padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);
-    }
+    .meta{padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18)}
     .meta .k{font-size:11px;color:var(--muted);font-weight:1000;letter-spacing:.08em;text-transform:uppercase}
     .meta .v{font-size:14px;font-weight:900;margin-top:6px;line-height:1.4;word-break:break-word}
-
     .detail-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .detail-actions .tinybtn{flex:1;min-width:160px}
-
-    .match-toolbar{
-      display:grid;gap:10px;margin-top:10px;
-    }
+    .match-toolbar{display:grid;gap:10px;margin-top:10px}
     @media(min-width:760px){ .match-toolbar{grid-template-columns:1.2fr .8fr .8fr .8fr} }
     .score{
       min-width:62px;height:62px;border-radius:16px;display:grid;place-items:center;font-weight:1000;font-size:20px;
@@ -137,14 +127,8 @@
     }
     .score.mid{background:linear-gradient(90deg,var(--gold),#fde68a)}
     .score.low{background:linear-gradient(90deg,#fb7185,#fecdd3)}
-    .reason{
-      margin-top:8px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);
-      font-size:12px;color:rgba(234,255,241,.82);line-height:1.45;
-    }
-
-    .modal{
-      position:fixed;inset:0;display:none;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:18px;z-index:20;
-    }
+    .reason{margin-top:8px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);font-size:12px;color:rgba(234,255,241,.82);line-height:1.45}
+    .modal{position:fixed;inset:0;display:none;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:18px;z-index:20}
     .modal .box{
       width:min(920px,94vw);background:linear-gradient(145deg,rgba(11,42,31,.98),rgba(6,35,25,.98));
       border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,.65);
@@ -153,18 +137,13 @@
     .fgrid{display:grid;gap:10px;margin-top:10px}
     @media(min-width:820px){ .fgrid{grid-template-columns:1fr 1fr} }
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .actions button{
-      flex:1;min-width:190px;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);
-      background:rgba(250,204,21,.12);color:var(--text);font-weight:1000;cursor:pointer;
-    }
+    .actions button{flex:1;min-width:190px;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(250,204,21,.12);color:var(--text);font-weight:1000;cursor:pointer}
     .actions .primary{background:linear-gradient(90deg,var(--ok),var(--gold));color:#062015;border:none}
-    .close{
-      margin-top:10px;width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);
-      background:rgba(0,0,0,.18);color:var(--text);font-weight:1000;cursor:pointer;
-    }
+    .close{margin-top:10px;width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.18);color:var(--text);font-weight:1000;cursor:pointer}
     .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
     .tiny{font-size:11px;color:rgba(234,255,241,.66)}
     .hidden{display:none !important}
+    .loading{opacity:.65;pointer-events:none}
   </style>
 </head>
 <body>
@@ -173,18 +152,18 @@
     <div class="brand">
       <div class="ico">🦅</div>
       <div>
-        <h1>💼 JOBS PRO — Cockpit V2</h1>
+        <h1>💼 JOBS PRO — Cockpit V3 Supabase</h1>
         <div class="sub">
           SLUG: <b id="slug">—</b> • OWNER: <b id="owner">—</b><br>
-          Statut: <b id="stat">session OK</b>
+          Statut: <b id="stat">chargement…</b>
         </div>
       </div>
     </div>
-    <div class="pill">jobs_pro_v2</div>
+    <div class="pill">jobs_pro_v3</div>
   </div>
 
   <div class="grid">
-    <div class="card">
+    <div class="card" id="leftCard">
       <div class="title">⚡ ACTIONS</div>
       <div class="row">
         <button class="btn primary" id="btnNewOffer">➕ Nouvelle offre</button>
@@ -227,9 +206,7 @@
       <div id="filtersBlock" style="margin-top:10px">
         <div class="split">
           <div class="title" style="flex:1" id="listTitle">📄 OFFRES</div>
-          <select id="filter" style="max-width:240px">
-            <option value="all">Tout</option>
-          </select>
+          <select id="filter" style="max-width:240px"><option value="all">Tout</option></select>
           <input id="q" placeholder="Recherche…" style="max-width:260px">
         </div>
       </div>
@@ -253,12 +230,12 @@
       <div class="list" id="list"></div>
 
       <div class="hint">
-        <b>V2 Cockpit :</b> offres + candidats + missions + match dans un seul bureau par slug.<br>
-        <span class="tiny">V3 : branchement base réelle, fiches mission/candidat partagées, match synchronisé multi-appareils.</span>
+        <b>Supabase réel :</b> ce cockpit lit et écrit dans les tables réelles par `workspace_slug`.<br>
+        <span class="tiny">V4 : policies fines, auth réelle, logs, notifications, boîte d’entrée.</span>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="rightCard">
       <div class="title">🧭 PANNEAU DROIT</div>
       <div class="meta-grid" id="detailGrid">
         <div class="meta">
@@ -266,7 +243,6 @@
           <div class="v">Choisis une ligne à gauche pour voir les détails.</div>
         </div>
       </div>
-
       <div class="detail-actions" id="detailActions"></div>
 
       <div style="height:12px"></div>
@@ -280,7 +256,7 @@
       <div class="title">🧩 OUTILS</div>
       <div class="row">
         <button class="btn" id="btnExport">⬇️ Export JSON</button>
-        <button class="btn danger" id="btnReset">🧹 Reset Démo</button>
+        <button class="btn danger" id="btnReload">🔄 Recharger</button>
       </div>
 
       <div style="height:12px"></div>
@@ -313,52 +289,15 @@
       <div class="badge neutral" id="mSlugOffer">—</div>
     </div>
     <div class="fgrid">
-      <div>
-        <label>Titre</label>
-        <input id="o_title" placeholder="Ex: Serveur / Maçon / Soudeur">
-      </div>
-      <div>
-        <label>Secteur</label>
-        <select id="o_sector">
-          <option value="build">BUILD</option>
-          <option value="hotel">Hôtellerie-Restauration</option>
-          <option value="other">Autre</option>
-        </select>
-      </div>
-      <div>
-        <label>Lieu</label>
-        <input id="o_city" placeholder="Ex: Dakar / Saly / Mbour">
-      </div>
-      <div>
-        <label>Type</label>
-        <select id="o_type">
-          <option value="cdi">CDI</option>
-          <option value="cdd">CDD</option>
-          <option value="saisonnier">Saisonnier</option>
-          <option value="mission">Mission</option>
-        </select>
-      </div>
-      <div>
-        <label>Salaire (option)</label>
-        <input id="o_pay" placeholder="Ex: 120k / 250k / selon profil">
-      </div>
-      <div>
-        <label>Statut</label>
-        <select id="o_status">
-          <option value="active">Actif</option>
-          <option value="paused">Pause</option>
-          <option value="closed">Clos</option>
-        </select>
-      </div>
+      <div><label>Titre</label><input id="o_title" placeholder="Ex: Serveur / Maçon / Soudeur"></div>
+      <div><label>Secteur</label><select id="o_sector"><option value="build">BUILD</option><option value="hotel">Hôtellerie-Restauration</option><option value="other">Autre</option></select></div>
+      <div><label>Lieu</label><input id="o_city" placeholder="Ex: Dakar / Saly / Mbour"></div>
+      <div><label>Type</label><select id="o_type"><option value="cdi">CDI</option><option value="cdd">CDD</option><option value="saisonnier">Saisonnier</option><option value="mission">Mission</option></select></div>
+      <div><label>Salaire (option)</label><input id="o_pay" placeholder="Ex: 120k / 250k / selon profil"></div>
+      <div><label>Statut</label><select id="o_status"><option value="active">Actif</option><option value="paused">Pause</option><option value="closed">Clos</option></select></div>
     </div>
-    <div style="margin-top:6px">
-      <label>Description</label>
-      <textarea id="o_desc" placeholder="Missions, horaires, conditions, logement, etc."></textarea>
-    </div>
-    <div class="actions">
-      <button class="primary" id="o_save">✅ Enregistrer</button>
-      <button id="o_cancel">Annuler</button>
-    </div>
+    <div style="margin-top:6px"><label>Description</label><textarea id="o_desc" placeholder="Missions, horaires, conditions, logement, etc."></textarea></div>
+    <div class="actions"><button class="primary" id="o_save">✅ Enregistrer</button><button id="o_cancel">Annuler</button></div>
     <button class="close" id="o_close">Fermer</button>
   </div>
 </div>
@@ -371,66 +310,17 @@
       <div class="badge neutral" id="mSlugCand">—</div>
     </div>
     <div class="fgrid">
-      <div>
-        <label>Nom</label>
-        <input id="c_name" placeholder="Ex: Awa Diop">
-      </div>
-      <div>
-        <label>Téléphone</label>
-        <input id="c_phone" placeholder="+221…">
-      </div>
-      <div>
-        <label>Métier</label>
-        <input id="c_job" placeholder="Ex: Serveuse / Maçon / Électricien">
-      </div>
-      <div>
-        <label>Secteur</label>
-        <select id="c_sector">
-          <option value="build">BUILD</option>
-          <option value="hotel">Hôtellerie-Restauration</option>
-          <option value="other">Autre</option>
-        </select>
-      </div>
-      <div>
-        <label>Ville</label>
-        <input id="c_city" placeholder="Ex: Saly / Dakar / Mbour">
-      </div>
-      <div>
-        <label>Disponibilité</label>
-        <select id="c_availability">
-          <option value="immediate">Immédiate</option>
-          <option value="48h">Sous 48h</option>
-          <option value="7d">Sous 7 jours</option>
-          <option value="later">À confirmer</option>
-        </select>
-      </div>
-      <div>
-        <label>Niveau</label>
-        <select id="c_level">
-          <option value="debutant">Débutant</option>
-          <option value="intermediaire">Intermédiaire</option>
-          <option value="confirme">Confirmé</option>
-          <option value="chef">Chef d’équipe</option>
-        </select>
-      </div>
-      <div>
-        <label>Hébergement</label>
-        <select id="c_housing">
-          <option value="non">Non</option>
-          <option value="possible">Possible</option>
-          <option value="mission-longue">Possible si mission longue</option>
-          <option value="a-confirmer">À confirmer</option>
-        </select>
-      </div>
+      <div><label>Nom</label><input id="c_name" placeholder="Ex: Awa Diop"></div>
+      <div><label>Téléphone</label><input id="c_phone" placeholder="+221…"></div>
+      <div><label>Métier</label><input id="c_job" placeholder="Ex: Serveuse / Maçon / Électricien"></div>
+      <div><label>Secteur</label><select id="c_sector"><option value="build">BUILD</option><option value="hotel">Hôtellerie-Restauration</option><option value="other">Autre</option></select></div>
+      <div><label>Ville</label><input id="c_city" placeholder="Ex: Saly / Dakar / Mbour"></div>
+      <div><label>Disponibilité</label><select id="c_availability"><option value="immediate">Immédiate</option><option value="48h">Sous 48h</option><option value="7d">Sous 7 jours</option><option value="later">À confirmer</option></select></div>
+      <div><label>Niveau</label><select id="c_level"><option value="debutant">Débutant</option><option value="intermediaire">Intermédiaire</option><option value="confirme">Confirmé</option><option value="chef">Chef d’équipe</option></select></div>
+      <div><label>Hébergement</label><select id="c_housing"><option value="non">Non</option><option value="possible">Possible</option><option value="mission-longue">Possible si mission longue</option><option value="a-confirmer">À confirmer</option></select></div>
     </div>
-    <div style="margin-top:6px">
-      <label>Note</label>
-      <textarea id="c_note" placeholder="Expérience, disponibilité réelle, sérieux, logement éventuel, etc."></textarea>
-    </div>
-    <div class="actions">
-      <button class="primary" id="c_save">✅ Enregistrer</button>
-      <button id="c_cancel">Annuler</button>
-    </div>
+    <div style="margin-top:6px"><label>Note</label><textarea id="c_note" placeholder="Expérience, disponibilité réelle, sérieux, logement éventuel, etc."></textarea></div>
+    <div class="actions"><button class="primary" id="c_save">✅ Enregistrer</button><button id="c_cancel">Annuler</button></div>
     <button class="close" id="c_close">Fermer</button>
   </div>
 </div>
@@ -443,111 +333,48 @@
       <div class="badge neutral" id="mSlugMission">—</div>
     </div>
     <div class="fgrid">
-      <div>
-        <label>Titre mission</label>
-        <input id="m_title" placeholder="Ex: Renfort service soir / Chantier villa Saly">
-      </div>
-      <div>
-        <label>Secteur</label>
-        <select id="m_sector">
-          <option value="build">BUILD</option>
-          <option value="hotel">Hôtellerie-Restauration</option>
-        </select>
-      </div>
-      <div>
-        <label>Ville</label>
-        <input id="m_city" placeholder="Ex: Saly / Ngaparou / Dakar">
-      </div>
-      <div>
-        <label>Métier recherché</label>
-        <input id="m_job" placeholder="Ex: Serveur / Maçon / Soudeur">
-      </div>
-      <div>
-        <label>Nombre recherché</label>
-        <select id="m_count">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4+">4+</option>
-        </select>
-      </div>
-      <div>
-        <label>Démarrage</label>
-        <select id="m_start">
-          <option value="immediate">Immédiat</option>
-          <option value="48h">Sous 48h</option>
-          <option value="7d">Cette semaine</option>
-          <option value="planned">Planifié</option>
-        </select>
-      </div>
-      <div>
-        <label>Durée</label>
-        <select id="m_duration">
-          <option value="ponctuelle">Ponctuelle</option>
-          <option value="jours">Quelques jours</option>
-          <option value="semaines">1 à 4 semaines</option>
-          <option value="recurrente">Longue / récurrente</option>
-        </select>
-      </div>
-      <div>
-        <label>Priorité</label>
-        <select id="m_priority">
-          <option value="normale">Normale</option>
-          <option value="haute">Haute</option>
-          <option value="urgente">Urgente</option>
-        </select>
-      </div>
-      <div>
-        <label>Hébergement</label>
-        <select id="m_housing">
-          <option value="non">Non</option>
-          <option value="possible">Possible</option>
-          <option value="mission-longue">Possible si mission longue</option>
-          <option value="a-confirmer">À confirmer</option>
-        </select>
-      </div>
-      <div>
-        <label>Statut mission</label>
-        <select id="m_status">
-          <option value="open">Ouverte</option>
-          <option value="paused">Pause</option>
-          <option value="closed">Close</option>
-        </select>
-      </div>
+      <div><label>Titre mission</label><input id="m_title" placeholder="Ex: Renfort service soir / Chantier villa Saly"></div>
+      <div><label>Secteur</label><select id="m_sector"><option value="build">BUILD</option><option value="hotel">Hôtellerie-Restauration</option></select></div>
+      <div><label>Ville</label><input id="m_city" placeholder="Ex: Saly / Ngaparou / Dakar"></div>
+      <div><label>Métier recherché</label><input id="m_job" placeholder="Ex: Serveur / Maçon / Soudeur"></div>
+      <div><label>Nombre recherché</label><select id="m_count"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4+">4+</option></select></div>
+      <div><label>Démarrage</label><select id="m_start"><option value="immediate">Immédiat</option><option value="48h">Sous 48h</option><option value="7d">Cette semaine</option><option value="planned">Planifié</option></select></div>
+      <div><label>Durée</label><select id="m_duration"><option value="ponctuelle">Ponctuelle</option><option value="jours">Quelques jours</option><option value="semaines">1 à 4 semaines</option><option value="recurrente">Longue / récurrente</option></select></div>
+      <div><label>Priorité</label><select id="m_priority"><option value="normale">Normale</option><option value="haute">Haute</option><option value="urgente">Urgente</option></select></div>
+      <div><label>Hébergement</label><select id="m_housing"><option value="non">Non</option><option value="possible">Possible</option><option value="mission-longue">Possible si mission longue</option><option value="a-confirmer">À confirmer</option></select></div>
+      <div><label>Statut mission</label><select id="m_status"><option value="open">Ouverte</option><option value="paused">Pause</option><option value="closed">Close</option></select></div>
     </div>
-    <div style="margin-top:6px">
-      <label>Détail mission</label>
-      <textarea id="m_desc" placeholder="Besoin réel, horaires, cadre, équipe, détail terrain, précision utile."></textarea>
-    </div>
-    <div class="actions">
-      <button class="primary" id="m_save">✅ Enregistrer</button>
-      <button id="m_cancel">Annuler</button>
-    </div>
+    <div style="margin-top:6px"><label>Détail mission</label><textarea id="m_desc" placeholder="Besoin réel, horaires, cadre, équipe, détail terrain, précision utile."></textarea></div>
+    <div class="actions"><button class="primary" id="m_save">✅ Enregistrer</button><button id="m_cancel">Annuler</button></div>
     <button class="close" id="m_close">Fermer</button>
   </div>
 </div>
 
 <script>
-  const s = window.DIGIY_ACCESS || {};
-  const slug = (s.slug || "").toLowerCase();
-  document.getElementById("slug").textContent = s.slug || "—";
-  document.getElementById("owner").textContent = s.owner_id || "—";
+(function(){
+  "use strict";
 
-  const KEY_OFFERS   = "DIGIY_JOBS_OFFERS::"    + (slug || "noslug");
-  const KEY_CANDS    = "DIGIY_JOBS_CANDS::"     + (slug || "noslug");
-  const KEY_MISSIONS = "DIGIY_JOBS_MISSIONS::"  + (slug || "noslug");
-  const KEY_MATCHES  = "DIGIY_JOBS_MATCHES::"   + (slug || "noslug");
+  const TABLES = {
+    offers: "digiy_jobs_offers_pro",
+    candidates: "digiy_jobs_candidates_pro",
+    missions: "digiy_jobs_missions_pro",
+    matches: "digiy_jobs_matches_pro"
+  };
 
-  let mode = "offers"; // offers | cands | missions | match
-  let selectedId = null;
-  let selectedMissionId = null;
+  const state = {
+    sb: null,
+    mode: "offers",
+    selectedId: null,
+    selectedMissionId: null,
+    workspaceSlug: "",
+    ownerId: null,
+    offers: [],
+    candidates: [],
+    missions: [],
+    matches: []
+  };
 
-  function uid(){
-    return (crypto?.randomUUID ? crypto.randomUUID() : ("id_" + Math.random().toString(16).slice(2) + Date.now()));
-  }
-  function nowISO(){ return new Date().toISOString(); }
-  function load(key){ try{ return JSON.parse(localStorage.getItem(key) || "[]"); }catch(_){ return []; } }
-  function save(key, rows){ localStorage.setItem(key, JSON.stringify(rows)); }
+  function qs(id){ return document.getElementById(id); }
   function esc(s){
     return String(s ?? "")
       .replace(/&/g, "&amp;")
@@ -557,17 +384,21 @@
       .replace(/'/g, "&#39;");
   }
   function text(v){ return v == null || v === "" ? "—" : String(v); }
+  function cap(v){
+    v = String(v || "");
+    return v ? (v.charAt(0).toUpperCase() + v.slice(1)) : "—";
+  }
+  function sectorLabel(v){ return v === "build" ? "BUILD" : v === "hotel" ? "HÔTELLERIE" : "AUTRE"; }
   function matchesText(hay, q){
     q = String(q || "").trim().toLowerCase();
     if(!q) return true;
     return String(hay || "").toLowerCase().includes(q);
   }
-  function cap(v){
-    v = String(v || "");
-    return v ? (v.charAt(0).toUpperCase() + v.slice(1)) : "—";
+  function normalizeText(v){
+    return String(v || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
-  function sectorLabel(v){
-    return v === "build" ? "BUILD" : v === "hotel" ? "HÔTELLERIE" : "AUTRE";
+  function formatDate(iso){
+    try{ return new Date(iso).toLocaleString("fr-FR"); }catch(_){ return "—"; }
   }
   function badge(st){
     const map = {
@@ -584,31 +415,88 @@
     if(score >= 60) return "score mid";
     return "score low";
   }
-  function setStatus(msg){ document.getElementById("stat").textContent = msg; }
+  function setStatus(msg){ qs("stat").textContent = msg; }
+  function setBusy(on){
+    qs("leftCard").classList.toggle("loading", !!on);
+    qs("rightCard").classList.toggle("loading", !!on);
+  }
 
-  function modalOpen(id){ document.getElementById(id).style.display = "flex"; }
-  function modalClose(id){ document.getElementById(id).style.display = "none"; }
+  async function initSupabase(){
+    if(!window.supabase?.createClient) throw new Error("Supabase CDN non chargé.");
+    state.sb = window.supabase.createClient(window.DIGIY_SUPABASE_URL, window.DIGIY_SUPABASE_ANON_KEY);
+  }
 
-  function getOffers(){ return load(KEY_OFFERS); }
-  function getCands(){ return load(KEY_CANDS); }
-  function getMissions(){ return load(KEY_MISSIONS); }
-  function getMatches(){ return load(KEY_MATCHES); }
+  async function initGuard(){
+    let access = null;
+    try{
+      if(window.DIGIY_GUARD?.ready){
+        access = await window.DIGIY_GUARD.ready();
+      }
+    }catch(_){ }
+    if(!access && window.DIGIY_ACCESS) access = window.DIGIY_ACCESS;
+    if(!access){
+      try{ access = JSON.parse(localStorage.getItem("DIGIY_ACCESS") || "null"); }catch(_){ access = null; }
+    }
+    state.workspaceSlug = String(access?.slug || "").toLowerCase();
+    state.ownerId = access?.owner_id || null;
+    qs("slug").textContent = access?.slug || "—";
+    qs("owner").textContent = access?.owner_id || "—";
+    if(!state.workspaceSlug){
+      throw new Error("Slug introuvable. Ouvre le cockpit avec ton accès PRO.");
+    }
+  }
+
+  async function loadTable(table){
+    const { data, error } = await state.sb.from(table).select("*").eq("workspace_slug", state.workspaceSlug).order("created_at", { ascending:false });
+    if(error) throw error;
+    return data || [];
+  }
+
+  async function refreshAll(){
+    setBusy(true);
+    try{
+      const [offers, candidates, missions, matches] = await Promise.all([
+        loadTable(TABLES.offers),
+        loadTable(TABLES.candidates),
+        loadTable(TABLES.missions),
+        loadTable(TABLES.matches)
+      ]);
+      state.offers = offers;
+      state.candidates = candidates;
+      state.missions = missions;
+      state.matches = matches;
+      setStatus("Supabase connecté");
+      render();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function insertRow(table, payload){
+    const { error } = await state.sb.from(table).insert(payload);
+    if(error) throw error;
+  }
+
+  async function updateRow(table, id, patch){
+    const { error } = await state.sb.from(table).update(patch).eq("id", id).eq("workspace_slug", state.workspaceSlug);
+    if(error) throw error;
+  }
+
+  async function deleteRow(table, id){
+    const { error } = await state.sb.from(table).delete().eq("id", id).eq("workspace_slug", state.workspaceSlug);
+    if(error) throw error;
+  }
 
   function renderKPIs(){
-    const offers = getOffers();
-    const cands = getCands();
-    const missions = getMissions();
-    const matches = getMatches();
-    document.getElementById("kOffers").textContent = String(offers.filter(x => x.status === "active").length);
-    document.getElementById("kCands").textContent = String(cands.length);
-    document.getElementById("kMissions").textContent = String(missions.filter(x => x.status === "open").length);
-    document.getElementById("kMatches").textContent = String(matches.filter(x => x.status === "validated").length);
+    qs("kOffers").textContent = String(state.offers.filter(x => x.status === "active").length);
+    qs("kCands").textContent = String(state.candidates.length);
+    qs("kMissions").textContent = String(state.missions.filter(x => x.status === "open").length);
+    qs("kMatches").textContent = String(state.matches.filter(x => x.status === "validated").length);
   }
 
   function fillFilterForMode(){
-    const filter = document.getElementById("filter");
-    filter.innerHTML = "";
-    if(mode === "offers"){
+    const filter = qs("filter");
+    if(state.mode === "offers"){
       filter.innerHTML = `
         <option value="all">Toutes</option>
         <option value="active">Actives</option>
@@ -616,7 +504,7 @@
         <option value="closed">Closes</option>
         <option value="build">BUILD</option>
         <option value="hotel">Hôtellerie</option>`;
-    } else if(mode === "cands"){
+    } else if(state.mode === "cands"){
       filter.innerHTML = `
         <option value="all">Tous</option>
         <option value="new">Nouveaux</option>
@@ -627,7 +515,7 @@
         <option value="rejected">Refusés</option>
         <option value="build">BUILD</option>
         <option value="hotel">Hôtellerie</option>`;
-    } else if(mode === "missions"){
+    } else if(state.mode === "missions"){
       filter.innerHTML = `
         <option value="all">Toutes</option>
         <option value="open">Ouvertes</option>
@@ -639,83 +527,56 @@
   }
 
   function setMode(m){
-    mode = m;
-    selectedId = null;
-    document.getElementById("tabOffers").classList.toggle("active", m === "offers");
-    document.getElementById("tabCands").classList.toggle("active", m === "cands");
-    document.getElementById("tabMissions").classList.toggle("active", m === "missions");
-    document.getElementById("tabMatch").classList.toggle("active", m === "match");
-
+    state.mode = m;
+    state.selectedId = null;
+    qs("tabOffers").classList.toggle("active", m === "offers");
+    qs("tabCands").classList.toggle("active", m === "cands");
+    qs("tabMissions").classList.toggle("active", m === "missions");
+    qs("tabMatch").classList.toggle("active", m === "match");
     const titles = {
       offers:"📄 OFFRES",
       cands:"👤 CANDIDATS",
       missions:"🎯 MISSIONS",
       match:"🤝 MATCH CANDIDAT ↔ MISSION"
     };
-    document.getElementById("listTitle").textContent = titles[m] || "—";
-    document.getElementById("filtersBlock").classList.toggle("hidden", m === "match");
-    document.getElementById("matchToolbar").classList.toggle("hidden", m !== "match");
+    qs("listTitle").textContent = titles[m] || "—";
+    qs("filtersBlock").classList.toggle("hidden", m === "match");
+    qs("matchToolbar").classList.toggle("hidden", m !== "match");
     if(m !== "match") fillFilterForMode();
     render();
   }
 
-  function renderMissionSelector(){
-    const select = document.getElementById("matchMission");
-    const missions = getMissions().sort((a,b) => (b.created_at || "").localeCompare(a.created_at || ""));
-    if(!missions.length){
-      select.innerHTML = '<option value="">Aucune mission</option>';
-      selectedMissionId = null;
-      return;
-    }
-    if(!selectedMissionId || !missions.some(x => x.id === selectedMissionId)){
-      selectedMissionId = missions[0].id;
-    }
-    select.innerHTML = missions.map(m => `<option value="${esc(m.id)}">${esc(m.title)} • ${esc(m.city || "—")} • ${esc(sectorLabel(m.sector))}</option>`).join("");
-    select.value = selectedMissionId;
-  }
-
-  function formatDate(iso){
-    try{ return new Date(iso).toLocaleString("fr-FR"); }catch(_){ return "—"; }
-  }
-
   function setDetailGrid(entries){
-    const grid = document.getElementById("detailGrid");
-    grid.innerHTML = entries.map(([k,v]) => `
-      <div class="meta">
-        <div class="k">${esc(k)}</div>
-        <div class="v">${esc(text(v))}</div>
-      </div>`).join("");
+    qs("detailGrid").innerHTML = entries.map(([k,v]) => `
+      <div class="meta"><div class="k">${esc(k)}</div><div class="v">${esc(text(v))}</div></div>
+    `).join("");
   }
 
-  function setDetailActions(html){
-    document.getElementById("detailActions").innerHTML = html || "";
-  }
+  function setDetailActions(html){ qs("detailActions").innerHTML = html || ""; }
 
   function renderOffers(){
-    const q = document.getElementById("q").value;
-    const f = document.getElementById("filter").value;
-    let rows = getOffers().sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
-    if(f !== "all"){
-      rows = rows.filter(r => r.status === f || r.sector === f);
-    }
-    if(q) rows = rows.filter(r => matchesText([r.title,r.city,r.type,r.pay,r.desc,r.sector].join(" "), q));
+    const q = qs("q").value;
+    const f = qs("filter").value;
+    let rows = [...state.offers];
+    if(f !== "all") rows = rows.filter(r => r.status === f || r.sector === f);
+    if(q) rows = rows.filter(r => matchesText([r.title,r.city,r.contract_type,r.pay,r.description,r.sector].join(" "), q));
 
-    const list = document.getElementById("list");
+    const list = qs("list");
     if(!rows.length){
       list.innerHTML = `<div class="item"><div><div class="a">Aucune offre</div><div class="b">Clique “Nouvelle offre” pour commencer.</div></div><div class="badge neutral">VIDE</div></div>`;
       setDetailGrid([["Sélection","Aucune offre disponible"]]);
       setDetailActions("");
       return;
     }
-    if(!selectedId || !rows.some(x => x.id === selectedId)) selectedId = rows[0].id;
+    if(!state.selectedId || !rows.some(x => x.id === state.selectedId)) state.selectedId = rows[0].id;
     list.innerHTML = rows.map(r => `
-      <div class="item" data-kind="offer" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
+      <div class="item" data-kind="offer" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===state.selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
         <div style="flex:1">
           <div class="a">${esc(r.title || "—")} • ${esc(r.city || "—")} • ${esc(sectorLabel(r.sector))}</div>
           <div class="b">
-            Type: ${esc(r.type || "—")}<br>
+            Type: ${esc(r.contract_type || "—")}<br>
             ${r.pay ? `Salaire: ${esc(r.pay)}<br>` : ""}
-            ${r.desc ? `Desc: ${esc(r.desc)}<br>` : ""}
+            ${r.description ? `Desc: ${esc(r.description)}<br>` : ""}
             Créée: ${esc(formatDate(r.created_at))}
           </div>
           <div class="row" style="margin-top:10px">
@@ -726,17 +587,18 @@
           </div>
         </div>
         <div>${badge(r.status)}</div>
-      </div>`).join("");
+      </div>
+    `).join("");
 
-    const cur = rows.find(x => x.id === selectedId);
+    const cur = rows.find(x => x.id === state.selectedId);
     setDetailGrid([
-      ["Type", cur.type],
+      ["Type", cur.contract_type],
       ["Secteur", sectorLabel(cur.sector)],
       ["Ville", cur.city],
       ["Salaire", cur.pay || "—"],
       ["Statut", cur.status],
       ["Créée le", formatDate(cur.created_at)],
-      ["Description", cur.desc || "—"]
+      ["Description", cur.description || "—"]
     ]);
     setDetailActions(`
       <button class="tinybtn" data-mode="offers" data-act="active" data-id="${esc(cur.id)}">🟢 Activer</button>
@@ -746,25 +608,25 @@
     `);
   }
 
-  function renderCands(){
-    const q = document.getElementById("q").value;
-    const f = document.getElementById("filter").value;
-    let rows = getCands().sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+  function renderCandidates(){
+    const q = qs("q").value;
+    const f = qs("filter").value;
+    let rows = [...state.candidates];
     if(f !== "all") rows = rows.filter(r => r.status === f || r.sector === f);
-    if(q) rows = rows.filter(r => matchesText([r.name,r.phone,r.job,r.city,r.note,r.sector,r.availability,r.level].join(" "), q));
+    if(q) rows = rows.filter(r => matchesText([r.full_name,r.phone,r.job_title,r.city,r.note,r.sector,r.availability,r.level].join(" "), q));
 
-    const list = document.getElementById("list");
+    const list = qs("list");
     if(!rows.length){
       list.innerHTML = `<div class="item"><div><div class="a">Aucun candidat</div><div class="b">Clique “Nouveau candidat” pour commencer.</div></div><div class="badge neutral">VIDE</div></div>`;
       setDetailGrid([["Sélection","Aucun candidat disponible"]]);
       setDetailActions("");
       return;
     }
-    if(!selectedId || !rows.some(x => x.id === selectedId)) selectedId = rows[0].id;
+    if(!state.selectedId || !rows.some(x => x.id === state.selectedId)) state.selectedId = rows[0].id;
     list.innerHTML = rows.map(r => `
-      <div class="item" data-kind="cand" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
+      <div class="item" data-kind="cand" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===state.selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
         <div style="flex:1">
-          <div class="a">${esc(r.name || "—")} • ${esc(r.job || "—")} • ${esc(sectorLabel(r.sector))}</div>
+          <div class="a">${esc(r.full_name || "—")} • ${esc(r.job_title || "—")} • ${esc(sectorLabel(r.sector))}</div>
           <div class="b">
             Tel: ${esc(r.phone || "—")}<br>
             Ville: ${esc(r.city || "—")} • Dispo: ${esc(cap(r.availability))} • Niveau: ${esc(cap(r.level))}<br>
@@ -782,12 +644,13 @@
           </div>
         </div>
         <div>${badge(r.status)}</div>
-      </div>`).join("");
+      </div>
+    `).join("");
 
-    const cur = rows.find(x => x.id === selectedId);
+    const cur = rows.find(x => x.id === state.selectedId);
     setDetailGrid([
       ["Téléphone", cur.phone],
-      ["Métier", cur.job],
+      ["Métier", cur.job_title],
       ["Secteur", sectorLabel(cur.sector)],
       ["Ville", cur.city],
       ["Disponibilité", cap(cur.availability)],
@@ -796,7 +659,7 @@
       ["Statut", cur.status],
       ["Note", cur.note || "—"]
     ]);
-    const waMsg = encodeURIComponent(`Bonjour ${cur.name || ''},\n\nDIGIY JOBS PRO vous contacte au sujet de votre profil ${cur.job || ''}.`);
+    const waMsg = encodeURIComponent(`Bonjour ${cur.full_name || ''},\n\nDIGIY JOBS PRO vous contacte au sujet de votre profil ${cur.job_title || ''}.`);
     const waHref = `https://wa.me/${String(cur.phone || '').replace(/\D/g,'')}?text=${waMsg}`;
     setDetailActions(`
       <a class="tinybtn" href="${waHref}" target="_blank" rel="noopener">💬 WhatsApp</a>
@@ -808,28 +671,28 @@
   }
 
   function renderMissions(){
-    const q = document.getElementById("q").value;
-    const f = document.getElementById("filter").value;
-    let rows = getMissions().sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+    const q = qs("q").value;
+    const f = qs("filter").value;
+    let rows = [...state.missions];
     if(f !== "all") rows = rows.filter(r => r.status === f || r.sector === f);
-    if(q) rows = rows.filter(r => matchesText([r.title,r.city,r.job,r.desc,r.sector,r.priority,r.start].join(" "), q));
+    if(q) rows = rows.filter(r => matchesText([r.title,r.city,r.job_title,r.description,r.sector,r.priority,r.start_timing].join(" "), q));
 
-    const list = document.getElementById("list");
+    const list = qs("list");
     if(!rows.length){
       list.innerHTML = `<div class="item"><div><div class="a">Aucune mission</div><div class="b">Clique “Nouvelle mission” pour lancer le rail mission.</div></div><div class="badge neutral">VIDE</div></div>`;
       setDetailGrid([["Sélection","Aucune mission disponible"]]);
       setDetailActions("");
       return;
     }
-    if(!selectedId || !rows.some(x => x.id === selectedId)) selectedId = rows[0].id;
+    if(!state.selectedId || !rows.some(x => x.id === state.selectedId)) state.selectedId = rows[0].id;
     list.innerHTML = rows.map(r => `
-      <div class="item" data-kind="mission" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
+      <div class="item" data-kind="mission" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===state.selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
         <div style="flex:1">
-          <div class="a">${esc(r.title || '—')} • ${esc(r.city || '—')} • ${esc(r.job || '—')}</div>
+          <div class="a">${esc(r.title || '—')} • ${esc(r.city || '—')} • ${esc(r.job_title || '—')}</div>
           <div class="b">
-            Secteur: ${esc(sectorLabel(r.sector))} • Départ: ${esc(cap(r.start))} • Priorité: ${esc(cap(r.priority))}<br>
-            Durée: ${esc(cap(r.duration))} • Besoin: ${esc(r.count || '—')} • Hébergement: ${esc(cap(r.housing))}<br>
-            ${r.desc ? `Desc: ${esc(r.desc)}<br>` : ''}
+            Secteur: ${esc(sectorLabel(r.sector))} • Départ: ${esc(cap(r.start_timing))} • Priorité: ${esc(cap(r.priority))}<br>
+            Durée: ${esc(cap(r.duration_text))} • Besoin: ${esc(r.profiles_needed || '—')} • Hébergement: ${esc(cap(r.housing))}<br>
+            ${r.description ? `Desc: ${esc(r.description)}<br>` : ''}
             Créée: ${esc(formatDate(r.created_at))}
           </div>
           <div class="row" style="margin-top:10px">
@@ -841,20 +704,21 @@
           </div>
         </div>
         <div>${badge(r.status)}</div>
-      </div>`).join("");
+      </div>
+    `).join("");
 
-    const cur = rows.find(x => x.id === selectedId);
+    const cur = rows.find(x => x.id === state.selectedId);
     setDetailGrid([
       ["Secteur", sectorLabel(cur.sector)],
       ["Ville", cur.city],
-      ["Métier recherché", cur.job],
-      ["Nombre", cur.count],
-      ["Démarrage", cap(cur.start)],
-      ["Durée", cap(cur.duration)],
+      ["Métier recherché", cur.job_title],
+      ["Nombre", cur.profiles_needed],
+      ["Démarrage", cap(cur.start_timing)],
+      ["Durée", cap(cur.duration_text)],
       ["Priorité", cap(cur.priority)],
       ["Hébergement", cap(cur.housing)],
       ["Statut", cur.status],
-      ["Description", cur.desc || '—']
+      ["Description", cur.description || '—']
     ]);
     setDetailActions(`
       <button class="tinybtn" data-match-open="${esc(cur.id)}">🤝 Ouvrir le match</button>
@@ -865,18 +729,14 @@
     `);
   }
 
-  function normalizeText(v){
-    return String(v || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  }
-
-  function computeMatch(cand, mission){
+  function computeMatch(candidate, mission){
     let score = 20;
     const reasons = [];
-    if(cand.sector === mission.sector){ score += 30; reasons.push("Même rail métier."); }
+    if(candidate.sector === mission.sector){ score += 30; reasons.push("Même rail métier."); }
     else { score -= 20; reasons.push("Secteur différent."); }
 
-    const jobCand = normalizeText(cand.job);
-    const jobMission = normalizeText(mission.job);
+    const jobCand = normalizeText(candidate.job_title);
+    const jobMission = normalizeText(mission.job_title);
     if(jobCand && jobMission && (jobCand.includes(jobMission) || jobMission.includes(jobCand))){
       score += 25; reasons.push("Métier principal aligné.");
     } else if(jobCand && jobMission){
@@ -887,28 +747,28 @@
       else reasons.push("Métier à vérifier.");
     }
 
-    if(normalizeText(cand.city) === normalizeText(mission.city)){ score += 15; reasons.push("Même ville."); }
+    if(normalizeText(candidate.city) === normalizeText(mission.city)){ score += 15; reasons.push("Même ville."); }
     else reasons.push("Ville à confirmer.");
 
-    const av = cand.availability;
-    if((av === "immediate" && (mission.start === "immediate" || mission.start === "48h")) || av === mission.start){
+    const av = candidate.availability;
+    if((av === "immediate" && (mission.start_timing === "immediate" || mission.start_timing === "48h")) || av === mission.start_timing){
       score += 10; reasons.push("Disponibilité cohérente.");
     } else if(av === "48h" || av === "7d"){
       score += 5; reasons.push("Disponibilité encore exploitable.");
     }
 
-    if((cand.level === "confirme" || cand.level === "chef") && (mission.priority === "haute" || mission.priority === "urgente")){
+    if((candidate.level === "confirme" || candidate.level === "chef") && (mission.priority === "haute" || mission.priority === "urgente")){
       score += 8; reasons.push("Niveau solide pour mission prioritaire.");
     }
 
-    if(mission.housing !== "non" && (cand.housing === mission.housing || cand.housing === "possible" || cand.housing === "mission-longue" || cand.housing === "a-confirmer")){
+    if(mission.housing !== "non" && (candidate.housing === mission.housing || candidate.housing === "possible" || candidate.housing === "mission-longue" || candidate.housing === "a-confirmer")){
       score += 5; reasons.push("Question hébergement potentiellement compatible.");
     }
 
-    if(cand.status === "review" || cand.status === "interview"){
+    if(candidate.status === "review" || candidate.status === "interview"){
       score += 6; reasons.push("Profil déjà avancé côté bureau.");
     }
-    if(cand.status === "placed" || cand.status === "rejected"){
+    if(candidate.status === "placed" || candidate.status === "rejected"){
       score -= 20; reasons.push("Statut candidat moins exploitable pour un nouveau match.");
     }
 
@@ -916,33 +776,47 @@
     return { score, reasons };
   }
 
+  function renderMissionSelector(){
+    const select = qs("matchMission");
+    const missions = [...state.missions];
+    if(!missions.length){
+      select.innerHTML = '<option value="">Aucune mission</option>';
+      state.selectedMissionId = null;
+      return;
+    }
+    if(!state.selectedMissionId || !missions.some(x => x.id === state.selectedMissionId)){
+      state.selectedMissionId = missions[0].id;
+    }
+    select.innerHTML = missions.map(m => `<option value="${esc(m.id)}">${esc(m.title)} • ${esc(m.city || "—")} • ${esc(sectorLabel(m.sector))}</option>`).join("");
+    select.value = state.selectedMissionId;
+  }
+
   function renderMatch(){
     renderMissionSelector();
-    const list = document.getElementById("list");
-    const missions = getMissions();
-    const mission = missions.find(x => x.id === selectedMissionId);
+    const mission = state.missions.find(x => x.id === state.selectedMissionId);
+    const list = qs("list");
     if(!mission){
-      list.innerHTML = `<div class="item"><div><div class="a">Aucune mission pour le match</div><div class="b">Crée une mission puis reviens ici.</div></div><div class="badge neutral">VIDE</div></div>`;
+      list.innerHTML = `<div class="item"><div><div class="a">Aucune mission pour le match</div><div class="b">Crée d’abord une mission puis reviens ici.</div></div><div class="badge neutral">VIDE</div></div>`;
       setDetailGrid([["Sélection","Aucune mission active pour le matching"]]);
       setDetailActions("");
       return;
     }
 
-    const q = document.getElementById("matchSearch").value;
-    const minScore = Number(document.getElementById("matchMinScore").value || "0");
-    const sectorFilter = document.getElementById("matchSectorFilter").value;
+    const q = qs("matchSearch").value;
+    const minScore = Number(qs("matchMinScore").value || "0");
+    const sectorFilter = qs("matchSectorFilter").value;
 
-    let rows = getCands().map(c => ({ cand:c, calc:computeMatch(c, mission) }));
+    let rows = state.candidates.map(c => ({ cand:c, calc:computeMatch(c, mission) }));
     if(sectorFilter !== "all") rows = rows.filter(r => r.cand.sector === sectorFilter);
     rows = rows.filter(r => r.cand.sector === mission.sector);
-    if(q) rows = rows.filter(r => matchesText([r.cand.name,r.cand.job,r.cand.city,r.cand.note].join(" "), q));
-    rows = rows.filter(r => r.calc.score >= minScore).sort((a,b)=> b.calc.score - a.calc.score || (b.cand.created_at||"").localeCompare(a.cand.created_at||""));
+    if(q) rows = rows.filter(r => matchesText([r.cand.full_name,r.cand.job_title,r.cand.city,r.cand.note].join(" "), q));
+    rows = rows.filter(r => r.calc.score >= minScore).sort((a,b)=> b.calc.score - a.calc.score || (String(b.cand.created_at||"")).localeCompare(String(a.cand.created_at||"")));
 
     if(!rows.length){
       list.innerHTML = `<div class="item"><div><div class="a">Aucun candidat compatible</div><div class="b">Baisse le filtre, change la mission, ou ajoute un candidat dans le bureau.</div></div><div class="badge neutral">VIDE</div></div>`;
       setDetailGrid([
         ["Mission", mission.title],
-        ["Métier recherché", mission.job],
+        ["Métier recherché", mission.job_title],
         ["Ville", mission.city],
         ["Secteur", sectorLabel(mission.sector)]
       ]);
@@ -950,14 +824,13 @@
       return;
     }
 
-    if(!selectedId || !rows.some(x => x.cand.id === selectedId)) selectedId = rows[0].cand.id;
-    const matches = getMatches();
+    if(!state.selectedId || !rows.some(x => x.cand.id === state.selectedId)) state.selectedId = rows[0].cand.id;
     list.innerHTML = rows.map(({cand, calc}) => {
-      const existing = matches.find(m => m.mission_id === mission.id && m.cand_id === cand.id);
+      const existing = state.matches.find(m => m.mission_id === mission.id && m.candidate_id === cand.id);
       return `
-        <div class="item" data-kind="matchcand" data-id="${esc(cand.id)}" style="cursor:pointer;${cand.id===selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
+        <div class="item" data-kind="matchcand" data-id="${esc(cand.id)}" style="cursor:pointer;${cand.id===state.selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
           <div style="flex:1">
-            <div class="a">${esc(cand.name || '—')} • ${esc(cand.job || '—')} • ${esc(cand.city || '—')}</div>
+            <div class="a">${esc(cand.full_name || '—')} • ${esc(cand.job_title || '—')} • ${esc(cand.city || '—')}</div>
             <div class="b">
               Secteur: ${esc(sectorLabel(cand.sector))} • Dispo: ${esc(cap(cand.availability))} • Niveau: ${esc(cap(cand.level))}<br>
               ${cand.note ? `Note: ${esc(cand.note)}<br>` : ''}
@@ -976,17 +849,18 @@
             <div style="height:8px"></div>
             ${existing ? badge(existing.status) : badge('proposed')}
           </div>
-        </div>`;
+        </div>
+      `;
     }).join("");
 
-    const cur = rows.find(x => x.cand.id === selectedId);
-    const existing = matches.find(m => m.mission_id === mission.id && m.cand_id === cur.cand.id);
+    const cur = rows.find(x => x.cand.id === state.selectedId);
+    const existing = state.matches.find(m => m.mission_id === mission.id && m.candidate_id === cur.cand.id);
     setDetailGrid([
       ["Mission", mission.title],
-      ["Métier recherché", mission.job],
+      ["Métier recherché", mission.job_title],
       ["Ville mission", mission.city],
-      ["Candidat", cur.cand.name],
-      ["Métier candidat", cur.cand.job],
+      ["Candidat", cur.cand.full_name],
+      ["Métier candidat", cur.cand.job_title],
       ["Ville candidat", cur.cand.city],
       ["Score", cur.calc.score + '/100'],
       ["Statut match", existing ? existing.status : 'proposed'],
@@ -1003,79 +877,70 @@
 
   function render(){
     renderKPIs();
-    if(mode === "offers") return renderOffers();
-    if(mode === "cands") return renderCands();
-    if(mode === "missions") return renderMissions();
+    if(state.mode === "offers") return renderOffers();
+    if(state.mode === "cands") return renderCandidates();
+    if(state.mode === "missions") return renderMissions();
     return renderMatch();
   }
 
-  function updateRow(key, id, patch){
-    const rows = load(key);
-    const i = rows.findIndex(x => x.id === id);
-    if(i < 0) return;
-    rows[i] = { ...rows[i], ...patch, updated_at: nowISO() };
-    save(key, rows);
-    render();
-  }
-  function deleteRow(key, id){
-    save(key, load(key).filter(x => x.id !== id));
-    render();
-  }
+  qs("tabOffers").onclick = () => setMode("offers");
+  qs("tabCands").onclick = () => setMode("cands");
+  qs("tabMissions").onclick = () => setMode("missions");
+  qs("tabMatch").onclick = () => setMode("match");
+  qs("filter").onchange = render;
+  qs("q").oninput = render;
+  qs("matchMission").onchange = (e) => { state.selectedMissionId = e.target.value; state.selectedId = null; render(); };
+  qs("matchMinScore").onchange = render;
+  qs("matchSectorFilter").onchange = render;
+  qs("matchSearch").oninput = render;
 
-  // tabs
-  document.getElementById("tabOffers").onclick = () => setMode("offers");
-  document.getElementById("tabCands").onclick = () => setMode("cands");
-  document.getElementById("tabMissions").onclick = () => setMode("missions");
-  document.getElementById("tabMatch").onclick = () => setMode("match");
-
-  // common filters
-  document.getElementById("filter").onchange = render;
-  document.getElementById("q").oninput = render;
-  document.getElementById("matchMission").onchange = (e) => { selectedMissionId = e.target.value; selectedId = null; render(); };
-  document.getElementById("matchMinScore").onchange = render;
-  document.getElementById("matchSectorFilter").onchange = render;
-  document.getElementById("matchSearch").oninput = render;
-
-  // select from list
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", async (e) => {
     const row = e.target.closest("[data-kind][data-id]");
     if(row){
-      selectedId = row.getAttribute("data-id");
+      state.selectedId = row.getAttribute("data-id");
       render();
       return;
-    }
-
-    const b = e.target.closest("[data-act][data-mode]");
-    if(b){
-      e.stopPropagation();
-      const id = b.getAttribute("data-id");
-      const act = b.getAttribute("data-act");
-      const m = b.getAttribute("data-mode");
-      if(m === "offers"){
-        if(act === "del") return deleteRow(KEY_OFFERS, id);
-        return updateRow(KEY_OFFERS, id, { status: act });
-      }
-      if(m === "cands"){
-        if(act === "del") return deleteRow(KEY_CANDS, id);
-        return updateRow(KEY_CANDS, id, { status: act });
-      }
-      if(m === "missions"){
-        if(act === "del") return deleteRow(KEY_MISSIONS, id);
-        return updateRow(KEY_MISSIONS, id, { status: act });
-      }
     }
 
     const copyBtn = e.target.closest("[data-copy]");
     if(copyBtn){
       const txt = copyBtn.getAttribute("data-copy") || "";
-      navigator.clipboard.writeText(txt).then(()=>alert("Copié ✅"));
+      await navigator.clipboard.writeText(txt);
+      alert("Copié ✅");
+      return;
+    }
+
+    const actBtn = e.target.closest("[data-act][data-mode]");
+    if(actBtn){
+      const id = actBtn.getAttribute("data-id");
+      const act = actBtn.getAttribute("data-act");
+      const mode = actBtn.getAttribute("data-mode");
+      try{
+        setBusy(true);
+        if(mode === "offers"){
+          if(act === "del") await deleteRow(TABLES.offers, id);
+          else await updateRow(TABLES.offers, id, { status: act });
+        } else if(mode === "cands"){
+          if(act === "del") await deleteRow(TABLES.candidates, id);
+          else await updateRow(TABLES.candidates, id, { status: act });
+        } else if(mode === "missions"){
+          if(act === "del") await deleteRow(TABLES.missions, id);
+          else await updateRow(TABLES.missions, id, { status: act });
+        }
+        await refreshAll();
+      } catch(err){
+        console.error(err);
+        alert("Erreur Supabase: " + (err.message || err));
+      } finally {
+        setBusy(false);
+      }
       return;
     }
 
     const matchOpen = e.target.closest("[data-match-open]");
     if(matchOpen){
-      selectedMissionId = matchOpen.getAttribute("data-match-open");
-      selectedId = null;
+      state.selectedMissionId = matchOpen.getAttribute("data-match-open");
+      state.selectedId = null;
       setMode("match");
       return;
     }
@@ -1083,43 +948,50 @@
     const validateMatch = e.target.closest("[data-validate-match]");
     if(validateMatch){
       const candId = validateMatch.getAttribute("data-validate-match");
-      const mission = getMissions().find(x => x.id === selectedMissionId);
-      const cand = getCands().find(x => x.id === candId);
+      const mission = state.missions.find(x => x.id === state.selectedMissionId);
+      const cand = state.candidates.find(x => x.id === candId);
       if(!mission || !cand) return;
       const calc = computeMatch(cand, mission);
-      const rows = getMatches();
-      const i = rows.findIndex(x => x.mission_id === mission.id && x.cand_id === cand.id);
-      const pack = {
-        id: i >= 0 ? rows[i].id : uid(),
-        slug,
-        owner_id: s.owner_id || null,
+      const existing = state.matches.find(x => x.mission_id === mission.id && x.candidate_id === cand.id);
+      const payload = {
+        workspace_slug: state.workspaceSlug,
+        owner_id: state.ownerId,
         mission_id: mission.id,
-        cand_id: cand.id,
+        candidate_id: cand.id,
         mission_title: mission.title,
-        cand_name: cand.name,
+        candidate_name: cand.full_name,
         score: calc.score,
         status: "validated",
-        note: calc.reasons.join(" • "),
-        created_at: i >= 0 ? rows[i].created_at : nowISO(),
-        updated_at: nowISO()
+        note: calc.reasons.join(" • ")
       };
-      if(i >= 0) rows[i] = pack; else rows.unshift(pack);
-      save(KEY_MATCHES, rows);
-      render();
-      alert("Match validé ✅");
+      try{
+        setBusy(true);
+        if(existing){
+          await updateRow(TABLES.matches, existing.id, payload);
+        } else {
+          await insertRow(TABLES.matches, payload);
+        }
+        await refreshAll();
+        alert("Match validé ✅");
+      } catch(err){
+        console.error(err);
+        alert("Erreur Supabase: " + (err.message || err));
+      } finally {
+        setBusy(false);
+      }
       return;
     }
 
     const waMatch = e.target.closest("[data-wa-match]");
     if(waMatch){
       const candId = waMatch.getAttribute("data-wa-match");
-      const mission = getMissions().find(x => x.id === selectedMissionId);
-      const cand = getCands().find(x => x.id === candId);
+      const mission = state.missions.find(x => x.id === state.selectedMissionId);
+      const cand = state.candidates.find(x => x.id === candId);
       if(!mission || !cand) return;
       const calc = computeMatch(cand, mission);
       const txt = encodeURIComponent(
-        `Bonjour ${cand.name || ''},\n\nDIGIY JOBS PRO vous contacte pour la mission “${mission.title || ''}”.\n` +
-        `Métier recherché: ${mission.job || ''}\nVille: ${mission.city || ''}\nCompatibilité observée: ${calc.score}/100\n\n` +
+        `Bonjour ${cand.full_name || ''},\n\nDIGIY JOBS PRO vous contacte pour la mission “${mission.title || ''}”.\n` +
+        `Métier recherché: ${mission.job_title || ''}\nVille: ${mission.city || ''}\nCompatibilité observée: ${calc.score}/100\n\n` +
         `Si vous êtes disponible, on peut avancer sur la mise en relation.`
       );
       location.href = `https://wa.me/${String(cand.phone || '').replace(/\D/g,'')}?text=${txt}`;
@@ -1129,173 +1001,184 @@
     const copyCand = e.target.closest("[data-copy-cand]");
     if(copyCand){
       const candId = copyCand.getAttribute("data-copy-cand");
-      const cand = getCands().find(x => x.id === candId);
-      if(cand?.phone){ navigator.clipboard.writeText(cand.phone).then(()=>alert("Téléphone copié ✅")); }
+      const cand = state.candidates.find(x => x.id === candId);
+      if(cand?.phone){
+        await navigator.clipboard.writeText(cand.phone);
+        alert("Téléphone copié ✅");
+      }
       return;
     }
 
     const copyMission = e.target.closest("[data-copy-mission]");
     if(copyMission){
       const id = copyMission.getAttribute("data-copy-mission");
-      const mission = getMissions().find(x => x.id === id);
+      const mission = state.missions.find(x => x.id === id);
       if(mission){
-        const txt = `${mission.title} • ${mission.job} • ${mission.city} • ${mission.start}`;
-        navigator.clipboard.writeText(txt).then(()=>alert("Mission copiée ✅"));
+        const txt = `${mission.title} • ${mission.job_title} • ${mission.city} • ${mission.start_timing}`;
+        await navigator.clipboard.writeText(txt);
+        alert("Mission copiée ✅");
       }
-      return;
     }
   });
 
-  // open modals
-  document.getElementById("btnNewOffer").onclick = () => {
-    document.getElementById("mSlugOffer").textContent = slug || "—";
-    modalOpen("mOffer");
-    setTimeout(() => document.getElementById("o_title").focus(), 120);
-  };
-  document.getElementById("btnNewCand").onclick = () => {
-    document.getElementById("mSlugCand").textContent = slug || "—";
-    modalOpen("mCand");
-    setTimeout(() => document.getElementById("c_name").focus(), 120);
-  };
-  document.getElementById("btnNewMission").onclick = () => {
-    document.getElementById("mSlugMission").textContent = slug || "—";
-    modalOpen("mMission");
-    setTimeout(() => document.getElementById("m_title").focus(), 120);
-  };
+  function modalOpen(id){ qs(id).style.display = "flex"; }
+  function modalClose(id){ qs(id).style.display = "none"; }
 
-  // close modals
+  qs("btnNewOffer").onclick = () => { qs("mSlugOffer").textContent = state.workspaceSlug || "—"; modalOpen("mOffer"); setTimeout(() => qs("o_title").focus(), 120); };
+  qs("btnNewCand").onclick = () => { qs("mSlugCand").textContent = state.workspaceSlug || "—"; modalOpen("mCand"); setTimeout(() => qs("c_name").focus(), 120); };
+  qs("btnNewMission").onclick = () => { qs("mSlugMission").textContent = state.workspaceSlug || "—"; modalOpen("mMission"); setTimeout(() => qs("m_title").focus(), 120); };
+
   [["mOffer","o_cancel","o_close"],["mCand","c_cancel","c_close"],["mMission","m_cancel","m_close"]].forEach(([m,a,b]) => {
-    document.getElementById(a).onclick = () => modalClose(m);
-    document.getElementById(b).onclick = () => modalClose(m);
-    document.getElementById(m).addEventListener("click", (e) => { if(e.target.id === m) modalClose(m); });
+    qs(a).onclick = () => modalClose(m);
+    qs(b).onclick = () => modalClose(m);
+    qs(m).addEventListener("click", (e) => { if(e.target.id === m) modalClose(m); });
   });
 
-  // save offer
-  document.getElementById("o_save").onclick = () => {
-    const row = {
-      id: uid(), slug, owner_id: s.owner_id || null,
-      title: document.getElementById("o_title").value.trim(),
-      sector: document.getElementById("o_sector").value,
-      city: document.getElementById("o_city").value.trim(),
-      type: document.getElementById("o_type").value,
-      pay: document.getElementById("o_pay").value.trim(),
-      status: document.getElementById("o_status").value,
-      desc: document.getElementById("o_desc").value.trim(),
-      created_at: nowISO()
+  qs("o_save").onclick = async () => {
+    const payload = {
+      workspace_slug: state.workspaceSlug,
+      owner_id: state.ownerId,
+      title: qs("o_title").value.trim(),
+      sector: qs("o_sector").value,
+      city: qs("o_city").value.trim(),
+      contract_type: qs("o_type").value,
+      pay: qs("o_pay").value.trim(),
+      status: qs("o_status").value,
+      description: qs("o_desc").value.trim()
     };
-    const rows = getOffers();
-    rows.unshift(row);
-    save(KEY_OFFERS, rows);
-    ["o_title","o_city","o_pay","o_desc"].forEach(id => document.getElementById(id).value = "");
-    document.getElementById("o_sector").value = "build";
-    document.getElementById("o_type").value = "cdi";
-    document.getElementById("o_status").value = "active";
-    modalClose("mOffer");
-    setMode("offers");
+    if(!payload.title){ alert("Mets un titre d’offre."); return; }
+    try{
+      setBusy(true);
+      await insertRow(TABLES.offers, payload);
+      ["o_title","o_city","o_pay","o_desc"].forEach(id => qs(id).value = "");
+      qs("o_sector").value = "build";
+      qs("o_type").value = "cdi";
+      qs("o_status").value = "active";
+      modalClose("mOffer");
+      await refreshAll();
+      setMode("offers");
+    } catch(err){
+      console.error(err);
+      alert("Erreur Supabase: " + (err.message || err));
+    } finally {
+      setBusy(false);
+    }
   };
 
-  // save cand
-  document.getElementById("c_save").onclick = () => {
-    const row = {
-      id: uid(), slug, owner_id: s.owner_id || null,
+  qs("c_save").onclick = async () => {
+    const payload = {
+      workspace_slug: state.workspaceSlug,
+      owner_id: state.ownerId,
+      full_name: qs("c_name").value.trim(),
+      phone: qs("c_phone").value.trim(),
+      job_title: qs("c_job").value.trim(),
+      sector: qs("c_sector").value,
+      city: qs("c_city").value.trim(),
+      availability: qs("c_availability").value,
+      level: qs("c_level").value,
+      housing: qs("c_housing").value,
       status: "new",
-      name: document.getElementById("c_name").value.trim(),
-      phone: document.getElementById("c_phone").value.trim(),
-      job: document.getElementById("c_job").value.trim(),
-      sector: document.getElementById("c_sector").value,
-      city: document.getElementById("c_city").value.trim(),
-      availability: document.getElementById("c_availability").value,
-      level: document.getElementById("c_level").value,
-      housing: document.getElementById("c_housing").value,
-      note: document.getElementById("c_note").value.trim(),
-      created_at: nowISO()
+      note: qs("c_note").value.trim()
     };
-    const rows = getCands();
-    rows.unshift(row);
-    save(KEY_CANDS, rows);
-    ["c_name","c_phone","c_job","c_city","c_note"].forEach(id => document.getElementById(id).value = "");
-    document.getElementById("c_sector").value = "build";
-    document.getElementById("c_availability").value = "immediate";
-    document.getElementById("c_level").value = "debutant";
-    document.getElementById("c_housing").value = "non";
-    modalClose("mCand");
-    setMode("cands");
+    if(!payload.full_name){ alert("Mets un nom candidat."); return; }
+    try{
+      setBusy(true);
+      await insertRow(TABLES.candidates, payload);
+      ["c_name","c_phone","c_job","c_city","c_note"].forEach(id => qs(id).value = "");
+      qs("c_sector").value = "build";
+      qs("c_availability").value = "immediate";
+      qs("c_level").value = "debutant";
+      qs("c_housing").value = "non";
+      modalClose("mCand");
+      await refreshAll();
+      setMode("cands");
+    } catch(err){
+      console.error(err);
+      alert("Erreur Supabase: " + (err.message || err));
+    } finally {
+      setBusy(false);
+    }
   };
 
-  // save mission
-  document.getElementById("m_save").onclick = () => {
-    const row = {
-      id: uid(), slug, owner_id: s.owner_id || null,
-      status: document.getElementById("m_status").value,
-      title: document.getElementById("m_title").value.trim(),
-      sector: document.getElementById("m_sector").value,
-      city: document.getElementById("m_city").value.trim(),
-      job: document.getElementById("m_job").value.trim(),
-      count: document.getElementById("m_count").value,
-      start: document.getElementById("m_start").value,
-      duration: document.getElementById("m_duration").value,
-      priority: document.getElementById("m_priority").value,
-      housing: document.getElementById("m_housing").value,
-      desc: document.getElementById("m_desc").value.trim(),
-      created_at: nowISO()
+  qs("m_save").onclick = async () => {
+    const payload = {
+      workspace_slug: state.workspaceSlug,
+      owner_id: state.ownerId,
+      title: qs("m_title").value.trim(),
+      sector: qs("m_sector").value,
+      city: qs("m_city").value.trim(),
+      job_title: qs("m_job").value.trim(),
+      profiles_needed: qs("m_count").value,
+      start_timing: qs("m_start").value,
+      duration_text: qs("m_duration").value,
+      priority: qs("m_priority").value,
+      housing: qs("m_housing").value,
+      status: qs("m_status").value,
+      description: qs("m_desc").value.trim()
     };
-    const rows = getMissions();
-    rows.unshift(row);
-    save(KEY_MISSIONS, rows);
-    ["m_title","m_city","m_job","m_desc"].forEach(id => document.getElementById(id).value = "");
-    document.getElementById("m_sector").value = "build";
-    document.getElementById("m_count").value = "1";
-    document.getElementById("m_start").value = "immediate";
-    document.getElementById("m_duration").value = "ponctuelle";
-    document.getElementById("m_priority").value = "normale";
-    document.getElementById("m_housing").value = "non";
-    document.getElementById("m_status").value = "open";
-    modalClose("mMission");
-    setMode("missions");
+    if(!payload.title){ alert("Mets un titre de mission."); return; }
+    try{
+      setBusy(true);
+      await insertRow(TABLES.missions, payload);
+      ["m_title","m_city","m_job","m_desc"].forEach(id => qs(id).value = "");
+      qs("m_sector").value = "build";
+      qs("m_count").value = "1";
+      qs("m_start").value = "immediate";
+      qs("m_duration").value = "ponctuelle";
+      qs("m_priority").value = "normale";
+      qs("m_housing").value = "non";
+      qs("m_status").value = "open";
+      modalClose("mMission");
+      await refreshAll();
+      setMode("missions");
+    } catch(err){
+      console.error(err);
+      alert("Erreur Supabase: " + (err.message || err));
+    } finally {
+      setBusy(false);
+    }
   };
 
-  // pulse/help/logout/tools
-  document.getElementById("btnPulse").onclick = () => alert("🔔 Inbox: V3 dossier + mission + notifications synchronisées.");
-  document.getElementById("btnHelp").onclick = () => {
+  qs("btnPulse").onclick = () => alert("🔔 Inbox: prochaine étape après le rail Supabase réel.");
+  qs("btnHelp").onclick = () => {
     const num = "+221771342889";
-    const txt = encodeURIComponent("DIGIY Support — JOBS PRO V2. Slug: " + (slug || "") + " • Besoin d’aide.");
-    location.href = "https://wa.me/" + num.replace("+","") + "?text=" + txt;
+    const txt = encodeURIComponent("DIGIY Support — JOBS PRO V3 Supabase. Slug: " + (state.workspaceSlug || "") + " • Besoin d’aide.");
+    location.href = "https://wa.me/" + num.replace("+", "") + "?text=" + txt;
   };
-  document.getElementById("btnLogout").onclick = () => {
+  qs("btnLogout").onclick = () => {
     localStorage.removeItem("DIGIY_ACCESS");
-    location.href = "./pin.html" + (slug ? ("?slug=" + encodeURIComponent(slug)) : "");
+    location.href = "./pin.html" + (state.workspaceSlug ? ("?slug=" + encodeURIComponent(state.workspaceSlug)) : "");
   };
-
-  document.getElementById("btnExport").onclick = () => {
-    const pack = {
-      offers: getOffers(),
-      candidates: getCands(),
-      missions: getMissions(),
-      matches: getMatches()
-    };
+  qs("btnExport").onclick = () => {
+    const pack = { offers: state.offers, candidates: state.candidates, missions: state.missions, matches: state.matches };
     const blob = new Blob([JSON.stringify(pack, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "jobs-v2-" + (slug || "pro") + ".json";
+    a.download = "jobs-v3-supabase-" + (state.workspaceSlug || "pro") + ".json";
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 800);
   };
+  qs("btnReload").onclick = () => refreshAll().catch(err => { console.error(err); alert("Erreur rechargement: " + (err.message || err)); });
 
-  document.getElementById("btnReset").onclick = () => {
-    if(confirm("Reset démo pour ce slug ? Offres, candidats, missions et matches seront effacés.")){
-      localStorage.removeItem(KEY_OFFERS);
-      localStorage.removeItem(KEY_CANDS);
-      localStorage.removeItem(KEY_MISSIONS);
-      localStorage.removeItem(KEY_MATCHES);
-      selectedId = null;
-      selectedMissionId = null;
-      render();
+  async function main(){
+    try{
+      setBusy(true);
+      await initSupabase();
+      await initGuard();
+      fillFilterForMode();
+      await refreshAll();
+      setMode("offers");
+    } catch(err){
+      console.error(err);
+      setStatus("erreur");
+      alert("JOBS PRO Supabase — " + (err.message || err));
+    } finally {
+      setBusy(false);
     }
-  };
+  }
 
-  // init
-  setStatus("session OK");
-  setMode("offers");
+  main();
+})();
 </script>
 </body>
 </html>
