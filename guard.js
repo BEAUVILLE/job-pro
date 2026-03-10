@@ -1,4 +1,4 @@
-// guard-pro.js — DIGIY PRO access gate (slug-first) -> commencer-a-payer
+// guard.js — DIGIY JOBS PRO soft guard (slug-first, cockpit-safe)
 (() => {
   "use strict";
 
@@ -6,13 +6,13 @@
   const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
-  // ✅ À CHANGER PAR MODULE
-  const MODULE_CODE = "JOB"; // ex: DRIVER, LOC, RESTO, POS, RESA, BUILD, EXPLORE, FRET_CHAUF, FRET_CLIENT
+  // ✅ IMPORTANT : module réel backbone
+  const MODULE_CODE = "JOBS";
 
   const PAY_URL = "https://commencer-a-payer.digiylyfe.com/";
 
   const qs = new URLSearchParams(location.search);
-  const slugQ  = (qs.get("slug")  || "").trim();
+  const slugQ = (qs.get("slug") || "").trim();
   const phoneQ = (qs.get("phone") || "").trim();
 
   function normPhone(p) {
@@ -41,15 +41,18 @@
       body: JSON.stringify(params),
     });
 
-    const j = await r.json().catch(() => null);
-    return { ok: r.ok, status: r.status, data: j };
+    let data = null;
+    try {
+      data = await r.json();
+    } catch (_) {}
+
+    return { ok: r.ok, status: r.status, data };
   }
 
   async function resolvePhoneFromSlug(slug) {
     const s = normSlug(slug);
     if (!s) return "";
 
-    // ✅ view publique minimaliste: phone + module + slug
     const url =
       `${SUPABASE_URL}/rest/v1/digiy_subscriptions_public` +
       `?select=phone,slug,module&slug=eq.${encodeURIComponent(s)}&limit=1`;
@@ -61,12 +64,16 @@
       },
     });
 
-    const arr = await r.json().catch(() => []);
+    let arr = [];
+    try {
+      arr = await r.json();
+    } catch (_) {}
+
     if (!r.ok || !Array.isArray(arr) || !arr[0]?.phone) return "";
-    return String(arr[0].phone);
+    return String(arr[0].phone || "");
   }
 
-  function goPay({ phone, slug }) {
+  function buildPayUrl({ phone, slug }) {
     const u = new URL(PAY_URL);
     u.searchParams.set("module", MODULE_CODE);
 
@@ -76,36 +83,82 @@
     if (p) u.searchParams.set("phone", p);
     if (s) u.searchParams.set("slug", s);
 
-    // ✅ return = page actuelle
     u.searchParams.set("return", location.href);
-
-    location.replace(u.toString());
+    return u.toString();
   }
 
-  async function go() {
-    const slug = normSlug(slugQ);
+  function goPay(session = {}) {
+    location.href = buildPayUrl(session);
+  }
+
+  const state = {
+    module: MODULE_CODE,
+    slug: normSlug(slugQ),
+    phone: normPhone(phoneQ),
+    access: false,
+    resolved_from_slug: false,
+    ready: false,
+    error: null,
+    pay_url: "",
+  };
+
+  async function check() {
+    let slug = normSlug(slugQ);
     let phone = normPhone(phoneQ);
 
-    // slug-first : si pas de phone, on résout via slug
     if (!phone && slug) {
-      phone = normPhone(await resolvePhoneFromSlug(slug));
+      const resolved = await resolvePhoneFromSlug(slug);
+      phone = normPhone(resolved);
+      if (phone) state.resolved_from_slug = true;
     }
 
-    // rien -> commencer-a-payer direct
-    if (!phone) return goPay({ phone: "", slug });
+    state.slug = slug;
+    state.phone = phone;
+    state.pay_url = buildPayUrl({ phone, slug });
 
-    // check access (backend truth)
-    const res = await rpc("digiy_has_access", { p_phone: phone, p_module: MODULE_CODE });
+    // pas de phone => pas d’accès, mais pas de redirection auto
+    if (!phone) {
+      state.access = false;
+      state.ready = true;
+      return { ...state };
+    }
 
-    // digiy_has_access renvoie boolean true/false
-    if (res.ok && res.data === true) return; // ✅ accès OK
+    const res = await rpc("digiy_has_access", {
+      p_phone: phone,
+      p_module: MODULE_CODE,
+    });
 
-    // pas accès -> payer
-    return goPay({ phone, slug });
+    state.access = res.ok && res.data === true;
+    state.ready = true;
+
+    if (!res.ok) {
+      state.error = `digiy_has_access HTTP ${res.status}`;
+    }
+
+    return { ...state };
   }
 
-  go().catch(() => {
-    // en cas de réseau down : on renvoie vers payer (safe)
-    goPay({ phone: phoneQ, slug: slugQ });
-  });
+  const DIGIY_GUARD = {
+    state,
+    async ready() {
+      if (state.ready) return { ...state };
+      return check();
+    },
+    async refresh() {
+      state.ready = false;
+      state.error = null;
+      return check();
+    },
+    getSession() {
+      return { ...state };
+    },
+    goPay() {
+      goPay(state);
+    },
+    buildPayUrl() {
+      return buildPayUrl(state);
+    },
+  };
+
+  window.DIGIY_GUARD = DIGIY_GUARD;
 })();
