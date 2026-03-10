@@ -1,1 +1,1024 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DIGIY JOBS PRO — Match candidat ↔ mission</title>
+  <meta name="description" content="DIGIY JOBS PRO — matching intelligent entre une fiche mission et les candidats disponibles, avec score, raisons de compatibilité, notes bureau et mise en relation WhatsApp." />
+  <meta name="theme-color" content="#0A1128" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --dark:#0A1128;
+      --dark-2:#142041;
+      --blue:#0ea5e9;
+      --blue-2:#38bdf8;
+      --green:#10b981;
+      --gold:#d4a84f;
+      --amber:#f59e0b;
+      --red:#ef4444;
+      --ink:#0f172a;
+      --muted:#475569;
+      --bg:#edf3f8;
+      --sand:#f8f0e3;
+      --line:#e2e8f0;
+      --card:#ffffffd9;
+      --shadow:0 16px 42px rgba(15,23,42,.10);
+      --radius:22px;
+      --radius-sm:16px;
+      --max:1400px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(14,165,233,.08), transparent 30%),
+        radial-gradient(circle at right 12%, rgba(16,185,129,.06), transparent 24%),
+        linear-gradient(180deg,var(--bg),var(--sand));
+    }
+    a{text-decoration:none;color:inherit}
+    button,input,select,textarea{font:inherit}
+    .wrap{width:min(calc(100% - 28px), var(--max));margin:0 auto}
 
+    .topbar{
+      position:sticky;top:0;z-index:40;
+      backdrop-filter:blur(10px);
+      background:rgba(237,243,248,.80);
+      border-bottom:1px solid rgba(226,232,240,.92);
+    }
+    .topbar-inner{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.02em}
+    .brand-mark{
+      width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;
+      background:linear-gradient(135deg,var(--dark),#20305e);box-shadow:var(--shadow);font-size:14px;
+    }
+    .brand small{display:block;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.08em}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .top-actions button,.top-actions a{
+      border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;font-weight:900;cursor:pointer;
+    }
+    .top-actions .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+
+    .hero{padding:24px 0 14px}
+    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px;align-items:stretch}
+    .hero-card,.panel,.stat,.mission-card,.filters,.list-card,.detail-card,.mini,.field,.match-box,.foot,.empty-card{
+      border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
+    }
+    .hero-card{
+      padding:26px;position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at top right, rgba(212,168,79,.16), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.90));
+    }
+    .hero-card::after{
+      content:"";position:absolute;right:-45px;bottom:-45px;width:170px;height:170px;border-radius:50%;
+      border:26px solid rgba(10,17,40,.05);
+    }
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;border:1px solid var(--line);
+      background:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
+    }
+    h1{margin:16px 0 12px;font-size:clamp(34px,4vw,58px);line-height:.98;letter-spacing:-.04em;max-width:12ch}
+    .lead{margin:0;max-width:66ch;color:#334155;line-height:1.7;font-size:16px}
+    .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .tag{padding:10px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--muted)}
+
+    .panel{
+      padding:18px;background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));color:#fff;border-color:#27365a;
+      display:flex;flex-direction:column;gap:14px;
+    }
+    .panel h2{margin:0;font-size:20px;letter-spacing:-.02em}
+    .panel p{margin:0;color:#dbe6f6;line-height:1.65}
+    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .mini{padding:14px;border-radius:18px;border-color:#2d3c60;background:rgba(255,255,255,.05);box-shadow:none}
+    .mini strong{display:block;font-size:14px;margin-bottom:6px}
+    .mini span{display:block;color:#cbd5e1;font-size:13px;line-height:1.5}
+    .signal{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:rgba(212,168,79,.13);border:1px solid rgba(212,168,79,.22);color:#ffe7af;font-size:13px;font-weight:800}
+
+    .stats{padding:8px 0 14px}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .stat{padding:18px}
+    .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
+    .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
+
+    .mission-section{padding-bottom:16px}
+    .mission-card{padding:18px}
+    .section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .section-head h2,.list-head h3,.detail-head h3{margin:0;font-size:24px;letter-spacing:-.02em}
+    .section-head p,.list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
+    .mission-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .field{padding:13px;border-radius:16px;background:#fff}
+    .field small{display:block;color:#64748b;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+    .field strong{display:block;font-size:14px;line-height:1.55;word-break:break-word}
+    .full{grid-column:1 / -1}
+
+    .filters{padding:16px;margin-bottom:16px}
+    .filter-grid{display:grid;grid-template-columns:1.2fr repeat(4,.8fr);gap:12px}
+    .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .filter-actions button{
+      border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
+    }
+    input,select,textarea{
+      width:100%;padding:12px 12px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);outline:none;
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
+    textarea{min-height:120px;resize:vertical}
+
+    .workspace{display:grid;grid-template-columns:.88fr 1.12fr;gap:18px;padding-bottom:36px}
+    .left-col,.right-col{display:grid;gap:16px;align-content:start}
+    .list-card,.detail-card{padding:16px}
+    .list{
+      display:grid;gap:12px;max-height:950px;overflow:auto;padding-right:2px;
+    }
+    .candidate{
+      border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
+    }
+    .candidate:hover{transform:translateY(-1px)}
+    .candidate.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
+    .candidate-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .candidate h4{margin:0;font-size:18px;letter-spacing:-.02em}
+    .sub{margin:4px 0 0;color:#475569;font-weight:700;font-size:14px;line-height:1.55}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:900;background:#f8fafc}
+    .chip.score-high{color:#047857;background:rgba(16,185,129,.14)}
+    .chip.score-mid{color:#b45309;background:rgba(245,158,11,.14)}
+    .chip.score-low{color:#b91c1c;background:rgba(239,68,68,.10)}
+    .chip.secteur-build{color:#7c5517;background:rgba(212,168,79,.12)}
+    .chip.secteur-hotel{color:#0f766e;background:rgba(16,185,129,.12)}
+    .candidate-note{margin-top:12px;color:var(--muted);font-size:13px;line-height:1.6}
+    .score-pill{
+      min-width:66px;height:66px;border-radius:18px;display:grid;place-items:center;font-weight:900;font-size:22px;color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-2));box-shadow:0 12px 24px rgba(14,165,233,.20);
+    }
+
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .detail-actions,.button-row{display:flex;gap:10px;flex-wrap:wrap}
+    .detail-actions button,.detail-actions a,.button-row button,.button-row a{
+      border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;
+    }
+    .detail-actions .primary,.button-row .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+    .detail-actions .green,.button-row .green{background:var(--green);color:#fff;border-color:transparent}
+
+    .match-box{padding:16px;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .match-box h4{margin:0 0 8px;font-size:20px;letter-spacing:-.02em}
+    .match-box p{margin:0;color:var(--muted);line-height:1.65}
+    .reason-list{display:grid;gap:10px;margin-top:12px}
+    .reason-item{padding:12px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:#334155;line-height:1.55}
+
+    .notes-wrap{display:grid;gap:12px}
+    .empty-card{padding:24px;text-align:center;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .empty-card h4{margin:0 0 8px;font-size:22px}
+    .empty-card p{margin:0;color:var(--muted);line-height:1.65;max-width:52ch;margin-inline:auto}
+
+    footer{padding:0 0 30px}
+    .foot{padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+    .foot p{margin:0;color:var(--muted);line-height:1.6}
+    .foot-links{display:flex;gap:10px;flex-wrap:wrap}
+    .foot-links button,.foot-links a{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
+
+    @media (max-width:1200px){
+      .hero-grid,.workspace,.stats-grid,.filter-grid,.mission-grid{grid-template-columns:1fr 1fr}
+      .filter-grid > *:first-child{grid-column:1 / -1}
+      .mission-grid .full{grid-column:1 / -1}
+    }
+    @media (max-width:860px){
+      .hero-grid,.workspace,.stats-grid,.filter-grid,.mission-grid,.detail-grid,.mini-grid{grid-template-columns:1fr}
+      h1{max-width:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top" aria-label="Retour en haut">
+        <span class="brand-mark">JM</span>
+        <span>
+          DIGIY JOBS PRO
+          <small>MATCH CANDIDAT ↔ MISSION</small>
+        </span>
+      </a>
+      <div class="top-actions">
+        <button id="btnReloadMission">Recharger la mission</button>
+        <button id="btnImportPublic">Importer dernier dossier public</button>
+        <a class="primary" href="./fiche-mission.html">Voir la fiche mission</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <article class="hero-card">
+          <span class="eyebrow">Rail de jonction DIGIY JOBS</span>
+          <h1>Le bon besoin face au bon profil.</h1>
+          <p class="lead">
+            Cette page lit la mission active, récupère les candidats du bureau, les trie par compatibilité,
+            puis t’aide à valider un vrai match. On évite le hasard. On pose des raisons claires, un score lisible,
+            des notes bureau et une mise en relation propre.
+          </p>
+          <div class="hero-tags">
+            <span class="tag">Score de compatibilité</span>
+            <span class="tag">Raisons visibles</span>
+            <span class="tag">WhatsApp prêt</span>
+            <span class="tag">Validation bureau</span>
+          </div>
+        </article>
+
+        <aside class="panel">
+          <span class="signal">Version légère déjà exploitable sans backend</span>
+          <h2>Ce que la page fait déjà</h2>
+          <p>
+            Elle récupère la fiche mission courante, lit les candidats du bureau, filtre le bon secteur,
+            calcule un score, explique le match, garde les validations localement et prépare le message de liaison.
+          </p>
+          <div class="mini-grid">
+            <div class="mini"><strong>Sources</strong><span>Mission PRO + bureau de tri + dernier dossier public en secours.</span></div>
+            <div class="mini"><strong>Tri</strong><span>Secteur, zone, disponibilité, niveau, métier et détails spécifiques.</span></div>
+            <div class="mini"><strong>Sortie</strong><span>Top candidats classés, fiche détail, notes et validation de match.</span></div>
+            <div class="mini"><strong>Suite</strong><span>Prêt à être branché plus tard sur Supabase ou un vrai cockpit central.</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="wrap stats-grid">
+        <article class="stat"><strong id="statCandidates">0</strong><span>candidats compatibles affichés</span></article>
+        <article class="stat"><strong id="statStrong">0</strong><span>matchs forts (80+)</span></article>
+        <article class="stat"><strong id="statMedium">0</strong><span>matchs à regarder (60+)</span></article>
+        <article class="stat"><strong id="statValidated">0</strong><span>matchs validés</span></article>
+      </div>
+    </section>
+
+    <section class="mission-section">
+      <div class="wrap">
+        <article class="mission-card" id="missionCard">
+          <div class="section-head">
+            <div>
+              <h2>Mission active</h2>
+              <p>Le matching se base sur cette mission. Recharge la fiche mission si tu viens de l’éditer.</p>
+            </div>
+          </div>
+          <div class="mission-grid" id="missionGrid"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="filters">
+        <div class="section-head" style="margin-bottom:14px">
+          <div>
+            <h2>Filtres du matching</h2>
+            <p>Tu peux serrer la recherche ou laisser le score faire le premier tri.</p>
+          </div>
+        </div>
+        <div class="filter-grid">
+          <input id="searchInput" type="search" placeholder="Rechercher nom, métier, spécialité, note..." />
+          <select id="filterZoneMode">
+            <option value="all">Toutes zones</option>
+            <option value="same">Même zone mission</option>
+            <option value="near">Même zone + proches</option>
+          </select>
+          <select id="filterMinScore">
+            <option value="0">Tous scores</option>
+            <option value="40">40+</option>
+            <option value="60">60+</option>
+            <option value="80">80+</option>
+          </select>
+          <select id="filterStatus">
+            <option value="all">Tous statuts bureau</option>
+            <option value="new">Nouveau</option>
+            <option value="recall">À rappeler</option>
+            <option value="qualified">Qualifié</option>
+            <option value="match">Déjà en relation</option>
+          </select>
+          <select id="filterAvailability">
+            <option value="all">Toutes dispos</option>
+            <option value="Immédiate">Immédiate</option>
+            <option value="Sous 48h">Sous 48h</option>
+            <option value="Sous 7 jours">Sous 7 jours</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button id="btnClearFilters">Effacer les filtres</button>
+          <button id="btnExportMatches">Exporter les matchs</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap workspace">
+      <div class="left-col">
+        <article class="list-card">
+          <div class="list-head">
+            <div>
+              <h3>Candidats classés</h3>
+              <p>Le haut de liste montre les profils les plus proches de la mission active.</p>
+            </div>
+          </div>
+          <div class="list" id="candidateList"></div>
+        </article>
+      </div>
+
+      <div class="right-col">
+        <article class="detail-card">
+          <div class="empty-card" id="emptyState">
+            <h4>Choisis un candidat</h4>
+            <p>
+              La mission est prête. Sélectionne un profil à gauche pour voir la compatibilité,
+              les raisons du score, les notes et la mise en relation.
+            </p>
+          </div>
+
+          <div id="detailContent" hidden>
+            <div class="detail-head">
+              <div>
+                <h3 id="detailName">—</h3>
+                <p id="detailSubtitle">—</p>
+              </div>
+              <div class="chips" id="detailChips"></div>
+            </div>
+
+            <div class="match-box">
+              <h4>Lecture du match</h4>
+              <p id="matchSummary">—</p>
+              <div class="reason-list" id="reasonList"></div>
+            </div>
+
+            <div class="detail-grid" id="detailGrid" style="margin-top:16px"></div>
+
+            <div class="match-box" style="margin-top:16px">
+              <h4>Notes bureau pour ce match</h4>
+              <p>Note le vrai retour : sérieux, cohérence, réactivité, point à vérifier, étape suivante.</p>
+              <div class="notes-wrap" style="margin-top:12px">
+                <textarea id="matchNotes" placeholder="Ex. Très bon profil pour démarrage rapide. Vérifier mobilité exacte. Possible mise en relation aujourd’hui."></textarea>
+                <div class="button-row">
+                  <button class="primary" id="btnSaveMatchNotes">Enregistrer les notes</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-actions" style="margin-top:16px">
+              <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp candidat</a>
+              <button id="btnCopyCandidateLink">📋 Copier lien candidat</button>
+              <button id="btnCopyMissionLink">🧷 Copier lien mission</button>
+              <button class="primary" id="btnValidateMatch">🤝 Valider ce match</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <p>
+          DIGIY JOBS PRO — match candidat ↔ mission. Le rail qui transforme les dossiers et les besoins en rencontre lisible.
+        </p>
+        <div class="foot-links">
+          <button id="btnResetValidated">Vider validations</button>
+          <a href="#top">Retour haut</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      "use strict";
+
+      const KEYS = {
+        mission: "DIGIY_JOBS_PRO_MISSION_V1",
+        bureau: "DIGIY_JOBS_PRO_BUREAU_V1",
+        publicDossier: "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1",
+        matches: "DIGIY_JOBS_PRO_MATCHES_V1"
+      };
+
+      const NEAR_ZONES = {
+        Dakar: ["Rufisque"],
+        Rufisque: ["Dakar", "Thiès"],
+        Thiès: ["Rufisque", "Mbour", "Saly"],
+        Mbour: ["Saly", "Ngaparou", "Somone", "Thiès"],
+        Saly: ["Mbour", "Ngaparou", "Somone"],
+        Ngaparou: ["Saly", "Somone", "Mbour"],
+        Somone: ["Ngaparou", "Saly", "Mbour"]
+      };
+
+      const statCandidates = document.getElementById("statCandidates");
+      const statStrong = document.getElementById("statStrong");
+      const statMedium = document.getElementById("statMedium");
+      const statValidated = document.getElementById("statValidated");
+
+      const missionGrid = document.getElementById("missionGrid");
+      const candidateList = document.getElementById("candidateList");
+      const emptyState = document.getElementById("emptyState");
+      const detailContent = document.getElementById("detailContent");
+      const detailName = document.getElementById("detailName");
+      const detailSubtitle = document.getElementById("detailSubtitle");
+      const detailChips = document.getElementById("detailChips");
+      const matchSummary = document.getElementById("matchSummary");
+      const reasonList = document.getElementById("reasonList");
+      const detailGrid = document.getElementById("detailGrid");
+      const matchNotes = document.getElementById("matchNotes");
+      const btnOpenWA = document.getElementById("btnOpenWA");
+
+      const searchInput = document.getElementById("searchInput");
+      const filterZoneMode = document.getElementById("filterZoneMode");
+      const filterMinScore = document.getElementById("filterMinScore");
+      const filterStatus = document.getElementById("filterStatus");
+      const filterAvailability = document.getElementById("filterAvailability");
+
+      const btnReloadMission = document.getElementById("btnReloadMission");
+      const btnImportPublic = document.getElementById("btnImportPublic");
+      const btnClearFilters = document.getElementById("btnClearFilters");
+      const btnExportMatches = document.getElementById("btnExportMatches");
+      const btnSaveMatchNotes = document.getElementById("btnSaveMatchNotes");
+      const btnCopyCandidateLink = document.getElementById("btnCopyCandidateLink");
+      const btnCopyMissionLink = document.getElementById("btnCopyMissionLink");
+      const btnValidateMatch = document.getElementById("btnValidateMatch");
+      const btnResetValidated = document.getElementById("btnResetValidated");
+
+      let mission = null;
+      let candidates = [];
+      let matchesState = {};
+      let selectedId = null;
+      let ranked = [];
+
+      function safe(v){ return (v == null || v === "") ? "—" : String(v); }
+      function uid(){ return "match-" + Math.random().toString(36).slice(2,10); }
+      function slugify(s){
+        return (s || "")
+          .toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 64);
+      }
+      function escapeHtml(str){
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+      function readJson(key){
+        try{ return JSON.parse(localStorage.getItem(key) || "null"); }catch(e){ return null; }
+      }
+      function saveMatches(){
+        try{ localStorage.setItem(KEYS.matches, JSON.stringify(matchesState)); }catch(e){}
+      }
+      function scoreClass(score){
+        if(score >= 80) return "score-high";
+        if(score >= 60) return "score-mid";
+        return "score-low";
+      }
+      function secteurLabel(v){ return v === "build" ? "BUILD" : "Hôtellerie-Restauration"; }
+      function sameText(a,b){
+        return slugify(a) === slugify(b);
+      }
+      function zoneNear(a,b){
+        return (NEAR_ZONES[a] || []).includes(b) || (NEAR_ZONES[b] || []).includes(a);
+      }
+      function copyText(text){ return navigator.clipboard.writeText(text); }
+
+      function loadMission(){
+        mission = readJson(KEYS.mission);
+      }
+
+      function loadCandidates(){
+        const bureau = readJson(KEYS.bureau);
+        const publicDossier = readJson(KEYS.publicDossier);
+        let arr = Array.isArray(bureau) ? bureau.filter(x => x && x.role === "candidat") : [];
+
+        if(publicDossier && publicDossier.phone){
+          const exists = arr.some(x => (x.slug && x.slug === publicDossier.slug) || (x.link && x.link === publicDossier.link));
+          if(!exists){
+            arr.unshift({
+              id: uid(),
+              created_at: new Date().toISOString(),
+              secteur: publicDossier.secteur || "build",
+              role: "candidat",
+              status: "new",
+              nom: publicDossier.nom || "Dossier public",
+              phone: publicDossier.phone || "",
+              zone: publicDossier.zone || "Autre",
+              dispo: publicDossier.dispo || "Immédiate",
+              niveau: publicDossier.niveau || "Débutant",
+              hebergement: publicDossier.hebergement || "À confirmer",
+              metier: publicDossier.metier || publicDossier.buildMetier || publicDossier.hotelMetier || "Non précisé",
+              buildMission: publicDossier.buildMission || "—",
+              buildSpecialite: publicDossier.buildSpecialite || "—",
+              buildMobilite: publicDossier.buildMobilite || "—",
+              hotelService: publicDossier.hotelService || "—",
+              hotelHoraires: publicDossier.hotelHoraires || "—",
+              hotelRelation: publicDossier.hotelRelation || "—",
+              hotelRythme: publicDossier.hotelRythme || "—",
+              note: publicDossier.note || "Import public pour matching.",
+              bureau_notes: "Import automatique depuis le dossier public.",
+              link: publicDossier.link || "./index.html?dossier=" + encodeURIComponent(publicDossier.slug || uid()),
+              slug: publicDossier.slug || ""
+            });
+          }
+        }
+        candidates = arr;
+      }
+
+      function loadMatchesState(){
+        matchesState = readJson(KEYS.matches) || {};
+      }
+
+      function missionField(label, value, full){
+        return `<div class="field${full ? ' full' : ''}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
+      }
+
+      function renderMission(){
+        if(!mission || !mission.mainMetier){
+          missionGrid.innerHTML = `
+            <div class="empty-card full">
+              <h4>Aucune mission active trouvée</h4>
+              <p>Crée d’abord une fiche mission JOBS PRO, puis reviens ici pour lancer le matching.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const fields = [
+          missionField("Mission", mission.missionName || "Sans nom"),
+          missionField("Secteur", secteurLabel(mission.secteur || "build")),
+          missionField("Contact", mission.contactName || "Sans repère"),
+          missionField("Téléphone", mission.phone || "—"),
+          missionField("Zone", mission.zone || "—"),
+          missionField("Démarrage", mission.startDate || "—"),
+          missionField("Durée", mission.duration || "—"),
+          missionField("Profils recherchés", mission.countNeeded || "—"),
+          missionField("Priorité", mission.priority || "—"),
+          missionField("Hébergement éventuel", mission.housing || "—"),
+          missionField("Profil principal", mission.mainMetier || "—"),
+          missionField("Lien mission", mission.link || "—", true)
+        ];
+
+        if((mission.secteur || "build") === "build"){
+          fields.push(
+            missionField("Type de mission", mission.buildMissionType || "—"),
+            missionField("Niveau attendu", mission.buildLevel || "—"),
+            missionField("Mobilité souhaitée", mission.buildMobility || "—"),
+            missionField("Cadre de travail", mission.buildCadre || "—"),
+            missionField("Précision technique", mission.buildSpecialite || "—", true)
+          );
+        } else {
+          fields.push(
+            missionField("Service principal", mission.hotelService || "—"),
+            missionField("Horaires attendus", mission.hotelSchedule || "—"),
+            missionField("Relation client attendue", mission.hotelContactLevel || "—"),
+            missionField("Rythme de service", mission.hotelRhythm || "—"),
+            missionField("Cadre d’exploitation", mission.hotelCadre || "—", true)
+          );
+        }
+
+        fields.push(missionField("Description utile", mission.missionNote || "—", true));
+        missionGrid.innerHTML = fields.join("");
+      }
+
+      function computeScore(candidate){
+        if(!mission) return { score: 0, reasons: ["Aucune mission active."], summary: "Pas de matching sans mission.", validated: false };
+
+        const reasons = [];
+        let score = 20;
+        const secteur = mission.secteur || "build";
+
+        if(candidate.secteur === secteur){
+          score += 20;
+          reasons.push("Même rail métier que la mission.");
+        } else {
+          score -= 25;
+          reasons.push("Secteur différent : compatibilité faible.");
+        }
+
+        if(candidate.zone === mission.zone){
+          score += 15;
+          reasons.push("Même zone que la mission.");
+        } else if(zoneNear(candidate.zone, mission.zone)){
+          score += 8;
+          reasons.push("Zone proche de la mission.");
+        } else {
+          reasons.push("Zone plus éloignée à vérifier.");
+        }
+
+        if(candidate.dispo === "Immédiate" && (mission.startDate === "Immédiat" || mission.startDate === "Sous 48h")){
+          score += 12;
+          reasons.push("Disponibilité très cohérente avec le démarrage souhaité.");
+        } else if(candidate.dispo === mission.startDate || candidate.dispo === "Sous 48h" || candidate.dispo === "Sous 7 jours"){
+          score += 6;
+          reasons.push("Disponibilité exploitable pour la mission.");
+        } else {
+          reasons.push("Disponibilité à confirmer selon le timing réel.");
+        }
+
+        const missionMetier = mission.mainMetier || "";
+        const candidateMetier = candidate.metier || "";
+        if(sameText(candidateMetier, missionMetier)){
+          score += 20;
+          reasons.push("Métier principal parfaitement aligné.");
+        } else if(slugify(candidateMetier).includes(slugify(missionMetier)) || slugify(missionMetier).includes(slugify(candidateMetier))){
+          score += 12;
+          reasons.push("Métier proche du besoin principal.");
+        } else {
+          reasons.push("Métier à lire avec attention pour vérifier l’adéquation.");
+        }
+
+        const level = slugify(candidate.niveau || "");
+        const expected = slugify(mission.buildLevel || mission.hotelContactLevel || "");
+        if(expected && level && (level.includes("confirme") || level.includes("chef") || level.includes("intermediaire") || level.includes("tres-bonne") || level.includes("bonne"))){
+          score += 8;
+          reasons.push("Niveau du profil potentiellement adapté.");
+        }
+
+        if(secteur === "build"){
+          if(mission.buildSpecialite && candidate.buildSpecialite && slugify(candidate.buildSpecialite).includes(slugify(mission.buildSpecialite).slice(0,8))){
+            score += 8;
+            reasons.push("Spécialité technique proche du besoin.");
+          }
+          if(candidate.buildMobilite && mission.buildMobility && (candidate.buildMobilite === mission.buildMobility || candidate.buildMobilite.includes("Déplacement"))){
+            score += 6;
+            reasons.push("Mobilité compatible avec le cadre de mission.");
+          }
+        } else {
+          if(candidate.hotelService && mission.hotelService && candidate.hotelService === mission.hotelService){
+            score += 10;
+            reasons.push("Même service principal que la mission.");
+          }
+          if(candidate.hotelHoraires && mission.hotelSchedule && (candidate.hotelHoraires === mission.hotelSchedule || candidate.hotelHoraires === "Flexible")){
+            score += 8;
+            reasons.push("Horaires compatibles.");
+          }
+          if(candidate.hotelRelation && mission.hotelContactLevel && (slugify(candidate.hotelRelation).includes("bon") || slugify(candidate.hotelRelation).includes("tres-bon"))){
+            score += 6;
+            reasons.push("Relation client compatible avec l’attendu.");
+          }
+        }
+
+        if(candidate.hebergement && mission.housing && mission.housing !== "Non"){
+          if(candidate.hebergement === mission.housing || candidate.hebergement.includes("Possible") || candidate.hebergement === "À confirmer"){
+            score += 5;
+            reasons.push("Hébergement ou faisabilité à vérifier mais possible.");
+          }
+        }
+
+        if(candidate.status === "qualified"){
+          score += 8;
+          reasons.push("Déjà qualifié par le bureau.");
+        } else if(candidate.status === "match"){
+          score += 5;
+          reasons.push("Profil déjà en mouvement côté bureau.");
+        }
+
+        score = Math.max(0, Math.min(100, score));
+        let summary = "Match à lire calmement.";
+        if(score >= 80) summary = "Très bon match potentiel : le rail est bien aligné.";
+        else if(score >= 60) summary = "Match crédible : quelques vérifications avant de pousser.";
+        else summary = "Match faible ou incomplet : utile surtout en secours ou à clarifier.";
+
+        const matchKey = getMatchKey(candidate);
+        const validated = Boolean(matchesState[matchKey]?.validated);
+        return { score, reasons, summary, validated };
+      }
+
+      function getMatchKey(candidate){
+        const missionSlug = mission?.slug || slugify((mission?.missionName || "mission") + "-" + (mission?.zone || "zone"));
+        const candSlug = candidate.slug || candidate.id || slugify((candidate.nom || "cand") + "-" + (candidate.phone || "phone"));
+        return missionSlug + "__" + candSlug;
+      }
+
+      function getVisibleRanked(){
+        const q = searchInput.value.trim().toLowerCase();
+        const zoneMode = filterZoneMode.value;
+        const minScore = Number(filterMinScore.value || 0);
+        const wantedStatus = filterStatus.value;
+        const wantedDispo = filterAvailability.value;
+
+        const filtered = candidates
+          .filter(c => mission ? c.secteur === mission.secteur : true)
+          .map(c => ({ candidate: c, match: computeScore(c) }))
+          .filter(row => {
+            if(zoneMode === "same" && row.candidate.zone !== mission.zone) return false;
+            if(zoneMode === "near" && row.candidate.zone !== mission.zone && !zoneNear(row.candidate.zone, mission.zone)) return false;
+            if(row.match.score < minScore) return false;
+            if(wantedStatus !== "all" && row.candidate.status !== wantedStatus) return false;
+            if(wantedDispo !== "all" && row.candidate.dispo !== wantedDispo) return false;
+            if(!q) return true;
+            const hay = [
+              row.candidate.nom,row.candidate.metier,row.candidate.zone,row.candidate.note,row.candidate.bureau_notes,row.candidate.buildSpecialite,
+              row.candidate.hotelService,row.candidate.hotelRelation, row.candidate.hotelHoraires
+            ].filter(Boolean).join(" ").toLowerCase();
+            return hay.includes(q);
+          })
+          .sort((a,b) => {
+            if(b.match.score !== a.match.score) return b.match.score - a.match.score;
+            return new Date(b.candidate.created_at || 0).getTime() - new Date(a.candidate.created_at || 0).getTime();
+          });
+        return filtered;
+      }
+
+      function renderStats(){
+        const visible = ranked;
+        statCandidates.textContent = String(visible.length);
+        statStrong.textContent = String(visible.filter(x => x.match.score >= 80).length);
+        statMedium.textContent = String(visible.filter(x => x.match.score >= 60 && x.match.score < 80).length);
+        statValidated.textContent = String(Object.values(matchesState).filter(x => x && x.validated).length);
+      }
+
+      function renderList(){
+        ranked = getVisibleRanked();
+        renderStats();
+        candidateList.innerHTML = "";
+
+        if(!mission || !mission.mainMetier){
+          candidateList.innerHTML = '<div class="empty-card"><h4>Aucune mission</h4><p>Crée ou recharge une fiche mission pour lancer le matching.</p></div>';
+          selectedId = null;
+          renderDetail(null);
+          return;
+        }
+
+        if(!ranked.length){
+          candidateList.innerHTML = '<div class="empty-card"><h4>Aucun candidat trouvé</h4><p>Change les filtres, importe un dossier public, ou ajoute des candidats dans le bureau PRO.</p></div>';
+          selectedId = null;
+          renderDetail(null);
+          return;
+        }
+
+        if(!ranked.some(x => x.candidate.id === selectedId)) selectedId = ranked[0].candidate.id;
+
+        ranked.forEach(row => {
+          const c = row.candidate;
+          const item = document.createElement("article");
+          item.className = "candidate" + (c.id === selectedId ? " active" : "");
+          const validated = row.match.validated;
+          item.innerHTML = `
+            <div class="candidate-top">
+              <div>
+                <h4>${escapeHtml(c.nom || "Sans nom")}</h4>
+                <p class="sub">${escapeHtml(safe(c.metier))} • ${escapeHtml(safe(c.zone))}</p>
+              </div>
+              <div class="score-pill">${row.match.score}</div>
+            </div>
+            <div class="chips">
+              <span class="chip ${c.secteur === 'build' ? 'secteur-build' : 'secteur-hotel'}">${escapeHtml(secteurLabel(c.secteur))}</span>
+              <span class="chip ${scoreClass(row.match.score)}">Score ${row.match.score}</span>
+              <span class="chip">${escapeHtml(safe(c.dispo))}</span>
+              ${validated ? '<span class="chip score-high">Validé</span>' : ''}
+            </div>
+            <div class="candidate-note">${escapeHtml((c.bureau_notes || c.note || row.match.summary).slice(0, 150))}</div>
+          `;
+          item.addEventListener("click", function(){
+            selectedId = c.id;
+            renderList();
+          });
+          candidateList.appendChild(item);
+        });
+
+        const current = ranked.find(x => x.candidate.id === selectedId) || null;
+        renderDetail(current);
+      }
+
+      function fieldHtml(label, value, full){
+        return `<div class="field${full ? ' full' : ''}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
+      }
+
+      function renderDetail(row){
+        if(!row){
+          emptyState.hidden = false;
+          detailContent.hidden = true;
+          return;
+        }
+        const c = row.candidate;
+        const matchKey = getMatchKey(c);
+        const stored = matchesState[matchKey] || {};
+
+        emptyState.hidden = true;
+        detailContent.hidden = false;
+        detailName.textContent = c.nom || "Sans nom";
+        detailSubtitle.textContent = [safe(c.metier), safe(c.zone), safe(c.dispo)].join(" • ");
+        matchSummary.textContent = row.match.summary;
+        matchNotes.value = stored.notes || "";
+        btnOpenWA.href = buildWhatsAppUrl(c, row.match.score);
+
+        detailChips.innerHTML = `
+          <span class="chip ${c.secteur === 'build' ? 'secteur-build' : 'secteur-hotel'}">${escapeHtml(secteurLabel(c.secteur))}</span>
+          <span class="chip ${scoreClass(row.match.score)}">Score ${row.match.score}</span>
+          ${row.match.validated ? '<span class="chip score-high">Validé</span>' : ''}
+        `;
+
+        reasonList.innerHTML = row.match.reasons.map(r => `<div class="reason-item">${escapeHtml(r)}</div>`).join("");
+
+        const fields = [
+          fieldHtml("Téléphone", c.phone),
+          fieldHtml("Statut bureau", c.status || "new"),
+          fieldHtml("Niveau", c.niveau),
+          fieldHtml("Hébergement éventuel", c.hebergement),
+          fieldHtml("Lien candidat", c.link || "—", true),
+          fieldHtml("Note candidat", c.note || "—", true),
+          fieldHtml("Notes bureau", c.bureau_notes || "—", true)
+        ];
+
+        if(c.secteur === "build"){
+          fields.push(
+            fieldHtml("Type de mission candidat", c.buildMission || "—"),
+            fieldHtml("Spécialité terrain", c.buildSpecialite || "—"),
+            fieldHtml("Mobilité", c.buildMobilite || "—")
+          );
+        } else {
+          fields.push(
+            fieldHtml("Service", c.hotelService || "—"),
+            fieldHtml("Horaires", c.hotelHoraires || "—"),
+            fieldHtml("Relation client", c.hotelRelation || "—"),
+            fieldHtml("Rythme", c.hotelRythme || "—")
+          );
+        }
+
+        const validatedAt = stored.validated_at ? new Date(stored.validated_at).toLocaleString() : "—";
+        fields.push(fieldHtml("Validation match", row.match.validated ? "Oui" : "Non"));
+        fields.push(fieldHtml("Validé le", validatedAt));
+        detailGrid.innerHTML = fields.join("");
+      }
+
+      function buildWhatsAppUrl(candidate, score){
+        const lines = [
+          "Bonjour,",
+          "",
+          "je vous contacte depuis DIGIY JOBS concernant une mission qui pourrait vous correspondre.",
+          "Mission: " + safe(mission?.missionName),
+          "Secteur: " + secteurLabel(mission?.secteur || candidate.secteur || "build"),
+          "Zone: " + safe(mission?.zone),
+          "Profil recherché: " + safe(mission?.mainMetier),
+          "Compatibilité observée: " + score + "/100",
+          mission?.link ? ("Lien mission: " + mission.link) : null,
+          candidate.link ? ("Votre lien dossier: " + candidate.link) : null,
+          "",
+          "Si vous êtes partant, on peut avancer sur la mise en relation."
+        ].filter(Boolean).join("\n");
+        const wa = new URL("https://wa.me/" + String(candidate.phone || "").replace(/\D/g, ""));
+        wa.searchParams.set("text", lines);
+        return wa.toString();
+      }
+
+      function importPublic(){
+        const publicDossier = readJson(KEYS.publicDossier);
+        if(!publicDossier || !publicDossier.phone){
+          alert("Aucun dernier dossier public intelligent trouvé.");
+          return;
+        }
+        const bureau = readJson(KEYS.bureau) || [];
+        const exists = bureau.some(x => (x.slug && x.slug === publicDossier.slug) || (x.link && x.link === publicDossier.link));
+        if(exists){
+          alert("Le dossier public est déjà présent dans le bureau.");
+          loadCandidates();
+          renderList();
+          return;
+        }
+        bureau.unshift({
+          id: uid(),
+          created_at: new Date().toISOString(),
+          secteur: publicDossier.secteur || "build",
+          role: "candidat",
+          status: "new",
+          nom: publicDossier.nom || "Dossier public",
+          phone: publicDossier.phone || "",
+          zone: publicDossier.zone || "Autre",
+          dispo: publicDossier.dispo || "Immédiate",
+          niveau: publicDossier.niveau || "Débutant",
+          hebergement: publicDossier.hebergement || "À confirmer",
+          metier: publicDossier.metier || publicDossier.buildMetier || publicDossier.hotelMetier || "Non précisé",
+          buildMission: publicDossier.buildMission || "—",
+          buildSpecialite: publicDossier.buildSpecialite || "—",
+          buildMobilite: publicDossier.buildMobilite || "—",
+          hotelService: publicDossier.hotelService || "—",
+          hotelHoraires: publicDossier.hotelHoraires || "—",
+          hotelRelation: publicDossier.hotelRelation || "—",
+          hotelRythme: publicDossier.hotelRythme || "—",
+          note: publicDossier.note || "Import public pour matching.",
+          bureau_notes: "Importé depuis le dossier public intelligent.",
+          link: publicDossier.link || "./index.html?dossier=" + encodeURIComponent(publicDossier.slug || uid()),
+          slug: publicDossier.slug || ""
+        });
+        try{ localStorage.setItem(KEYS.bureau, JSON.stringify(bureau)); }catch(e){}
+        loadCandidates();
+        renderList();
+        alert("Dernier dossier public importé dans le bureau ✅");
+      }
+
+      searchInput.addEventListener("input", renderList);
+      filterZoneMode.addEventListener("change", renderList);
+      filterMinScore.addEventListener("change", renderList);
+      filterStatus.addEventListener("change", renderList);
+      filterAvailability.addEventListener("change", renderList);
+
+      btnReloadMission.addEventListener("click", function(){
+        loadMission();
+        renderMission();
+        renderList();
+      });
+
+      btnImportPublic.addEventListener("click", importPublic);
+
+      btnClearFilters.addEventListener("click", function(){
+        searchInput.value = "";
+        filterZoneMode.value = "all";
+        filterMinScore.value = "0";
+        filterStatus.value = "all";
+        filterAvailability.value = "all";
+        renderList();
+      });
+
+      btnSaveMatchNotes.addEventListener("click", function(){
+        const row = ranked.find(x => x.candidate.id === selectedId);
+        if(!row) return;
+        const key = getMatchKey(row.candidate);
+        matchesState[key] = matchesState[key] || {};
+        matchesState[key].notes = matchNotes.value.trim();
+        saveMatches();
+        alert("Notes de match enregistrées ✅");
+      });
+
+      btnCopyCandidateLink.addEventListener("click", async function(){
+        const row = ranked.find(x => x.candidate.id === selectedId);
+        if(!row || !row.candidate.link) return;
+        try{ await copyText(row.candidate.link); alert("Lien candidat copié ✅"); }
+        catch(e){ prompt("Copie le lien candidat :", row.candidate.link); }
+      });
+
+      btnCopyMissionLink.addEventListener("click", async function(){
+        if(!mission || !mission.link) return;
+        try{ await copyText(mission.link); alert("Lien mission copié ✅"); }
+        catch(e){ prompt("Copie le lien mission :", mission.link); }
+      });
+
+      btnValidateMatch.addEventListener("click", function(){
+        const row = ranked.find(x => x.candidate.id === selectedId);
+        if(!row) return;
+        const key = getMatchKey(row.candidate);
+        matchesState[key] = matchesState[key] || {};
+        matchesState[key].validated = true;
+        matchesState[key].validated_at = new Date().toISOString();
+        matchesState[key].score = row.match.score;
+        matchesState[key].candidate_name = row.candidate.nom || "Sans nom";
+        matchesState[key].mission_name = mission?.missionName || "Mission";
+        matchesState[key].notes = matchNotes.value.trim();
+        saveMatches();
+        renderList();
+        alert("Match validé ✅");
+      });
+
+      btnExportMatches.addEventListener("click", function(){
+        const exportRows = ranked.map(row => {
+          const key = getMatchKey(row.candidate);
+          const state = matchesState[key] || {};
+          return {
+            mission: mission?.missionName || "Mission",
+            secteur: mission?.secteur || "build",
+            candidate_name: row.candidate.nom || "Sans nom",
+            candidate_phone: row.candidate.phone || "",
+            metier: row.candidate.metier || "",
+            zone: row.candidate.zone || "",
+            score: row.match.score,
+            summary: row.match.summary,
+            reasons: row.match.reasons,
+            validated: !!state.validated,
+            validated_at: state.validated_at || null,
+            notes: state.notes || ""
+          };
+        });
+        const blob = new Blob([JSON.stringify(exportRows, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "digiy-jobs-pro-matchs.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      btnResetValidated.addEventListener("click", function(){
+        if(!confirm("Vider toutes les validations de match locales ?")) return;
+        matchesState = {};
+        saveMatches();
+        renderList();
+      });
+
+      loadMission();
+      loadCandidates();
+      loadMatchesState();
+      renderMission();
+      renderList();
+    })();
+  </script>
+</body>
+</html>
