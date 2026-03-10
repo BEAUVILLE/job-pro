@@ -25,7 +25,6 @@
       --danger:#fb7185;
       --orange:#fb923c;
       --shadow:0 20px 70px rgba(0,0,0,.28);
-      --radius:24px;
       --max:1280px;
     }
 
@@ -519,12 +518,6 @@
       letter-spacing:.01em;
     }
 
-    .preview-dim{
-      filter:blur(3px);
-      pointer-events:none;
-      user-select:none;
-    }
-
     .is-preview .tab[data-lockable="true"]{
       opacity:.52;
       pointer-events:none;
@@ -585,6 +578,37 @@
         <div class="meta-chip">Workspace : <strong id="workspaceChip">jobs-221771342889</strong></div>
         <div class="meta-chip">Mode : cockpit vivant</div>
         <div class="meta-chip">Source : Supabase réel</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Missions actives</div>
+          <div class="stat-value" id="statOffers">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Candidatures</div>
+          <div class="stat-value" id="statCandidates">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Nouvelles</div>
+          <div class="stat-value" id="statNew">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">En revue</div>
+          <div class="stat-value" id="statReview">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Shortlist</div>
+          <div class="stat-value" id="statShortlist">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">À appeler</div>
+          <div class="stat-value" id="statCall">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Acceptés</div>
+          <div class="stat-value" id="statAccepted">0</div>
+        </div>
       </div>
     </section>
 
@@ -727,13 +751,15 @@
 
     function setStatusBox(type, text) {
       const box = $("statusBox");
+      if (!box) return;
       box.className = type;
       box.textContent = text;
       box.classList.remove("hidden");
     }
 
     function hideStatusBox() {
-      $("statusBox").classList.add("hidden");
+      const box = $("statusBox");
+      if (box) box.classList.add("hidden");
     }
 
     function setTab(tab) {
@@ -748,9 +774,9 @@
         btn.classList.toggle("active", btn.dataset.tab === tab);
       });
 
-      $("tab-candidates").classList.toggle("hidden", tab !== "candidates");
-      $("tab-offers").classList.toggle("hidden", tab !== "offers");
-      $("tab-pipeline").classList.toggle("hidden", tab !== "pipeline");
+      $("tab-candidates")?.classList.toggle("hidden", tab !== "candidates");
+      $("tab-offers")?.classList.toggle("hidden", tab !== "offers");
+      $("tab-pipeline")?.classList.toggle("hidden", tab !== "pipeline");
 
       if (tab === "pipeline") renderPipeline();
       if (tab === "offers") renderOffers();
@@ -765,17 +791,28 @@
       const all = state.candidates;
       const count = (s) => all.filter((x) => (x.status || "new") === s).length;
 
-      $("statOffers").textContent = state.offers.length;
-      $("statCandidates").textContent = all.length;
-      $("statNew").textContent = count("new");
-      $("statReview").textContent = count("review");
-      $("statShortlist").textContent = count("shortlist");
-      $("statCall").textContent = count("call");
-      $("statAccepted").textContent = count("accepted");
+      const statOffers = $("statOffers");
+      const statCandidates = $("statCandidates");
+      const statNew = $("statNew");
+      const statReview = $("statReview");
+      const statShortlist = $("statShortlist");
+      const statCall = $("statCall");
+      const statAccepted = $("statAccepted");
+
+      if (statOffers) statOffers.textContent = state.offers.length;
+      if (statCandidates) statCandidates.textContent = all.length;
+      if (statNew) statNew.textContent = count("new");
+      if (statReview) statReview.textContent = count("review");
+      if (statShortlist) statShortlist.textContent = count("shortlist");
+      if (statCall) statCall.textContent = count("call");
+      if (statAccepted) statAccepted.textContent = count("accepted");
     }
 
     function fillOfferFilter() {
-      $("offerFilter").innerHTML =
+      const el = $("offerFilter");
+      if (!el) return;
+
+      el.innerHTML =
         '<option value="">Toutes les missions</option>' +
         state.offers.map((o) => {
           return `<option value="${escapeHtml(o.id)}">${escapeHtml(o.title || "Mission")}</option>`;
@@ -783,9 +820,9 @@
     }
 
     function applyCandidateFilters() {
-      const q = $("searchInput").value.trim().toLowerCase();
-      const status = $("statusFilter").value.trim().toLowerCase();
-      const offerId = $("offerFilter").value.trim();
+      const q = $("searchInput")?.value.trim().toLowerCase() || "";
+      const status = $("statusFilter")?.value.trim().toLowerCase() || "";
+      const offerId = $("offerFilter")?.value.trim() || "";
 
       const offerMap = getOfferMap();
 
@@ -816,6 +853,8 @@
 
     function renderCandidates() {
       const wrap = $("candidateCards");
+      if (!wrap) return;
+
       if (!state.filteredCandidates.length) {
         wrap.classList.add("hidden");
         setStatusBox("empty", PREVIEW_MODE
@@ -891,6 +930,8 @@
 
     function renderOffers() {
       const wrap = $("offerCards");
+      if (!wrap) return;
+
       if (!state.offers.length) {
         wrap.classList.add("hidden");
         setStatusBox("empty", "Aucune mission trouvée pour ce workspace.");
@@ -957,6 +998,8 @@
 
     function renderPipeline() {
       const wrap = $("pipelineGrid");
+      if (!wrap) return;
+
       const buckets = ["new", "review", "shortlist", "call", "accepted", "rejected"];
 
       wrap.classList.remove("hidden");
@@ -1089,7 +1132,7 @@
 
     async function loadAll(preview = false) {
       try {
-        $("workspaceChip").textContent = WORKSPACE_SLUG;
+        if ($("workspaceChip")) $("workspaceChip").textContent = WORKSPACE_SLUG;
         setStatusBox("loading", preview ? "Chargement de l’aperçu..." : "Chargement du cockpit...");
 
         await loadOffers();
@@ -1129,10 +1172,8 @@
 
       const session = await window.DIGIY_GUARD.ready();
 
-      if (session.slug) {
-        $("workspaceChip").textContent = session.slug;
-      } else {
-        $("workspaceChip").textContent = WORKSPACE_SLUG;
+      if ($("workspaceChip")) {
+        $("workspaceChip").textContent = session.slug || WORKSPACE_SLUG;
       }
 
       if (!session.access) {
@@ -1159,7 +1200,7 @@
           setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour voir les candidats liés.");
           return;
         }
-        $("offerFilter").value = btn.dataset.offerId || "";
+        if ($("offerFilter")) $("offerFilter").value = btn.dataset.offerId || "";
         setTab("candidates");
         applyCandidateFilters();
       }
@@ -1169,18 +1210,18 @@
       btn.addEventListener("click", () => setTab(btn.dataset.tab));
     });
 
-    $("searchInput").addEventListener("input", applyCandidateFilters);
-    $("statusFilter").addEventListener("change", applyCandidateFilters);
-    $("offerFilter").addEventListener("change", applyCandidateFilters);
+    $("searchInput")?.addEventListener("input", applyCandidateFilters);
+    $("statusFilter")?.addEventListener("change", applyCandidateFilters);
+    $("offerFilter")?.addEventListener("change", applyCandidateFilters);
 
-    $("clearFiltersBtn").addEventListener("click", () => {
-      $("searchInput").value = "";
-      $("statusFilter").value = "";
-      $("offerFilter").value = "";
+    $("clearFiltersBtn")?.addEventListener("click", () => {
+      if ($("searchInput")) $("searchInput").value = "";
+      if ($("statusFilter")) $("statusFilter").value = "";
+      if ($("offerFilter")) $("offerFilter").value = "";
       applyCandidateFilters();
     });
 
-    $("refreshBtn").addEventListener("click", () => loadAll(PREVIEW_MODE));
+    $("refreshBtn")?.addEventListener("click", () => loadAll(PREVIEW_MODE));
 
     (async () => {
       const gate = await bootGuard();
