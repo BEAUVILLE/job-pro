@@ -475,6 +475,71 @@
 
     .hidden{display:none !important}
 
+    .preview-banner{
+      margin:16px 0 0;
+      border:1px solid rgba(250,204,21,.28);
+      background:rgba(250,204,21,.08);
+      color:#fff2ae;
+      border-radius:18px;
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .preview-banner strong{
+      color:#fff8cf;
+    }
+
+    .preview-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .preview-lock{
+      position:relative;
+    }
+
+    .preview-lock::after{
+      content:"Aperçu cockpit — activation requise pour ouvrir le bureau réel";
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:20px;
+      border-radius:24px;
+      background:rgba(6,27,20,.55);
+      backdrop-filter:blur(6px);
+      color:#fff2ae;
+      font-weight:900;
+      letter-spacing:.01em;
+    }
+
+    .preview-dim{
+      filter:blur(3px);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .is-preview .tab[data-lockable="true"]{
+      opacity:.52;
+      pointer-events:none;
+    }
+
+    .is-preview [data-lockable="true"]{
+      opacity:.52;
+      pointer-events:none;
+    }
+
+    .is-preview .small-btn[data-action="set-status"]{
+      opacity:.45;
+      pointer-events:none;
+    }
+
     @media (max-width: 1120px){
       .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
       .pipeline{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -521,50 +586,19 @@
         <div class="meta-chip">Mode : cockpit vivant</div>
         <div class="meta-chip">Source : Supabase réel</div>
       </div>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-label">Missions actives</div>
-          <div class="stat-value" id="statOffers">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Candidatures</div>
-          <div class="stat-value" id="statCandidates">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Nouvelles</div>
-          <div class="stat-value" id="statNew">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">En revue</div>
-          <div class="stat-value" id="statReview">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Shortlist</div>
-          <div class="stat-value" id="statShortlist">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">À appeler</div>
-          <div class="stat-value" id="statCall">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Acceptés</div>
-          <div class="stat-value" id="statAccepted">0</div>
-        </div>
-      </div>
     </section>
 
     <div class="tabs">
-      <button class="tab active" data-tab="candidates" type="button">Candidatures</button>
+      <button class="tab active" data-tab="candidates" data-lockable="true" type="button">Candidatures</button>
       <button class="tab" data-tab="offers" type="button">Missions</button>
-      <button class="tab" data-tab="pipeline" type="button">Pipeline</button>
+      <button class="tab" data-tab="pipeline" data-lockable="true" type="button">Pipeline</button>
     </div>
 
     <section class="panel">
       <div id="statusBox" class="loading">Chargement du cockpit...</div>
 
       <div id="tab-candidates">
-        <div class="toolbar">
+        <div class="toolbar" data-lockable="true">
           <div class="field">
             <label for="searchInput">Recherche</label>
             <input id="searchInput" type="text" placeholder="Nom, téléphone, métier, ville, message..." />
@@ -625,6 +659,8 @@
       filteredCandidates: [],
       activeTab: "candidates"
     };
+
+    let PREVIEW_MODE = false;
 
     function escapeHtml(v = "") {
       return String(v)
@@ -701,6 +737,11 @@
     }
 
     function setTab(tab) {
+      if (PREVIEW_MODE && (tab === "candidates" || tab === "pipeline")) {
+        setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour ouvrir cette partie du cockpit.");
+        return;
+      }
+
       state.activeTab = tab;
 
       document.querySelectorAll(".tab").forEach((btn) => {
@@ -777,7 +818,9 @@
       const wrap = $("candidateCards");
       if (!state.filteredCandidates.length) {
         wrap.classList.add("hidden");
-        setStatusBox("empty", "Aucune candidature ne correspond à ce filtre.");
+        setStatusBox("empty", PREVIEW_MODE
+          ? "Aperçu du cockpit actif. Active ton accès pour voir les candidatures réelles."
+          : "Aucune candidature ne correspond à ce filtre.");
         return;
       }
 
@@ -937,6 +980,11 @@
     }
 
     async function updateCandidateStatus(id, status) {
+      if (PREVIEW_MODE) {
+        setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour modifier les statuts.");
+        return;
+      }
+
       setStatusBox("loading", `Mise à jour vers "${status}"...`);
 
       const { error } = await sb
@@ -994,11 +1042,69 @@
       });
     }
 
-    async function loadAll() {
+    function applyPreviewMode() {
+      PREVIEW_MODE = true;
+      document.body.classList.add("is-preview");
+
+      const hero = document.querySelector(".hero");
+      if (hero && !document.getElementById("previewBanner")) {
+        const banner = document.createElement("div");
+        banner.id = "previewBanner";
+        banner.className = "preview-banner";
+        banner.innerHTML = `
+          <div>
+            <strong>Mode aperçu activé.</strong>
+            Tu peux voir l’esprit du cockpit JOBS PRO, mais les actions réelles restent verrouillées.
+          </div>
+          <div class="preview-actions">
+            <button id="previewPayBtn" class="gold-btn" type="button">Activer mon accès JOBS</button>
+          </div>
+        `;
+        hero.appendChild(banner);
+
+        document.getElementById("previewPayBtn")?.addEventListener("click", () => {
+          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPay === "function") {
+            window.DIGIY_GUARD.goPay();
+          } else {
+            setStatusBox("error", "guard.js est requis pour ouvrir le paiement.");
+          }
+        });
+      }
+
+      const candidatesTab = document.getElementById("tab-candidates");
+      const pipelineTab = document.getElementById("tab-pipeline");
+
+      if (candidatesTab) {
+        candidatesTab.setAttribute("data-lockable", "true");
+        candidatesTab.classList.add("preview-lock");
+      }
+
+      if (pipelineTab) {
+        pipelineTab.setAttribute("data-lockable", "true");
+        pipelineTab.classList.add("preview-lock");
+      }
+
+      setTab("offers");
+    }
+
+    async function loadAll(preview = false) {
       try {
         $("workspaceChip").textContent = WORKSPACE_SLUG;
-        setStatusBox("loading", "Chargement du cockpit...");
+        setStatusBox("loading", preview ? "Chargement de l’aperçu..." : "Chargement du cockpit...");
+
         await loadOffers();
+
+        if (preview) {
+          state.candidates = [];
+          state.filteredCandidates = [];
+          computeStats();
+          fillOfferFilter();
+          renderOffers();
+          renderPipeline();
+          setStatusBox("empty", "Aperçu du cockpit actif. Active ton accès pour voir les candidatures réelles.");
+          return;
+        }
+
         await loadCandidates();
         computeStats();
         fillOfferFilter();
@@ -1018,7 +1124,7 @@
     async function bootGuard() {
       if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
         setStatusBox("error", "guard.js introuvable ou invalide.");
-        return false;
+        return { ok: false, preview: true };
       }
 
       const session = await window.DIGIY_GUARD.ready();
@@ -1030,37 +1136,11 @@
       }
 
       if (!session.access) {
-        document.body.innerHTML = `
-          <div style="min-height:100vh;display:grid;place-items:center;background:#061b14;color:#eafff1;padding:24px;font-family:Inter,system-ui,sans-serif">
-            <div style="max-width:720px;width:100%;border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;background:rgba(255,255,255,.04)">
-              <div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#fde68a;font-weight:900;margin-bottom:10px">
-                DIGIY JOBS PRO
-              </div>
-              <h1 style="margin:0 0 12px;font-size:32px;line-height:1.05">Accès pro requis</h1>
-              <p style="margin:0 0 18px;color:rgba(234,255,241,.76);line-height:1.7">
-                Ce cockpit est réservé aux pros actifs. Tu peux voir l’esprit du module,
-                mais pour ouvrir le bureau réel, il faut un accès JOBS actif.
-              </p>
-              <div style="display:flex;gap:12px;flex-wrap:wrap">
-                <a href="index.html" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#eafff1;text-decoration:none;font-weight:900">
-                  Voir le mur public
-                </a>
-                <button id="goPayBtn" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 16px;border-radius:16px;border:none;background:linear-gradient(180deg,#facc15,#eab308);color:#171717;font-weight:900;cursor:pointer" type="button">
-                  Activer mon accès JOBS
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-
-        document.getElementById("goPayBtn")?.addEventListener("click", () => {
-          window.DIGIY_GUARD.goPay();
-        });
-
-        return false;
+        applyPreviewMode();
+        return { ok: true, preview: true };
       }
 
-      return true;
+      return { ok: true, preview: false };
     }
 
     document.addEventListener("click", (e) => {
@@ -1075,6 +1155,10 @@
       }
 
       if (action === "filter-offer") {
+        if (PREVIEW_MODE) {
+          setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour voir les candidats liés.");
+          return;
+        }
         $("offerFilter").value = btn.dataset.offerId || "";
         setTab("candidates");
         applyCandidateFilters();
@@ -1096,12 +1180,12 @@
       applyCandidateFilters();
     });
 
-    $("refreshBtn").addEventListener("click", loadAll);
+    $("refreshBtn").addEventListener("click", () => loadAll(PREVIEW_MODE));
 
     (async () => {
-      const ok = await bootGuard();
-      if (!ok) return;
-      await loadAll();
+      const gate = await bootGuard();
+      if (!gate.ok) return;
+      await loadAll(gate.preview);
     })();
   </script>
 </body>
