@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DIGIY JOBS PRO — Bureau de tri + mise en relation</title>
+  <meta name="description" content="DIGIY JOBS PRO — bureau de tri, qualification, suivi et mise en relation pour BUILD et Hôtellerie-Restauration." />
+  <meta name="theme-color" content="#0A1128" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --dark:#0A1128;
+      --dark-2:#142041;
+      --blue:#0ea5e9;
+      --blue-2:#38bdf8;
+      --green:#10b981;
+      --gold:#d4a84f;
+      --red:#ef4444;
+      --amber:#f59e0b;
+      --ink:#0f172a;
+      --muted:#475569;
+      --bg:#edf3f8;
+      --sand:#f8f0e3;
+      --line:#e2e8f0;
+      --card:#ffffffd9;
+      --shadow:0 16px 40px rgba(15,23,42,.10);
+      --radius:22px;
+      --radius-sm:16px;
+      --max:1380px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(14,165,233,.08), transparent 30%),
+        radial-gradient(circle at right 12%, rgba(16,185,129,.06), transparent 24%),
+        linear-gradient(180deg,var(--bg),var(--sand));
+    }
+    a{text-decoration:none;color:inherit}
+    button,input,select,textarea{font:inherit}
+    .wrap{width:min(calc(100% - 28px), var(--max));margin:0 auto}
+
+    .topbar{
+      position:sticky;top:0;z-index:40;
+      backdrop-filter:blur(10px);
+      background:rgba(237,243,248,.80);
+      border-bottom:1px solid rgba(226,232,240,.92);
+    }
+    .topbar-inner{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.02em}
+    .brand-mark{
+      width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;
+      background:linear-gradient(135deg,var(--dark),#20305e);box-shadow:var(--shadow);font-size:14px;
+    }
+    .brand small{display:block;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.08em}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .top-actions button,.top-actions a{
+      border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;font-weight:900;cursor:pointer;
+    }
+    .top-actions .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+
+    .hero{padding:24px 0 14px}
+    .hero-card,.panel,.stat,.filters,.list-card,.detail-card,.mini,.action-card,.empty-card,.foot{
+      border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
+    }
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:stretch}
+    .hero-card{
+      padding:26px;position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at top right, rgba(212,168,79,.16), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.90));
+    }
+    .hero-card::after{
+      content:"";position:absolute;right:-45px;bottom:-45px;width:170px;height:170px;border-radius:50%;
+      border:26px solid rgba(10,17,40,.05);
+    }
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;border:1px solid var(--line);
+      background:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
+    }
+    h1{margin:16px 0 12px;font-size:clamp(34px,4vw,58px);line-height:.98;letter-spacing:-.04em;max-width:12ch}
+    .lead{margin:0;max-width:66ch;color:#334155;line-height:1.7;font-size:16px}
+    .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .tag{padding:10px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--muted)}
+
+    .panel{
+      padding:18px;background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));color:#fff;border-color:#27365a;
+      display:flex;flex-direction:column;gap:14px;
+    }
+    .panel h2{margin:0;font-size:20px;letter-spacing:-.02em}
+    .panel p{margin:0;color:#dbe6f6;line-height:1.65}
+    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .mini{padding:14px;border-radius:18px;border-color:#2d3c60;background:rgba(255,255,255,.05);box-shadow:none}
+    .mini strong{display:block;font-size:14px;margin-bottom:6px}
+    .mini span{display:block;color:#cbd5e1;font-size:13px;line-height:1.5}
+    .signal{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:rgba(212,168,79,.13);border:1px solid rgba(212,168,79,.22);color:#ffe7af;font-size:13px;font-weight:800}
+
+    .stats{padding:8px 0 14px}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .stat{padding:18px}
+    .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
+    .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
+
+    .filters{padding:16px;margin-bottom:16px}
+    .filters-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+    .filters-top h2{margin:0;font-size:24px;letter-spacing:-.02em}
+    .filters-top p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
+    .filter-grid{display:grid;grid-template-columns:1.2fr repeat(4,.8fr);gap:12px}
+    .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .filter-actions button{
+      border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
+    }
+    input,select,textarea{
+      width:100%;padding:12px 12px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);outline:none;
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
+
+    .workspace{display:grid;grid-template-columns:.92fr 1.08fr;gap:18px;padding-bottom:36px}
+    .left-col,.right-col{display:grid;gap:16px;align-content:start}
+    .list-card,.detail-card{padding:16px}
+    .list-head,.detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .list-head h3,.detail-head h3{margin:0;font-size:22px;letter-spacing:-.02em}
+    .list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.55}
+    .list{
+      display:grid;gap:12px;max-height:920px;overflow:auto;padding-right:2px;
+    }
+    .dossier{
+      border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
+    }
+    .dossier:hover{transform:translateY(-1px)}
+    .dossier.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
+    .dossier-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .dossier h4{margin:0;font-size:18px;letter-spacing:-.02em}
+    .sub{margin:4px 0 0;color:#475569;font-weight:700;font-size:14px;line-height:1.55}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:900;background:#f8fafc}
+    .chip.secteur-build{color:#7c5517;background:rgba(212,168,79,.12)}
+    .chip.secteur-hotel{color:#0f766e;background:rgba(16,185,129,.12)}
+    .chip.status-new{color:#2563eb;background:rgba(59,130,246,.10)}
+    .chip.status-recall{color:#b45309;background:rgba(245,158,11,.12)}
+    .chip.status-qualified{color:#047857;background:rgba(16,185,129,.12)}
+    .chip.status-match{color:#7c3aed;background:rgba(139,92,246,.12)}
+    .chip.status-closed{color:#64748b;background:rgba(148,163,184,.14)}
+    .dossier-note{margin-top:12px;color:var(--muted);font-size:13px;line-height:1.6}
+
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{padding:13px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+    .field small{display:block;color:#64748b;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+    .field strong{display:block;font-size:14px;line-height:1.55;word-break:break-word}
+    .full{grid-column:1 / -1}
+    .status-row{display:flex;gap:10px;flex-wrap:wrap}
+    .status-row button{
+      border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
+    }
+    .status-row button.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+
+    .notes-wrap{display:grid;gap:12px}
+    textarea{min-height:120px;resize:vertical}
+    .button-row{display:flex;gap:10px;flex-wrap:wrap}
+    .button-row button,.button-row a{
+      border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;
+    }
+    .button-row .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+    .button-row .green{background:var(--green);color:#fff;border-color:transparent}
+
+    .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .action-card{padding:16px}
+    .action-card h4{margin:0 0 8px;font-size:18px;letter-spacing:-.02em}
+    .action-card p{margin:0 0 12px;color:var(--muted);line-height:1.6;font-size:14px}
+    .action-card .button-row{margin-top:auto}
+
+    .empty-card{padding:22px;text-align:center;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .empty-card h4{margin:0 0 8px;font-size:22px}
+    .empty-card p{margin:0;color:var(--muted);line-height:1.65;max-width:52ch;margin-inline:auto}
+
+    footer{padding:0 0 30px}
+    .foot{padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+    .foot p{margin:0;color:var(--muted);line-height:1.6}
+    .foot-links{display:flex;gap:10px;flex-wrap:wrap}
+    .foot-links a,.foot-links button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
+
+    @media (max-width:1200px){
+      .hero-grid,.workspace,.stats-grid,.filter-grid,.action-grid{grid-template-columns:1fr 1fr}
+      .filter-grid > *:first-child{grid-column:1 / -1}
+    }
+    @media (max-width:860px){
+      .hero-grid,.workspace,.stats-grid,.filter-grid,.detail-grid,.action-grid,.mini-grid{grid-template-columns:1fr}
+      h1{max-width:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top" aria-label="Retour en haut">
+        <span class="brand-mark">JP</span>
+        <span>
+          DIGIY JOBS PRO
+          <small>BUREAU DE TRI + MISE EN RELATION</small>
+        </span>
+      </a>
+      <div class="top-actions">
+        <button id="btnImportPublic">Importer dernier dossier public</button>
+        <button id="btnSeed">Réinitialiser démo</button>
+        <a class="primary" href="./index.html">Voir le hall public</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <article class="hero-card">
+          <span class="eyebrow">Cockpit bureau DIGIY JOBS</span>
+          <h1>Trier, qualifier, relier. Sans perdre le terrain.</h1>
+          <p class="lead">
+            Ce bureau sert à reprendre les dossiers entrants, leur donner un statut, noter ce qui est utile,
+            puis déclencher une mise en relation propre. BUILD et Hôtellerie-Restauration vivent ensemble,
+            mais sans se mélanger. Ici, on voit, on comprend, on agit.
+          </p>
+          <div class="hero-tags">
+            <span class="tag">Vue bureau</span>
+            <span class="tag">Tri par secteur</span>
+            <span class="tag">Qualification rapide</span>
+            <span class="tag">WhatsApp prêt</span>
+          </div>
+        </article>
+
+        <aside class="panel">
+          <span class="signal">Version légère utile immédiatement, même sans backend</span>
+          <h2>Ce que ce bureau fait déjà</h2>
+          <p>
+            Il garde les dossiers en mémoire locale, filtre les entrées, suit un statut simple,
+            centralise les notes, et prépare la mise en relation sans labyrinthes. Idéal pour verrouiller le flux avant le vrai raccord base de données.
+          </p>
+          <div class="mini-grid">
+            <div class="mini"><strong>Statuts</strong><span>Nouveau, à rappeler, qualifié, mise en relation, clos.</span></div>
+            <div class="mini"><strong>Filtres</strong><span>Secteur, rôle, statut, zone, recherche libre.</span></div>
+            <div class="mini"><strong>Actions</strong><span>WhatsApp, copie du lien, notes bureau, étape suivante.</span></div>
+            <div class="mini"><strong>Import utile</strong><span>Récupère le dernier dossier public posé par le formulaire intelligent.</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="wrap stats-grid">
+        <article class="stat"><strong id="statTotal">0</strong><span>dossiers visibles</span></article>
+        <article class="stat"><strong id="statBuild">0</strong><span>rail BUILD</span></article>
+        <article class="stat"><strong id="statHotel">0</strong><span>rail Hôtellerie-Restauration</span></article>
+        <article class="stat"><strong id="statQualified">0</strong><span>dossiers qualifiés / en relation</span></article>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="filters">
+        <div class="filters-top">
+          <div>
+            <h2>Bureau de tri</h2>
+            <p>
+              Filtre les entrées, choisis le dossier actif, pose les notes utiles, puis envoie le bon message au bon moment.
+            </p>
+          </div>
+        </div>
+        <div class="filter-grid">
+          <input id="searchInput" type="search" placeholder="Rechercher nom, métier, zone, note..." />
+          <select id="filterSecteur">
+            <option value="all">Tous les secteurs</option>
+            <option value="build">BUILD</option>
+            <option value="hotellerie-restauration">Hôtellerie-Restauration</option>
+          </select>
+          <select id="filterRole">
+            <option value="all">Tous les rôles</option>
+            <option value="candidat">Candidats</option>
+            <option value="recruteur">Recruteurs</option>
+          </select>
+          <select id="filterStatus">
+            <option value="all">Tous les statuts</option>
+            <option value="new">Nouveau</option>
+            <option value="recall">À rappeler</option>
+            <option value="qualified">Qualifié</option>
+            <option value="match">Mise en relation</option>
+            <option value="closed">Clos</option>
+          </select>
+          <select id="filterZone">
+            <option value="all">Toutes les zones</option>
+            <option value="Dakar">Dakar</option>
+            <option value="Rufisque">Rufisque</option>
+            <option value="Thiès">Thiès</option>
+            <option value="Mbour">Mbour</option>
+            <option value="Saly">Saly</option>
+            <option value="Ngaparou">Ngaparou</option>
+            <option value="Somone">Somone</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button id="btnClearFilters">Effacer les filtres</button>
+          <button id="btnAddManual">Ajouter un dossier manuel</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap workspace">
+      <div class="left-col">
+        <article class="list-card">
+          <div class="list-head">
+            <div>
+              <h3>Liste des dossiers</h3>
+              <p>Un clic pour ouvrir la fiche bureau du dossier sélectionné.</p>
+            </div>
+          </div>
+          <div class="list" id="list"></div>
+        </article>
+      </div>
+
+      <div class="right-col">
+        <article class="detail-card" id="detailCard">
+          <div class="empty-card" id="emptyState">
+            <h4>Choisis un dossier</h4>
+            <p>
+              Le bureau est prêt. Sélectionne une fiche à gauche pour afficher les détails,
+              changer le statut, noter les infos utiles et lancer la mise en relation.
+            </p>
+          </div>
+
+          <div id="detailContent" hidden>
+            <div class="detail-head">
+              <div>
+                <h3 id="detailName">—</h3>
+                <p id="detailSubtitle">—</p>
+              </div>
+              <div class="chips" id="detailChips"></div>
+            </div>
+
+            <div class="detail-grid" id="detailGrid"></div>
+
+            <div class="action-card" style="margin-top:16px">
+              <h4>Statut bureau</h4>
+              <p>Donne un état clair au dossier pour que le bureau sache où il en est sans réfléchir deux fois.</p>
+              <div class="status-row" id="statusRow"></div>
+            </div>
+
+            <div class="action-grid" style="margin-top:16px">
+              <article class="action-card">
+                <h4>Notes bureau</h4>
+                <p>Note ce qui aide vraiment : sérieux, disponibilité réelle, précision du besoin, qualité du contact.</p>
+                <div class="notes-wrap">
+                  <textarea id="bureauNotes" placeholder="Ex. Joignable vite. Besoin clair. Bon profil pour petite équipe. À rappeler demain matin."></textarea>
+                  <div class="button-row">
+                    <button class="primary" id="btnSaveNotes">Enregistrer les notes</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="action-card">
+                <h4>Mise en relation</h4>
+                <p>Ouvre WhatsApp avec un message propre, copie le lien dossier, ou bascule directement au statut suivant.</p>
+                <div class="button-row">
+                  <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+                  <button id="btnCopyLink">📋 Copier le lien</button>
+                  <button id="btnMarkMatch">🤝 Passer en mise en relation</button>
+                </div>
+              </article>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <p>
+          DIGIY JOBS PRO — bureau de tri, qualification et mise en relation. Léger aujourd’hui, prêt à être branché demain.
+        </p>
+        <div class="foot-links">
+          <button id="btnExportJson">Exporter JSON</button>
+          <button id="btnClearAll">Vider le bureau</button>
+          <a href="#top">Retour haut</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      "use strict";
+
+      const STORAGE_KEY = "DIGIY_JOBS_PRO_BUREAU_V1";
+      const PUBLIC_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
+
+      const STATUS_LABELS = {
+        new: "Nouveau",
+        recall: "À rappeler",
+        qualified: "Qualifié",
+        match: "Mise en relation",
+        closed: "Clos"
+      };
+
+      const STATUS_CLASS = {
+        new: "status-new",
+        recall: "status-recall",
+        qualified: "status-qualified",
+        match: "status-match",
+        closed: "status-closed"
+      };
+
+      const statTotal = document.getElementById("statTotal");
+      const statBuild = document.getElementById("statBuild");
+      const statHotel = document.getElementById("statHotel");
+      const statQualified = document.getElementById("statQualified");
+
+      const searchInput = document.getElementById("searchInput");
+      const filterSecteur = document.getElementById("filterSecteur");
+      const filterRole = document.getElementById("filterRole");
+      const filterStatus = document.getElementById("filterStatus");
+      const filterZone = document.getElementById("filterZone");
+
+      const listEl = document.getElementById("list");
+      const emptyState = document.getElementById("emptyState");
+      const detailContent = document.getElementById("detailContent");
+      const detailName = document.getElementById("detailName");
+      const detailSubtitle = document.getElementById("detailSubtitle");
+      const detailChips = document.getElementById("detailChips");
+      const detailGrid = document.getElementById("detailGrid");
+      const statusRow = document.getElementById("statusRow");
+      const bureauNotes = document.getElementById("bureauNotes");
+      const btnOpenWA = document.getElementById("btnOpenWA");
+
+      const btnImportPublic = document.getElementById("btnImportPublic");
+      const btnSeed = document.getElementById("btnSeed");
+      const btnClearFilters = document.getElementById("btnClearFilters");
+      const btnAddManual = document.getElementById("btnAddManual");
+      const btnSaveNotes = document.getElementById("btnSaveNotes");
+      const btnCopyLink = document.getElementById("btnCopyLink");
+      const btnMarkMatch = document.getElementById("btnMarkMatch");
+      const btnExportJson = document.getElementById("btnExportJson");
+      const btnClearAll = document.getElementById("btnClearAll");
+
+      let dossiers = [];
+      let selectedId = null;
+
+      function nowIso(){ return new Date().toISOString(); }
+      function uid(){ return "jobspro-" + Math.random().toString(36).slice(2,10); }
+      function safe(v){ return (v == null || v === "") ? "—" : String(v); }
+      function slugify(s){
+        return (s || "")
+          .toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 64);
+      }
+      function copyText(text){
+        return navigator.clipboard.writeText(text);
+      }
+
+      function seedData(){
+        return [
+          {
+            id: uid(),
+            created_at: nowIso(),
+            secteur: "build",
+            role: "candidat",
+            status: "new",
+            nom: "Moussa Diop",
+            phone: "+221770001122",
+            zone: "Mbour",
+            dispo: "Immédiate",
+            niveau: "Confirmé",
+            hebergement: "Possible si mission longue",
+            metier: "Maçon",
+            buildMission: "Chantier complet",
+            buildSpecialite: "Dalles, cloisons, reprises",
+            buildMobilite: "Déplacement possible",
+            note: "Peut démarrer vite. Bon profil pour villa ou moyen chantier.",
+            bureau_notes: "À rappeler demain matin pour confirmer ses disponibilités exactes sur Saly.",
+            link: "https://jobs.digiylyfe.com/?dossier=jobs-build-candidat-macon-mbour-demo",
+            last_contact: "WhatsApp en attente"
+          },
+          {
+            id: uid(),
+            created_at: nowIso(),
+            secteur: "hotellerie-restauration",
+            role: "candidat",
+            status: "qualified",
+            nom: "Awa Ndiaye",
+            phone: "+221781234567",
+            zone: "Saly",
+            dispo: "Sous 48h",
+            niveau: "Intermédiaire",
+            hebergement: "Non",
+            metier: "Serveur / Serveuse",
+            hotelService: "Salle",
+            hotelHoraires: "Soir",
+            hotelRelation: "Très bon niveau",
+            hotelRythme: "Soutenu",
+            note: "Très bonne présentation. Bon contact client. À proposer sur établissement sérieux.",
+            bureau_notes: "Qualifiée. Bonne tenue. Peut convenir à un spot touristique qui démarre fort le soir.",
+            link: "https://jobs.digiylyfe.com/?dossier=jobs-hotel-candidat-serveuse-saly-demo",
+            last_contact: "Qualifiée et prête"
+          },
+          {
+            id: uid(),
+            created_at: nowIso(),
+            secteur: "build",
+            role: "recruteur",
+            status: "recall",
+            nom: "Chantier Ngaparou",
+            phone: "+221761112233",
+            zone: "Ngaparou",
+            dispo: "Immédiate",
+            niveau: "Chef d’équipe",
+            hebergement: "À confirmer",
+            metier: "Électricien",
+            buildMission: "Renfort d’équipe",
+            buildSpecialite: "Tirage, tableaux, luminaires",
+            buildMobilite: "Zone locale uniquement",
+            note: "Cherche 2 profils fiables rapidement.",
+            bureau_notes: "Besoin réel mais budget à clarifier. Rappeler pour volume et durée.",
+            link: "https://jobs.digiylyfe.com/?dossier=jobs-build-recruteur-electricien-ngaparou-demo",
+            last_contact: "Rappel prévu"
+          },
+          {
+            id: uid(),
+            created_at: nowIso(),
+            secteur: "hotellerie-restauration",
+            role: "recruteur",
+            status: "match",
+            nom: "Maison d’hôtes Somone",
+            phone: "+221709998877",
+            zone: "Somone",
+            dispo: "Sous 7 jours",
+            niveau: "Intermédiaire",
+            hebergement: "Non",
+            metier: "Femme de chambre / Valet",
+            hotelService: "Chambre",
+            hotelHoraires: "Journée",
+            hotelRelation: "Bon niveau",
+            hotelRythme: "Soutenu",
+            note: "Cherche profil discret, sérieux, propre.",
+            bureau_notes: "Mise en relation possible avec Fatou si disponibilité confirmée.",
+            link: "https://jobs.digiylyfe.com/?dossier=jobs-hotel-recruteur-chambre-somone-demo",
+            last_contact: "Mise en relation engagée"
+          }
+        ];
+      }
+
+      function save(){
+        try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(dossiers)); }catch(e){}
+      }
+
+      function load(){
+        try{
+          const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          if(Array.isArray(raw) && raw.length){
+            dossiers = raw;
+            return;
+          }
+        }catch(e){}
+        dossiers = seedData();
+        save();
+      }
+
+      function secteurLabel(v){ return v === "build" ? "BUILD" : "Hôtellerie-Restauration"; }
+      function roleLabel(v){ return v === "recruteur" ? "Recruteur" : "Candidat"; }
+
+      function dossierMatches(d){
+        const q = searchInput.value.trim().toLowerCase();
+        const bySecteur = filterSecteur.value === "all" || d.secteur === filterSecteur.value;
+        const byRole = filterRole.value === "all" || d.role === filterRole.value;
+        const byStatus = filterStatus.value === "all" || d.status === filterStatus.value;
+        const byZone = filterZone.value === "all" || d.zone === filterZone.value;
+        if(!(bySecteur && byRole && byStatus && byZone)) return false;
+        if(!q) return true;
+        const hay = [
+          d.nom,d.metier,d.zone,d.note,d.bureau_notes,d.buildSpecialite,d.hotelService,d.hotelRelation,d.buildMission
+        ].filter(Boolean).join(" ").toLowerCase();
+        return hay.includes(q);
+      }
+
+      function getVisible(){
+        return dossiers.filter(dossierMatches).sort((a,b) => {
+          const ta = new Date(a.created_at || 0).getTime();
+          const tb = new Date(b.created_at || 0).getTime();
+          return tb - ta;
+        });
+      }
+
+      function renderStats(visible){
+        statTotal.textContent = String(visible.length);
+        statBuild.textContent = String(visible.filter(d => d.secteur === "build").length);
+        statHotel.textContent = String(visible.filter(d => d.secteur === "hotellerie-restauration").length);
+        statQualified.textContent = String(visible.filter(d => d.status === "qualified" || d.status === "match").length);
+      }
+
+      function formatSubtitle(d){
+        return [roleLabel(d.role), safe(d.metier), safe(d.zone)].join(" • ");
+      }
+
+      function renderList(){
+        const visible = getVisible();
+        renderStats(visible);
+        listEl.innerHTML = "";
+
+        if(!visible.length){
+          listEl.innerHTML = '<div class="empty-card"><h4>Aucun dossier visible</h4><p>Change les filtres, importe le dernier dossier public, ou ajoute une fiche manuelle.</p></div>';
+          selectedId = null;
+          renderDetail(null);
+          return;
+        }
+
+        if(!visible.some(d => d.id === selectedId)){
+          selectedId = visible[0].id;
+        }
+
+        visible.forEach(d => {
+          const item = document.createElement("article");
+          item.className = "dossier" + (d.id === selectedId ? " active" : "");
+          item.innerHTML = `
+            <div class="dossier-top">
+              <div>
+                <h4>${escapeHtml(d.nom || "Sans nom")}</h4>
+                <p class="sub">${escapeHtml(formatSubtitle(d))}</p>
+              </div>
+            </div>
+            <div class="chips">
+              <span class="chip ${d.secteur === "build" ? "secteur-build" : "secteur-hotel"}">${escapeHtml(secteurLabel(d.secteur))}</span>
+              <span class="chip ${STATUS_CLASS[d.status] || "status-new"}">${escapeHtml(STATUS_LABELS[d.status] || "Nouveau")}</span>
+              <span class="chip">${escapeHtml(safe(d.dispo))}</span>
+            </div>
+            <div class="dossier-note">${escapeHtml((d.bureau_notes || d.note || "Pas encore de note.")).slice(0, 150)}</div>
+          `;
+          item.addEventListener("click", function(){
+            selectedId = d.id;
+            renderList();
+          });
+          listEl.appendChild(item);
+        });
+
+        renderDetail(dossiers.find(d => d.id === selectedId) || null);
+      }
+
+      function fieldHtml(label, value, full){
+        return `<div class="field${full ? ' full' : ''}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
+      }
+
+      function renderDetail(d){
+        if(!d){
+          emptyState.hidden = false;
+          detailContent.hidden = true;
+          return;
+        }
+
+        emptyState.hidden = true;
+        detailContent.hidden = false;
+        detailName.textContent = d.nom || "Sans nom";
+        detailSubtitle.textContent = formatSubtitle(d);
+        bureauNotes.value = d.bureau_notes || "";
+        btnOpenWA.href = buildWhatsAppUrl(d);
+
+        detailChips.innerHTML = `
+          <span class="chip ${d.secteur === "build" ? "secteur-build" : "secteur-hotel"}">${escapeHtml(secteurLabel(d.secteur))}</span>
+          <span class="chip ${STATUS_CLASS[d.status] || "status-new"}">${escapeHtml(STATUS_LABELS[d.status] || "Nouveau")}</span>
+        `;
+
+        const fields = [
+          fieldHtml("Nom / repère", d.nom || "Sans nom"),
+          fieldHtml("Rôle", roleLabel(d.role)),
+          fieldHtml("Téléphone", d.phone),
+          fieldHtml("Zone", d.zone),
+          fieldHtml("Disponibilité", d.dispo),
+          fieldHtml("Niveau", d.niveau),
+          fieldHtml("Hébergement éventuel", d.hebergement),
+          fieldHtml("Lien dossier", d.link, true),
+          fieldHtml("Métier", d.metier),
+          fieldHtml("Dernier contact", d.last_contact || "Pas encore noté")
+        ];
+
+        if(d.secteur === "build"){
+          fields.push(
+            fieldHtml("Type de mission", d.buildMission),
+            fieldHtml("Spécialité terrain", d.buildSpecialite),
+            fieldHtml("Mobilité", d.buildMobilite)
+          );
+        } else {
+          fields.push(
+            fieldHtml("Service principal", d.hotelService),
+            fieldHtml("Horaires possibles", d.hotelHoraires),
+            fieldHtml("Relation client / présentation", d.hotelRelation),
+            fieldHtml("Rythme de travail", d.hotelRythme)
+          );
+        }
+
+        fields.push(fieldHtml("Note utile", d.note, true));
+        detailGrid.innerHTML = fields.join("");
+
+        renderStatusButtons(d);
+      }
+
+      function renderStatusButtons(d){
+        statusRow.innerHTML = "";
+        Object.keys(STATUS_LABELS).forEach(key => {
+          const b = document.createElement("button");
+          b.textContent = STATUS_LABELS[key];
+          if(d.status === key) b.classList.add("active");
+          b.addEventListener("click", function(){
+            d.status = key;
+            d.last_contact = key === "match" ? "Mise en relation engagée" : d.last_contact;
+            save();
+            renderList();
+          });
+          statusRow.appendChild(b);
+        });
+      }
+
+      function buildWhatsAppUrl(d){
+        const lines = [
+          "Bonjour,",
+          "",
+          "je reviens vers vous depuis DIGIY JOBS.",
+          "Secteur: " + secteurLabel(d.secteur),
+          "Rôle: " + roleLabel(d.role),
+          "Profil / besoin: " + safe(d.metier),
+          "Zone: " + safe(d.zone),
+          "Disponibilité: " + safe(d.dispo),
+          d.link ? ("Lien dossier: " + d.link) : null,
+          "",
+          "Nous pouvons avancer sur la qualification et la mise en relation."
+        ].filter(Boolean).join("\n");
+
+        const base = new URL("https://wa.me/" + String(d.phone || "").replace(/\D/g, ""));
+        base.searchParams.set("text", lines);
+        return base.toString();
+      }
+
+      function escapeHtml(str){
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function importPublicDossier(){
+        let raw = null;
+        try{ raw = JSON.parse(localStorage.getItem(PUBLIC_KEY) || "null"); }catch(e){}
+        if(!raw || !raw.phone){
+          alert("Aucun dossier public intelligent trouvé dans ce navigateur.");
+          return;
+        }
+
+        const exists = dossiers.some(d => d.slug === raw.slug || d.link === raw.link);
+        if(exists){
+          alert("Ce dossier public est déjà présent dans le bureau.");
+          return;
+        }
+
+        const mapped = {
+          id: uid(),
+          created_at: nowIso(),
+          secteur: raw.secteur || "build",
+          role: raw.role || "candidat",
+          status: "new",
+          nom: raw.nom || "Nouveau dossier public",
+          phone: raw.phone || "",
+          zone: raw.zone || "Autre",
+          dispo: raw.dispo || "Immédiate",
+          niveau: raw.niveau || "Débutant",
+          hebergement: raw.hebergement || "À confirmer",
+          metier: raw.metier || (raw.secteur === "hotellerie-restauration" ? raw.hotelMetier : raw.buildMetier) || "Non précisé",
+          buildMission: raw.buildMission || "—",
+          buildSpecialite: raw.buildSpecialite || "—",
+          buildMobilite: raw.buildMobilite || "—",
+          hotelService: raw.hotelService || "—",
+          hotelHoraires: raw.hotelHoraires || "—",
+          hotelRelation: raw.hotelRelation || "—",
+          hotelRythme: raw.hotelRythme || "—",
+          note: raw.note || "Importé depuis le formulaire public.",
+          bureau_notes: "Entrée importée depuis le dossier public. À qualifier.",
+          link: raw.link || ("./index.html?dossier=" + encodeURIComponent(raw.slug || slugify(raw.nom || "dossier"))),
+          slug: raw.slug || "",
+          last_contact: "À contacter"
+        };
+
+        dossiers.unshift(mapped);
+        selectedId = mapped.id;
+        save();
+        renderList();
+        alert("Dossier public importé dans le bureau ✅");
+      }
+
+      function addManualDossier(){
+        const secteur = prompt("Secteur ? build / hotellerie-restauration", "build");
+        if(!secteur) return;
+        const nom = prompt("Nom ou repère du dossier ?", "Nouveau dossier manuel");
+        if(!nom) return;
+        const metier = prompt("Métier ou besoin principal ?", secteur === "hotellerie-restauration" ? "Serveur / Serveuse" : "Maçon");
+        const phone = prompt("Téléphone WhatsApp ?", "+22177");
+        if(!phone) return;
+        const zone = prompt("Zone ?", "Saly") || "Autre";
+
+        const d = {
+          id: uid(),
+          created_at: nowIso(),
+          secteur: secteur === "hotellerie-restauration" ? "hotellerie-restauration" : "build",
+          role: "candidat",
+          status: "new",
+          nom,
+          phone,
+          zone,
+          dispo: "Immédiate",
+          niveau: "À confirmer",
+          hebergement: "À confirmer",
+          metier,
+          buildMission: "À confirmer",
+          buildSpecialite: "À confirmer",
+          buildMobilite: "À confirmer",
+          hotelService: "À confirmer",
+          hotelHoraires: "À confirmer",
+          hotelRelation: "À confirmer",
+          hotelRythme: "À confirmer",
+          note: "Entrée manuelle bureau.",
+          bureau_notes: "À qualifier.",
+          link: "./index.html?dossier=" + encodeURIComponent(slugify(nom + "-" + metier)),
+          last_contact: "Pas encore contacté"
+        };
+        dossiers.unshift(d);
+        selectedId = d.id;
+        save();
+        renderList();
+      }
+
+      searchInput.addEventListener("input", renderList);
+      filterSecteur.addEventListener("change", renderList);
+      filterRole.addEventListener("change", renderList);
+      filterStatus.addEventListener("change", renderList);
+      filterZone.addEventListener("change", renderList);
+
+      btnClearFilters.addEventListener("click", function(){
+        searchInput.value = "";
+        filterSecteur.value = "all";
+        filterRole.value = "all";
+        filterStatus.value = "all";
+        filterZone.value = "all";
+        renderList();
+      });
+
+      btnImportPublic.addEventListener("click", importPublicDossier);
+      btnAddManual.addEventListener("click", addManualDossier);
+
+      btnSeed.addEventListener("click", function(){
+        if(!confirm("Recharger les données de démonstration ? Les données actuelles seront remplacées.")) return;
+        dossiers = seedData();
+        selectedId = dossiers[0]?.id || null;
+        save();
+        renderList();
+      });
+
+      btnSaveNotes.addEventListener("click", function(){
+        const d = dossiers.find(x => x.id === selectedId);
+        if(!d) return;
+        d.bureau_notes = bureauNotes.value.trim();
+        d.last_contact = "Notes mises à jour";
+        save();
+        renderList();
+        alert("Notes bureau enregistrées ✅");
+      });
+
+      btnCopyLink.addEventListener("click", async function(){
+        const d = dossiers.find(x => x.id === selectedId);
+        if(!d || !d.link) return;
+        try{
+          await copyText(d.link);
+          d.last_contact = "Lien copié";
+          save();
+          renderList();
+          alert("Lien copié ✅");
+        }catch(e){
+          prompt("Copie le lien :", d.link);
+        }
+      });
+
+      btnMarkMatch.addEventListener("click", function(){
+        const d = dossiers.find(x => x.id === selectedId);
+        if(!d) return;
+        d.status = "match";
+        d.last_contact = "Mise en relation engagée";
+        save();
+        renderList();
+      });
+
+      btnExportJson.addEventListener("click", function(){
+        const blob = new Blob([JSON.stringify(dossiers, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "digiy-jobs-pro-bureau.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      btnClearAll.addEventListener("click", function(){
+        if(!confirm("Vider tout le bureau local ?")) return;
+        dossiers = [];
+        selectedId = null;
+        save();
+        renderList();
+      });
+
+      load();
+      selectedId = dossiers[0]?.id || null;
+      renderList();
+    })();
+  </script>
+</body>
+</html>
