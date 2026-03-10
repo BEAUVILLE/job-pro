@@ -1,4 +1,4 @@
-// guard.js — DIGIY JOBS PRO soft guard (slug-first, cockpit-safe)
+// guard.js — DIGIY JOBS PRO soft guard (slug-first, no auto-redirect)
 (() => {
   "use strict";
 
@@ -6,7 +6,7 @@
   const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
 
-  // ✅ IMPORTANT : module réel backbone
+  // IMPORTANT
   const MODULE_CODE = "JOBS";
 
   const PAY_URL = "https://commencer-a-payer.digiylyfe.com/";
@@ -36,9 +36,9 @@
       headers: {
         apikey: SUPABASE_ANON_KEY,
         Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(params),
+      body: JSON.stringify(params)
     });
 
     let data = null;
@@ -60,8 +60,8 @@
     const r = await fetch(url, {
       headers: {
         apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      },
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+      }
     });
 
     let arr = [];
@@ -97,9 +97,9 @@
     phone: normPhone(phoneQ),
     access: false,
     resolved_from_slug: false,
-    ready: false,
+    ready_flag: false,
     error: null,
-    pay_url: "",
+    pay_url: ""
   };
 
   async function check() {
@@ -116,20 +116,19 @@
     state.phone = phone;
     state.pay_url = buildPayUrl({ phone, slug });
 
-    // pas de phone => pas d’accès, mais pas de redirection auto
     if (!phone) {
       state.access = false;
-      state.ready = true;
+      state.ready_flag = true;
       return { ...state };
     }
 
     const res = await rpc("digiy_has_access", {
       p_phone: phone,
-      p_module: MODULE_CODE,
+      p_module: MODULE_CODE
     });
 
     state.access = res.ok && res.data === true;
-    state.ready = true;
+    state.ready_flag = true;
 
     if (!res.ok) {
       state.error = `digiy_has_access HTTP ${res.status}`;
@@ -138,14 +137,14 @@
     return { ...state };
   }
 
-  const DIGIY_GUARD = {
+  window.DIGIY_GUARD = {
     state,
     async ready() {
-      if (state.ready) return { ...state };
+      if (state.ready_flag) return { ...state };
       return check();
     },
     async refresh() {
-      state.ready = false;
+      state.ready_flag = false;
       state.error = null;
       return check();
     },
@@ -157,8 +156,6 @@
     },
     buildPayUrl() {
       return buildPayUrl(state);
-    },
+    }
   };
-
-  window.DIGIY_GUARD = DIGIY_GUARD;
 })();
