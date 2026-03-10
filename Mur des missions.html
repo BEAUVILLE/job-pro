@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>DIGIY JOBS — Mur des missions</title>
+  <meta name="description" content="DIGIY JOBS — Missions, emplois, terrain, quartier, chantier, services et travail réel." />
+  <meta name="theme-color" content="#071711" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root{
+      --bg:#071711;
+      --bg2:#0b2319;
+      --card:#0f2b1f;
+      --line:rgba(255,255,255,.12);
+      --text:#ecfff4;
+      --muted:rgba(236,255,244,.72);
+      --gold:#facc15;
+      --gold2:#fde68a;
+      --accent:#22c55e;
+      --danger:#fb7185;
+      --shadow:0 18px 60px rgba(0,0,0,.28);
+      --radius:22px;
+      --radius-sm:14px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:
+      radial-gradient(circle at top, rgba(250,204,21,.08), transparent 26%),
+      linear-gradient(180deg,var(--bg),#05110c 100%);
+      color:var(--text);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+
+    .wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 80px}
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:32px;
+      padding:28px 20px;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(250,204,21,.16), transparent 22%),
+        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
+        var(--bg2);
+      box-shadow:var(--shadow);
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+      align-items:center;
+    }
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--gold2);
+      margin-bottom:12px;
+      font-weight:800;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(32px,5vw,60px);
+      line-height:.98;
+      letter-spacing:-.03em;
+    }
+    .lead{
+      margin:0;
+      font-size:17px;
+      line-height:1.6;
+      color:var(--muted);
+      max-width:700px;
+    }
+    .hero-box{
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:18px;
+      background:rgba(255,255,255,.04);
+      backdrop-filter:blur(6px);
+    }
+    .hero-box h2{
+      margin:0 0 8px;
+      font-size:20px;
+    }
+    .hero-box p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:14px;
+    }
+    .pill-row{
+      display:flex;flex-wrap:wrap;gap:10px;
+    }
+    .pill{
+      border:1px solid rgba(250,204,21,.26);
+      color:#fff7cc;
+      background:rgba(250,204,21,.08);
+      border-radius:999px;
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .filters{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns:1.3fr .8fr .8fr .8fr;
+      gap:12px;
+      align-items:end;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .field label{
+      font-size:13px;
+      font-weight:700;
+      color:#d8fbe6;
+    }
+    .field input,
+    .field select{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:16px;
+      padding:14px 15px;
+      color:var(--text);
+      background:rgba(255,255,255,.08);
+      border:1px solid transparent;
+    }
+    .field input::placeholder{color:rgba(236,255,244,.46)}
+    .field input:focus,
+    .field select:focus{
+      border-color:rgba(250,204,21,.45);
+      box-shadow:0 0 0 4px rgba(250,204,21,.08);
+    }
+
+    .toolbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:26px 0 14px;
+    }
+    .count{
+      font-size:14px;
+      color:var(--muted);
+    }
+    .link-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid rgba(250,204,21,.3);
+      background:rgba(250,204,21,.08);
+      color:#fff5b1;
+      font-weight:800;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
+        var(--card);
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      min-height:280px;
+    }
+    .badge-row{
+      display:flex;flex-wrap:wrap;gap:8px;
+      margin-bottom:12px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      color:#e9fff1;
+    }
+    .badge.gold{
+      border-color:rgba(250,204,21,.28);
+      background:rgba(250,204,21,.09);
+      color:#fff2af;
+    }
+
+    .title{
+      font-size:24px;
+      line-height:1.1;
+      font-weight:900;
+      margin:0 0 8px;
+      letter-spacing:-.02em;
+    }
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 14px;
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:12px;
+    }
+    .desc{
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+      margin:0 0 16px;
+      flex:1;
+    }
+    .flags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:16px;
+    }
+    .flag{
+      font-size:12px;
+      font-weight:800;
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(34,197,94,.1);
+      color:#bcffcc;
+      border:1px solid rgba(34,197,94,.22);
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top:auto;
+    }
+    .btn{
+      flex:1;
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      border:none;
+      border-radius:16px;
+      padding:13px 14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .btn-primary{
+      background:linear-gradient(180deg,var(--gold),#eab308);
+      color:#151515;
+    }
+    .btn-secondary{
+      background:rgba(255,255,255,.07);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .empty,.loading,.error{
+      border:1px dashed var(--line);
+      border-radius:24px;
+      padding:26px;
+      text-align:center;
+      color:var(--muted);
+      background:rgba(255,255,255,.03);
+    }
+    .error{color:#ffd7de;border-color:rgba(251,113,133,.28);background:rgba(251,113,133,.08)}
+
+    @media (max-width: 980px){
+      .hero-grid{grid-template-columns:1fr}
+      .filters{grid-template-columns:1fr 1fr}
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width: 640px){
+      .wrap{padding:14px 12px 70px}
+      .hero{padding:22px 14px}
+      .filters{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
+      .toolbar{flex-direction:column;align-items:flex-start}
+      h1{font-size:36px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">DIGIY JOBS • terrain • missions • travail réel</div>
+          <h1>Le mur des missions qui parlent vrai.</h1>
+          <p class="lead">
+            Chantier, quartier, boutique, salon, restauration, services, manutention,
+            conduite, artisanat. Ici on ne vend pas du rêve flou. On montre des besoins concrets,
+            des postes utiles, et des candidatures qui peuvent bouger tout de suite.
+          </p>
+        </div>
+
+        <div class="hero-box">
+          <h2>Ce que tu peux trouver ici</h2>
+          <p>
+            Missions locales, CDI, CDD, extras, profils terrain, métiers de quartier,
+            besoins urgents et opportunités sérieuses.
+          </p>
+          <div class="pill-row">
+            <span class="pill">BTP</span>
+            <span class="pill">Coiffure</span>
+            <span class="pill">Boutique</span>
+            <span class="pill">Livraison</span>
+            <span class="pill">Restauration</span>
+            <span class="pill">Services</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="field">
+          <label for="searchInput">Recherche</label>
+          <input id="searchInput" type="text" placeholder="ex: maçon, chauffeur, coiffeuse, boutique..." />
+        </div>
+        <div class="field">
+          <label for="sectorSelect">Secteur</label>
+          <select id="sectorSelect">
+            <option value="">Tous les secteurs</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="citySelect">Ville</label>
+          <select id="citySelect">
+            <option value="">Toutes les villes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="contractSelect">Contrat</label>
+          <select id="contractSelect">
+            <option value="">Tous les contrats</option>
+            <option value="cdi">CDI</option>
+            <option value="cdd">CDD</option>
+            <option value="mission">Mission</option>
+            <option value="stage">Stage</option>
+            <option value="freelance">Freelance</option>
+            <option value="extra">Extra</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div id="count" class="count">Chargement des missions...</div>
+      <a class="link-btn" href="postuler.html">Candidature spontanée</a>
+    </div>
+
+    <div id="statusBox" class="loading">Chargement en cours...</div>
+    <div id="cards" class="grid" style="display:none"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      offers: [],
+      filtered: []
+    };
+
+    function escapeHtml(v=''){
+      return String(v)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function labelSector(v=''){
+      const map = {
+        build:'BTP',
+        beauty:'Beauté',
+        shop:'Boutique',
+        food:'Restauration',
+        service:'Services',
+        driver:'Chauffeur',
+        market:'Marché',
+        admin:'Admin'
+      };
+      return map[v] || v || 'Secteur';
+    }
+
+    function labelContract(v=''){
+      const map = {
+        cdi:'CDI',
+        cdd:'CDD',
+        mission:'Mission',
+        stage:'Stage',
+        freelance:'Freelance',
+        extra:'Extra'
+      };
+      return map[v] || v || 'Contrat';
+    }
+
+    function shortText(v='', max=170){
+      const s = String(v || '').trim();
+      if (s.length <= max) return s;
+      return s.slice(0, max).trim() + '…';
+    }
+
+    function buildSelectOptions(selectEl, values){
+      const current = selectEl.value;
+      const options = ['<option value="">Tous</option>'];
+      values
+        .filter(Boolean)
+        .sort((a,b)=>String(a).localeCompare(String(b),'fr'))
+        .forEach(v=>{
+          options.push(`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`);
+        });
+      selectEl.innerHTML = options.join('');
+      if ([...selectEl.options].some(o => o.value === current)) {
+        selectEl.value = current;
+      }
+    }
+
+    function renderStatus(type, text){
+      const box = $('statusBox');
+      box.style.display = 'block';
+      box.className = type;
+      box.textContent = text;
+      $('cards').style.display = 'none';
+    }
+
+    function renderCards(list){
+      const cards = $('cards');
+
+      if (!list.length) {
+        renderStatus('empty', 'Aucune mission ne correspond à ce filtre pour le moment.');
+        $('count').textContent = '0 mission trouvée';
+        return;
+      }
+
+      $('statusBox').style.display = 'none';
+      cards.style.display = 'grid';
+      $('count').textContent = `${list.length} mission${list.length > 1 ? 's' : ''} trouvée${list.length > 1 ? 's' : ''}`;
+
+      cards.innerHTML = list.map(item => {
+        const flags = [];
+        if (item.has_housing) flags.push('<span class="flag">Logement possible</span>');
+        if (item.has_family_welcome) flags.push('<span class="flag">Accueil familial possible</span>');
+
+        return `
+          <article class="card">
+            <div class="badge-row">
+              <span class="badge gold">${escapeHtml(labelSector(item.sector))}</span>
+              <span class="badge">${escapeHtml(labelContract(item.contract_type))}</span>
+            </div>
+
+            <h3 class="title">${escapeHtml(item.title || 'Mission')}</h3>
+
+            <div class="meta">
+              <span>${escapeHtml(item.city || 'Ville à préciser')}</span>
+              <span>${escapeHtml(item.country || 'Sénégal')}</span>
+              <span>${escapeHtml(item.pay || 'Rémunération à préciser')}</span>
+            </div>
+
+            <p class="desc">${escapeHtml(shortText(item.description || 'Description à venir.'))}</p>
+
+            <div class="flags">${flags.join('')}</div>
+
+            <div class="actions">
+              <a class="btn btn-secondary" href="mission.html?id=${encodeURIComponent(item.id)}">Voir la mission</a>
+              <a class="btn btn-primary" href="postuler.html?offer=${encodeURIComponent(item.id)}">Je postule</a>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function applyFilters(){
+      const q = $('searchInput').value.trim().toLowerCase();
+      const sector = $('sectorSelect').value.trim().toLowerCase();
+      const city = $('citySelect').value.trim().toLowerCase();
+      const contract = $('contractSelect').value.trim().toLowerCase();
+
+      state.filtered = state.offers.filter(item => {
+        const hay = [
+          item.title,
+          item.sector,
+          item.city,
+          item.country,
+          item.contract_type,
+          item.description,
+          item.requirements,
+          item.employer_name,
+          item.pay
+        ].join(' ').toLowerCase();
+
+        if (q && !hay.includes(q)) return false;
+        if (sector && String(item.sector || '').toLowerCase() !== sector) return false;
+        if (city && String(item.city || '').toLowerCase() !== city) return false;
+        if (contract && String(item.contract_type || '').toLowerCase() !== contract) return false;
+        return true;
+      });
+
+      renderCards(state.filtered);
+    }
+
+    async function loadOffers(){
+      renderStatus('loading', 'Chargement des missions...');
+      const { data, error } = await sb
+        .from('digiy_jobs_offers_pro')
+        .select('id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at')
+        .eq('status', 'active')
+        .order('published_at', { ascending:false })
+        .order('created_at', { ascending:false });
+
+      if (error) {
+        console.error(error);
+        renderStatus('error', 'Impossible de charger les missions pour le moment.');
+        $('count').textContent = 'Erreur de chargement';
+        return;
+      }
+
+      state.offers = data || [];
+
+      buildSelectOptions($('sectorSelect'), [...new Set(state.offers.map(x => x.sector).filter(Boolean))].map(labelSector));
+      // Pour garder la vraie valeur dans le filtre secteur, on reconstruit différemment :
+      $('sectorSelect').innerHTML = '<option value="">Tous les secteurs</option>' +
+        [...new Set(state.offers.map(x => x.sector).filter(Boolean))]
+          .sort((a,b)=>String(a).localeCompare(String(b),'fr'))
+          .map(v => `<option value="${escapeHtml(v)}">${escapeHtml(labelSector(v))}</option>`)
+          .join('');
+
+      $('citySelect').innerHTML = '<option value="">Toutes les villes</option>' +
+        [...new Set(state.offers.map(x => x.city).filter(Boolean))]
+          .sort((a,b)=>String(a).localeCompare(String(b),'fr'))
+          .map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`)
+          .join('');
+
+      applyFilters();
+    }
+
+    $('searchInput').addEventListener('input', applyFilters);
+    $('sectorSelect').addEventListener('change', applyFilters);
+    $('citySelect').addEventListener('change', applyFilters);
+    $('contractSelect').addEventListener('change', applyFilters);
+
+    loadOffers();
+  </script>
+</body>
+</html>
