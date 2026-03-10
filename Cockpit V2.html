@@ -1,0 +1,1301 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#061b14"/>
+  <title>DIGIY JOBS PRO — Cockpit V2</title>
+
+  <script src="./guard.js"></script>
+
+  <style>
+    :root{
+      --bg:#061b14;
+      --bg2:#0a2b1f;
+      --line:rgba(255,255,255,.14);
+      --text:#eafff1;
+      --muted:rgba(234,255,241,.72);
+      --gold:#facc15;
+      --ok:#22c55e;
+      --bad:#fb7185;
+      --blue:#38bdf8;
+      --slate:#94a3b8;
+      --shadow:0 18px 55px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(250,204,21,.10), transparent 55%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+      padding:16px;
+    }
+    .wrap{max-width:1340px;margin:0 auto}
+    .top{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      background:linear-gradient(145deg,rgba(11,42,31,.96),rgba(6,35,25,.96));
+      border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .ico{
+      width:48px;height:48px;border-radius:50%;display:grid;place-items:center;
+      background:radial-gradient(circle at 30% 0,var(--gold),transparent 60%);
+      color:#062015;font-weight:1000;border:1px solid rgba(250,204,21,.35);
+    }
+    h1{margin:0;font-size:16px;letter-spacing:.10em}
+    .sub{margin-top:5px;font-size:12px;color:var(--muted);line-height:1.4}
+    .pill{
+      border:1px solid var(--line);background:rgba(250,204,21,.10);
+      padding:7px 10px;border-radius:999px;font-size:12px;font-weight:900;white-space:nowrap;
+    }
+
+    .grid{display:grid;gap:12px;margin-top:12px}
+    @media(min-width:1080px){ .grid{grid-template-columns:1.22fr .78fr} }
+
+    .card{
+      background:linear-gradient(145deg,rgba(11,42,31,.92),rgba(6,35,25,.92));
+      border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
+      padding:14px;
+    }
+    .title{font-weight:1000;letter-spacing:.08em;font-size:12px;color:rgba(234,255,241,.85)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{
+      flex:1;min-width:180px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);
+      background:rgba(0,0,0,.18);color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .btn:hover{border-color:rgba(250,204,21,.55)}
+    .btn.primary{background:linear-gradient(90deg,var(--ok),var(--gold));color:#062015;border:none}
+    .btn.blue{background:linear-gradient(90deg,var(--blue),#7dd3fc);color:#062015;border:none}
+    .btn.danger{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.10)}
+
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .tab{
+      padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .tab.active{border-color:rgba(250,204,21,.55);background:rgba(250,204,21,.12)}
+
+    .kpis{display:grid;gap:10px;margin-top:10px}
+    @media(min-width:520px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+    .kpi{
+      padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);
+    }
+    .kpi .k{font-size:12px;color:var(--muted)}
+    .kpi .v{font-size:20px;font-weight:1000;margin-top:6px}
+    .kpi .s{font-size:12px;color:rgba(234,255,241,.78);margin-top:4px}
+
+    .split{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    select,input,textarea{
+      border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);
+      color:var(--text);padding:10px 12px;outline:none;font-weight:900;width:100%;
+    }
+    textarea{min-height:92px;resize:vertical;font-weight:700}
+
+    .list{margin-top:10px;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden}
+    .item{
+      padding:12px;border-top:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.14);
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+    }
+    .item:first-child{border-top:none}
+    .a{font-weight:1000}
+    .b{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.38}
+    .badge{
+      font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(250,204,21,.10);white-space:nowrap;
+    }
+    .badge.ok{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35)}
+    .badge.bad{background:rgba(251,113,133,.12);border-color:rgba(251,113,133,.35)}
+    .badge.neutral{background:rgba(148,163,184,.10);border-color:rgba(148,163,184,.28)}
+    .badge.blue{background:rgba(56,189,248,.14);border-color:rgba(56,189,248,.34)}
+    .tinybtn{
+      padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.18);
+      color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .tinybtn:hover{border-color:rgba(250,204,21,.55)}
+
+    .meta-grid{display:grid;gap:10px;margin-top:10px}
+    @media(min-width:700px){ .meta-grid{grid-template-columns:repeat(2,1fr)} }
+    .meta{
+      padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);
+    }
+    .meta .k{font-size:11px;color:var(--muted);font-weight:1000;letter-spacing:.08em;text-transform:uppercase}
+    .meta .v{font-size:14px;font-weight:900;margin-top:6px;line-height:1.4;word-break:break-word}
+
+    .detail-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .detail-actions .tinybtn{flex:1;min-width:160px}
+
+    .match-toolbar{
+      display:grid;gap:10px;margin-top:10px;
+    }
+    @media(min-width:760px){ .match-toolbar{grid-template-columns:1.2fr .8fr .8fr .8fr} }
+    .score{
+      min-width:62px;height:62px;border-radius:16px;display:grid;place-items:center;font-weight:1000;font-size:20px;
+      color:#062015;background:linear-gradient(90deg,var(--ok),var(--gold));
+    }
+    .score.mid{background:linear-gradient(90deg,var(--gold),#fde68a)}
+    .score.low{background:linear-gradient(90deg,#fb7185,#fecdd3)}
+    .reason{
+      margin-top:8px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);
+      font-size:12px;color:rgba(234,255,241,.82);line-height:1.45;
+    }
+
+    .modal{
+      position:fixed;inset:0;display:none;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:18px;z-index:20;
+    }
+    .modal .box{
+      width:min(920px,94vw);background:linear-gradient(145deg,rgba(11,42,31,.98),rgba(6,35,25,.98));
+      border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:16px;box-shadow:0 24px 60px rgba(0,0,0,.65);
+    }
+    label{display:block;font-size:12px;color:var(--muted);margin:6px 0}
+    .fgrid{display:grid;gap:10px;margin-top:10px}
+    @media(min-width:820px){ .fgrid{grid-template-columns:1fr 1fr} }
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .actions button{
+      flex:1;min-width:190px;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(250,204,21,.12);color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .actions .primary{background:linear-gradient(90deg,var(--ok),var(--gold));color:#062015;border:none}
+    .close{
+      margin-top:10px;width:100%;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);color:var(--text);font-weight:1000;cursor:pointer;
+    }
+    .hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.45}
+    .tiny{font-size:11px;color:rgba(234,255,241,.66)}
+    .hidden{display:none !important}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="ico">🦅</div>
+      <div>
+        <h1>💼 JOBS PRO — Cockpit V2</h1>
+        <div class="sub">
+          SLUG: <b id="slug">—</b> • OWNER: <b id="owner">—</b><br>
+          Statut: <b id="stat">session OK</b>
+        </div>
+      </div>
+    </div>
+    <div class="pill">jobs_pro_v2</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="title">⚡ ACTIONS</div>
+      <div class="row">
+        <button class="btn primary" id="btnNewOffer">➕ Nouvelle offre</button>
+        <button class="btn" id="btnNewCand">➕ Nouveau candidat</button>
+        <button class="btn blue" id="btnNewMission">🎯 Nouvelle mission</button>
+        <button class="btn" id="btnPulse">🔔 Inbox</button>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" id="tabOffers">📄 Offres</div>
+        <div class="tab" id="tabCands">👤 Candidats</div>
+        <div class="tab" id="tabMissions">🎯 Missions</div>
+        <div class="tab" id="tabMatch">🤝 Match</div>
+      </div>
+
+      <div class="title" style="margin-top:10px">🌡️ TEMPÉRATURE JOBS</div>
+      <div class="kpis">
+        <div class="kpi">
+          <div class="k">Offres actives</div>
+          <div class="v" id="kOffers">—</div>
+          <div class="s">publiées</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Candidats</div>
+          <div class="v" id="kCands">—</div>
+          <div class="s">dans le pipeline</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Missions ouvertes</div>
+          <div class="v" id="kMissions">—</div>
+          <div class="s">à pourvoir</div>
+        </div>
+        <div class="kpi">
+          <div class="k">Matches validés</div>
+          <div class="v" id="kMatches">—</div>
+          <div class="s">confirmés</div>
+        </div>
+      </div>
+
+      <div id="filtersBlock" style="margin-top:10px">
+        <div class="split">
+          <div class="title" style="flex:1" id="listTitle">📄 OFFRES</div>
+          <select id="filter" style="max-width:240px">
+            <option value="all">Tout</option>
+          </select>
+          <input id="q" placeholder="Recherche…" style="max-width:260px">
+        </div>
+      </div>
+
+      <div id="matchToolbar" class="match-toolbar hidden">
+        <select id="matchMission"></select>
+        <select id="matchMinScore">
+          <option value="0">Tous scores</option>
+          <option value="40">40+</option>
+          <option value="60">60+</option>
+          <option value="80">80+</option>
+        </select>
+        <select id="matchSectorFilter">
+          <option value="all">Tous secteurs</option>
+          <option value="build">BUILD</option>
+          <option value="hotel">Hôtellerie</option>
+        </select>
+        <input id="matchSearch" placeholder="Chercher profil / ville / métier">
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <div class="hint">
+        <b>V2 Cockpit :</b> offres + candidats + missions + match dans un seul bureau par slug.<br>
+        <span class="tiny">V3 : branchement base réelle, fiches mission/candidat partagées, match synchronisé multi-appareils.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">🧭 PANNEAU DROIT</div>
+      <div class="meta-grid" id="detailGrid">
+        <div class="meta">
+          <div class="k">Sélection</div>
+          <div class="v">Choisis une ligne à gauche pour voir les détails.</div>
+        </div>
+      </div>
+
+      <div class="detail-actions" id="detailActions"></div>
+
+      <div style="height:12px"></div>
+      <div class="title">🛟 SUPPORT</div>
+      <div class="row">
+        <button class="btn" id="btnHelp">💬 WhatsApp Support</button>
+        <button class="btn" id="btnLogout">🚪 Déconnexion</button>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="title">🧩 OUTILS</div>
+      <div class="row">
+        <button class="btn" id="btnExport">⬇️ Export JSON</button>
+        <button class="btn danger" id="btnReset">🧹 Reset Démo</button>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="title">📌 Rappels DIGIY JOBS</div>
+      <div class="list" style="margin-top:10px">
+        <div class="item">
+          <div>
+            <div class="a">Accompagnement dossier</div>
+            <div class="b">Qualification légère d’abord. Mission claire ensuite. Mise en relation propre à la fin.</div>
+          </div>
+          <div class="badge neutral">Process</div>
+        </div>
+        <div class="item">
+          <div>
+            <div class="a">Double rail</div>
+            <div class="b">BUILD + Hôtellerie-Restauration. On ouvre large sans mélanger les mondes.</div>
+          </div>
+          <div class="badge blue">Structure</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL OFFER -->
+<div class="modal" id="mOffer">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div style="font-weight:1000">➕ Nouvelle offre</div>
+      <div class="badge neutral" id="mSlugOffer">—</div>
+    </div>
+    <div class="fgrid">
+      <div>
+        <label>Titre</label>
+        <input id="o_title" placeholder="Ex: Serveur / Maçon / Soudeur">
+      </div>
+      <div>
+        <label>Secteur</label>
+        <select id="o_sector">
+          <option value="build">BUILD</option>
+          <option value="hotel">Hôtellerie-Restauration</option>
+          <option value="other">Autre</option>
+        </select>
+      </div>
+      <div>
+        <label>Lieu</label>
+        <input id="o_city" placeholder="Ex: Dakar / Saly / Mbour">
+      </div>
+      <div>
+        <label>Type</label>
+        <select id="o_type">
+          <option value="cdi">CDI</option>
+          <option value="cdd">CDD</option>
+          <option value="saisonnier">Saisonnier</option>
+          <option value="mission">Mission</option>
+        </select>
+      </div>
+      <div>
+        <label>Salaire (option)</label>
+        <input id="o_pay" placeholder="Ex: 120k / 250k / selon profil">
+      </div>
+      <div>
+        <label>Statut</label>
+        <select id="o_status">
+          <option value="active">Actif</option>
+          <option value="paused">Pause</option>
+          <option value="closed">Clos</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:6px">
+      <label>Description</label>
+      <textarea id="o_desc" placeholder="Missions, horaires, conditions, logement, etc."></textarea>
+    </div>
+    <div class="actions">
+      <button class="primary" id="o_save">✅ Enregistrer</button>
+      <button id="o_cancel">Annuler</button>
+    </div>
+    <button class="close" id="o_close">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL CAND -->
+<div class="modal" id="mCand">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div style="font-weight:1000">➕ Nouveau candidat</div>
+      <div class="badge neutral" id="mSlugCand">—</div>
+    </div>
+    <div class="fgrid">
+      <div>
+        <label>Nom</label>
+        <input id="c_name" placeholder="Ex: Awa Diop">
+      </div>
+      <div>
+        <label>Téléphone</label>
+        <input id="c_phone" placeholder="+221…">
+      </div>
+      <div>
+        <label>Métier</label>
+        <input id="c_job" placeholder="Ex: Serveuse / Maçon / Électricien">
+      </div>
+      <div>
+        <label>Secteur</label>
+        <select id="c_sector">
+          <option value="build">BUILD</option>
+          <option value="hotel">Hôtellerie-Restauration</option>
+          <option value="other">Autre</option>
+        </select>
+      </div>
+      <div>
+        <label>Ville</label>
+        <input id="c_city" placeholder="Ex: Saly / Dakar / Mbour">
+      </div>
+      <div>
+        <label>Disponibilité</label>
+        <select id="c_availability">
+          <option value="immediate">Immédiate</option>
+          <option value="48h">Sous 48h</option>
+          <option value="7d">Sous 7 jours</option>
+          <option value="later">À confirmer</option>
+        </select>
+      </div>
+      <div>
+        <label>Niveau</label>
+        <select id="c_level">
+          <option value="debutant">Débutant</option>
+          <option value="intermediaire">Intermédiaire</option>
+          <option value="confirme">Confirmé</option>
+          <option value="chef">Chef d’équipe</option>
+        </select>
+      </div>
+      <div>
+        <label>Hébergement</label>
+        <select id="c_housing">
+          <option value="non">Non</option>
+          <option value="possible">Possible</option>
+          <option value="mission-longue">Possible si mission longue</option>
+          <option value="a-confirmer">À confirmer</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:6px">
+      <label>Note</label>
+      <textarea id="c_note" placeholder="Expérience, disponibilité réelle, sérieux, logement éventuel, etc."></textarea>
+    </div>
+    <div class="actions">
+      <button class="primary" id="c_save">✅ Enregistrer</button>
+      <button id="c_cancel">Annuler</button>
+    </div>
+    <button class="close" id="c_close">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL MISSION -->
+<div class="modal" id="mMission">
+  <div class="box">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div style="font-weight:1000">🎯 Nouvelle mission</div>
+      <div class="badge neutral" id="mSlugMission">—</div>
+    </div>
+    <div class="fgrid">
+      <div>
+        <label>Titre mission</label>
+        <input id="m_title" placeholder="Ex: Renfort service soir / Chantier villa Saly">
+      </div>
+      <div>
+        <label>Secteur</label>
+        <select id="m_sector">
+          <option value="build">BUILD</option>
+          <option value="hotel">Hôtellerie-Restauration</option>
+        </select>
+      </div>
+      <div>
+        <label>Ville</label>
+        <input id="m_city" placeholder="Ex: Saly / Ngaparou / Dakar">
+      </div>
+      <div>
+        <label>Métier recherché</label>
+        <input id="m_job" placeholder="Ex: Serveur / Maçon / Soudeur">
+      </div>
+      <div>
+        <label>Nombre recherché</label>
+        <select id="m_count">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4+">4+</option>
+        </select>
+      </div>
+      <div>
+        <label>Démarrage</label>
+        <select id="m_start">
+          <option value="immediate">Immédiat</option>
+          <option value="48h">Sous 48h</option>
+          <option value="7d">Cette semaine</option>
+          <option value="planned">Planifié</option>
+        </select>
+      </div>
+      <div>
+        <label>Durée</label>
+        <select id="m_duration">
+          <option value="ponctuelle">Ponctuelle</option>
+          <option value="jours">Quelques jours</option>
+          <option value="semaines">1 à 4 semaines</option>
+          <option value="recurrente">Longue / récurrente</option>
+        </select>
+      </div>
+      <div>
+        <label>Priorité</label>
+        <select id="m_priority">
+          <option value="normale">Normale</option>
+          <option value="haute">Haute</option>
+          <option value="urgente">Urgente</option>
+        </select>
+      </div>
+      <div>
+        <label>Hébergement</label>
+        <select id="m_housing">
+          <option value="non">Non</option>
+          <option value="possible">Possible</option>
+          <option value="mission-longue">Possible si mission longue</option>
+          <option value="a-confirmer">À confirmer</option>
+        </select>
+      </div>
+      <div>
+        <label>Statut mission</label>
+        <select id="m_status">
+          <option value="open">Ouverte</option>
+          <option value="paused">Pause</option>
+          <option value="closed">Close</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:6px">
+      <label>Détail mission</label>
+      <textarea id="m_desc" placeholder="Besoin réel, horaires, cadre, équipe, détail terrain, précision utile."></textarea>
+    </div>
+    <div class="actions">
+      <button class="primary" id="m_save">✅ Enregistrer</button>
+      <button id="m_cancel">Annuler</button>
+    </div>
+    <button class="close" id="m_close">Fermer</button>
+  </div>
+</div>
+
+<script>
+  const s = window.DIGIY_ACCESS || {};
+  const slug = (s.slug || "").toLowerCase();
+  document.getElementById("slug").textContent = s.slug || "—";
+  document.getElementById("owner").textContent = s.owner_id || "—";
+
+  const KEY_OFFERS   = "DIGIY_JOBS_OFFERS::"    + (slug || "noslug");
+  const KEY_CANDS    = "DIGIY_JOBS_CANDS::"     + (slug || "noslug");
+  const KEY_MISSIONS = "DIGIY_JOBS_MISSIONS::"  + (slug || "noslug");
+  const KEY_MATCHES  = "DIGIY_JOBS_MATCHES::"   + (slug || "noslug");
+
+  let mode = "offers"; // offers | cands | missions | match
+  let selectedId = null;
+  let selectedMissionId = null;
+
+  function uid(){
+    return (crypto?.randomUUID ? crypto.randomUUID() : ("id_" + Math.random().toString(16).slice(2) + Date.now()));
+  }
+  function nowISO(){ return new Date().toISOString(); }
+  function load(key){ try{ return JSON.parse(localStorage.getItem(key) || "[]"); }catch(_){ return []; } }
+  function save(key, rows){ localStorage.setItem(key, JSON.stringify(rows)); }
+  function esc(s){
+    return String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+  function text(v){ return v == null || v === "" ? "—" : String(v); }
+  function matchesText(hay, q){
+    q = String(q || "").trim().toLowerCase();
+    if(!q) return true;
+    return String(hay || "").toLowerCase().includes(q);
+  }
+  function cap(v){
+    v = String(v || "");
+    return v ? (v.charAt(0).toUpperCase() + v.slice(1)) : "—";
+  }
+  function sectorLabel(v){
+    return v === "build" ? "BUILD" : v === "hotel" ? "HÔTELLERIE" : "AUTRE";
+  }
+  function badge(st){
+    const map = {
+      active:["ACTIF","ok"], paused:["PAUSE","neutral"], closed:["CLOS","bad"],
+      new:["NOUVEAU","neutral"], review:["DOSSIER","neutral"], interview:["ENTRETIEN","blue"],
+      waiting:["ATTENTE","neutral"], placed:["PLACÉ","ok"], rejected:["REFUS","bad"],
+      open:["OUVERTE","ok"], proposed:["PROPOSÉ","blue"], validated:["VALIDÉ","ok"]
+    };
+    const v = map[st] || [String(st || "—").toUpperCase(), "neutral"];
+    return `<span class="badge ${v[1]}">${v[0]}</span>`;
+  }
+  function scoreClass(score){
+    if(score >= 80) return "score";
+    if(score >= 60) return "score mid";
+    return "score low";
+  }
+  function setStatus(msg){ document.getElementById("stat").textContent = msg; }
+
+  function modalOpen(id){ document.getElementById(id).style.display = "flex"; }
+  function modalClose(id){ document.getElementById(id).style.display = "none"; }
+
+  function getOffers(){ return load(KEY_OFFERS); }
+  function getCands(){ return load(KEY_CANDS); }
+  function getMissions(){ return load(KEY_MISSIONS); }
+  function getMatches(){ return load(KEY_MATCHES); }
+
+  function renderKPIs(){
+    const offers = getOffers();
+    const cands = getCands();
+    const missions = getMissions();
+    const matches = getMatches();
+    document.getElementById("kOffers").textContent = String(offers.filter(x => x.status === "active").length);
+    document.getElementById("kCands").textContent = String(cands.length);
+    document.getElementById("kMissions").textContent = String(missions.filter(x => x.status === "open").length);
+    document.getElementById("kMatches").textContent = String(matches.filter(x => x.status === "validated").length);
+  }
+
+  function fillFilterForMode(){
+    const filter = document.getElementById("filter");
+    filter.innerHTML = "";
+    if(mode === "offers"){
+      filter.innerHTML = `
+        <option value="all">Toutes</option>
+        <option value="active">Actives</option>
+        <option value="paused">En pause</option>
+        <option value="closed">Closes</option>
+        <option value="build">BUILD</option>
+        <option value="hotel">Hôtellerie</option>`;
+    } else if(mode === "cands"){
+      filter.innerHTML = `
+        <option value="all">Tous</option>
+        <option value="new">Nouveaux</option>
+        <option value="review">Dossier</option>
+        <option value="interview">Entretien</option>
+        <option value="waiting">Attente</option>
+        <option value="placed">Placés</option>
+        <option value="rejected">Refusés</option>
+        <option value="build">BUILD</option>
+        <option value="hotel">Hôtellerie</option>`;
+    } else if(mode === "missions"){
+      filter.innerHTML = `
+        <option value="all">Toutes</option>
+        <option value="open">Ouvertes</option>
+        <option value="paused">En pause</option>
+        <option value="closed">Closes</option>
+        <option value="build">BUILD</option>
+        <option value="hotel">Hôtellerie</option>`;
+    }
+  }
+
+  function setMode(m){
+    mode = m;
+    selectedId = null;
+    document.getElementById("tabOffers").classList.toggle("active", m === "offers");
+    document.getElementById("tabCands").classList.toggle("active", m === "cands");
+    document.getElementById("tabMissions").classList.toggle("active", m === "missions");
+    document.getElementById("tabMatch").classList.toggle("active", m === "match");
+
+    const titles = {
+      offers:"📄 OFFRES",
+      cands:"👤 CANDIDATS",
+      missions:"🎯 MISSIONS",
+      match:"🤝 MATCH CANDIDAT ↔ MISSION"
+    };
+    document.getElementById("listTitle").textContent = titles[m] || "—";
+    document.getElementById("filtersBlock").classList.toggle("hidden", m === "match");
+    document.getElementById("matchToolbar").classList.toggle("hidden", m !== "match");
+    if(m !== "match") fillFilterForMode();
+    render();
+  }
+
+  function renderMissionSelector(){
+    const select = document.getElementById("matchMission");
+    const missions = getMissions().sort((a,b) => (b.created_at || "").localeCompare(a.created_at || ""));
+    if(!missions.length){
+      select.innerHTML = '<option value="">Aucune mission</option>';
+      selectedMissionId = null;
+      return;
+    }
+    if(!selectedMissionId || !missions.some(x => x.id === selectedMissionId)){
+      selectedMissionId = missions[0].id;
+    }
+    select.innerHTML = missions.map(m => `<option value="${esc(m.id)}">${esc(m.title)} • ${esc(m.city || "—")} • ${esc(sectorLabel(m.sector))}</option>`).join("");
+    select.value = selectedMissionId;
+  }
+
+  function formatDate(iso){
+    try{ return new Date(iso).toLocaleString("fr-FR"); }catch(_){ return "—"; }
+  }
+
+  function setDetailGrid(entries){
+    const grid = document.getElementById("detailGrid");
+    grid.innerHTML = entries.map(([k,v]) => `
+      <div class="meta">
+        <div class="k">${esc(k)}</div>
+        <div class="v">${esc(text(v))}</div>
+      </div>`).join("");
+  }
+
+  function setDetailActions(html){
+    document.getElementById("detailActions").innerHTML = html || "";
+  }
+
+  function renderOffers(){
+    const q = document.getElementById("q").value;
+    const f = document.getElementById("filter").value;
+    let rows = getOffers().sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+    if(f !== "all"){
+      rows = rows.filter(r => r.status === f || r.sector === f);
+    }
+    if(q) rows = rows.filter(r => matchesText([r.title,r.city,r.type,r.pay,r.desc,r.sector].join(" "), q));
+
+    const list = document.getElementById("list");
+    if(!rows.length){
+      list.innerHTML = `<div class="item"><div><div class="a">Aucune offre</div><div class="b">Clique “Nouvelle offre” pour commencer.</div></div><div class="badge neutral">VIDE</div></div>`;
+      setDetailGrid([["Sélection","Aucune offre disponible"]]);
+      setDetailActions("");
+      return;
+    }
+    if(!selectedId || !rows.some(x => x.id === selectedId)) selectedId = rows[0].id;
+    list.innerHTML = rows.map(r => `
+      <div class="item" data-kind="offer" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
+        <div style="flex:1">
+          <div class="a">${esc(r.title || "—")} • ${esc(r.city || "—")} • ${esc(sectorLabel(r.sector))}</div>
+          <div class="b">
+            Type: ${esc(r.type || "—")}<br>
+            ${r.pay ? `Salaire: ${esc(r.pay)}<br>` : ""}
+            ${r.desc ? `Desc: ${esc(r.desc)}<br>` : ""}
+            Créée: ${esc(formatDate(r.created_at))}
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="tinybtn" data-mode="offers" data-act="active" data-id="${esc(r.id)}">🟢 Actif</button>
+            <button class="tinybtn" data-mode="offers" data-act="paused" data-id="${esc(r.id)}">⏸️ Pause</button>
+            <button class="tinybtn" data-mode="offers" data-act="closed" data-id="${esc(r.id)}">⛔ Clore</button>
+            <button class="tinybtn" data-mode="offers" data-act="del" data-id="${esc(r.id)}">🗑️ Supprimer</button>
+          </div>
+        </div>
+        <div>${badge(r.status)}</div>
+      </div>`).join("");
+
+    const cur = rows.find(x => x.id === selectedId);
+    setDetailGrid([
+      ["Type", cur.type],
+      ["Secteur", sectorLabel(cur.sector)],
+      ["Ville", cur.city],
+      ["Salaire", cur.pay || "—"],
+      ["Statut", cur.status],
+      ["Créée le", formatDate(cur.created_at)],
+      ["Description", cur.desc || "—"]
+    ]);
+    setDetailActions(`
+      <button class="tinybtn" data-mode="offers" data-act="active" data-id="${esc(cur.id)}">🟢 Activer</button>
+      <button class="tinybtn" data-mode="offers" data-act="paused" data-id="${esc(cur.id)}">⏸️ Pause</button>
+      <button class="tinybtn" data-mode="offers" data-act="closed" data-id="${esc(cur.id)}">⛔ Clore</button>
+      <button class="tinybtn" data-mode="offers" data-act="del" data-id="${esc(cur.id)}">🗑️ Supprimer</button>
+    `);
+  }
+
+  function renderCands(){
+    const q = document.getElementById("q").value;
+    const f = document.getElementById("filter").value;
+    let rows = getCands().sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+    if(f !== "all") rows = rows.filter(r => r.status === f || r.sector === f);
+    if(q) rows = rows.filter(r => matchesText([r.name,r.phone,r.job,r.city,r.note,r.sector,r.availability,r.level].join(" "), q));
+
+    const list = document.getElementById("list");
+    if(!rows.length){
+      list.innerHTML = `<div class="item"><div><div class="a">Aucun candidat</div><div class="b">Clique “Nouveau candidat” pour commencer.</div></div><div class="badge neutral">VIDE</div></div>`;
+      setDetailGrid([["Sélection","Aucun candidat disponible"]]);
+      setDetailActions("");
+      return;
+    }
+    if(!selectedId || !rows.some(x => x.id === selectedId)) selectedId = rows[0].id;
+    list.innerHTML = rows.map(r => `
+      <div class="item" data-kind="cand" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
+        <div style="flex:1">
+          <div class="a">${esc(r.name || "—")} • ${esc(r.job || "—")} • ${esc(sectorLabel(r.sector))}</div>
+          <div class="b">
+            Tel: ${esc(r.phone || "—")}<br>
+            Ville: ${esc(r.city || "—")} • Dispo: ${esc(cap(r.availability))} • Niveau: ${esc(cap(r.level))}<br>
+            ${r.note ? `Note: ${esc(r.note)}<br>` : ""}
+            Créé: ${esc(formatDate(r.created_at))}
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="tinybtn" data-mode="cands" data-act="new" data-id="${esc(r.id)}">🆕</button>
+            <button class="tinybtn" data-mode="cands" data-act="review" data-id="${esc(r.id)}">📁 Dossier</button>
+            <button class="tinybtn" data-mode="cands" data-act="interview" data-id="${esc(r.id)}">🎤 Entretien</button>
+            <button class="tinybtn" data-mode="cands" data-act="waiting" data-id="${esc(r.id)}">⏳ Attente</button>
+            <button class="tinybtn" data-mode="cands" data-act="placed" data-id="${esc(r.id)}">✅ Placé</button>
+            <button class="tinybtn" data-mode="cands" data-act="rejected" data-id="${esc(r.id)}">⛔ Refus</button>
+            <button class="tinybtn" data-mode="cands" data-act="del" data-id="${esc(r.id)}">🗑️</button>
+          </div>
+        </div>
+        <div>${badge(r.status)}</div>
+      </div>`).join("");
+
+    const cur = rows.find(x => x.id === selectedId);
+    setDetailGrid([
+      ["Téléphone", cur.phone],
+      ["Métier", cur.job],
+      ["Secteur", sectorLabel(cur.sector)],
+      ["Ville", cur.city],
+      ["Disponibilité", cap(cur.availability)],
+      ["Niveau", cap(cur.level)],
+      ["Hébergement", cap(cur.housing)],
+      ["Statut", cur.status],
+      ["Note", cur.note || "—"]
+    ]);
+    const waMsg = encodeURIComponent(`Bonjour ${cur.name || ''},\n\nDIGIY JOBS PRO vous contacte au sujet de votre profil ${cur.job || ''}.`);
+    const waHref = `https://wa.me/${String(cur.phone || '').replace(/\D/g,'')}?text=${waMsg}`;
+    setDetailActions(`
+      <a class="tinybtn" href="${waHref}" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <button class="tinybtn" data-copy="${esc(cur.phone || '')}">📋 Copier tel</button>
+      <button class="tinybtn" data-mode="cands" data-act="interview" data-id="${esc(cur.id)}">🎤 Entretien</button>
+      <button class="tinybtn" data-mode="cands" data-act="placed" data-id="${esc(cur.id)}">✅ Placé</button>
+      <button class="tinybtn" data-mode="cands" data-act="del" data-id="${esc(cur.id)}">🗑️ Supprimer</button>
+    `);
+  }
+
+  function renderMissions(){
+    const q = document.getElementById("q").value;
+    const f = document.getElementById("filter").value;
+    let rows = getMissions().sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+    if(f !== "all") rows = rows.filter(r => r.status === f || r.sector === f);
+    if(q) rows = rows.filter(r => matchesText([r.title,r.city,r.job,r.desc,r.sector,r.priority,r.start].join(" "), q));
+
+    const list = document.getElementById("list");
+    if(!rows.length){
+      list.innerHTML = `<div class="item"><div><div class="a">Aucune mission</div><div class="b">Clique “Nouvelle mission” pour lancer le rail mission.</div></div><div class="badge neutral">VIDE</div></div>`;
+      setDetailGrid([["Sélection","Aucune mission disponible"]]);
+      setDetailActions("");
+      return;
+    }
+    if(!selectedId || !rows.some(x => x.id === selectedId)) selectedId = rows[0].id;
+    list.innerHTML = rows.map(r => `
+      <div class="item" data-kind="mission" data-id="${esc(r.id)}" style="cursor:pointer;${r.id===selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
+        <div style="flex:1">
+          <div class="a">${esc(r.title || '—')} • ${esc(r.city || '—')} • ${esc(r.job || '—')}</div>
+          <div class="b">
+            Secteur: ${esc(sectorLabel(r.sector))} • Départ: ${esc(cap(r.start))} • Priorité: ${esc(cap(r.priority))}<br>
+            Durée: ${esc(cap(r.duration))} • Besoin: ${esc(r.count || '—')} • Hébergement: ${esc(cap(r.housing))}<br>
+            ${r.desc ? `Desc: ${esc(r.desc)}<br>` : ''}
+            Créée: ${esc(formatDate(r.created_at))}
+          </div>
+          <div class="row" style="margin-top:10px">
+            <button class="tinybtn" data-mode="missions" data-act="open" data-id="${esc(r.id)}">🟢 Ouvrir</button>
+            <button class="tinybtn" data-mode="missions" data-act="paused" data-id="${esc(r.id)}">⏸️ Pause</button>
+            <button class="tinybtn" data-mode="missions" data-act="closed" data-id="${esc(r.id)}">⛔ Clore</button>
+            <button class="tinybtn" data-match-open="${esc(r.id)}">🤝 Matcher</button>
+            <button class="tinybtn" data-mode="missions" data-act="del" data-id="${esc(r.id)}">🗑️ Supprimer</button>
+          </div>
+        </div>
+        <div>${badge(r.status)}</div>
+      </div>`).join("");
+
+    const cur = rows.find(x => x.id === selectedId);
+    setDetailGrid([
+      ["Secteur", sectorLabel(cur.sector)],
+      ["Ville", cur.city],
+      ["Métier recherché", cur.job],
+      ["Nombre", cur.count],
+      ["Démarrage", cap(cur.start)],
+      ["Durée", cap(cur.duration)],
+      ["Priorité", cap(cur.priority)],
+      ["Hébergement", cap(cur.housing)],
+      ["Statut", cur.status],
+      ["Description", cur.desc || '—']
+    ]);
+    setDetailActions(`
+      <button class="tinybtn" data-match-open="${esc(cur.id)}">🤝 Ouvrir le match</button>
+      <button class="tinybtn" data-mode="missions" data-act="open" data-id="${esc(cur.id)}">🟢 Ouvrir</button>
+      <button class="tinybtn" data-mode="missions" data-act="paused" data-id="${esc(cur.id)}">⏸️ Pause</button>
+      <button class="tinybtn" data-mode="missions" data-act="closed" data-id="${esc(cur.id)}">⛔ Clore</button>
+      <button class="tinybtn" data-mode="missions" data-act="del" data-id="${esc(cur.id)}">🗑️ Supprimer</button>
+    `);
+  }
+
+  function normalizeText(v){
+    return String(v || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  }
+
+  function computeMatch(cand, mission){
+    let score = 20;
+    const reasons = [];
+    if(cand.sector === mission.sector){ score += 30; reasons.push("Même rail métier."); }
+    else { score -= 20; reasons.push("Secteur différent."); }
+
+    const jobCand = normalizeText(cand.job);
+    const jobMission = normalizeText(mission.job);
+    if(jobCand && jobMission && (jobCand.includes(jobMission) || jobMission.includes(jobCand))){
+      score += 25; reasons.push("Métier principal aligné.");
+    } else if(jobCand && jobMission){
+      const a = jobCand.split(/\s+/).filter(Boolean);
+      const b = jobMission.split(/\s+/).filter(Boolean);
+      const overlap = a.some(x => b.includes(x));
+      if(overlap){ score += 12; reasons.push("Proximité métier détectée."); }
+      else reasons.push("Métier à vérifier.");
+    }
+
+    if(normalizeText(cand.city) === normalizeText(mission.city)){ score += 15; reasons.push("Même ville."); }
+    else reasons.push("Ville à confirmer.");
+
+    const av = cand.availability;
+    if((av === "immediate" && (mission.start === "immediate" || mission.start === "48h")) || av === mission.start){
+      score += 10; reasons.push("Disponibilité cohérente.");
+    } else if(av === "48h" || av === "7d"){
+      score += 5; reasons.push("Disponibilité encore exploitable.");
+    }
+
+    if((cand.level === "confirme" || cand.level === "chef") && (mission.priority === "haute" || mission.priority === "urgente")){
+      score += 8; reasons.push("Niveau solide pour mission prioritaire.");
+    }
+
+    if(mission.housing !== "non" && (cand.housing === mission.housing || cand.housing === "possible" || cand.housing === "mission-longue" || cand.housing === "a-confirmer")){
+      score += 5; reasons.push("Question hébergement potentiellement compatible.");
+    }
+
+    if(cand.status === "review" || cand.status === "interview"){
+      score += 6; reasons.push("Profil déjà avancé côté bureau.");
+    }
+    if(cand.status === "placed" || cand.status === "rejected"){
+      score -= 20; reasons.push("Statut candidat moins exploitable pour un nouveau match.");
+    }
+
+    score = Math.max(0, Math.min(100, score));
+    return { score, reasons };
+  }
+
+  function renderMatch(){
+    renderMissionSelector();
+    const list = document.getElementById("list");
+    const missions = getMissions();
+    const mission = missions.find(x => x.id === selectedMissionId);
+    if(!mission){
+      list.innerHTML = `<div class="item"><div><div class="a">Aucune mission pour le match</div><div class="b">Crée une mission puis reviens ici.</div></div><div class="badge neutral">VIDE</div></div>`;
+      setDetailGrid([["Sélection","Aucune mission active pour le matching"]]);
+      setDetailActions("");
+      return;
+    }
+
+    const q = document.getElementById("matchSearch").value;
+    const minScore = Number(document.getElementById("matchMinScore").value || "0");
+    const sectorFilter = document.getElementById("matchSectorFilter").value;
+
+    let rows = getCands().map(c => ({ cand:c, calc:computeMatch(c, mission) }));
+    if(sectorFilter !== "all") rows = rows.filter(r => r.cand.sector === sectorFilter);
+    rows = rows.filter(r => r.cand.sector === mission.sector);
+    if(q) rows = rows.filter(r => matchesText([r.cand.name,r.cand.job,r.cand.city,r.cand.note].join(" "), q));
+    rows = rows.filter(r => r.calc.score >= minScore).sort((a,b)=> b.calc.score - a.calc.score || (b.cand.created_at||"").localeCompare(a.cand.created_at||""));
+
+    if(!rows.length){
+      list.innerHTML = `<div class="item"><div><div class="a">Aucun candidat compatible</div><div class="b">Baisse le filtre, change la mission, ou ajoute un candidat dans le bureau.</div></div><div class="badge neutral">VIDE</div></div>`;
+      setDetailGrid([
+        ["Mission", mission.title],
+        ["Métier recherché", mission.job],
+        ["Ville", mission.city],
+        ["Secteur", sectorLabel(mission.sector)]
+      ]);
+      setDetailActions("");
+      return;
+    }
+
+    if(!selectedId || !rows.some(x => x.cand.id === selectedId)) selectedId = rows[0].cand.id;
+    const matches = getMatches();
+    list.innerHTML = rows.map(({cand, calc}) => {
+      const existing = matches.find(m => m.mission_id === mission.id && m.cand_id === cand.id);
+      return `
+        <div class="item" data-kind="matchcand" data-id="${esc(cand.id)}" style="cursor:pointer;${cand.id===selectedId?'outline:1px solid rgba(250,204,21,.35);':''}">
+          <div style="flex:1">
+            <div class="a">${esc(cand.name || '—')} • ${esc(cand.job || '—')} • ${esc(cand.city || '—')}</div>
+            <div class="b">
+              Secteur: ${esc(sectorLabel(cand.sector))} • Dispo: ${esc(cap(cand.availability))} • Niveau: ${esc(cap(cand.level))}<br>
+              ${cand.note ? `Note: ${esc(cand.note)}<br>` : ''}
+              ${existing ? `Match: ${esc(existing.status)}<br>` : ''}
+              Créé: ${esc(formatDate(cand.created_at))}
+            </div>
+            <div class="reason">${esc(calc.reasons.join(' • '))}</div>
+            <div class="row" style="margin-top:10px">
+              <button class="tinybtn" data-validate-match="${esc(cand.id)}">🤝 Valider</button>
+              <button class="tinybtn" data-wa-match="${esc(cand.id)}">💬 WhatsApp</button>
+              <button class="tinybtn" data-copy-cand="${esc(cand.id)}">📋 Copier tel</button>
+            </div>
+          </div>
+          <div>
+            <div class="${scoreClass(calc.score)}">${calc.score}</div>
+            <div style="height:8px"></div>
+            ${existing ? badge(existing.status) : badge('proposed')}
+          </div>
+        </div>`;
+    }).join("");
+
+    const cur = rows.find(x => x.cand.id === selectedId);
+    const existing = matches.find(m => m.mission_id === mission.id && m.cand_id === cur.cand.id);
+    setDetailGrid([
+      ["Mission", mission.title],
+      ["Métier recherché", mission.job],
+      ["Ville mission", mission.city],
+      ["Candidat", cur.cand.name],
+      ["Métier candidat", cur.cand.job],
+      ["Ville candidat", cur.cand.city],
+      ["Score", cur.calc.score + '/100'],
+      ["Statut match", existing ? existing.status : 'proposed'],
+      ["Raisons", cur.calc.reasons.join(' • ')],
+      ["Note match", existing?.note || '—']
+    ]);
+    setDetailActions(`
+      <button class="tinybtn" data-validate-match="${esc(cur.cand.id)}">🤝 Valider ce match</button>
+      <button class="tinybtn" data-wa-match="${esc(cur.cand.id)}">💬 WhatsApp candidat</button>
+      <button class="tinybtn" data-copy-cand="${esc(cur.cand.id)}">📋 Copier téléphone</button>
+      <button class="tinybtn" data-copy-mission="${esc(mission.id)}">🧷 Copier mission</button>
+    `);
+  }
+
+  function render(){
+    renderKPIs();
+    if(mode === "offers") return renderOffers();
+    if(mode === "cands") return renderCands();
+    if(mode === "missions") return renderMissions();
+    return renderMatch();
+  }
+
+  function updateRow(key, id, patch){
+    const rows = load(key);
+    const i = rows.findIndex(x => x.id === id);
+    if(i < 0) return;
+    rows[i] = { ...rows[i], ...patch, updated_at: nowISO() };
+    save(key, rows);
+    render();
+  }
+  function deleteRow(key, id){
+    save(key, load(key).filter(x => x.id !== id));
+    render();
+  }
+
+  // tabs
+  document.getElementById("tabOffers").onclick = () => setMode("offers");
+  document.getElementById("tabCands").onclick = () => setMode("cands");
+  document.getElementById("tabMissions").onclick = () => setMode("missions");
+  document.getElementById("tabMatch").onclick = () => setMode("match");
+
+  // common filters
+  document.getElementById("filter").onchange = render;
+  document.getElementById("q").oninput = render;
+  document.getElementById("matchMission").onchange = (e) => { selectedMissionId = e.target.value; selectedId = null; render(); };
+  document.getElementById("matchMinScore").onchange = render;
+  document.getElementById("matchSectorFilter").onchange = render;
+  document.getElementById("matchSearch").oninput = render;
+
+  // select from list
+  document.addEventListener("click", (e) => {
+    const row = e.target.closest("[data-kind][data-id]");
+    if(row){
+      selectedId = row.getAttribute("data-id");
+      render();
+      return;
+    }
+
+    const b = e.target.closest("[data-act][data-mode]");
+    if(b){
+      e.stopPropagation();
+      const id = b.getAttribute("data-id");
+      const act = b.getAttribute("data-act");
+      const m = b.getAttribute("data-mode");
+      if(m === "offers"){
+        if(act === "del") return deleteRow(KEY_OFFERS, id);
+        return updateRow(KEY_OFFERS, id, { status: act });
+      }
+      if(m === "cands"){
+        if(act === "del") return deleteRow(KEY_CANDS, id);
+        return updateRow(KEY_CANDS, id, { status: act });
+      }
+      if(m === "missions"){
+        if(act === "del") return deleteRow(KEY_MISSIONS, id);
+        return updateRow(KEY_MISSIONS, id, { status: act });
+      }
+    }
+
+    const copyBtn = e.target.closest("[data-copy]");
+    if(copyBtn){
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      navigator.clipboard.writeText(txt).then(()=>alert("Copié ✅"));
+      return;
+    }
+
+    const matchOpen = e.target.closest("[data-match-open]");
+    if(matchOpen){
+      selectedMissionId = matchOpen.getAttribute("data-match-open");
+      selectedId = null;
+      setMode("match");
+      return;
+    }
+
+    const validateMatch = e.target.closest("[data-validate-match]");
+    if(validateMatch){
+      const candId = validateMatch.getAttribute("data-validate-match");
+      const mission = getMissions().find(x => x.id === selectedMissionId);
+      const cand = getCands().find(x => x.id === candId);
+      if(!mission || !cand) return;
+      const calc = computeMatch(cand, mission);
+      const rows = getMatches();
+      const i = rows.findIndex(x => x.mission_id === mission.id && x.cand_id === cand.id);
+      const pack = {
+        id: i >= 0 ? rows[i].id : uid(),
+        slug,
+        owner_id: s.owner_id || null,
+        mission_id: mission.id,
+        cand_id: cand.id,
+        mission_title: mission.title,
+        cand_name: cand.name,
+        score: calc.score,
+        status: "validated",
+        note: calc.reasons.join(" • "),
+        created_at: i >= 0 ? rows[i].created_at : nowISO(),
+        updated_at: nowISO()
+      };
+      if(i >= 0) rows[i] = pack; else rows.unshift(pack);
+      save(KEY_MATCHES, rows);
+      render();
+      alert("Match validé ✅");
+      return;
+    }
+
+    const waMatch = e.target.closest("[data-wa-match]");
+    if(waMatch){
+      const candId = waMatch.getAttribute("data-wa-match");
+      const mission = getMissions().find(x => x.id === selectedMissionId);
+      const cand = getCands().find(x => x.id === candId);
+      if(!mission || !cand) return;
+      const calc = computeMatch(cand, mission);
+      const txt = encodeURIComponent(
+        `Bonjour ${cand.name || ''},\n\nDIGIY JOBS PRO vous contacte pour la mission “${mission.title || ''}”.\n` +
+        `Métier recherché: ${mission.job || ''}\nVille: ${mission.city || ''}\nCompatibilité observée: ${calc.score}/100\n\n` +
+        `Si vous êtes disponible, on peut avancer sur la mise en relation.`
+      );
+      location.href = `https://wa.me/${String(cand.phone || '').replace(/\D/g,'')}?text=${txt}`;
+      return;
+    }
+
+    const copyCand = e.target.closest("[data-copy-cand]");
+    if(copyCand){
+      const candId = copyCand.getAttribute("data-copy-cand");
+      const cand = getCands().find(x => x.id === candId);
+      if(cand?.phone){ navigator.clipboard.writeText(cand.phone).then(()=>alert("Téléphone copié ✅")); }
+      return;
+    }
+
+    const copyMission = e.target.closest("[data-copy-mission]");
+    if(copyMission){
+      const id = copyMission.getAttribute("data-copy-mission");
+      const mission = getMissions().find(x => x.id === id);
+      if(mission){
+        const txt = `${mission.title} • ${mission.job} • ${mission.city} • ${mission.start}`;
+        navigator.clipboard.writeText(txt).then(()=>alert("Mission copiée ✅"));
+      }
+      return;
+    }
+  });
+
+  // open modals
+  document.getElementById("btnNewOffer").onclick = () => {
+    document.getElementById("mSlugOffer").textContent = slug || "—";
+    modalOpen("mOffer");
+    setTimeout(() => document.getElementById("o_title").focus(), 120);
+  };
+  document.getElementById("btnNewCand").onclick = () => {
+    document.getElementById("mSlugCand").textContent = slug || "—";
+    modalOpen("mCand");
+    setTimeout(() => document.getElementById("c_name").focus(), 120);
+  };
+  document.getElementById("btnNewMission").onclick = () => {
+    document.getElementById("mSlugMission").textContent = slug || "—";
+    modalOpen("mMission");
+    setTimeout(() => document.getElementById("m_title").focus(), 120);
+  };
+
+  // close modals
+  [["mOffer","o_cancel","o_close"],["mCand","c_cancel","c_close"],["mMission","m_cancel","m_close"]].forEach(([m,a,b]) => {
+    document.getElementById(a).onclick = () => modalClose(m);
+    document.getElementById(b).onclick = () => modalClose(m);
+    document.getElementById(m).addEventListener("click", (e) => { if(e.target.id === m) modalClose(m); });
+  });
+
+  // save offer
+  document.getElementById("o_save").onclick = () => {
+    const row = {
+      id: uid(), slug, owner_id: s.owner_id || null,
+      title: document.getElementById("o_title").value.trim(),
+      sector: document.getElementById("o_sector").value,
+      city: document.getElementById("o_city").value.trim(),
+      type: document.getElementById("o_type").value,
+      pay: document.getElementById("o_pay").value.trim(),
+      status: document.getElementById("o_status").value,
+      desc: document.getElementById("o_desc").value.trim(),
+      created_at: nowISO()
+    };
+    const rows = getOffers();
+    rows.unshift(row);
+    save(KEY_OFFERS, rows);
+    ["o_title","o_city","o_pay","o_desc"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("o_sector").value = "build";
+    document.getElementById("o_type").value = "cdi";
+    document.getElementById("o_status").value = "active";
+    modalClose("mOffer");
+    setMode("offers");
+  };
+
+  // save cand
+  document.getElementById("c_save").onclick = () => {
+    const row = {
+      id: uid(), slug, owner_id: s.owner_id || null,
+      status: "new",
+      name: document.getElementById("c_name").value.trim(),
+      phone: document.getElementById("c_phone").value.trim(),
+      job: document.getElementById("c_job").value.trim(),
+      sector: document.getElementById("c_sector").value,
+      city: document.getElementById("c_city").value.trim(),
+      availability: document.getElementById("c_availability").value,
+      level: document.getElementById("c_level").value,
+      housing: document.getElementById("c_housing").value,
+      note: document.getElementById("c_note").value.trim(),
+      created_at: nowISO()
+    };
+    const rows = getCands();
+    rows.unshift(row);
+    save(KEY_CANDS, rows);
+    ["c_name","c_phone","c_job","c_city","c_note"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("c_sector").value = "build";
+    document.getElementById("c_availability").value = "immediate";
+    document.getElementById("c_level").value = "debutant";
+    document.getElementById("c_housing").value = "non";
+    modalClose("mCand");
+    setMode("cands");
+  };
+
+  // save mission
+  document.getElementById("m_save").onclick = () => {
+    const row = {
+      id: uid(), slug, owner_id: s.owner_id || null,
+      status: document.getElementById("m_status").value,
+      title: document.getElementById("m_title").value.trim(),
+      sector: document.getElementById("m_sector").value,
+      city: document.getElementById("m_city").value.trim(),
+      job: document.getElementById("m_job").value.trim(),
+      count: document.getElementById("m_count").value,
+      start: document.getElementById("m_start").value,
+      duration: document.getElementById("m_duration").value,
+      priority: document.getElementById("m_priority").value,
+      housing: document.getElementById("m_housing").value,
+      desc: document.getElementById("m_desc").value.trim(),
+      created_at: nowISO()
+    };
+    const rows = getMissions();
+    rows.unshift(row);
+    save(KEY_MISSIONS, rows);
+    ["m_title","m_city","m_job","m_desc"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("m_sector").value = "build";
+    document.getElementById("m_count").value = "1";
+    document.getElementById("m_start").value = "immediate";
+    document.getElementById("m_duration").value = "ponctuelle";
+    document.getElementById("m_priority").value = "normale";
+    document.getElementById("m_housing").value = "non";
+    document.getElementById("m_status").value = "open";
+    modalClose("mMission");
+    setMode("missions");
+  };
+
+  // pulse/help/logout/tools
+  document.getElementById("btnPulse").onclick = () => alert("🔔 Inbox: V3 dossier + mission + notifications synchronisées.");
+  document.getElementById("btnHelp").onclick = () => {
+    const num = "+221771342889";
+    const txt = encodeURIComponent("DIGIY Support — JOBS PRO V2. Slug: " + (slug || "") + " • Besoin d’aide.");
+    location.href = "https://wa.me/" + num.replace("+","") + "?text=" + txt;
+  };
+  document.getElementById("btnLogout").onclick = () => {
+    localStorage.removeItem("DIGIY_ACCESS");
+    location.href = "./pin.html" + (slug ? ("?slug=" + encodeURIComponent(slug)) : "");
+  };
+
+  document.getElementById("btnExport").onclick = () => {
+    const pack = {
+      offers: getOffers(),
+      candidates: getCands(),
+      missions: getMissions(),
+      matches: getMatches()
+    };
+    const blob = new Blob([JSON.stringify(pack, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "jobs-v2-" + (slug || "pro") + ".json";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 800);
+  };
+
+  document.getElementById("btnReset").onclick = () => {
+    if(confirm("Reset démo pour ce slug ? Offres, candidats, missions et matches seront effacés.")){
+      localStorage.removeItem(KEY_OFFERS);
+      localStorage.removeItem(KEY_CANDS);
+      localStorage.removeItem(KEY_MISSIONS);
+      localStorage.removeItem(KEY_MATCHES);
+      selectedId = null;
+      selectedMissionId = null;
+      render();
+    }
+  };
+
+  // init
+  setStatus("session OK");
+  setMode("offers");
+</script>
+</body>
+</html>
