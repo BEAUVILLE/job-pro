@@ -3,19 +3,20 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>DIGIY PRO — Entrée</title>
+  <title>DIGIY JOBS PRO — Entrée</title>
 </head>
 <body>
 <script>
-  // ✅ Si slug présent → porte PIN
   const url = new URL(location.href);
-  const slug = url.searchParams.get("slug");
+  const slug = (url.searchParams.get("slug") || "").trim();
+  const phone = (url.searchParams.get("phone") || "").trim();
 
-  if(slug){
-    location.href = "./pin.html?slug=" + encodeURIComponent(slug);
-  } else {
-    location.href = "./pin.html";
-  }
+  const target = new URL("./cockpit.html", location.href);
+
+  if (slug) target.searchParams.set("slug", slug);
+  if (phone) target.searchParams.set("phone", phone);
+
+  location.replace(target.toString());
 </script>
 </body>
 </html>
