@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>DIGIY JOBS — Mission</title>
   <meta name="theme-color" content="#071711" />
+  <meta
+    name="description"
+    content="DIGIY JOBS — fiche mission publique pour lire une offre et postuler proprement."
+  />
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "JOBS";
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -169,6 +180,7 @@
       text-align:center;
       color:var(--muted);
       background:rgba(255,255,255,.03);
+      line-height:1.65;
     }
 
     @media (max-width: 920px){
@@ -187,8 +199,8 @@
 <body>
   <div class="wrap">
     <div class="topbar">
-      <a class="chip-link" href="index.html">← Retour au mur</a>
-      <a class="chip-link" id="postulerTop" href="postuler.html">Postuler</a>
+      <a class="chip-link" id="wallLink" href="./index.html">← Retour au mur</a>
+      <a class="chip-link" id="postulerTop" href="./postuler.html">Postuler</a>
     </div>
 
     <div id="loadingBox" class="status">Chargement de la mission...</div>
@@ -241,8 +253,8 @@
           </div>
 
           <div class="cta-box">
-            <a id="postulerBtn" class="cta-btn cta-primary" href="postuler.html">Je postule à cette mission</a>
-            <a class="cta-btn cta-secondary" href="index.html">Voir d'autres missions</a>
+            <a id="postulerBtn" class="cta-btn cta-primary" href="./postuler.html">Je postule à cette mission</a>
+            <a id="otherOffersLink" class="cta-btn cta-secondary" href="./index.html">Voir d'autres missions</a>
           </div>
         </aside>
       </section>
@@ -250,96 +262,152 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_URL =
+      window.DIGIY_SUPABASE_URL ||
+      "https://wesqmwjjtsefyjnluosj.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      window.DIGIY_SUPABASE_ANON ||
+      window.DIGIY_SUPABASE_ANON_KEY ||
+      "";
+
+    const sb =
+      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        : null;
 
     const params = new URLSearchParams(location.search);
-    const offerId = params.get('id') || '';
+    const offerId = (params.get("id") || params.get("offer") || "").trim();
+    const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
 
     const $ = (id) => document.getElementById(id);
 
-    function escapeHtml(v=''){
+    const state = {
+      offer: null,
+      workspaceSlug: slugFromUrl
+    };
+
+    function escapeHtml(v = ""){
       return String(v)
-        .replaceAll('&','&amp;')
-        .replaceAll('<','&lt;')
-        .replaceAll('>','&gt;')
-        .replaceAll('"','&quot;')
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
     }
 
-    function labelSector(v=''){
+    function labelSector(v = ""){
       const map = {
-        build:'BTP',
-        beauty:'Beauté',
-        shop:'Boutique',
-        food:'Restauration',
-        service:'Services',
-        driver:'Chauffeur',
-        market:'Marché',
-        admin:'Admin'
+        build:"BTP",
+        beauty:"Beauté",
+        shop:"Boutique",
+        food:"Restauration",
+        service:"Services",
+        driver:"Chauffeur",
+        market:"Marché",
+        admin:"Admin"
       };
-      return map[v] || v || 'Secteur';
+      return map[v] || v || "Secteur";
     }
 
-    function labelContract(v=''){
+    function labelContract(v = ""){
       const map = {
-        cdi:'CDI',
-        cdd:'CDD',
-        mission:'Mission',
-        stage:'Stage',
-        freelance:'Freelance',
-        extra:'Extra'
+        cdi:"CDI",
+        cdd:"CDD",
+        mission:"Mission",
+        stage:"Stage",
+        freelance:"Freelance",
+        extra:"Extra"
       };
-      return map[v] || v || 'Contrat';
+      return map[v] || v || "Contrat";
+    }
+
+    function setLoadingMessage(text) {
+      const box = $("loadingBox");
+      if (!box) return;
+      box.textContent = text;
+      box.style.display = "block";
+      $("page").style.display = "none";
+    }
+
+    function showPage() {
+      $("loadingBox").style.display = "none";
+      $("page").style.display = "block";
+    }
+
+    function syncLinks() {
+      const slug = state.workspaceSlug || "";
+      const wallHref = slug ? `./index.html?slug=${encodeURIComponent(slug)}` : "./index.html";
+
+      if ($("wallLink")) $("wallLink").href = wallHref;
+      if ($("otherOffersLink")) $("otherOffersLink").href = wallHref;
+
+      const postulerHref = state.offer?.id
+        ? (() => {
+            const u = new URL("./postuler.html", location.href);
+            u.searchParams.set("offer", state.offer.id);
+            if (slug) u.searchParams.set("slug", slug);
+            return u.toString();
+          })()
+        : (slug ? `./postuler.html?slug=${encodeURIComponent(slug)}` : "./postuler.html");
+
+      if ($("postulerBtn")) $("postulerBtn").href = postulerHref;
+      if ($("postulerTop")) $("postulerTop").href = postulerHref;
     }
 
     async function loadOffer(){
       if (!offerId) {
-        $('loadingBox').textContent = 'Mission introuvable : identifiant manquant.';
+        setLoadingMessage("Mission introuvable : identifiant manquant.");
+        syncLinks();
+        return;
+      }
+
+      if (!sb) {
+        setLoadingMessage("Supabase non chargé. Vérifie la configuration front.");
         return;
       }
 
       const { data, error } = await sb
-        .from('digiy_jobs_offers_pro')
-        .select('id,workspace_slug,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status')
-        .eq('id', offerId)
-        .eq('status', 'active')
+        .from("digiy_jobs_offers_pro")
+        .select("id,workspace_slug,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status")
+        .eq("id", offerId)
+        .eq("status", "active")
         .maybeSingle();
 
       if (error || !data) {
         console.error(error);
-        $('loadingBox').textContent = 'Impossible de charger cette mission.';
+        setLoadingMessage("Impossible de charger cette mission.");
+        syncLinks();
         return;
       }
 
-      document.title = `${data.title || 'Mission'} — DIGIY JOBS`;
+      state.offer = data;
+      state.workspaceSlug = String(data.workspace_slug || state.workspaceSlug || "").trim().toLowerCase();
 
-      $('badgeSector').textContent = labelSector(data.sector);
-      $('badgeContract').textContent = labelContract(data.contract_type);
-      $('title').textContent = data.title || 'Mission';
-      $('descriptionLead').textContent = data.description || 'Description à venir.';
-      $('metaCity').textContent = data.city || 'Ville à préciser';
-      $('metaCountry').textContent = data.country || 'Sénégal';
-      $('metaPay').textContent = data.pay || 'À préciser';
-      $('metaEmployer').textContent = data.employer_name || data.workspace_slug || 'Structure à préciser';
-      $('detailText').textContent = data.description || 'Description à venir.';
-      $('requirementsText').textContent = data.requirements || 'Exigences à préciser.';
+      document.title = `${data.title || "Mission"} — DIGIY JOBS`;
 
-      const postulerHref = `postuler.html?offer=${encodeURIComponent(data.id)}`;
-      $('postulerBtn').href = postulerHref;
-      $('postulerTop').href = postulerHref;
+      $("badgeSector").textContent = labelSector(data.sector);
+      $("badgeContract").textContent = labelContract(data.contract_type);
+      $("title").textContent = data.title || "Mission";
+      $("descriptionLead").textContent = data.description || "Description à venir.";
+      $("metaCity").textContent = data.city || "Ville à préciser";
+      $("metaCountry").textContent = data.country || "Sénégal";
+      $("metaPay").textContent = data.pay || "À préciser";
+      $("metaEmployer").textContent = data.employer_name || data.workspace_slug || "Structure à préciser";
+      $("detailText").textContent = data.description || "Description à venir.";
+      $("requirementsText").textContent = data.requirements || "Exigences à préciser.";
 
       const goods = [];
       if (data.has_housing) goods.push('<span class="good">Logement possible</span>');
       if (data.has_family_welcome) goods.push('<span class="good">Accueil familial possible</span>');
       if (data.contact_phone) goods.push(`<span class="good">Contact : ${escapeHtml(data.contact_phone)}</span>`);
-      $('goodRow').innerHTML = goods.join('');
+      $("goodRow").innerHTML = goods.join("");
 
-      $('loadingBox').style.display = 'none';
-      $('page').style.display = 'block';
+      syncLinks();
+      showPage();
     }
 
+    syncLinks();
     loadOffer();
   </script>
 </body>
