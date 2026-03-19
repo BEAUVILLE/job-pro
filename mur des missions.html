@@ -34,6 +34,7 @@
     }
 
     *{box-sizing:border-box}
+
     html,body{
       margin:0;
       padding:0;
@@ -402,8 +403,11 @@
   <div class="wrap">
     <div class="top-links">
       <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
+      <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
+      <a id="missionsWallLink" class="chip-link gold" href="./mur%20des%20missions.html">Mur des missions</a>
       <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
-      <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Cockpit pro</a>
+      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Cockpit pro</a>
+      <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
     </div>
 
     <section class="hero">
@@ -420,7 +424,7 @@
           <div class="meta-line">
             <div class="meta-chip">Mode : <strong id="modeChip">mur public</strong></div>
             <div class="meta-chip">Workspace : <strong id="workspaceChip">global</strong></div>
-            <div class="meta-chip">Source : <strong>Supabase réel</strong></div>
+            <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
           </div>
         </div>
 
@@ -504,14 +508,22 @@
         : null;
 
     const params = new URLSearchParams(location.search);
-    const workspaceSlug = String(params.get("slug") || "").trim().toLowerCase();
-
     const $ = (id) => document.getElementById(id);
+
+    const JOBS_PATHS = {
+      home: "./index.html",
+      missions: "./mur%20des%20missions.html",
+      pin: "./pin.html",
+      cockpit: "./cockpit.html",
+      bureau: "./bureau.html",
+      postuler: "./postuler.html",
+      mission: "./mission.html"
+    };
 
     const state = {
       offers: [],
       filtered: [],
-      workspaceSlug
+      workspaceSlug: String(params.get("slug") || "").trim().toLowerCase()
     };
 
     function escapeHtml(v=''){
@@ -567,15 +579,25 @@
       }
     }
 
+    function withSlug(path, slug){
+      const cleanSlug = String(slug || '').trim().toLowerCase();
+      if (!cleanSlug) return path;
+      const joiner = path.includes('?') ? '&' : '?';
+      return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+    }
+
     function syncLinks(){
       const slug = state.workspaceSlug || '';
 
       $('workspaceChip').textContent = slug || 'global';
       $('modeChip').textContent = slug ? 'mur workspace' : 'mur public';
 
-      $('pinLink').href = slug ? `./pin.html?slug=${encodeURIComponent(slug)}` : './pin.html';
-      $('cockpitLink').href = slug ? `./cockpit.html?slug=${encodeURIComponent(slug)}` : './cockpit.html';
-      $('spontaneousLink').href = slug ? `./postuler.html?slug=${encodeURIComponent(slug)}` : './postuler.html';
+      $('homeLink').href = withSlug(JOBS_PATHS.home, slug);
+      $('missionsWallLink').href = withSlug(JOBS_PATHS.missions, slug);
+      $('pinLink').href = withSlug(JOBS_PATHS.pin, slug);
+      $('cockpitLink').href = withSlug(JOBS_PATHS.cockpit, slug);
+      $('bureauLink').href = withSlug(JOBS_PATHS.bureau, slug);
+      $('spontaneousLink').href = withSlug(JOBS_PATHS.postuler, slug);
     }
 
     function renderStatus(type, text){
@@ -587,16 +609,18 @@
     }
 
     function missionHref(item){
-      const url = new URL('./mission.html', location.href);
+      const slug = item.workspace_slug || state.workspaceSlug || '';
+      const url = new URL(JOBS_PATHS.mission, location.href);
       url.searchParams.set('id', item.id);
-      if (item.workspace_slug) url.searchParams.set('slug', item.workspace_slug);
+      if (slug) url.searchParams.set('slug', slug);
       return url.toString();
     }
 
     function applyHref(item){
-      const url = new URL('./postuler.html', location.href);
+      const slug = item.workspace_slug || state.workspaceSlug || '';
+      const url = new URL(JOBS_PATHS.postuler, location.href);
       url.searchParams.set('offer', item.id);
-      if (item.workspace_slug) url.searchParams.set('slug', item.workspace_slug);
+      if (slug) url.searchParams.set('slug', slug);
       return url.toString();
     }
 
@@ -604,9 +628,11 @@
       const cards = $('cards');
 
       if (!list.length) {
-        renderStatus('empty', state.workspaceSlug
-          ? 'Aucune mission active trouvée pour ce workspace pour le moment.'
-          : 'Aucune mission ne correspond à ce filtre pour le moment.'
+        renderStatus(
+          'empty',
+          state.workspaceSlug
+            ? 'Aucune mission active trouvée pour ce workspace pour le moment.'
+            : 'Aucune mission ne correspond à ce filtre pour le moment.'
         );
         $('count').textContent = '0 mission trouvée';
         return;
@@ -688,9 +714,11 @@
         return;
       }
 
-      renderStatus('loading', state.workspaceSlug
-        ? 'Chargement des missions du workspace...'
-        : 'Chargement des missions...'
+      renderStatus(
+        'loading',
+        state.workspaceSlug
+          ? 'Chargement des missions du workspace...'
+          : 'Chargement des missions...'
       );
 
       let query = sb
