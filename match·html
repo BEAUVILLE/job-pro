@@ -167,10 +167,10 @@
     .section-head h2,.list-head h3,.detail-head h3{margin:0;font-size:24px;letter-spacing:-.02em}
     .section-head p,.list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
     .mission-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .mission-grid .full{grid-column:1 / -1}
     .field{padding:13px;border-radius:16px;background:#fff}
     .field small{display:block;color:#64748b;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
     .field strong{display:block;font-size:14px;line-height:1.55;word-break:break-word}
-    .full{grid-column:1 / -1}
 
     .filters{padding:16px;margin-bottom:16px}
     .filter-grid{display:grid;grid-template-columns:1.2fr repeat(4,.8fr);gap:12px}
@@ -265,6 +265,8 @@
       <div class="top-actions">
         <button id="btnReloadMission" type="button">Recharger</button>
         <button id="btnImportPublic" type="button">Importer dernier dossier public</button>
+        <a id="btnOpenWall" href="./mur%20des%20missions.html">Mur</a>
+        <a id="btnOpenBureau" href="./bureau.html">Bureau</a>
         <a id="btnOpenCockpit" href="./cockpit.html">Cockpit</a>
         <a id="btnOpenPublicMission" class="primary" href="./mission.html">Voir la fiche mission</a>
       </div>
@@ -462,6 +464,7 @@
         </p>
         <div class="foot-links">
           <button id="btnResetValidated" type="button">Vider validations</button>
+          <a id="footerWallLink" href="./mur%20des%20missions.html">Mur</a>
           <a id="footerPinLink" href="./pin.html">Entrée PIN</a>
           <a href="#top">Retour haut</a>
         </div>
@@ -493,6 +496,16 @@
 
       const PUBLIC_DOSSIER_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
       const LOCAL_MATCH_PREFIX = "DIGIY_JOBS_MATCH_STATE_V2::";
+
+      const JOBS_PATHS = {
+        home: "./index.html",
+        wall: "./mur%20des%20missions.html",
+        pin: "./pin.html",
+        cockpit: "./cockpit.html",
+        bureau: "./bureau.html",
+        mission: "./mission.html",
+        postuler: "./postuler.html"
+      };
 
       const NEAR_ZONES = {
         dakar:["rufisque","thiès","thies"],
@@ -530,6 +543,15 @@
         this_week:"Cette semaine",
         this_month:"Ce mois-ci",
         to_discuss:"À discuter"
+      };
+
+      const CONTRACT_LABELS = {
+        cdi:"CDI",
+        cdd:"CDD",
+        mission:"Mission",
+        stage:"Stage",
+        freelance:"Freelance",
+        extra:"Extra"
       };
 
       const SECTOR_KEYWORDS = {
@@ -583,9 +605,12 @@
       const btnValidateMatch = document.getElementById("btnValidateMatch");
       const btnResetValidated = document.getElementById("btnResetValidated");
 
+      const btnOpenWall = document.getElementById("btnOpenWall");
+      const btnOpenBureau = document.getElementById("btnOpenBureau");
       const btnOpenCockpit = document.getElementById("btnOpenCockpit");
       const btnOpenPublicMission = document.getElementById("btnOpenPublicMission");
       const footerPinLink = document.getElementById("footerPinLink");
+      const footerWallLink = document.getElementById("footerWallLink");
 
       const state = {
         workspaceSlug: slugQ,
@@ -594,7 +619,7 @@
         candidates: [],
         ranked: [],
         selectedId: null,
-        preview: false,
+        preview: true,
         session: null,
         matchState: {}
       };
@@ -663,6 +688,10 @@
         return SECTOR_LABELS[String(value || "").toLowerCase()] || safe(value, "Secteur");
       }
 
+      function contractLabel(value = "") {
+        return CONTRACT_LABELS[String(value || "").toLowerCase()] || safe(value, "Contrat");
+      }
+
       function sectorClass(value = "") {
         const s = String(value || "").toLowerCase();
         if (s === "build") return "sector-build";
@@ -729,6 +758,13 @@
         }
       }
 
+      function withSlug(path, slug) {
+        const cleanSlug = normalizeSlug(slug || "");
+        if (!cleanSlug) return path;
+        const joiner = path.includes("?") ? "&" : "?";
+        return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+      }
+
       function getMatchStorageKey() {
         const slug = state.workspaceSlug || "jobs";
         return `${LOCAL_MATCH_PREFIX}${slug}`;
@@ -762,19 +798,24 @@
 
       function syncLinks() {
         const slug = state.workspaceSlug || "";
-        const cockpitHref = slug ? `./cockpit.html?slug=${encodeURIComponent(slug)}` : "./cockpit.html";
-        const pinHref = slug ? `./pin.html?slug=${encodeURIComponent(slug)}` : "./pin.html";
+        const wallHref = withSlug(JOBS_PATHS.wall, slug);
+        const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
+        const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
+        const pinHref = withSlug(JOBS_PATHS.pin, slug);
 
+        btnOpenWall.href = wallHref;
+        btnOpenBureau.href = bureauHref;
         btnOpenCockpit.href = cockpitHref;
+        footerWallLink.href = wallHref;
         footerPinLink.href = pinHref;
 
         if (state.mission?.id) {
-          const missionUrl = new URL("./mission.html", location.href);
+          const missionUrl = new URL(JOBS_PATHS.mission, location.href);
           missionUrl.searchParams.set("id", state.mission.id);
           if (slug) missionUrl.searchParams.set("slug", slug);
           btnOpenPublicMission.href = missionUrl.toString();
         } else {
-          btnOpenPublicMission.href = slug ? `./index.html?slug=${encodeURIComponent(slug)}` : "./index.html";
+          btnOpenPublicMission.href = wallHref;
         }
 
         miniSlug.textContent = slug || "aucun slug";
@@ -876,7 +917,7 @@
           missionField("Secteur", sectorLabel(offer.sector)),
           missionField("Ville", offer.city),
           missionField("Pays", offer.country || "Sénégal"),
-          missionField("Contrat", offer.contract_type),
+          missionField("Contrat", contractLabel(offer.contract_type)),
           missionField("Rémunération", offer.pay),
           missionField("Structure", offer.employer_name || offer.workspace_slug),
           missionField("Contact", offer.contact_phone || "—"),
@@ -1238,7 +1279,7 @@
 
       function buildPublicMissionUrl() {
         if (!state.mission?.id) return "";
-        const u = new URL("./mission.html", location.href);
+        const u = new URL(JOBS_PATHS.mission, location.href);
         u.searchParams.set("id", state.mission.id);
         if (state.workspaceSlug) u.searchParams.set("slug", state.workspaceSlug);
         return u.toString();
@@ -1417,8 +1458,10 @@
         }
 
         if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-          miniMode.textContent = "mode URL";
+          state.preview = true;
+          miniMode.textContent = "guard manquant";
           syncLinks();
+          setStatus("guard.js manquant ou invalide : matching réel verrouillé en aperçu.", "warn");
           return;
         }
 
