@@ -89,6 +89,10 @@
       justify-content:center;
     }
     .top-actions .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+    .top-actions .muted{
+      background:#f8fafc;
+      color:#64748b;
+    }
 
     .status-wrap{padding:14px 0 0}
     .status-box{
@@ -266,7 +270,7 @@
 
       <div class="top-actions">
         <button id="btnReloadMission" type="button">Recharger</button>
-        <button id="btnImportPublic" type="button">Importer dernier dossier public</button>
+        <button id="btnImportPublic" class="muted" type="button" title="Import direct coupé après durcissement SQL">Importer dernier dossier public</button>
         <a id="btnOpenHome" href="./index.html">Accueil JOBS</a>
         <a id="btnOpenWall" href="./mur%20des%20missions.html">Mur</a>
         <a id="btnOpenBureau" href="./bureau.html">Bureau</a>
@@ -507,7 +511,8 @@
         pin: "./pin.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
-        mission: "./mission.html"
+        mission: "./mission.html",
+        match: "./match.html"
       };
 
       const NEAR_ZONES = {
@@ -834,7 +839,7 @@
         const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
         const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
         const pinHref = withSlug(JOBS_PATHS.pin, slug);
-        const missionHref = slug ? withSlug(JOBS_PATHS.mission, slug) : homeHref;
+        const missionHref = slug ? withSlug(JOBS_PATHS.mission, slug) : JOBS_PATHS.mission;
 
         brandHome.href = homeHref;
         btnOpenHome.href = homeHref;
@@ -1209,7 +1214,7 @@
           candidateList.innerHTML = `
             <div class="empty-card">
               <h4>Aucun candidat trouvé</h4>
-              <p>Change les filtres, attends de nouvelles candidatures, ou importe le dernier dossier public si tu en as un.</p>
+              <p>Change les filtres, attends de nouvelles candidatures, ou utilise un futur RPC d’import sécurisé.</p>
             </div>
           `;
           renderDetail(null);
@@ -1370,74 +1375,14 @@
       }
 
       async function importPublicDossier() {
-        if (state.preview) {
-          setStatus("Mode aperçu : active ton accès JOBS pour importer un dossier public.", "warn");
-          return;
-        }
-
-        if (!sb) {
-          setStatus("Supabase non chargé. Vérifie la configuration front.", "error");
-          return;
-        }
-
-        if (!state.slug) {
-          setStatus("Aucun slug détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
-          return;
-        }
-
         const dossier = readJson(PUBLIC_DOSSIER_KEY);
-        if (!dossier || !dossier.phone) {
+
+        if (!dossier) {
           setStatus("Aucun dernier dossier public intelligent trouvé dans ce navigateur.", "warn");
           return;
         }
 
-        const phone = normalizePhone(dossier.phone);
-        const alreadyExists = state.candidates.some((c) => normalizePhone(c.phone) === phone);
-        if (alreadyExists) {
-          setStatus("Le dernier dossier public semble déjà présent dans le bureau de cette mission.", "info");
-          return;
-        }
-
-        const trade = String(dossier.metier || dossier.buildMetier || dossier.hotelMetier || dossier.trade || "").trim() || null;
-
-        const payload = {
-          slug: state.slug || null,
-          owner_id: state.mission?.owner_id || null,
-          full_name: String(dossier.nom || dossier.full_name || "Dossier public").trim(),
-          phone: phone,
-          job_title: trade || state.mission?.title || null,
-          city: String(dossier.zone || dossier.city || "").trim() || null,
-          country: String(dossier.country || "Sénégal").trim(),
-          trade: trade,
-          years_experience: String(dossier.niveau || dossier.years_experience || "").trim() || null,
-          availability: availabilityCode(dossier.dispo || dossier.availability || "") || "to_discuss",
-          message: [
-            dossier.note || null,
-            dossier.bureau_notes || null,
-            dossier.link ? `Lien dossier: ${dossier.link}` : null
-          ].filter(Boolean).join(" | ") || null,
-          status: "new",
-          source: "import_public_dossier"
-        };
-
-        if (!payload.full_name || !payload.phone) {
-          setStatus("Le dossier public trouvé est incomplet : nom ou téléphone manquant.", "warn");
-          return;
-        }
-
-        const { error } = await sb
-          .from("digiy_jobs_candidates_pro")
-          .insert(payload);
-
-        if (error) {
-          console.error(error);
-          setStatus("Impossible d’importer le dossier public dans la base JOBS pour le moment.", "error");
-          return;
-        }
-
-        await loadCandidates();
-        renderList();
-        setStatus("Dernier dossier public importé dans le bureau JOBS.", "ok");
+        setStatus("Import direct désactivé : les écritures publiques en base ont été fermées côté sécurité. Il faut maintenant un RPC d’import dédié pour pousser ce dossier dans JOBS.", "warn");
       }
 
       async function bootGuard() {
