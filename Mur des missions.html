@@ -6,6 +6,13 @@
   <title>DIGIY JOBS — Mur des missions</title>
   <meta name="description" content="DIGIY JOBS — Missions, emplois, terrain, quartier, chantier, services et travail réel." />
   <meta name="theme-color" content="#071711" />
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "JOBS";
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -27,9 +34,12 @@
     }
 
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:
-      radial-gradient(circle at top, rgba(250,204,21,.08), transparent 26%),
-      linear-gradient(180deg,var(--bg),#05110c 100%);
+    html,body{
+      margin:0;
+      padding:0;
+      background:
+        radial-gradient(circle at top, rgba(250,204,21,.08), transparent 26%),
+        linear-gradient(180deg,var(--bg),#05110c 100%);
       color:var(--text);
       font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
@@ -38,6 +48,32 @@
     button,input,select{font:inherit}
 
     .wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 80px}
+
+    .top-links{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .chip-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      font-weight:800;
+    }
+
+    .chip-link.gold{
+      border-color:rgba(250,204,21,.30);
+      background:rgba(250,204,21,.08);
+      color:#fff5b1;
+    }
+
     .hero{
       position:relative;
       overflow:hidden;
@@ -50,12 +86,14 @@
         var(--bg2);
       box-shadow:var(--shadow);
     }
+
     .hero-grid{
       display:grid;
       grid-template-columns:1.15fr .85fr;
       gap:18px;
       align-items:center;
     }
+
     .kicker{
       display:inline-flex;
       align-items:center;
@@ -67,12 +105,14 @@
       margin-bottom:12px;
       font-weight:800;
     }
+
     h1{
       margin:0 0 10px;
       font-size:clamp(32px,5vw,60px);
       line-height:.98;
       letter-spacing:-.03em;
     }
+
     .lead{
       margin:0;
       font-size:17px;
@@ -80,6 +120,7 @@
       color:var(--muted);
       max-width:700px;
     }
+
     .hero-box{
       border:1px solid var(--line);
       border-radius:24px;
@@ -87,19 +128,25 @@
       background:rgba(255,255,255,.04);
       backdrop-filter:blur(6px);
     }
+
     .hero-box h2{
       margin:0 0 8px;
       font-size:20px;
     }
+
     .hero-box p{
       margin:0 0 14px;
       color:var(--muted);
       line-height:1.55;
       font-size:14px;
     }
+
     .pill-row{
-      display:flex;flex-wrap:wrap;gap:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
     }
+
     .pill{
       border:1px solid rgba(250,204,21,.26);
       color:#fff7cc;
@@ -108,6 +155,22 @@
       padding:9px 12px;
       font-size:13px;
       font-weight:700;
+    }
+
+    .meta-line{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .meta-chip{
+      padding:9px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--line);
     }
 
     .filters{
@@ -123,11 +186,13 @@
       flex-direction:column;
       gap:8px;
     }
+
     .field label{
       font-size:13px;
       font-weight:700;
       color:#d8fbe6;
     }
+
     .field input,
     .field select{
       width:100%;
@@ -139,7 +204,9 @@
       background:rgba(255,255,255,.08);
       border:1px solid transparent;
     }
+
     .field input::placeholder{color:rgba(236,255,244,.46)}
+
     .field input:focus,
     .field select:focus{
       border-color:rgba(250,204,21,.45);
@@ -152,11 +219,20 @@
       justify-content:space-between;
       gap:12px;
       margin:26px 0 14px;
+      flex-wrap:wrap;
     }
+
     .count{
       font-size:14px;
       color:var(--muted);
     }
+
+    .toolbar-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
     .link-btn{
       display:inline-flex;
       align-items:center;
@@ -174,6 +250,7 @@
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:16px;
     }
+
     .card{
       border:1px solid var(--line);
       border-radius:24px;
@@ -184,12 +261,16 @@
       box-shadow:var(--shadow);
       display:flex;
       flex-direction:column;
-      min-height:280px;
+      min-height:300px;
     }
+
     .badge-row{
-      display:flex;flex-wrap:wrap;gap:8px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
       margin-bottom:12px;
     }
+
     .badge{
       display:inline-flex;
       align-items:center;
@@ -202,10 +283,17 @@
       background:rgba(255,255,255,.05);
       color:#e9fff1;
     }
+
     .badge.gold{
       border-color:rgba(250,204,21,.28);
       background:rgba(250,204,21,.09);
       color:#fff2af;
+    }
+
+    .badge.green{
+      border-color:rgba(34,197,94,.22);
+      background:rgba(34,197,94,.10);
+      color:#caffd5;
     }
 
     .title{
@@ -215,6 +303,7 @@
       margin:0 0 8px;
       letter-spacing:-.02em;
     }
+
     .meta{
       display:flex;
       flex-wrap:wrap;
@@ -223,6 +312,7 @@
       font-size:14px;
       margin-bottom:12px;
     }
+
     .desc{
       color:var(--muted);
       line-height:1.6;
@@ -230,12 +320,14 @@
       margin:0 0 16px;
       flex:1;
     }
+
     .flags{
       display:flex;
       flex-wrap:wrap;
       gap:8px;
       margin-bottom:16px;
     }
+
     .flag{
       font-size:12px;
       font-weight:800;
@@ -245,11 +337,13 @@
       color:#bcffcc;
       border:1px solid rgba(34,197,94,.22);
     }
+
     .actions{
       display:flex;
       gap:10px;
       margin-top:auto;
     }
+
     .btn{
       flex:1;
       display:inline-flex;
@@ -261,10 +355,12 @@
       font-weight:900;
       cursor:pointer;
     }
+
     .btn-primary{
       background:linear-gradient(180deg,var(--gold),#eab308);
       color:#151515;
     }
+
     .btn-secondary{
       background:rgba(255,255,255,.07);
       color:var(--text);
@@ -279,13 +375,19 @@
       color:var(--muted);
       background:rgba(255,255,255,.03);
     }
-    .error{color:#ffd7de;border-color:rgba(251,113,133,.28);background:rgba(251,113,133,.08)}
+
+    .error{
+      color:#ffd7de;
+      border-color:rgba(251,113,133,.28);
+      background:rgba(251,113,133,.08);
+    }
 
     @media (max-width: 980px){
       .hero-grid{grid-template-columns:1fr}
       .filters{grid-template-columns:1fr 1fr}
       .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
+
     @media (max-width: 640px){
       .wrap{padding:14px 12px 70px}
       .hero{padding:22px 14px}
@@ -298,6 +400,12 @@
 </head>
 <body>
   <div class="wrap">
+    <div class="top-links">
+      <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
+      <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
+      <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Cockpit pro</a>
+    </div>
+
     <section class="hero">
       <div class="hero-grid">
         <div>
@@ -308,6 +416,12 @@
             conduite, artisanat. Ici on ne vend pas du rêve flou. On montre des besoins concrets,
             des postes utiles, et des candidatures qui peuvent bouger tout de suite.
           </p>
+
+          <div class="meta-line">
+            <div class="meta-chip">Mode : <strong id="modeChip">mur public</strong></div>
+            <div class="meta-chip">Workspace : <strong id="workspaceChip">global</strong></div>
+            <div class="meta-chip">Source : <strong>Supabase réel</strong></div>
+          </div>
         </div>
 
         <div class="hero-box">
@@ -332,18 +446,21 @@
           <label for="searchInput">Recherche</label>
           <input id="searchInput" type="text" placeholder="ex: maçon, chauffeur, coiffeuse, boutique..." />
         </div>
+
         <div class="field">
           <label for="sectorSelect">Secteur</label>
           <select id="sectorSelect">
             <option value="">Tous les secteurs</option>
           </select>
         </div>
+
         <div class="field">
           <label for="citySelect">Ville</label>
           <select id="citySelect">
             <option value="">Toutes les villes</option>
           </select>
         </div>
+
         <div class="field">
           <label for="contractSelect">Contrat</label>
           <select id="contractSelect">
@@ -361,7 +478,10 @@
 
     <div class="toolbar">
       <div id="count" class="count">Chargement des missions...</div>
-      <a class="link-btn" href="postuler.html">Candidature spontanée</a>
+
+      <div class="toolbar-actions">
+        <a id="spontaneousLink" class="link-btn" href="./postuler.html">Candidature spontanée</a>
+      </div>
     </div>
 
     <div id="statusBox" class="loading">Chargement en cours...</div>
@@ -369,15 +489,29 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_URL =
+      window.DIGIY_SUPABASE_URL ||
+      "https://wesqmwjjtsefyjnluosj.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      window.DIGIY_SUPABASE_ANON ||
+      window.DIGIY_SUPABASE_ANON_KEY ||
+      "";
+
+    const sb =
+      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        : null;
+
+    const params = new URLSearchParams(location.search);
+    const workspaceSlug = String(params.get("slug") || "").trim().toLowerCase();
 
     const $ = (id) => document.getElementById(id);
 
     const state = {
       offers: [],
-      filtered: []
+      filtered: [],
+      workspaceSlug
     };
 
     function escapeHtml(v=''){
@@ -421,19 +555,27 @@
       return s.slice(0, max).trim() + '…';
     }
 
-    function buildSelectOptions(selectEl, values){
+    function buildOptions(selectEl, values, formatter = (x) => x, firstLabel = 'Tous'){
       const current = selectEl.value;
-      const options = ['<option value="">Tous</option>'];
-      values
-        .filter(Boolean)
-        .sort((a,b)=>String(a).localeCompare(String(b),'fr'))
-        .forEach(v=>{
-          options.push(`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`);
-        });
-      selectEl.innerHTML = options.join('');
-      if ([...selectEl.options].some(o => o.value === current)) {
+      const unique = [...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'fr'));
+      selectEl.innerHTML =
+        `<option value="">${firstLabel}</option>` +
+        unique.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(formatter(v))}</option>`).join('');
+
+      if ([...selectEl.options].some(opt => opt.value === current)) {
         selectEl.value = current;
       }
+    }
+
+    function syncLinks(){
+      const slug = state.workspaceSlug || '';
+
+      $('workspaceChip').textContent = slug || 'global';
+      $('modeChip').textContent = slug ? 'mur workspace' : 'mur public';
+
+      $('pinLink').href = slug ? `./pin.html?slug=${encodeURIComponent(slug)}` : './pin.html';
+      $('cockpitLink').href = slug ? `./cockpit.html?slug=${encodeURIComponent(slug)}` : './cockpit.html';
+      $('spontaneousLink').href = slug ? `./postuler.html?slug=${encodeURIComponent(slug)}` : './postuler.html';
     }
 
     function renderStatus(type, text){
@@ -444,11 +586,28 @@
       $('cards').style.display = 'none';
     }
 
+    function missionHref(item){
+      const url = new URL('./mission.html', location.href);
+      url.searchParams.set('id', item.id);
+      if (item.workspace_slug) url.searchParams.set('slug', item.workspace_slug);
+      return url.toString();
+    }
+
+    function applyHref(item){
+      const url = new URL('./postuler.html', location.href);
+      url.searchParams.set('offer', item.id);
+      if (item.workspace_slug) url.searchParams.set('slug', item.workspace_slug);
+      return url.toString();
+    }
+
     function renderCards(list){
       const cards = $('cards');
 
       if (!list.length) {
-        renderStatus('empty', 'Aucune mission ne correspond à ce filtre pour le moment.');
+        renderStatus('empty', state.workspaceSlug
+          ? 'Aucune mission active trouvée pour ce workspace pour le moment.'
+          : 'Aucune mission ne correspond à ce filtre pour le moment.'
+        );
         $('count').textContent = '0 mission trouvée';
         return;
       }
@@ -461,12 +620,14 @@
         const flags = [];
         if (item.has_housing) flags.push('<span class="flag">Logement possible</span>');
         if (item.has_family_welcome) flags.push('<span class="flag">Accueil familial possible</span>');
+        if (item.workspace_slug) flags.push(`<span class="flag">Workspace : ${escapeHtml(item.workspace_slug)}</span>`);
 
         return `
           <article class="card">
             <div class="badge-row">
               <span class="badge gold">${escapeHtml(labelSector(item.sector))}</span>
               <span class="badge">${escapeHtml(labelContract(item.contract_type))}</span>
+              ${item.employer_name ? `<span class="badge green">${escapeHtml(item.employer_name)}</span>` : ''}
             </div>
 
             <h3 class="title">${escapeHtml(item.title || 'Mission')}</h3>
@@ -482,8 +643,8 @@
             <div class="flags">${flags.join('')}</div>
 
             <div class="actions">
-              <a class="btn btn-secondary" href="mission.html?id=${encodeURIComponent(item.id)}">Voir la mission</a>
-              <a class="btn btn-primary" href="postuler.html?offer=${encodeURIComponent(item.id)}">Je postule</a>
+              <a class="btn btn-secondary" href="${missionHref(item)}">Voir la mission</a>
+              <a class="btn btn-primary" href="${applyHref(item)}">Je postule</a>
             </div>
           </article>
         `;
@@ -506,7 +667,8 @@
           item.description,
           item.requirements,
           item.employer_name,
-          item.pay
+          item.pay,
+          item.workspace_slug
         ].join(' ').toLowerCase();
 
         if (q && !hay.includes(q)) return false;
@@ -520,13 +682,29 @@
     }
 
     async function loadOffers(){
-      renderStatus('loading', 'Chargement des missions...');
-      const { data, error } = await sb
+      if (!sb) {
+        renderStatus('error', 'Supabase non chargé. Vérifie la configuration front.');
+        $('count').textContent = 'Erreur de configuration';
+        return;
+      }
+
+      renderStatus('loading', state.workspaceSlug
+        ? 'Chargement des missions du workspace...'
+        : 'Chargement des missions...'
+      );
+
+      let query = sb
         .from('digiy_jobs_offers_pro')
-        .select('id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at')
+        .select('id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at,created_at')
         .eq('status', 'active')
         .order('published_at', { ascending:false })
         .order('created_at', { ascending:false });
+
+      if (state.workspaceSlug) {
+        query = query.eq('workspace_slug', state.workspaceSlug);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error(error);
@@ -537,19 +715,8 @@
 
       state.offers = data || [];
 
-      buildSelectOptions($('sectorSelect'), [...new Set(state.offers.map(x => x.sector).filter(Boolean))].map(labelSector));
-      // Pour garder la vraie valeur dans le filtre secteur, on reconstruit différemment :
-      $('sectorSelect').innerHTML = '<option value="">Tous les secteurs</option>' +
-        [...new Set(state.offers.map(x => x.sector).filter(Boolean))]
-          .sort((a,b)=>String(a).localeCompare(String(b),'fr'))
-          .map(v => `<option value="${escapeHtml(v)}">${escapeHtml(labelSector(v))}</option>`)
-          .join('');
-
-      $('citySelect').innerHTML = '<option value="">Toutes les villes</option>' +
-        [...new Set(state.offers.map(x => x.city).filter(Boolean))]
-          .sort((a,b)=>String(a).localeCompare(String(b),'fr'))
-          .map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`)
-          .join('');
+      buildOptions($('sectorSelect'), state.offers.map(x => x.sector), labelSector, 'Tous les secteurs');
+      buildOptions($('citySelect'), state.offers.map(x => x.city), (x) => x, 'Toutes les villes');
 
       applyFilters();
     }
@@ -559,6 +726,7 @@
     $('citySelect').addEventListener('change', applyFilters);
     $('contractSelect').addEventListener('change', applyFilters);
 
+    syncLinks();
     loadOffers();
   </script>
 </body>
