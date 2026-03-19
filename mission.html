@@ -350,206 +350,209 @@
   </div>
 
   <script>
-    const SUPABASE_URL =
-      window.DIGIY_SUPABASE_URL ||
-      "https://wesqmwjjtsefyjnluosj.supabase.co";
+    (function(){
+      "use strict";
 
-    const SUPABASE_ANON_KEY =
-      window.DIGIY_SUPABASE_ANON ||
-      window.DIGIY_SUPABASE_ANON_KEY ||
-      "";
+      const SUPABASE_URL =
+        window.DIGIY_SUPABASE_URL ||
+        "https://wesqmwjjtsefyjnluosj.supabase.co";
 
-    const sb =
-      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-        : null;
+      const SUPABASE_ANON_KEY =
+        window.DIGIY_SUPABASE_ANON ||
+        window.DIGIY_SUPABASE_ANON_KEY ||
+        "";
 
-    const params = new URLSearchParams(location.search);
-    const offerId = String(params.get("id") || params.get("offer") || "").trim();
-    const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
+      const sb =
+        window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+          : null;
 
-    const $ = (id) => document.getElementById(id);
-    const SLUG_STORAGE_KEY = "digiy_jobs_slug";
-    const DB_SLUG_COLUMN = "workspace_slug";
+      const params = new URLSearchParams(location.search);
+      const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
 
-    const JOBS_PATHS = {
-      home: "./index.html",
-      wall: "./mur%20des%20missions.html",
-      pin: "./pin.html",
-      cockpit: "./cockpit.html",
-      bureau: "./bureau.html",
-      postuler: "./postuler.html"
-    };
+      const $ = (id) => document.getElementById(id);
+      const SLUG_STORAGE_KEY = "digiy_jobs_slug";
 
-    const state = {
-      offer: null,
-      slug: slugFromUrl
-    };
-
-    function escapeHtml(v = ""){
-      return String(v)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function labelSector(v = ""){
-      const map = {
-        build:"BTP",
-        beauty:"Beauté",
-        shop:"Boutique",
-        food:"Restauration",
-        service:"Services",
-        driver:"Chauffeur",
-        market:"Marché",
-        admin:"Admin"
+      const JOBS_PATHS = {
+        home: "./index.html",
+        wall: "./mur%20des%20missions.html",
+        pin: "./pin.html",
+        cockpit: "./cockpit.html",
+        bureau: "./bureau.html",
+        postuler: "./postuler.html"
       };
-      return map[v] || v || "Secteur";
-    }
 
-    function labelContract(v = ""){
-      const map = {
-        cdi:"CDI",
-        cdd:"CDD",
-        mission:"Mission",
-        stage:"Stage",
-        freelance:"Freelance",
-        extra:"Extra"
+      const state = {
+        offer: null,
+        slug: slugFromUrl
       };
-      return map[v] || v || "Contrat";
-    }
 
-    function withSlug(path, slug){
-      const cleanSlug = String(slug || "").trim().toLowerCase();
-      if (!cleanSlug) return path;
-      const joiner = path.includes("?") ? "&" : "?";
-      return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
-    }
-
-    function saveSlug(slug){
-      try{
-        if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
-      }catch(_){}
-    }
-
-    function readSavedSlug(){
-      try{
-        return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
-      }catch(_){
-        return "";
-      }
-    }
-
-    function setLoadingMessage(text) {
-      const box = $("loadingBox");
-      if (!box) return;
-      box.textContent = text;
-      box.style.display = "block";
-      $("page").style.display = "none";
-    }
-
-    function showPage() {
-      $("loadingBox").style.display = "none";
-      $("page").style.display = "block";
-    }
-
-    function syncMeta(){
-      $("slugChip").textContent = state.slug || "global";
-      $("modeChip").textContent = "fiche mission";
-    }
-
-    function syncLinks() {
-      const slug = state.slug || "";
-
-      $("homeLink").href = withSlug(JOBS_PATHS.home, slug);
-      $("wallLink").href = withSlug(JOBS_PATHS.wall, slug);
-      $("pinLink").href = withSlug(JOBS_PATHS.pin, slug);
-      $("cockpitLink").href = withSlug(JOBS_PATHS.cockpit, slug);
-      $("bureauLink").href = withSlug(JOBS_PATHS.bureau, slug);
-      $("otherOffersLink").href = withSlug(JOBS_PATHS.wall, slug);
-
-      const postulerHref = state.offer?.id
-        ? (() => {
-            const u = new URL(JOBS_PATHS.postuler, location.href);
-            u.searchParams.set("offer", state.offer.id);
-            if (slug) u.searchParams.set("slug", slug);
-            return u.toString();
-          })()
-        : withSlug(JOBS_PATHS.postuler, slug);
-
-      $("postulerBtn").href = postulerHref;
-      $("postulerTop").href = postulerHref;
-
-      syncMeta();
-    }
-
-    async function loadOffer(){
-      syncLinks();
-
-      if (!offerId) {
-        setLoadingMessage("Mission introuvable : identifiant manquant.");
-        return;
+      function escapeHtml(v = ""){
+        return String(v)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
       }
 
-      if (!sb) {
-        setLoadingMessage("Supabase non chargé. Vérifie la configuration front.");
-        return;
+      function labelSector(v = ""){
+        const map = {
+          build:"BTP",
+          beauty:"Beauté",
+          shop:"Boutique",
+          food:"Restauration",
+          service:"Services",
+          driver:"Chauffeur",
+          market:"Marché",
+          admin:"Admin"
+        };
+        return map[String(v || "").toLowerCase()] || v || "Secteur";
       }
 
-      const { data, error } = await sb
-        .from("digiy_jobs_offers_pro")
-        .select("id,workspace_slug,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status")
-        .eq("id", offerId)
-        .eq("status", "active")
-        .maybeSingle();
-
-      if (error || !data) {
-        console.error(error);
-        setLoadingMessage("Impossible de charger cette mission.");
-        return;
+      function labelContract(v = ""){
+        const map = {
+          cdi:"CDI",
+          cdd:"CDD",
+          mission:"Mission",
+          stage:"Stage",
+          freelance:"Freelance",
+          extra:"Extra"
+        };
+        return map[String(v || "").toLowerCase()] || v || "Contrat";
       }
 
-      state.offer = data;
-      state.slug = String(data.workspace_slug || state.slug || "").trim().toLowerCase();
-
-      if (state.slug) saveSlug(state.slug);
-
-      document.title = `${data.title || "Mission"} — DIGIY JOBS`;
-
-      $("badgeSector").textContent = labelSector(data.sector);
-      $("badgeContract").textContent = labelContract(data.contract_type);
-      $("title").textContent = data.title || "Mission";
-      $("descriptionLead").textContent = data.description || "Description à venir.";
-      $("metaCity").textContent = data.city || "Ville à préciser";
-      $("metaCountry").textContent = data.country || "Sénégal";
-      $("metaPay").textContent = data.pay || "À préciser";
-      $("metaEmployer").textContent = data.employer_name || data.workspace_slug || "Structure à préciser";
-      $("detailText").textContent = data.description || "Description à venir.";
-      $("requirementsText").textContent = data.requirements || "Exigences à préciser.";
-
-      const goods = [];
-      if (data.has_housing) goods.push('<span class="good">Logement possible</span>');
-      if (data.has_family_welcome) goods.push('<span class="good">Accueil familial possible</span>');
-      if (data.contact_phone) goods.push(`<span class="good">Contact : ${escapeHtml(data.contact_phone)}</span>`);
-      if (state.slug) goods.push(`<span class="good">Slug : ${escapeHtml(state.slug)}</span>`);
-      $("goodRow").innerHTML = goods.join("");
-
-      syncLinks();
-      showPage();
-    }
-
-    (async () => {
-      if (!state.slug) {
-        const saved = readSavedSlug();
-        if (saved) state.slug = saved;
+      function withSlug(path, slug){
+        const cleanSlug = String(slug || "").trim().toLowerCase();
+        if (!cleanSlug) return path;
+        const joiner = path.includes("?") ? "&" : "?";
+        return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
       }
 
-      if (state.slug) saveSlug(state.slug);
+      function saveSlug(slug){
+        try{
+          const clean = String(slug || "").trim().toLowerCase();
+          if (clean) localStorage.setItem(SLUG_STORAGE_KEY, clean);
+        }catch(_){}
+      }
 
-      syncLinks();
-      await loadOffer();
+      function readSavedSlug(){
+        try{
+          return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
+        }catch(_){
+          return "";
+        }
+      }
+
+      function setLoadingMessage(text) {
+        const box = $("loadingBox");
+        if (!box) return;
+        box.textContent = text;
+        box.style.display = "block";
+        $("page").style.display = "none";
+      }
+
+      function showPage() {
+        $("loadingBox").style.display = "none";
+        $("page").style.display = "block";
+      }
+
+      function syncMeta(){
+        $("slugChip").textContent = state.slug || "aucun";
+        $("modeChip").textContent = "fiche mission";
+        $("sourceChip").textContent = "Supabase réel";
+      }
+
+      function syncLinks() {
+        const slug = state.slug || "";
+
+        $("homeLink").href = withSlug(JOBS_PATHS.home, slug);
+        $("wallLink").href = withSlug(JOBS_PATHS.wall, slug);
+        $("pinLink").href = withSlug(JOBS_PATHS.pin, slug);
+        $("cockpitLink").href = withSlug(JOBS_PATHS.cockpit, slug);
+        $("bureauLink").href = withSlug(JOBS_PATHS.bureau, slug);
+        $("otherOffersLink").href = withSlug(JOBS_PATHS.wall, slug);
+        $("postulerBtn").href = withSlug(JOBS_PATHS.postuler, slug);
+        $("postulerTop").href = withSlug(JOBS_PATHS.postuler, slug);
+
+        syncMeta();
+      }
+
+      async function loadOffer(){
+        syncLinks();
+
+        if (!state.slug) {
+          setLoadingMessage("Mission introuvable : slug manquant.");
+          return;
+        }
+
+        if (!sb) {
+          setLoadingMessage("Supabase non chargé. Vérifie la configuration front.");
+          return;
+        }
+
+        const { data, error } = await sb
+          .from("digiy_jobs_offers_pro")
+          .select("id,slug,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .eq("slug", state.slug)
+          .eq("status", "active")
+          .order("published_at", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (error) {
+          console.error(error);
+          setLoadingMessage("Impossible de charger cette mission.");
+          return;
+        }
+
+        const offer = Array.isArray(data) ? data[0] : null;
+
+        if (!offer) {
+          setLoadingMessage("Aucune mission active trouvée pour ce slug.");
+          return;
+        }
+
+        state.offer = offer;
+        state.slug = String(offer.slug || state.slug || "").trim().toLowerCase();
+
+        if (state.slug) saveSlug(state.slug);
+
+        document.title = `${offer.title || "Mission"} — DIGIY JOBS`;
+
+        $("badgeSector").textContent = labelSector(offer.sector);
+        $("badgeContract").textContent = labelContract(offer.contract_type);
+        $("title").textContent = offer.title || "Mission";
+        $("descriptionLead").textContent = offer.description || "Description à venir.";
+        $("metaCity").textContent = offer.city || "Ville à préciser";
+        $("metaCountry").textContent = offer.country || "Sénégal";
+        $("metaPay").textContent = offer.pay || "À préciser";
+        $("metaEmployer").textContent = offer.employer_name || offer.slug || "Structure à préciser";
+        $("detailText").textContent = offer.description || "Description à venir.";
+        $("requirementsText").textContent = offer.requirements || "Exigences à préciser.";
+
+        const goods = [];
+        if (offer.has_housing) goods.push('<span class="good">Logement possible</span>');
+        if (offer.has_family_welcome) goods.push('<span class="good">Accueil familial possible</span>');
+        if (offer.contact_phone) goods.push(`<span class="good">Contact : ${escapeHtml(offer.contact_phone)}</span>`);
+        if (state.slug) goods.push(`<span class="good">Slug : ${escapeHtml(state.slug)}</span>`);
+        $("goodRow").innerHTML = goods.join("");
+
+        syncLinks();
+        showPage();
+      }
+
+      (async () => {
+        if (!state.slug) {
+          const saved = readSavedSlug();
+          if (saved) state.slug = saved;
+        }
+
+        if (state.slug) saveSlug(state.slug);
+
+        syncLinks();
+        await loadOffer();
+      })();
     })();
   </script>
 </body>
