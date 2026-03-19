@@ -244,6 +244,7 @@
       display:none;
       line-height:1.6;
       font-weight:700;
+      white-space:pre-line;
     }
 
     .status.ok{
@@ -291,7 +292,7 @@
 
       <div class="meta-line">
         <div class="meta-chip">Mode : <strong id="modeChip">candidature publique</strong></div>
-        <div class="meta-chip">Workspace : <strong id="workspaceChip">global</strong></div>
+        <div class="meta-chip">Slug actif : <strong id="slugChip">global</strong></div>
         <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
       </div>
 
@@ -310,8 +311,8 @@
           </div>
 
           <div class="field">
-            <label for="whatsapp_phone">Téléphone WhatsApp</label>
-            <input id="whatsapp_phone" name="whatsapp_phone" type="tel" placeholder="Ex: +221771234567" required />
+            <label for="phone">Téléphone WhatsApp</label>
+            <input id="phone" name="phone" type="tel" placeholder="Ex: +221771234567" required />
           </div>
 
           <div class="field">
@@ -387,6 +388,8 @@
     const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
 
     const $ = (id) => document.getElementById(id);
+    const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+    const DB_SLUG_COLUMN = "workspace_slug";
 
     const JOBS_PATHS = {
       home: "./index.html",
@@ -400,20 +403,12 @@
 
     const state = {
       offer: null,
-      workspaceSlug: slugFromUrl
+      slug: slugFromUrl,
+      ownerId: null
     };
 
     function normalizePhone(v = ""){
       return String(v).trim().replace(/\s+/g, "");
-    }
-
-    function escapeHtml(v = "") {
-      return String(v)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
     }
 
     function withSlug(path, slug){
@@ -439,13 +434,27 @@
       box.style.display = "block";
     }
 
+    function saveSlug(slug){
+      try{
+        if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
+      }catch(_){}
+    }
+
+    function readSavedSlug(){
+      try{
+        return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
+      }catch(_){
+        return "";
+      }
+    }
+
     function syncMeta(){
-      $("workspaceChip").textContent = state.workspaceSlug || "global";
+      $("slugChip").textContent = state.slug || "global";
       $("modeChip").textContent = state.offer ? "candidature liée" : "candidature publique";
     }
 
     function syncLinks() {
-      const slug = state.workspaceSlug || "";
+      const slug = state.slug || "";
 
       $("homeLink").href = withSlug(JOBS_PATHS.home, slug);
       $("wallLink").href = withSlug(JOBS_PATHS.wall, slug);
@@ -468,10 +477,32 @@
       syncMeta();
     }
 
+    async function inferOwnerIdFromSlug(){
+      if (!sb || !state.slug || state.ownerId) return;
+
+      const { data, error } = await sb
+        .from("digiy_jobs_offers_pro")
+        .select("owner_id")
+        .eq(DB_SLUG_COLUMN, state.slug)
+        .limit(1)
+        .maybeSingle();
+
+      if (!error && data?.owner_id) {
+        state.ownerId = data.owner_id;
+      }
+    }
+
     async function loadOfferIfAny(){
       syncLinks();
 
-      if (!offerId) return;
+      if (!offerId) {
+        if (state.slug) {
+          saveSlug(state.slug);
+          await inferOwnerIdFromSlug();
+        }
+        syncLinks();
+        return;
+      }
 
       if (!sb) {
         showStatus("err", "Supabase non chargé. Vérifie la configuration front.");
@@ -480,7 +511,7 @@
 
       const { data, error } = await sb
         .from("digiy_jobs_offers_pro")
-        .select("id,workspace_slug,title,city,country,contract_type,pay,employer_name,status")
+        .select("id,workspace_slug,owner_id,title,city,country,contract_type,pay,employer_name,status")
         .eq("id", offerId)
         .eq("status", "active")
         .maybeSingle();
@@ -493,7 +524,10 @@
       }
 
       state.offer = data;
-      state.workspaceSlug = String(data.workspace_slug || state.workspaceSlug || "").trim().toLowerCase();
+      state.ownerId = data.owner_id || null;
+      state.slug = String(data.workspace_slug || state.slug || "").trim().toLowerCase();
+
+      if (state.slug) saveSlug(state.slug);
 
       $("offerBox").style.display = "block";
       $("offerTitle").textContent = data.title || "Mission";
@@ -516,30 +550,41 @@
         return;
       }
 
+      const fullName = $("full_name").value.trim();
+      const phone = normalizePhone($("phone").value);
+      const trade = $("trade").value.trim();
+      const slug = state.offer?.workspace_slug || state.slug || null;
+
+      if (!fullName || !phone) {
+        showStatus("err", "Nom complet et téléphone WhatsApp sont obligatoires.");
+        return;
+      }
+
+      if (!state.offer?.id && !slug) {
+        showStatus("err", "Aucun slug JOBS détecté. Ouvre la page depuis le mur des missions ou une fiche mission.");
+        return;
+      }
+
+      if (!state.ownerId && slug) {
+        await inferOwnerIdFromSlug();
+      }
+
       const payload = {
         offer_id: state.offer?.id || null,
-        workspace_slug: state.offer?.workspace_slug || state.workspaceSlug || null,
-        full_name: $("full_name").value.trim(),
-        whatsapp_phone: normalizePhone($("whatsapp_phone").value),
+        workspace_slug: slug,
+        owner_id: state.offer?.owner_id || state.ownerId || null,
+        full_name: fullName,
+        phone: phone,
+        job_title: trade || state.offer?.title || null,
         city: $("city").value.trim() || null,
         country: $("country").value.trim() || "Sénégal",
-        trade: $("trade").value.trim() || null,
+        trade: trade || null,
         years_experience: $("years_experience").value.trim() || null,
         availability: $("availability").value || null,
         message: $("message").value.trim() || null,
         status: "new",
         source: $("source").value.trim() || "public_form"
       };
-
-      if (!payload.full_name || !payload.whatsapp_phone) {
-        showStatus("err", "Nom complet et téléphone WhatsApp sont obligatoires.");
-        return;
-      }
-
-      if (!payload.offer_id && !payload.workspace_slug) {
-        showStatus("err", "Aucune mission ni espace JOBS détecté. Ouvre la page depuis le mur des missions ou une fiche mission.");
-        return;
-      }
 
       const btn = $("submitBtn");
       btn.disabled = true;
@@ -554,7 +599,10 @@
 
       if (error) {
         console.error(error);
-        showStatus("err", "Impossible d’envoyer la candidature pour le moment. Vérifie le SQL/RLS puis réessaie.");
+        showStatus(
+          "err",
+          "Impossible d’envoyer la candidature pour le moment.\nVérifie le SQL/RLS puis réessaie."
+        );
         return;
       }
 
@@ -566,7 +614,7 @@
         "ok",
         state.offer
           ? "Candidature envoyée. Elle est entrée en base avec le statut « new »."
-          : "Candidature spontanée envoyée. Elle est entrée en base avec le statut « new »."
+          : "Candidature envoyée. Elle est entrée en base avec le statut « new »."
       );
 
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -574,8 +622,17 @@
 
     $("applyForm").addEventListener("submit", handleSubmit);
 
-    syncLinks();
-    loadOfferIfAny();
+    (async () => {
+      if (!state.slug) {
+        const saved = readSavedSlug();
+        if (saved) state.slug = saved;
+      }
+
+      if (state.slug) saveSlug(state.slug);
+
+      syncLinks();
+      await loadOfferIfAny();
+    })();
   </script>
 </body>
 </html>
