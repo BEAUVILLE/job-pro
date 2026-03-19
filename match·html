@@ -85,6 +85,9 @@
       cursor:pointer;
       color:var(--ink);
       min-height:44px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
     .top-actions .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
 
@@ -254,7 +257,7 @@
 <body>
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <a class="brand" href="#top" aria-label="Retour en haut">
+      <a id="brandHome" class="brand" href="./index.html" aria-label="Retour à l’accueil JOBS">
         <span class="brand-mark">JM</span>
         <span>
           DIGIY JOBS PRO
@@ -265,6 +268,7 @@
       <div class="top-actions">
         <button id="btnReloadMission" type="button">Recharger</button>
         <button id="btnImportPublic" type="button">Importer dernier dossier public</button>
+        <a id="btnOpenHome" href="./index.html">Accueil JOBS</a>
         <a id="btnOpenWall" href="./mur%20des%20missions.html">Mur</a>
         <a id="btnOpenBureau" href="./bureau.html">Bureau</a>
         <a id="btnOpenCockpit" href="./cockpit.html">Cockpit</a>
@@ -464,6 +468,7 @@
         </p>
         <div class="foot-links">
           <button id="btnResetValidated" type="button">Vider validations</button>
+          <a id="footerHomeLink" href="./index.html">Accueil JOBS</a>
           <a id="footerWallLink" href="./mur%20des%20missions.html">Mur</a>
           <a id="footerPinLink" href="./pin.html">Entrée PIN</a>
           <a href="#top">Retour haut</a>
@@ -606,10 +611,13 @@
       const btnValidateMatch = document.getElementById("btnValidateMatch");
       const btnResetValidated = document.getElementById("btnResetValidated");
 
+      const brandHome = document.getElementById("brandHome");
+      const btnOpenHome = document.getElementById("btnOpenHome");
       const btnOpenWall = document.getElementById("btnOpenWall");
       const btnOpenBureau = document.getElementById("btnOpenBureau");
       const btnOpenCockpit = document.getElementById("btnOpenCockpit");
       const btnOpenPublicMission = document.getElementById("btnOpenPublicMission");
+      const footerHomeLink = document.getElementById("footerHomeLink");
       const footerPinLink = document.getElementById("footerPinLink");
       const footerWallLink = document.getElementById("footerWallLink");
 
@@ -812,10 +820,15 @@
 
       function syncLinks() {
         const slug = state.slug || "";
+        const homeHref = withSlug(JOBS_PATHS.home, slug);
         const wallHref = withSlug(JOBS_PATHS.wall, slug);
         const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
         const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
         const pinHref = withSlug(JOBS_PATHS.pin, slug);
+
+        brandHome.href = homeHref;
+        btnOpenHome.href = homeHref;
+        footerHomeLink.href = homeHref;
 
         btnOpenWall.href = wallHref;
         btnOpenBureau.href = bureauHref;
@@ -829,7 +842,7 @@
           if (slug) missionUrl.searchParams.set("slug", slug);
           btnOpenPublicMission.href = missionUrl.toString();
         } else {
-          btnOpenPublicMission.href = wallHref;
+          btnOpenPublicMission.href = homeHref;
         }
 
         miniSlug.textContent = slug || "aucun slug";
