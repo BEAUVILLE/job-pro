@@ -872,7 +872,7 @@
         if (state.workspaceSlug) {
           const { data, error } = await sb
             .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .select("id,offer_id,workspace_slug,full_name,phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
             .eq("workspace_slug", state.workspaceSlug)
             .order("created_at", { ascending: false });
 
@@ -890,7 +890,7 @@
         if (offerIds.length) {
           const { data, error } = await sb
             .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .select("id,offer_id,workspace_slug,full_name,phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
             .in("offer_id", offerIds)
             .order("created_at", { ascending: false });
 
@@ -1077,7 +1077,7 @@
           "Nous pouvons avancer si vous êtes toujours disponible."
         ].filter(Boolean).join("\n");
 
-        const phone = String(candidate.whatsapp_phone || "").replace(/[^\d]/g, "");
+        const phone = String(candidate.phone || "").replace(/[^\d]/g, "");
         const url = new URL(`https://wa.me/${phone}`);
         url.searchParams.set("text", lines);
         return url.toString();
@@ -1088,7 +1088,7 @@
         const local = getCandidateLocal(candidate.id);
         return [
           `Nom : ${safe(candidate.full_name)}`,
-          `WhatsApp : ${safe(candidate.whatsapp_phone)}`,
+          `WhatsApp : ${safe(candidate.phone)}`,
           `Ville : ${safe(candidate.city)}`,
           `Pays : ${safe(candidate.country || "Sénégal")}`,
           `Métier : ${safe(candidate.trade)}`,
@@ -1179,7 +1179,7 @@
 
         const fields = [
           fieldHtml("Nom complet", candidate.full_name),
-          fieldHtml("Téléphone WhatsApp", candidate.whatsapp_phone),
+          fieldHtml("Téléphone WhatsApp", candidate.phone),
           fieldHtml("Ville", candidate.city),
           fieldHtml("Pays", candidate.country || "Sénégal"),
           fieldHtml("Métier / profil", candidate.trade),
@@ -1225,7 +1225,7 @@
         }
 
         const phone = normalizePhone(raw.phone);
-        const exists = state.candidates.some((candidate) => normalizePhone(candidate.whatsapp_phone) === phone);
+        const exists = state.candidates.some((candidate) => normalizePhone(candidate.phone) === phone);
         if (exists) {
           setStatus("Ce dossier public semble déjà présent dans le bureau.", "info");
           return;
@@ -1237,7 +1237,7 @@
           offer_id: selectedOfferId,
           workspace_slug: state.workspaceSlug,
           full_name: String(raw.nom || raw.full_name || "Dossier public").trim(),
-          whatsapp_phone: phone,
+          phone: phone,
           city: String(raw.zone || raw.city || "").trim() || null,
           country: String(raw.country || "Sénégal").trim(),
           trade: String(raw.metier || raw.buildMetier || raw.hotelMetier || "").trim() || null,
@@ -1251,7 +1251,7 @@
           source: "import_public_dossier"
         };
 
-        if (!payload.full_name || !payload.whatsapp_phone) {
+        if (!payload.full_name || !payload.phone) {
           setStatus("Le dossier public trouvé est incomplet : nom ou téléphone manquant.", "warn");
           return;
         }
@@ -1304,7 +1304,7 @@
           offer_id: selectedOfferId,
           workspace_slug: state.workspaceSlug,
           full_name: String(full_name).trim(),
-          whatsapp_phone: normalizePhone(whatsapp_phone),
+          phone: normalizePhone(whatsapp_phone),
           city: city ? String(city).trim() : null,
           country: "Sénégal",
           trade: trade ? String(trade).trim() : null,
@@ -1315,7 +1315,7 @@
           source: "manual_bureau_entry"
         };
 
-        if (!payload.full_name || !payload.whatsapp_phone) {
+        if (!payload.full_name || !payload.phone) {
           setStatus("Nom et téléphone sont obligatoires pour créer une candidature manuelle.", "warn");
           return;
         }
@@ -1430,7 +1430,7 @@
             offer_title: linkedOffer?.title || null,
             sector: inferSector(candidate),
             full_name: candidate.full_name,
-            whatsapp_phone: candidate.whatsapp_phone,
+            phone: candidate.phone,
             city: candidate.city,
             country: candidate.country,
             trade: candidate.trade,
