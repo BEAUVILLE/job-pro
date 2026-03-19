@@ -720,7 +720,7 @@
       </div>
 
       <div class="meta-line">
-        <div class="meta-chip">Workspace : <strong id="workspaceChip">—</strong></div>
+        <div class="meta-chip">Slug actif : <strong id="slugChip">—</strong></div>
         <div class="meta-chip">Mode : <strong id="modeChip">détection…</strong></div>
         <div class="meta-chip">Source : <strong id="sourceChip">détection…</strong></div>
       </div>
@@ -829,6 +829,8 @@
 
     const params = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
+    const JOBS_SLUG_STORAGE_KEY = "digiy_jobs_slug";
+    const DB_SLUG_COLUMN = "workspace_slug";
 
     const JOBS_PATHS = {
       home: "./index.html",
@@ -842,7 +844,7 @@
     };
 
     const state = {
-      workspaceSlug: "",
+      slug: "",
       offers: [],
       candidates: [],
       filteredCandidates: [],
@@ -882,8 +884,22 @@
       if (el) el.href = href;
     }
 
+    function saveSlug(slug) {
+      try {
+        if (slug) localStorage.setItem(JOBS_SLUG_STORAGE_KEY, slug);
+      } catch (_) {}
+    }
+
+    function readSavedSlug() {
+      try {
+        return String(localStorage.getItem(JOBS_SLUG_STORAGE_KEY) || "").trim().toLowerCase();
+      } catch (_) {
+        return "";
+      }
+    }
+
     function withSlug(path) {
-      const slug = state.workspaceSlug || "";
+      const slug = state.slug || "";
       if (!slug) return path;
       const joiner = path.includes("?") ? "&" : "?";
       return `${path}${joiner}slug=${encodeURIComponent(slug)}`;
@@ -976,18 +992,18 @@
       modeChip.textContent = PREVIEW_MODE ? "aperçu verrouillé" : "cockpit réel";
     }
 
-    function updateWorkspaceUI() {
-      const slug = state.workspaceSlug || "";
-      const workspaceChip = $("workspaceChip");
-      if (workspaceChip) workspaceChip.textContent = slug || "aucun slug détecté";
+    function updateSlugUI() {
+      const slugChip = $("slugChip");
+      if (slugChip) slugChip.textContent = state.slug || "aucun slug détecté";
       syncModeChip();
       syncLinks();
     }
 
-    function setWorkspaceSlug(nextSlug) {
+    function setSlug(nextSlug) {
       const clean = String(nextSlug || "").trim().toLowerCase();
-      state.workspaceSlug = clean;
-      updateWorkspaceUI();
+      state.slug = clean;
+      if (clean) saveSlug(clean);
+      updateSlugUI();
     }
 
     function setTab(tab) {
@@ -1016,8 +1032,8 @@
     }
 
     function computeStats() {
-      const all = state.candidates;
-      const count = (s) => all.filter((x) => (x.status || "new") === s).length;
+      const all = Array.isArray(state.candidates) ? state.candidates : [];
+      const count = (s) => all.filter((x) => String(x.status || "new").toLowerCase() === s).length;
 
       $("statOffers").textContent = state.offers.length;
       $("statCandidates").textContent = all.length;
@@ -1049,10 +1065,11 @@
         const offer = offerMap.get(c.offer_id) || null;
         const hay = [
           c.full_name,
-          c.whatsapp_phone,
+          c.phone,
+          c.job_title,
+          c.trade,
           c.city,
           c.country,
-          c.trade,
           c.years_experience,
           c.availability,
           c.message,
@@ -1092,14 +1109,15 @@
 
       wrap.innerHTML = state.filteredCandidates.map((c) => {
         const offer = offerMap.get(c.offer_id) || null;
-        const waPhone = normalizePhone(c.whatsapp_phone || "");
+        const displayPhone = c.phone || "";
+        const waPhone = normalizePhone(displayPhone);
         const waLink = waPhone
           ? `https://wa.me/${encodeURIComponent(waPhone.replace("+", ""))}`
           : "#";
 
         const matchHref =
           `${JOBS_PATHS.match}?id=${encodeURIComponent(c.id)}` +
-          (state.workspaceSlug ? `&slug=${encodeURIComponent(state.workspaceSlug)}` : "");
+          (state.slug ? `&slug=${encodeURIComponent(state.slug)}` : "");
 
         return `
           <article class="card">
@@ -1107,7 +1125,7 @@
               <div>
                 <h3 class="title">${escapeHtml(c.full_name || "Candidat")}</h3>
                 <div class="meta">
-                  ${escapeHtml(c.trade || "Profil non précisé")} •
+                  ${escapeHtml(c.trade || c.job_title || "Profil non précisé")} •
                   ${escapeHtml(c.city || "Ville à préciser")} •
                   ${escapeHtml(c.country || "Sénégal")}
                 </div>
@@ -1124,8 +1142,8 @@
 
             <div class="mini-grid">
               <div class="mini">
-                <div class="mini-label">WhatsApp</div>
-                <div class="mini-value">${escapeHtml(c.whatsapp_phone || "—")}</div>
+                <div class="mini-label">Téléphone</div>
+                <div class="mini-value">${escapeHtml(displayPhone || "—")}</div>
               </div>
               <div class="mini">
                 <div class="mini-label">Expérience</div>
@@ -1161,9 +1179,9 @@
       const wrap = $("offerCards");
       if (!wrap) return;
 
-      if (!state.workspaceSlug) {
+      if (!state.slug) {
         wrap.classList.add("hidden");
-        setStatusBox("empty", "Aucun workspace JOBS détecté. Ouvre le cockpit avec ?slug=jobs-... ou via l’entrée PIN.");
+        setStatusBox("empty", "Aucun slug JOBS détecté. Ouvre le cockpit avec ?slug=jobs-... ou via l’entrée PIN.");
         return;
       }
 
@@ -1172,8 +1190,8 @@
         setStatusBox(
           "empty",
           PREVIEW_MODE
-            ? "Aucune mission publiée trouvée pour ce workspace en aperçu."
-            : "Aucune mission trouvée pour ce workspace."
+            ? "Aucune mission publiée trouvée pour ce slug en aperçu."
+            : "Aucune mission trouvée pour ce slug."
         );
         return;
       }
@@ -1191,7 +1209,7 @@
         const linkedCount = counts[o.id] || 0;
         const missionHref =
           `${JOBS_PATHS.mission}?id=${encodeURIComponent(o.id)}` +
-          (state.workspaceSlug ? `&slug=${encodeURIComponent(state.workspaceSlug)}` : "");
+          (state.slug ? `&slug=${encodeURIComponent(state.slug)}` : "");
 
         return `
           <article class="card">
@@ -1247,7 +1265,7 @@
       const buckets = ["new", "review", "shortlist", "call", "accepted", "rejected"];
       wrap.classList.remove("hidden");
       wrap.innerHTML = buckets.map((status) => {
-        const items = state.candidates.filter((c) => (c.status || "new") === status);
+        const items = state.candidates.filter((c) => String(c.status || "new").toLowerCase() === status);
         return `
           <div class="pipe">
             <h3>${escapeHtml(labelStatus(status))}</h3>
@@ -1256,7 +1274,7 @@
               ${items.slice(0, 5).map((c) => `
                 <div class="pipe-item">
                   <strong>${escapeHtml(c.full_name || "Candidat")}</strong><br/>
-                  ${escapeHtml(c.trade || "Profil")} • ${escapeHtml(c.city || "Ville")}
+                  ${escapeHtml(c.trade || c.job_title || "Profil")} • ${escapeHtml(c.city || "Ville")}
                 </div>
               `).join("") || '<div class="pipe-item">Aucun profil.</div>'}
             </div>
@@ -1306,7 +1324,7 @@
 
     async function loadOffers() {
       if (!sb) throw new Error("Supabase indisponible");
-      if (!state.workspaceSlug) {
+      if (!state.slug) {
         state.offers = [];
         return;
       }
@@ -1314,18 +1332,18 @@
       const { data, error } = await sb
         .from("digiy_jobs_offers_pro")
         .select("id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at")
-        .eq("workspace_slug", state.workspaceSlug)
+        .eq(DB_SLUG_COLUMN, state.slug)
         .eq("status", "active")
         .order("published_at", { ascending: false })
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      state.offers = data || [];
+      state.offers = Array.isArray(data) ? data : [];
     }
 
     async function loadCandidates() {
       if (!sb) throw new Error("Supabase indisponible");
-      if (!state.workspaceSlug && !state.offers.length) {
+      if (!state.slug && !state.offers.length) {
         state.candidates = [];
         return;
       }
@@ -1333,11 +1351,11 @@
       const rows = [];
       const seen = new Set();
 
-      if (state.workspaceSlug) {
+      if (state.slug) {
         const { data, error } = await sb
           .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-          .eq("workspace_slug", state.workspaceSlug)
+          .select("id,offer_id,workspace_slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+          .eq(DB_SLUG_COLUMN, state.slug)
           .order("created_at", { ascending: false });
 
         if (error) throw error;
@@ -1355,7 +1373,7 @@
       if (offerIds.length) {
         const { data, error } = await sb
           .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+          .select("id,offer_id,workspace_slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
           .in("offer_id", offerIds)
           .order("created_at", { ascending: false });
 
@@ -1423,9 +1441,9 @@
 
     async function loadAll(preview = false) {
       try {
-        updateWorkspaceUI();
+        updateSlugUI();
 
-        if (!state.workspaceSlug) {
+        if (!state.slug) {
           state.offers = [];
           state.candidates = [];
           state.filteredCandidates = [];
@@ -1436,8 +1454,8 @@
           setStatusBox(
             "empty",
             preview
-              ? "Aucun workspace JOBS détecté. Ajoute ?slug=jobs-... pour voir les missions publiées en aperçu."
-              : "Aucun workspace JOBS détecté. Ouvre ce cockpit via l’entrée PIN ou avec ?slug=jobs-..."
+              ? "Aucun slug JOBS détecté. Ajoute ?slug=jobs-... pour voir les missions publiées en aperçu."
+              : "Aucun slug JOBS détecté. Ouvre ce cockpit via l’entrée PIN ou avec ?slug=jobs-..."
           );
           return;
         }
@@ -1466,16 +1484,24 @@
 
         if (state.activeTab === "candidates" && state.filteredCandidates.length) {
           hideStatusBox();
+        } else if (state.activeTab === "offers" && state.offers.length) {
+          hideStatusBox();
         }
       } catch (err) {
         console.error(err);
-        setStatusBox("error", "Erreur de chargement. Vérifie le patch SQL, les policies RLS et le workspace slug.");
+        setStatusBox("error", "Erreur de chargement. Vérifie le patch SQL, les policies RLS et le slug JOBS.");
       }
     }
 
     async function bootGuard() {
       const urlSlug = String(params.get("slug") || "").trim().toLowerCase();
-      if (urlSlug) setWorkspaceSlug(urlSlug);
+      const savedSlug = readSavedSlug();
+
+      if (urlSlug) {
+        setSlug(urlSlug);
+      } else if (savedSlug) {
+        setSlug(savedSlug);
+      }
 
       if (!sb) {
         setSourceChip("supabase indisponible");
@@ -1494,7 +1520,7 @@
 
       const sessionSlug = String(session?.slug || "").trim().toLowerCase();
       if (sessionSlug) {
-        setWorkspaceSlug(sessionSlug);
+        setSlug(sessionSlug);
       }
 
       if (!session?.access) {
@@ -1555,7 +1581,7 @@
     });
 
     (async () => {
-      updateWorkspaceUI();
+      updateSlugUI();
       const gate = await bootGuard();
       if (!gate.ok) return;
       await loadAll(gate.preview);
