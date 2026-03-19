@@ -1,14 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <meta name="theme-color" content="#061b14"/>
-  <title>DIGIY JOBS PRO — Cockpit</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DIGIY JOBS PRO — Match candidat ↔ mission</title>
   <meta
     name="description"
-    content="Cockpit DIGIY JOBS PRO : missions, candidatures, pipeline et suivi réel du terrain."
+    content="DIGIY JOBS PRO — matching réel entre une mission publiée et les candidats du bureau, avec score, raisons de compatibilité, notes bureau et mise en relation WhatsApp."
   />
+  <meta name="theme-color" content="#0A1128" />
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -20,1571 +20,1661 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./guard.js"></script>
 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg:#061b14;
-      --bg2:#0a2b1f;
-      --card:#0d241b;
-      --card2:#113024;
-      --line:rgba(255,255,255,.12);
-      --text:#eafff1;
-      --muted:rgba(234,255,241,.72);
-      --gold:#facc15;
-      --gold2:#fde68a;
-      --green:#22c55e;
-      --blue:#38bdf8;
-      --danger:#fb7185;
-      --orange:#fb923c;
-      --shadow:0 20px 70px rgba(0,0,0,.28);
-      --max:1280px;
+      --dark:#0A1128;
+      --dark-2:#142041;
+      --blue:#0ea5e9;
+      --blue-2:#38bdf8;
+      --green:#10b981;
+      --gold:#d4a84f;
+      --amber:#f59e0b;
+      --red:#ef4444;
+      --ink:#0f172a;
+      --muted:#475569;
+      --bg:#edf3f8;
+      --sand:#f8f0e3;
+      --line:#e2e8f0;
+      --card:#ffffffd9;
+      --shadow:0 16px 42px rgba(15,23,42,.10);
+      --radius:22px;
+      --radius-sm:16px;
+      --max:1400px;
     }
 
     *{box-sizing:border-box}
-
-    html,body{
+    html{scroll-behavior:smooth}
+    body{
       margin:0;
-      padding:0;
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      color:var(--ink);
       background:
-        radial-gradient(circle at top, rgba(250,204,21,.08), transparent 26%),
-        linear-gradient(180deg,var(--bg),#04110c 100%);
-      color:var(--text);
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        radial-gradient(circle at top left, rgba(14,165,233,.08), transparent 30%),
+        radial-gradient(circle at right 12%, rgba(16,185,129,.06), transparent 24%),
+        linear-gradient(180deg,var(--bg),var(--sand));
     }
 
-    a{color:inherit;text-decoration:none}
+    a{text-decoration:none;color:inherit}
     button,input,select,textarea{font:inherit}
+    .wrap{width:min(calc(100% - 28px), var(--max));margin:0 auto}
 
-    .site-back-float{
-      position:fixed;
-      top:calc(env(safe-area-inset-top, 0px) + 12px);
-      left:calc(env(safe-area-inset-left, 0px) + 12px);
-      z-index:9999;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      min-height:46px;
-      padding:11px 15px;
-      border-radius:999px;
-      text-decoration:none;
-      font-size:14px;
-      font-weight:950;
-      color:var(--text);
-      background:rgba(6,27,20,.82);
-      border:1px solid rgba(255,255,255,.18);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:0 14px 30px rgba(0,0,0,.28);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease;
-      touch-action:manipulation;
+    .topbar{
+      position:sticky;top:0;z-index:40;
+      backdrop-filter:blur(10px);
+      background:rgba(237,243,248,.80);
+      border-bottom:1px solid rgba(226,232,240,.92);
     }
-
-    .site-back-float:hover{
-      transform:translateY(-1px);
-      background:rgba(250,204,21,.10);
-      border-color:rgba(250,204,21,.42);
-      color:#fff2ae;
+    .topbar-inner{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;
     }
-
-    .site-back-float:active{
-      transform:scale(.97);
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.02em}
+    .brand-mark{
+      width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;
+      background:linear-gradient(135deg,var(--dark),#20305e);box-shadow:var(--shadow);font-size:14px;
     }
-
-    .top-links{
-      position:fixed;
-      top:calc(env(safe-area-inset-top, 0px) + 12px);
-      right:calc(env(safe-area-inset-right, 0px) + 12px);
-      z-index:9998;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      max-width:min(900px, calc(100vw - 130px));
-    }
-
-    .chip-link{
-      min-height:46px;
-      padding:11px 14px;
-      border-radius:999px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      font-size:13px;
-      font-weight:950;
-      color:var(--text);
-      background:rgba(6,27,20,.82);
-      border:1px solid rgba(255,255,255,.16);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:0 14px 30px rgba(0,0,0,.22);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
-      white-space:nowrap;
-    }
-
-    .chip-link:hover{
-      transform:translateY(-1px);
-      background:rgba(255,255,255,.10);
-      border-color:rgba(255,255,255,.24);
-    }
-
-    .chip-link.gold{
-      background:rgba(250,204,21,.12);
-      border-color:rgba(250,204,21,.32);
-      color:#fff2ae;
-    }
-
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:88px 16px 80px;
-    }
-
-    .hero{
+    .brand small{display:block;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.08em}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .top-actions button,.top-actions a,.top-actions select{
       border:1px solid var(--line);
-      border-radius:32px;
-      padding:24px 20px;
-      background:
-        radial-gradient(circle at 85% 18%, rgba(250,204,21,.13), transparent 20%),
-        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
-        var(--bg2);
+      background:#fff;
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+      color:var(--ink);
+      min-height:44px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .top-actions .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+
+    .status-wrap{padding:14px 0 0}
+    .status-box{
+      display:none;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
       box-shadow:var(--shadow);
-    }
-
-    .hero-top{
-      display:flex;
-      justify-content:space-between;
-      gap:14px;
-      align-items:flex-start;
-      flex-wrap:wrap;
-    }
-
-    .kicker{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:12px;
-      letter-spacing:.15em;
-      text-transform:uppercase;
-      color:var(--gold2);
-      font-weight:900;
-      margin-bottom:10px;
-    }
-
-    h1{
-      margin:0 0 10px;
-      font-size:clamp(30px,5vw,54px);
-      line-height:1;
-      letter-spacing:-.03em;
-    }
-
-    .lead{
-      margin:0;
-      color:var(--muted);
+      padding:14px 16px;
       line-height:1.65;
-      max-width:820px;
-      font-size:15px;
+      font-weight:700;
+    }
+    .status-box.info{display:block;color:#334155}
+    .status-box.warn{
+      display:block;
+      color:#8a4b00;
+      background:rgba(245,158,11,.10);
+      border-color:rgba(245,158,11,.24);
+    }
+    .status-box.error{
+      display:block;
+      color:#991b1b;
+      background:rgba(239,68,68,.10);
+      border-color:rgba(239,68,68,.24);
+    }
+    .status-box.ok{
+      display:block;
+      color:#065f46;
+      background:rgba(16,185,129,.10);
+      border-color:rgba(16,185,129,.24);
     }
 
-    .hero-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
+    .hero{padding:24px 0 14px}
+    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px;align-items:stretch}
+    .hero-card,.panel,.stat,.mission-card,.filters,.list-card,.detail-card,.mini,.field,.match-box,.foot,.empty-card{
+      border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
     }
-
-    .hero-links{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
+    .hero-card{
+      padding:26px;position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at top right, rgba(212,168,79,.16), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.90));
     }
-
-    .ghost-btn,.gold-btn,.nav-btn{
-      min-height:46px;
-      padding:12px 16px;
-      border-radius:999px;
-      font-weight:900;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border:none;
-      cursor:pointer;
+    .hero-card::after{
+      content:"";position:absolute;right:-45px;bottom:-45px;width:170px;height:170px;border-radius:50%;
+      border:26px solid rgba(10,17,40,.05);
     }
-
-    .ghost-btn,.nav-btn{
-      background:rgba(255,255,255,.07);
-      color:var(--text);
-      border:1px solid var(--line);
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;border:1px solid var(--line);
+      background:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
     }
-
-    .gold-btn{
-      background:linear-gradient(180deg,var(--gold),#eab308);
-      color:#171717;
-    }
-
-    .nav-btn.gold{
-      background:rgba(250,204,21,.12);
-      border-color:rgba(250,204,21,.28);
-      color:#fff2ae;
-    }
-
-    .meta-line{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:16px;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .meta-chip{
-      padding:9px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.05);
-      border:1px solid var(--line);
-    }
-
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(7,minmax(0,1fr));
-      gap:12px;
-      margin-top:18px;
-    }
-
-    .stat{
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:16px;
-      background:rgba(255,255,255,.04);
-      min-height:104px;
-    }
-
-    .stat-label{
-      color:var(--muted);
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:900;
-      margin-bottom:10px;
-    }
-
-    .stat-value{
-      font-size:30px;
-      font-weight:1000;
-      line-height:1;
-      letter-spacing:-.03em;
-    }
-
-    .tabs{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:20px 0 14px;
-    }
-
-    .tab{
-      min-height:46px;
-      padding:12px 16px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      font-weight:900;
-      cursor:pointer;
-    }
-
-    .tab.active{
-      background:rgba(250,204,21,.1);
-      border-color:rgba(250,204,21,.32);
-      color:#fff2ae;
-    }
+    h1{margin:16px 0 12px;font-size:clamp(34px,4vw,58px);line-height:.98;letter-spacing:-.04em;max-width:12ch}
+    .lead{margin:0;max-width:66ch;color:#334155;line-height:1.7;font-size:16px}
+    .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .tag{padding:10px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--muted)}
 
     .panel{
-      border:1px solid var(--line);
-      border-radius:28px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
-        var(--card);
-      box-shadow:var(--shadow);
-      padding:18px;
+      padding:18px;background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));color:#fff;border-color:#27365a;
+      display:flex;flex-direction:column;gap:14px;
+    }
+    .panel h2{margin:0;font-size:20px;letter-spacing:-.02em}
+    .panel p{margin:0;color:#dbe6f6;line-height:1.65}
+    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .mini{padding:14px;border-radius:18px;border-color:#2d3c60;background:rgba(255,255,255,.05);box-shadow:none}
+    .mini strong{display:block;font-size:14px;margin-bottom:6px}
+    .mini span{display:block;color:#cbd5e1;font-size:13px;line-height:1.5}
+    .signal{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:rgba(212,168,79,.13);border:1px solid rgba(212,168,79,.22);color:#ffe7af;font-size:13px;font-weight:800}
+
+    .stats{padding:8px 0 14px}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .stat{padding:18px}
+    .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
+    .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
+
+    .mission-section{padding-bottom:16px}
+    .mission-card{padding:18px}
+    .section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .section-head h2,.list-head h3,.detail-head h3{margin:0;font-size:24px;letter-spacing:-.02em}
+    .section-head p,.list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
+    .mission-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .mission-grid .full{grid-column:1 / -1}
+    .field{padding:13px;border-radius:16px;background:#fff}
+    .field small{display:block;color:#64748b;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+    .field strong{display:block;font-size:14px;line-height:1.55;word-break:break-word}
+
+    .filters{padding:16px;margin-bottom:16px}
+    .filter-grid{display:grid;grid-template-columns:1.2fr repeat(4,.8fr);gap:12px}
+    .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .filter-actions button{
+      border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
+    }
+    input,select,textarea{
+      width:100%;padding:12px 12px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);outline:none;
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
+    textarea{min-height:120px;resize:vertical}
+
+    .workspace{display:grid;grid-template-columns:.88fr 1.12fr;gap:18px;padding-bottom:36px}
+    .left-col,.right-col{display:grid;gap:16px;align-content:start}
+    .list-card,.detail-card{padding:16px}
+    .list{
+      display:grid;gap:12px;max-height:950px;overflow:auto;padding-right:2px;
+    }
+    .candidate{
+      border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
+    }
+    .candidate:hover{transform:translateY(-1px)}
+    .candidate.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
+    .candidate-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .candidate h4{margin:0;font-size:18px;letter-spacing:-.02em}
+    .sub{margin:4px 0 0;color:#475569;font-weight:700;font-size:14px;line-height:1.55}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:900;background:#f8fafc}
+    .chip.score-high{color:#047857;background:rgba(16,185,129,.14)}
+    .chip.score-mid{color:#b45309;background:rgba(245,158,11,.14)}
+    .chip.score-low{color:#b91c1c;background:rgba(239,68,68,.10)}
+    .chip.sector-build{color:#7c5517;background:rgba(212,168,79,.12)}
+    .chip.sector-food{color:#065f46;background:rgba(16,185,129,.12)}
+    .chip.sector-driver{color:#075985;background:rgba(14,165,233,.12)}
+    .chip.sector-other{color:#334155;background:#eef2f7}
+    .candidate-note{margin-top:12px;color:var(--muted);font-size:13px;line-height:1.6}
+    .score-pill{
+      min-width:66px;height:66px;border-radius:18px;display:grid;place-items:center;font-weight:900;font-size:22px;color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-2));box-shadow:0 12px 24px rgba(14,165,233,.20);
     }
 
-    .toolbar{
-      display:grid;
-      grid-template-columns:1.2fr .8fr .8fr auto;
-      gap:12px;
-      margin-bottom:16px;
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .detail-actions,.button-row{display:flex;gap:10px;flex-wrap:wrap}
+    .detail-actions button,.detail-actions a,.button-row button,.button-row a{
+      border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;
     }
+    .detail-actions .primary,.button-row .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+    .detail-actions .green,.button-row .green{background:var(--green);color:#fff;border-color:transparent}
 
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
+    .match-box{padding:16px;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .match-box h4{margin:0 0 8px;font-size:20px;letter-spacing:-.02em}
+    .match-box p{margin:0;color:var(--muted);line-height:1.65}
+    .reason-list{display:grid;gap:10px;margin-top:12px}
+    .reason-item{padding:12px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:#334155;line-height:1.55}
+
+    .notes-wrap{display:grid;gap:12px}
+    .empty-card{padding:24px;text-align:center;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .empty-card h4{margin:0 0 8px;font-size:22px}
+    .empty-card p{margin:0;color:var(--muted);line-height:1.65;max-width:52ch;margin-inline:auto}
+
+    footer{padding:0 0 30px}
+    .foot{padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+    .foot p{margin:0;color:var(--muted);line-height:1.6}
+    .foot-links{display:flex;gap:10px;flex-wrap:wrap}
+    .foot-links button,.foot-links a{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
+
+    @media (max-width:1200px){
+      .hero-grid,.workspace,.stats-grid,.filter-grid,.mission-grid{grid-template-columns:1fr 1fr}
+      .filter-grid > *:first-child{grid-column:1 / -1}
+      .mission-grid .full{grid-column:1 / -1}
     }
-
-    .field label{
-      color:#d9fbe7;
-      font-size:12px;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-      font-weight:900;
-    }
-
-    .field input,.field select{
-      width:100%;
-      border:none;
-      outline:none;
-      min-height:48px;
-      padding:12px 14px;
-      border-radius:16px;
-      color:var(--text);
-      background:rgba(255,255,255,.08);
-      border:1px solid transparent;
-    }
-
-    .field input:focus,.field select:focus{
-      border-color:rgba(250,204,21,.4);
-      box-shadow:0 0 0 4px rgba(250,204,21,.08);
-    }
-
-    .cards{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
-    }
-
-    .card{
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:16px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
-        var(--card2);
-    }
-
-    .card-top{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:10px;
-    }
-
-    .title{
-      margin:0;
-      font-size:22px;
-      line-height:1.1;
-      letter-spacing:-.02em;
-      font-weight:1000;
-    }
-
-    .meta{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.6;
-      margin-top:6px;
-    }
-
-    .badge-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:10px;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-    }
-
-    .badge.gold{
-      border-color:rgba(250,204,21,.32);
-      background:rgba(250,204,21,.08);
-      color:#fff2ae;
-    }
-
-    .badge.green{
-      border-color:rgba(34,197,94,.28);
-      background:rgba(34,197,94,.1);
-      color:#c9ffd4;
-    }
-
-    .badge.blue{
-      border-color:rgba(56,189,248,.28);
-      background:rgba(56,189,248,.1);
-      color:#d8f4ff;
-    }
-
-    .badge.orange{
-      border-color:rgba(251,146,60,.28);
-      background:rgba(251,146,60,.1);
-      color:#ffe3c5;
-    }
-
-    .badge.red{
-      border-color:rgba(251,113,133,.28);
-      background:rgba(251,113,133,.1);
-      color:#ffdbe2;
-    }
-
-    .body{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.65;
-      white-space:pre-line;
-    }
-
-    .mini-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .mini{
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:12px;
-      background:rgba(255,255,255,.03);
-    }
-
-    .mini-label{
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      color:var(--muted);
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .mini-value{
-      font-size:14px;
-      font-weight:800;
-      line-height:1.45;
-    }
-
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:14px;
-    }
-
-    .small-btn{
-      min-height:40px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:none;
-      font-weight:900;
-      cursor:pointer;
-      background:rgba(255,255,255,.07);
-      color:var(--text);
-      border:1px solid var(--line);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .small-btn.gold{
-      background:rgba(250,204,21,.12);
-      color:#fff2ae;
-      border-color:rgba(250,204,21,.28);
-    }
-
-    .small-btn.green{
-      background:rgba(34,197,94,.12);
-      color:#c8ffd3;
-      border-color:rgba(34,197,94,.26);
-    }
-
-    .small-btn.red{
-      background:rgba(251,113,133,.12);
-      color:#ffd8df;
-      border-color:rgba(251,113,133,.26);
-    }
-
-    .small-btn.blue{
-      background:rgba(56,189,248,.12);
-      color:#d8f5ff;
-      border-color:rgba(56,189,248,.26);
-    }
-
-    .small-btn.orange{
-      background:rgba(251,146,60,.12);
-      color:#ffe2c5;
-      border-color:rgba(251,146,60,.26);
-    }
-
-    .pipeline{
-      display:grid;
-      grid-template-columns:repeat(6,minmax(0,1fr));
-      gap:12px;
-    }
-
-    .pipe{
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:14px;
-      background:rgba(255,255,255,.04);
-      min-height:180px;
-    }
-
-    .pipe h3{
-      margin:0 0 10px;
-      font-size:16px;
-      line-height:1.2;
-      text-transform:uppercase;
-    }
-
-    .pipe-count{
-      font-size:30px;
-      font-weight:1000;
-      letter-spacing:-.03em;
-      margin-bottom:10px;
-    }
-
-    .pipe-list{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .pipe-item{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px;
-      background:rgba(255,255,255,.03);
-      font-size:13px;
-      line-height:1.45;
-      color:var(--muted);
-    }
-
-    .empty,.error,.loading{
-      border:1px dashed var(--line);
-      border-radius:22px;
-      padding:24px;
-      text-align:center;
-      color:var(--muted);
-      background:rgba(255,255,255,.03);
-    }
-
-    .error{
-      color:#ffd9df;
-      border-color:rgba(251,113,133,.28);
-      background:rgba(251,113,133,.08);
-    }
-
-    .hidden{display:none !important}
-
-    .preview-banner{
-      margin:16px 0 0;
-      border:1px solid rgba(250,204,21,.28);
-      background:rgba(250,204,21,.08);
-      color:#fff2ae;
-      border-radius:18px;
-      padding:14px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .preview-banner strong{
-      color:#fff8cf;
-    }
-
-    .preview-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .preview-lock{
-      position:relative;
-    }
-
-    .preview-lock::after{
-      content:"Aperçu cockpit — activation requise pour ouvrir le bureau réel";
-      position:absolute;
-      inset:0;
-      display:grid;
-      place-items:center;
-      text-align:center;
-      padding:20px;
-      border-radius:24px;
-      background:rgba(6,27,20,.55);
-      backdrop-filter:blur(6px);
-      color:#fff2ae;
-      font-weight:900;
-      letter-spacing:.01em;
-    }
-
-    .is-preview .tab[data-lockable="true"]{
-      opacity:.52;
-      pointer-events:none;
-    }
-
-    .is-preview [data-lockable="true"]{
-      opacity:.52;
-      pointer-events:none;
-    }
-
-    .is-preview .small-btn[data-action="set-status"]{
-      opacity:.45;
-      pointer-events:none;
-    }
-
-    @media (max-width: 1120px){
-      .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
-      .pipeline{grid-template-columns:repeat(3,minmax(0,1fr))}
-    }
-
-    @media (max-width: 920px){
-      .toolbar{grid-template-columns:1fr 1fr}
-      .cards{grid-template-columns:1fr}
-    }
-
-    @media (max-width: 700px){
-      .wrap{padding:96px 12px 70px}
-      .hero{padding:20px 14px}
-      .panel{padding:14px}
-      .toolbar{grid-template-columns:1fr}
-      .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .pipeline{grid-template-columns:1fr}
-      .mini-grid{grid-template-columns:1fr}
-      h1{font-size:34px}
-
-      .site-back-float{
-        top:calc(env(safe-area-inset-top, 0px) + 10px);
-        left:calc(env(safe-area-inset-left, 0px) + 10px);
-        min-height:42px;
-        padding:10px 13px;
-        font-size:13px;
-      }
-
-      .top-links{
-        top:calc(env(safe-area-inset-top, 0px) + 58px);
-        right:calc(env(safe-area-inset-right, 0px) + 10px);
-        max-width:calc(100vw - 20px);
-      }
-
-      .chip-link{
-        min-height:40px;
-        padding:9px 12px;
-        font-size:12px;
-      }
+    @media (max-width:860px){
+      .hero-grid,.workspace,.stats-grid,.filter-grid,.mission-grid,.detail-grid,.mini-grid{grid-template-columns:1fr}
+      h1{max-width:none}
     }
   </style>
 </head>
 <body>
-  <a class="site-back-float" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a id="brandHome" class="brand" href="./index.html" aria-label="Retour à l’accueil JOBS">
+        <span class="brand-mark">JM</span>
+        <span>
+          DIGIY JOBS PRO
+          <small>MATCH CANDIDAT ↔ MISSION</small>
+        </span>
+      </a>
 
-  <div class="top-links">
-    <a id="homeLink" class="chip-link" href="./index.html">Mur public</a>
-    <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
-    <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Cockpit pro</a>
-    <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
-    <a id="postulerLink" class="chip-link" href="./postuler.html">Postuler</a>
-    <a id="missionsLink" class="chip-link" href="./mur%20des%20missions.html">Missions</a>
-  </div>
-
-  <div class="wrap">
-    <section class="hero">
-      <div class="hero-top">
-        <div>
-          <div class="kicker">DIGIY JOBS PRO • cockpit vivant • candidatures réelles</div>
-          <h1>Le bureau qui voit les vrais candidats.</h1>
-          <p class="lead">
-            Ici le pro suit les missions, lit les candidatures, trie les profils,
-            rappelle les bons, et fait avancer le terrain sans se noyer.
-          </p>
-
-          <div class="hero-links">
-            <a id="publicWallBtn" class="nav-btn gold" href="./index.html" rel="noopener">Mur public</a>
-            <a id="pinEntryBtn" class="nav-btn" href="./pin.html" rel="noopener">Entrée PIN</a>
-            <a id="bureauBtn" class="nav-btn" href="./bureau.html" rel="noopener">Bureau</a>
-            <button id="openPayBtn" class="nav-btn" type="button">Activer mon accès</button>
-          </div>
-        </div>
-
-        <div class="hero-actions">
-          <button id="refreshBtn" class="ghost-btn" type="button">Rafraîchir</button>
-        </div>
+      <div class="top-actions">
+        <button id="btnReloadMission" type="button">Recharger</button>
+        <button id="btnImportPublic" type="button">Importer dernier dossier public</button>
+        <a id="btnOpenHome" href="./index.html">Accueil JOBS</a>
+        <a id="btnOpenWall" href="./mur%20des%20missions.html">Mur</a>
+        <a id="btnOpenBureau" href="./bureau.html">Bureau</a>
+        <a id="btnOpenCockpit" href="./cockpit.html">Cockpit</a>
+        <a id="btnOpenPublicMission" class="primary" href="./mission.html">Voir la fiche mission</a>
       </div>
-
-      <div class="meta-line">
-        <div class="meta-chip">Slug actif : <strong id="slugChip">—</strong></div>
-        <div class="meta-chip">Mode : <strong id="modeChip">détection…</strong></div>
-        <div class="meta-chip">Source : <strong id="sourceChip">détection…</strong></div>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-label">Missions actives</div>
-          <div class="stat-value" id="statOffers">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Candidatures</div>
-          <div class="stat-value" id="statCandidates">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Nouvelles</div>
-          <div class="stat-value" id="statNew">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">En revue</div>
-          <div class="stat-value" id="statReview">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Shortlist</div>
-          <div class="stat-value" id="statShortlist">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">À appeler</div>
-          <div class="stat-value" id="statCall">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Acceptés</div>
-          <div class="stat-value" id="statAccepted">0</div>
-        </div>
-      </div>
-    </section>
-
-    <div class="tabs">
-      <button class="tab active" data-tab="candidates" data-lockable="true" type="button">Candidatures</button>
-      <button class="tab" data-tab="offers" type="button">Missions</button>
-      <button class="tab" data-tab="pipeline" data-lockable="true" type="button">Pipeline</button>
     </div>
+  </header>
 
-    <section class="panel">
-      <div id="statusBox" class="loading">Chargement du cockpit...</div>
+  <div class="wrap status-wrap">
+    <div id="statusBox" class="status-box"></div>
+  </div>
 
-      <div id="tab-candidates">
-        <div class="toolbar" data-lockable="true">
-          <div class="field">
-            <label for="searchInput">Recherche</label>
-            <input id="searchInput" type="text" placeholder="Nom, téléphone, métier, ville, message..." />
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <article class="hero-card">
+          <span class="eyebrow">Rail réel DIGIY JOBS</span>
+          <h1>Le bon besoin face au bon profil.</h1>
+          <p class="lead">
+            Cette page lit la mission active du slug, récupère les candidats réels du bureau,
+            calcule un score lisible, explique les raisons du match et aide le bureau à trancher vite.
+          </p>
+          <div class="hero-tags">
+            <span class="tag">Mission réelle</span>
+            <span class="tag">Candidats réels</span>
+            <span class="tag">Score lisible</span>
+            <span class="tag">WhatsApp prêt</span>
           </div>
+        </article>
 
-          <div class="field">
-            <label for="statusFilter">Statut</label>
-            <select id="statusFilter">
-              <option value="">Tous les statuts</option>
-              <option value="new">new</option>
-              <option value="review">review</option>
-              <option value="shortlist">shortlist</option>
-              <option value="call">call</option>
-              <option value="accepted">accepted</option>
-              <option value="rejected">rejected</option>
-            </select>
+        <aside class="panel">
+          <span class="signal" id="signalPill">Slug JOBS — détection…</span>
+          <h2>Ce que la page fait maintenant</h2>
+          <p>
+            Elle charge la mission active du rail JOBS, lit les candidatures du slug,
+            propose un score de compatibilité, garde les validations bureau localement
+            et prépare la mise en relation sans inventer de faux backend.
+          </p>
+          <div class="mini-grid">
+            <div class="mini"><strong>Source mission</strong><span id="miniMissionSource">digiy_jobs_offers_pro</span></div>
+            <div class="mini"><strong>Source candidats</strong><span id="miniCandidateSource">digiy_jobs_candidates_pro</span></div>
+            <div class="mini"><strong>Mode</strong><span id="miniMode">cockpit réel</span></div>
+            <div class="mini"><strong>Slug</strong><span id="miniSlug">—</span></div>
           </div>
+        </aside>
+      </div>
+    </section>
 
-          <div class="field">
-            <label for="offerFilter">Mission</label>
-            <select id="offerFilter">
-              <option value="">Toutes les missions</option>
-            </select>
+    <section class="stats">
+      <div class="wrap stats-grid">
+        <article class="stat"><strong id="statCandidates">0</strong><span>candidats affichés</span></article>
+        <article class="stat"><strong id="statStrong">0</strong><span>matchs forts (80+)</span></article>
+        <article class="stat"><strong id="statMedium">0</strong><span>matchs à regarder (60+)</span></article>
+        <article class="stat"><strong id="statValidated">0</strong><span>matchs validés</span></article>
+      </div>
+    </section>
+
+    <section class="mission-section">
+      <div class="wrap">
+        <article class="mission-card" id="missionCard">
+          <div class="section-head">
+            <div>
+              <h2>Mission active</h2>
+              <p>Le matching se base sur cette mission. Tu peux changer d’offre active si le slug en a plusieurs.</p>
+            </div>
+            <div style="min-width:280px;display:grid;gap:8px">
+              <label for="missionSelect" style="font-weight:900;color:#334155">Choisir une mission active</label>
+              <select id="missionSelect">
+                <option value="">Aucune mission</option>
+              </select>
+            </div>
           </div>
+          <div class="mission-grid" id="missionGrid"></div>
+        </article>
+      </div>
+    </section>
 
-          <div class="field">
-            <label>&nbsp;</label>
-            <button id="clearFiltersBtn" class="ghost-btn" type="button">Effacer</button>
+    <section class="wrap">
+      <div class="filters">
+        <div class="section-head" style="margin-bottom:14px">
+          <div>
+            <h2>Filtres du matching</h2>
+            <p>Tu peux serrer la recherche ou laisser le score faire le premier tri.</p>
           </div>
         </div>
 
-        <div id="candidateCards" class="cards hidden"></div>
-      </div>
+        <div class="filter-grid">
+          <input id="searchInput" type="search" placeholder="Rechercher nom, métier, ville, message, expérience..." />
 
-      <div id="tab-offers" class="hidden">
-        <div id="offerCards" class="cards hidden"></div>
-      </div>
+          <select id="filterZoneMode">
+            <option value="all">Toutes zones</option>
+            <option value="same">Même ville mission</option>
+            <option value="near">Ville mission + proches</option>
+          </select>
 
-      <div id="tab-pipeline" class="hidden">
-        <div id="pipelineGrid" class="pipeline hidden"></div>
+          <select id="filterMinScore">
+            <option value="0">Tous scores</option>
+            <option value="40">40+</option>
+            <option value="60">60+</option>
+            <option value="80">80+</option>
+          </select>
+
+          <select id="filterStatus">
+            <option value="all">Tous statuts bureau</option>
+            <option value="new">Nouveau</option>
+            <option value="review">En revue</option>
+            <option value="shortlist">Shortlist</option>
+            <option value="call">À appeler</option>
+            <option value="accepted">Accepté</option>
+            <option value="rejected">Refusé</option>
+          </select>
+
+          <select id="filterAvailability">
+            <option value="all">Toutes dispos</option>
+            <option value="immediate">Immédiate</option>
+            <option value="this_week">Cette semaine</option>
+            <option value="this_month">Ce mois-ci</option>
+            <option value="to_discuss">À discuter</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button id="btnClearFilters" type="button">Effacer les filtres</button>
+          <button id="btnExportMatches" type="button">Exporter les matchs</button>
+        </div>
       </div>
     </section>
-  </div>
+
+    <section class="wrap workspace">
+      <div class="left-col">
+        <article class="list-card">
+          <div class="list-head">
+            <div>
+              <h3>Candidats classés</h3>
+              <p>Le haut de liste montre les profils les plus proches de la mission active.</p>
+            </div>
+          </div>
+          <div class="list" id="candidateList"></div>
+        </article>
+      </div>
+
+      <div class="right-col">
+        <article class="detail-card">
+          <div class="empty-card" id="emptyState">
+            <h4>Choisis un candidat</h4>
+            <p>
+              La mission est prête. Sélectionne un profil à gauche pour voir la compatibilité,
+              les raisons du score, les notes et la mise en relation.
+            </p>
+          </div>
+
+          <div id="detailContent" hidden>
+            <div class="detail-head">
+              <div>
+                <h3 id="detailName">—</h3>
+                <p id="detailSubtitle">—</p>
+              </div>
+              <div class="chips" id="detailChips"></div>
+            </div>
+
+            <div class="match-box">
+              <h4>Lecture du match</h4>
+              <p id="matchSummary">—</p>
+              <div class="reason-list" id="reasonList"></div>
+            </div>
+
+            <div class="detail-grid" id="detailGrid" style="margin-top:16px"></div>
+
+            <div class="match-box" style="margin-top:16px">
+              <h4>Notes bureau pour ce match</h4>
+              <p>Note le vrai retour : sérieux, cohérence, réactivité, point à vérifier, étape suivante.</p>
+              <div class="notes-wrap" style="margin-top:12px">
+                <textarea id="matchNotes" placeholder="Ex. Très bon profil pour démarrage rapide. Vérifier mobilité exacte. Possible mise en relation aujourd’hui."></textarea>
+                <div class="button-row">
+                  <button class="primary" id="btnSaveMatchNotes" type="button">Enregistrer les notes</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-actions" style="margin-top:16px">
+              <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp candidat</a>
+              <button id="btnCopyCandidateLink" type="button">📋 Copier fiche candidat</button>
+              <button id="btnCopyMissionLink" type="button">🧷 Copier lien mission</button>
+              <button class="primary" id="btnValidateMatch" type="button">🤝 Valider ce match</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <p>
+          DIGIY JOBS PRO — match candidat ↔ mission. Le rail qui transforme les besoins et les dossiers en lecture exploitable.
+        </p>
+        <div class="foot-links">
+          <button id="btnResetValidated" type="button">Vider validations</button>
+          <a id="footerHomeLink" href="./index.html">Accueil JOBS</a>
+          <a id="footerWallLink" href="./mur%20des%20missions.html">Mur</a>
+          <a id="footerPinLink" href="./pin.html">Entrée PIN</a>
+          <a href="#top">Retour haut</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script>
-    const SUPABASE_URL =
-      window.DIGIY_SUPABASE_URL ||
-      "https://wesqmwjjtsefyjnluosj.supabase.co";
+    (function(){
+      "use strict";
 
-    const SUPABASE_ANON_KEY =
-      window.DIGIY_SUPABASE_ANON ||
-      window.DIGIY_SUPABASE_ANON_KEY ||
-      "";
+      const SUPABASE_URL =
+        window.DIGIY_SUPABASE_URL ||
+        "https://wesqmwjjtsefyjnluosj.supabase.co";
 
-    const sb =
-      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-        : null;
-
-    const params = new URLSearchParams(location.search);
-    const $ = (id) => document.getElementById(id);
-    const JOBS_SLUG_STORAGE_KEY = "digiy_jobs_slug";
-    const DB_SLUG_COLUMN = "workspace_slug";
-
-    const JOBS_PATHS = {
-      home: "./index.html",
-      pin: "./pin.html",
-      cockpit: "./cockpit.html",
-      bureau: "./bureau.html",
-      postuler: "./postuler.html",
-      missions: "./mur%20des%20missions.html",
-      mission: "./mission.html",
-      match: "./match.html"
-    };
-
-    const state = {
-      slug: "",
-      offers: [],
-      candidates: [],
-      filteredCandidates: [],
-      activeTab: "candidates",
-      session: null
-    };
-
-    let PREVIEW_MODE = false;
-
-    function escapeHtml(v = "") {
-      return String(v)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function formatDate(v) {
-      if (!v) return "—";
-      try {
-        return new Intl.DateTimeFormat("fr-FR", {
-          dateStyle: "medium",
-          timeStyle: "short"
-        }).format(new Date(v));
-      } catch {
-        return v;
-      }
-    }
-
-    function normalizePhone(v = "") {
-      return String(v).replace(/[^\d+]/g, "");
-    }
-
-    function setHref(id, href) {
-      const el = $(id);
-      if (el) el.href = href;
-    }
-
-    function saveSlug(slug) {
-      try {
-        if (slug) localStorage.setItem(JOBS_SLUG_STORAGE_KEY, slug);
-      } catch (_) {}
-    }
-
-    function readSavedSlug() {
-      try {
-        return String(localStorage.getItem(JOBS_SLUG_STORAGE_KEY) || "").trim().toLowerCase();
-      } catch (_) {
-        return "";
-      }
-    }
-
-    function withSlug(path) {
-      const slug = state.slug || "";
-      if (!slug) return path;
-      const joiner = path.includes("?") ? "&" : "?";
-      return `${path}${joiner}slug=${encodeURIComponent(slug)}`;
-    }
-
-    function setSourceChip(text) {
-      const el = $("sourceChip");
-      if (el) el.textContent = text || "—";
-    }
-
-    function syncLinks() {
-      setHref("homeLink", withSlug(JOBS_PATHS.home));
-      setHref("pinLink", withSlug(JOBS_PATHS.pin));
-      setHref("cockpitLink", withSlug(JOBS_PATHS.cockpit));
-      setHref("bureauLink", withSlug(JOBS_PATHS.bureau));
-      setHref("postulerLink", withSlug(JOBS_PATHS.postuler));
-      setHref("missionsLink", withSlug(JOBS_PATHS.missions));
-
-      setHref("publicWallBtn", withSlug(JOBS_PATHS.home));
-      setHref("pinEntryBtn", withSlug(JOBS_PATHS.pin));
-      setHref("bureauBtn", withSlug(JOBS_PATHS.bureau));
-    }
-
-    function labelSector(v = "") {
-      const map = {
-        build: "BTP",
-        beauty: "Beauté",
-        shop: "Boutique",
-        food: "Restauration",
-        service: "Services",
-        driver: "Chauffeur",
-        market: "Marché",
-        admin: "Admin"
-      };
-      return map[v] || v || "Secteur";
-    }
-
-    function labelContract(v = "") {
-      const map = {
-        cdi: "CDI",
-        cdd: "CDD",
-        mission: "Mission",
-        stage: "Stage",
-        freelance: "Freelance",
-        extra: "Extra"
-      };
-      return map[v] || v || "Contrat";
-    }
-
-    function labelStatus(status = "new") {
-      const map = {
-        new: "Nouveau",
-        review: "En revue",
-        shortlist: "Shortlist",
-        call: "À appeler",
-        accepted: "Accepté",
-        rejected: "Refusé"
-      };
-      return map[String(status || "new").toLowerCase()] || status || "Statut";
-    }
-
-    function badgeStatus(status = "new") {
-      const s = String(status || "new").toLowerCase();
-      const cls =
-        s === "accepted" ? "green" :
-        s === "rejected" ? "red" :
-        s === "call" ? "blue" :
-        s === "shortlist" ? "orange" :
-        s === "review" ? "gold" :
+      const SUPABASE_ANON_KEY =
+        window.DIGIY_SUPABASE_ANON ||
+        window.DIGIY_SUPABASE_ANON_KEY ||
         "";
-      return `<span class="badge ${cls}">${escapeHtml(labelStatus(s))}</span>`;
-    }
 
-    function setStatusBox(type, text) {
-      const box = $("statusBox");
-      if (!box) return;
-      box.className = type;
-      box.textContent = text;
-      box.classList.remove("hidden");
-    }
+      const sb =
+        window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+          : null;
 
-    function hideStatusBox() {
-      const box = $("statusBox");
-      if (box) box.classList.add("hidden");
-    }
+      const params = new URLSearchParams(location.search);
+      const offerIdQ = String(params.get("offer") || params.get("id") || "").trim();
+      const slugQ = String(params.get("slug") || "").trim().toLowerCase();
 
-    function syncModeChip() {
-      const modeChip = $("modeChip");
-      if (!modeChip) return;
-      modeChip.textContent = PREVIEW_MODE ? "aperçu verrouillé" : "cockpit réel";
-    }
+      const PUBLIC_DOSSIER_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
+      const LOCAL_MATCH_PREFIX = "DIGIY_JOBS_MATCH_STATE_V2::";
+      const SLUG_STORAGE_KEY = "digiy_jobs_slug";
 
-    function updateSlugUI() {
-      const slugChip = $("slugChip");
-      if (slugChip) slugChip.textContent = state.slug || "aucun slug détecté";
-      syncModeChip();
-      syncLinks();
-    }
+      const JOBS_PATHS = {
+        home: "./index.html",
+        wall: "./mur%20des%20missions.html",
+        pin: "./pin.html",
+        cockpit: "./cockpit.html",
+        bureau: "./bureau.html",
+        mission: "./mission.html",
+        postuler: "./postuler.html"
+      };
 
-    function setSlug(nextSlug) {
-      const clean = String(nextSlug || "").trim().toLowerCase();
-      state.slug = clean;
-      if (clean) saveSlug(clean);
-      updateSlugUI();
-    }
+      const NEAR_ZONES = {
+        dakar:["rufisque","thiès","thies"],
+        rufisque:["dakar","thiès","thies","mbour"],
+        "thiès":["rufisque","dakar","mbour","saly","somone","ngaparou"],
+        thies:["rufisque","dakar","mbour","saly","somone","ngaparou"],
+        mbour:["saly","ngaparou","somone","thiès","thies","rufisque"],
+        saly:["mbour","ngaparou","somone"],
+        ngaparou:["saly","somone","mbour"],
+        somone:["ngaparou","saly","mbour"]
+      };
 
-    function setTab(tab) {
-      if (PREVIEW_MODE && (tab === "candidates" || tab === "pipeline")) {
-        setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour ouvrir cette partie du cockpit.");
-        return;
+      const SECTOR_LABELS = {
+        build:"BTP",
+        beauty:"Beauté",
+        shop:"Boutique",
+        food:"Restauration",
+        service:"Services",
+        driver:"Chauffeur",
+        market:"Marché",
+        admin:"Admin"
+      };
+
+      const STATUS_LABELS = {
+        new:"Nouveau",
+        review:"En revue",
+        shortlist:"Shortlist",
+        call:"À appeler",
+        accepted:"Accepté",
+        rejected:"Refusé"
+      };
+
+      const AVAILABILITY_LABELS = {
+        immediate:"Immédiate",
+        this_week:"Cette semaine",
+        this_month:"Ce mois-ci",
+        to_discuss:"À discuter"
+      };
+
+      const CONTRACT_LABELS = {
+        cdi:"CDI",
+        cdd:"CDD",
+        mission:"Mission",
+        stage:"Stage",
+        freelance:"Freelance",
+        extra:"Extra"
+      };
+
+      const SECTOR_KEYWORDS = {
+        build:["btp","chantier","construction","maçon","macon","électricien","electricien","plombier","soudeur","menuisier","peintre","carreleur","manoeuvre","manoeuvres","mecanicien","mécanicien"],
+        beauty:["coiffeuse","coiffeur","esthetique","esthétique","beaute","beauté","maquillage","ongles","spa"],
+        shop:["vente","vendeur","vendeuse","boutique","caisse","rayon","stock"],
+        food:["serveur","serveuse","cuisinier","cuisine","restaurant","restauration","bar","snack","chef","plonge"],
+        service:["agent","ménage","menage","gardien","entretien","polyvalent","polyvalente","assistant"],
+        driver:["chauffeur","driver","permis","conduite","transport","livraison"],
+        market:["marché","marche","commerce","vendeur","vendeuse","achat","vente"],
+        admin:["secrétaire","secretaire","bureau","admin","gestion","assistant","comptable"]
+      };
+
+      const statusBox = document.getElementById("statusBox");
+      const signalPill = document.getElementById("signalPill");
+      const miniMode = document.getElementById("miniMode");
+      const miniSlug = document.getElementById("miniSlug");
+
+      const statCandidates = document.getElementById("statCandidates");
+      const statStrong = document.getElementById("statStrong");
+      const statMedium = document.getElementById("statMedium");
+      const statValidated = document.getElementById("statValidated");
+
+      const missionGrid = document.getElementById("missionGrid");
+      const missionSelect = document.getElementById("missionSelect");
+      const candidateList = document.getElementById("candidateList");
+      const emptyState = document.getElementById("emptyState");
+      const detailContent = document.getElementById("detailContent");
+      const detailName = document.getElementById("detailName");
+      const detailSubtitle = document.getElementById("detailSubtitle");
+      const detailChips = document.getElementById("detailChips");
+      const matchSummary = document.getElementById("matchSummary");
+      const reasonList = document.getElementById("reasonList");
+      const detailGrid = document.getElementById("detailGrid");
+      const matchNotes = document.getElementById("matchNotes");
+      const btnOpenWA = document.getElementById("btnOpenWA");
+
+      const searchInput = document.getElementById("searchInput");
+      const filterZoneMode = document.getElementById("filterZoneMode");
+      const filterMinScore = document.getElementById("filterMinScore");
+      const filterStatus = document.getElementById("filterStatus");
+      const filterAvailability = document.getElementById("filterAvailability");
+
+      const btnReloadMission = document.getElementById("btnReloadMission");
+      const btnImportPublic = document.getElementById("btnImportPublic");
+      const btnClearFilters = document.getElementById("btnClearFilters");
+      const btnExportMatches = document.getElementById("btnExportMatches");
+      const btnSaveMatchNotes = document.getElementById("btnSaveMatchNotes");
+      const btnCopyCandidateLink = document.getElementById("btnCopyCandidateLink");
+      const btnCopyMissionLink = document.getElementById("btnCopyMissionLink");
+      const btnValidateMatch = document.getElementById("btnValidateMatch");
+      const btnResetValidated = document.getElementById("btnResetValidated");
+
+      const brandHome = document.getElementById("brandHome");
+      const btnOpenHome = document.getElementById("btnOpenHome");
+      const btnOpenWall = document.getElementById("btnOpenWall");
+      const btnOpenBureau = document.getElementById("btnOpenBureau");
+      const btnOpenCockpit = document.getElementById("btnOpenCockpit");
+      const btnOpenPublicMission = document.getElementById("btnOpenPublicMission");
+      const footerHomeLink = document.getElementById("footerHomeLink");
+      const footerPinLink = document.getElementById("footerPinLink");
+      const footerWallLink = document.getElementById("footerWallLink");
+
+      const state = {
+        slug: slugQ,
+        offers: [],
+        mission: null,
+        candidates: [],
+        ranked: [],
+        selectedId: null,
+        preview: true,
+        session: null,
+        matchState: {}
+      };
+
+      function setStatus(text, tone = "info") {
+        if (!text) {
+          statusBox.className = "status-box";
+          statusBox.textContent = "";
+          statusBox.style.display = "none";
+          return;
+        }
+        statusBox.className = `status-box ${tone}`;
+        statusBox.textContent = text;
+        statusBox.style.display = "block";
       }
 
-      state.activeTab = tab;
-
-      document.querySelectorAll(".tab").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.tab === tab);
-      });
-
-      $("tab-candidates")?.classList.toggle("hidden", tab !== "candidates");
-      $("tab-offers")?.classList.toggle("hidden", tab !== "offers");
-      $("tab-pipeline")?.classList.toggle("hidden", tab !== "pipeline");
-
-      if (tab === "pipeline") renderPipeline();
-      if (tab === "offers") renderOffers();
-      if (tab === "candidates") applyCandidateFilters();
-    }
-
-    function getOfferMap() {
-      return new Map(state.offers.map((o) => [o.id, o]));
-    }
-
-    function computeStats() {
-      const all = Array.isArray(state.candidates) ? state.candidates : [];
-      const count = (s) => all.filter((x) => String(x.status || "new").toLowerCase() === s).length;
-
-      $("statOffers").textContent = state.offers.length;
-      $("statCandidates").textContent = all.length;
-      $("statNew").textContent = count("new");
-      $("statReview").textContent = count("review");
-      $("statShortlist").textContent = count("shortlist");
-      $("statCall").textContent = count("call");
-      $("statAccepted").textContent = count("accepted");
-    }
-
-    function fillOfferFilter() {
-      const el = $("offerFilter");
-      if (!el) return;
-      el.innerHTML =
-        '<option value="">Toutes les missions</option>' +
-        state.offers
-          .map((o) => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.title || "Mission")}</option>`)
-          .join("");
-    }
-
-    function applyCandidateFilters() {
-      const q = $("searchInput")?.value.trim().toLowerCase() || "";
-      const status = $("statusFilter")?.value.trim().toLowerCase() || "";
-      const offerId = $("offerFilter")?.value.trim() || "";
-
-      const offerMap = getOfferMap();
-
-      state.filteredCandidates = state.candidates.filter((c) => {
-        const offer = offerMap.get(c.offer_id) || null;
-        const hay = [
-          c.full_name,
-          c.phone,
-          c.job_title,
-          c.trade,
-          c.city,
-          c.country,
-          c.years_experience,
-          c.availability,
-          c.message,
-          c.source,
-          c.status,
-          offer?.title || ""
-        ].join(" ").toLowerCase();
-
-        if (q && !hay.includes(q)) return false;
-        if (status && String(c.status || "new").toLowerCase() !== status) return false;
-        if (offerId && String(c.offer_id || "") !== offerId) return false;
-        return true;
-      });
-
-      renderCandidates();
-    }
-
-    function renderCandidates() {
-      const wrap = $("candidateCards");
-      if (!wrap) return;
-
-      if (!state.filteredCandidates.length) {
-        wrap.classList.add("hidden");
-        setStatusBox(
-          "empty",
-          PREVIEW_MODE
-            ? "Aperçu du cockpit actif. Active ton accès pour voir les candidatures réelles."
-            : "Aucune candidature ne correspond à ce filtre."
-        );
-        return;
+      function safe(value, fallback = "—") {
+        return value == null || value === "" ? fallback : String(value);
       }
 
-      hideStatusBox();
-      wrap.classList.remove("hidden");
-
-      const offerMap = getOfferMap();
-
-      wrap.innerHTML = state.filteredCandidates.map((c) => {
-        const offer = offerMap.get(c.offer_id) || null;
-        const displayPhone = c.phone || "";
-        const waPhone = normalizePhone(displayPhone);
-        const waLink = waPhone
-          ? `https://wa.me/${encodeURIComponent(waPhone.replace("+", ""))}`
-          : "#";
-
-        const matchHref =
-          `${JOBS_PATHS.match}?id=${encodeURIComponent(c.id)}` +
-          (state.slug ? `&slug=${encodeURIComponent(state.slug)}` : "");
-
-        return `
-          <article class="card">
-            <div class="card-top">
-              <div>
-                <h3 class="title">${escapeHtml(c.full_name || "Candidat")}</h3>
-                <div class="meta">
-                  ${escapeHtml(c.trade || c.job_title || "Profil non précisé")} •
-                  ${escapeHtml(c.city || "Ville à préciser")} •
-                  ${escapeHtml(c.country || "Sénégal")}
-                </div>
-              </div>
-              <div class="badge-row">
-                ${badgeStatus(c.status || "new")}
-              </div>
-            </div>
-
-            <div class="badge-row">
-              <span class="badge gold">${escapeHtml(offer?.title || "Candidature spontanée")}</span>
-              <span class="badge">${escapeHtml(c.source || "public_form")}</span>
-            </div>
-
-            <div class="mini-grid">
-              <div class="mini">
-                <div class="mini-label">Téléphone</div>
-                <div class="mini-value">${escapeHtml(displayPhone || "—")}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Expérience</div>
-                <div class="mini-value">${escapeHtml(c.years_experience || "—")}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Disponibilité</div>
-                <div class="mini-value">${escapeHtml(c.availability || "—")}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Envoyé le</div>
-                <div class="mini-value">${escapeHtml(formatDate(c.created_at))}</div>
-              </div>
-            </div>
-
-            <div class="body" style="margin-top:12px;">${escapeHtml(c.message || "Aucun message laissé.")}</div>
-
-            <div class="actions">
-              <a class="small-btn blue" href="${waLink}" target="_blank" rel="noopener">WhatsApp</a>
-              <a class="small-btn" href="${matchHref}" target="_blank" rel="noopener">Match</a>
-              <button class="small-btn gold" data-action="set-status" data-id="${c.id}" data-status="review" type="button">review</button>
-              <button class="small-btn orange" data-action="set-status" data-id="${c.id}" data-status="shortlist" type="button">shortlist</button>
-              <button class="small-btn blue" data-action="set-status" data-id="${c.id}" data-status="call" type="button">call</button>
-              <button class="small-btn green" data-action="set-status" data-id="${c.id}" data-status="accepted" type="button">accepted</button>
-              <button class="small-btn red" data-action="set-status" data-id="${c.id}" data-status="rejected" type="button">rejected</button>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function renderOffers() {
-      const wrap = $("offerCards");
-      if (!wrap) return;
-
-      if (!state.slug) {
-        wrap.classList.add("hidden");
-        setStatusBox("empty", "Aucun slug JOBS détecté. Ouvre le cockpit avec ?slug=jobs-... ou via l’entrée PIN.");
-        return;
+      function formatDate(value) {
+        if (!value) return "—";
+        try {
+          return new Intl.DateTimeFormat("fr-FR", {
+            dateStyle: "medium",
+            timeStyle: "short"
+          }).format(new Date(value));
+        } catch {
+          return String(value);
+        }
       }
 
-      if (!state.offers.length) {
-        wrap.classList.add("hidden");
-        setStatusBox(
-          "empty",
-          PREVIEW_MODE
-            ? "Aucune mission publiée trouvée pour ce slug en aperçu."
-            : "Aucune mission trouvée pour ce slug."
-        );
-        return;
+      function normalizeSlug(value = "") {
+        return String(value || "").trim().toLowerCase();
       }
 
-      hideStatusBox();
-      wrap.classList.remove("hidden");
-
-      const counts = {};
-      state.candidates.forEach((c) => {
-        const key = c.offer_id || "__none__";
-        counts[key] = (counts[key] || 0) + 1;
-      });
-
-      wrap.innerHTML = state.offers.map((o) => {
-        const linkedCount = counts[o.id] || 0;
-        const missionHref =
-          `${JOBS_PATHS.mission}?id=${encodeURIComponent(o.id)}` +
-          (state.slug ? `&slug=${encodeURIComponent(state.slug)}` : "");
-
-        return `
-          <article class="card">
-            <div class="card-top">
-              <div>
-                <h3 class="title">${escapeHtml(o.title || "Mission")}</h3>
-                <div class="meta">
-                  ${escapeHtml(labelSector(o.sector))} •
-                  ${escapeHtml(labelContract(o.contract_type))} •
-                  ${escapeHtml(o.city || "Ville à préciser")} •
-                  ${escapeHtml(o.pay || "Rémunération à préciser")}
-                </div>
-              </div>
-              <div class="badge-row">
-                <span class="badge green">${linkedCount} candidature${linkedCount > 1 ? "s" : ""}</span>
-              </div>
-            </div>
-
-            <div class="body">${escapeHtml(o.description || "Description à venir.")}</div>
-
-            <div class="mini-grid">
-              <div class="mini">
-                <div class="mini-label">Structure</div>
-                <div class="mini-value">${escapeHtml(o.employer_name || "—")}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Publié</div>
-                <div class="mini-value">${escapeHtml(formatDate(o.published_at || o.created_at))}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Logement</div>
-                <div class="mini-value">${o.has_housing ? "Oui" : "Non"}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Accueil familial</div>
-                <div class="mini-value">${o.has_family_welcome ? "Oui" : "Non"}</div>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button class="small-btn gold" data-action="filter-offer" data-offer-id="${o.id}" type="button">Voir candidats liés</button>
-              <a class="small-btn" href="${missionHref}" target="_blank" rel="noopener">Ouvrir fiche</a>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function renderPipeline() {
-      const wrap = $("pipelineGrid");
-      if (!wrap) return;
-
-      const buckets = ["new", "review", "shortlist", "call", "accepted", "rejected"];
-      wrap.classList.remove("hidden");
-      wrap.innerHTML = buckets.map((status) => {
-        const items = state.candidates.filter((c) => String(c.status || "new").toLowerCase() === status);
-        return `
-          <div class="pipe">
-            <h3>${escapeHtml(labelStatus(status))}</h3>
-            <div class="pipe-count">${items.length}</div>
-            <div class="pipe-list">
-              ${items.slice(0, 5).map((c) => `
-                <div class="pipe-item">
-                  <strong>${escapeHtml(c.full_name || "Candidat")}</strong><br/>
-                  ${escapeHtml(c.trade || c.job_title || "Profil")} • ${escapeHtml(c.city || "Ville")}
-                </div>
-              `).join("") || '<div class="pipe-item">Aucun profil.</div>'}
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    async function updateCandidateStatus(id, status) {
-      if (PREVIEW_MODE) {
-        setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour modifier les statuts.");
-        return;
+      function normalizePhone(value = "") {
+        return String(value || "").trim().replace(/[^\d+]/g, "");
       }
 
-      if (!sb) {
-        setStatusBox("error", "Supabase indisponible.");
-        return;
+      function normalizeText(value = "") {
+        return String(value || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
       }
 
-      setStatusBox("loading", `Mise à jour vers "${status}"...`);
-
-      const { error } = await sb
-        .from("digiy_jobs_candidates_pro")
-        .update({ status, updated_at: new Date().toISOString() })
-        .eq("id", id);
-
-      if (error) {
-        console.error(error);
-        setStatusBox("error", `Impossible de mettre à jour le statut "${status}". Vérifie le patch SQL/RLS.`);
-        return;
+      function escapeHtml(str = "") {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
       }
 
-      const row = state.candidates.find((x) => x.id === id);
-      if (row) row.status = status;
-
-      computeStats();
-
-      if (state.activeTab === "candidates") applyCandidateFilters();
-      if (state.activeTab === "offers") renderOffers();
-      if (state.activeTab === "pipeline") renderPipeline();
-
-      setStatusBox("loading", `Statut mis à jour : ${status}`);
-      setTimeout(() => {
-        if (state.activeTab === "candidates" && state.filteredCandidates.length) hideStatusBox();
-      }, 900);
-    }
-
-    async function loadOffers() {
-      if (!sb) throw new Error("Supabase indisponible");
-      if (!state.slug) {
-        state.offers = [];
-        return;
+      function sectorLabel(value = "") {
+        return SECTOR_LABELS[String(value || "").toLowerCase()] || safe(value, "Secteur");
       }
 
-      const { data, error } = await sb
-        .from("digiy_jobs_offers_pro")
-        .select("id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at")
-        .eq(DB_SLUG_COLUMN, state.slug)
-        .eq("status", "active")
-        .order("published_at", { ascending: false })
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      state.offers = Array.isArray(data) ? data : [];
-    }
-
-    async function loadCandidates() {
-      if (!sb) throw new Error("Supabase indisponible");
-      if (!state.slug && !state.offers.length) {
-        state.candidates = [];
-        return;
+      function contractLabel(value = "") {
+        return CONTRACT_LABELS[String(value || "").toLowerCase()] || safe(value, "Contrat");
       }
 
-      const rows = [];
-      const seen = new Set();
+      function sectorClass(value = "") {
+        const s = String(value || "").toLowerCase();
+        if (s === "build") return "sector-build";
+        if (s === "food") return "sector-food";
+        if (s === "driver") return "sector-driver";
+        return "sector-other";
+      }
 
-      if (state.slug) {
+      function statusLabel(value = "") {
+        return STATUS_LABELS[String(value || "").toLowerCase()] || safe(value, "Statut");
+      }
+
+      function labelAvailability(value = "") {
+        return AVAILABILITY_LABELS[String(value || "").toLowerCase()] || safe(value, "À discuter");
+      }
+
+      function availabilityCode(value = "") {
+        const v = normalizeText(value);
+        if (!v) return "";
+        if (v === "immediate" || v.includes("immediat")) return "immediate";
+        if (v === "this_week" || v.includes("semaine") || v.includes("48h")) return "this_week";
+        if (v === "this_month" || v.includes("mois")) return "this_month";
+        if (v === "to_discuss" || v.includes("discut")) return "to_discuss";
+        return String(value || "").toLowerCase();
+      }
+
+      function tokenize(value = "") {
+        const stop = new Set([
+          "de","du","des","le","la","les","un","une","et","ou","au","aux","pour","par","avec","sur","dans",
+          "mission","poste","profil","candidat","recherche","nous","vous","plus","très","tres","être","etre",
+          "savoir","faire","avoir","sera","sont","est","the","and","for"
+        ]);
+        return normalizeText(value)
+          .split(/[^a-z0-9+]+/)
+          .filter(Boolean)
+          .filter((x) => x.length >= 3)
+          .filter((x) => !stop.has(x));
+      }
+
+      function nearZone(a, b) {
+        const aa = normalizeText(a);
+        const bb = normalizeText(b);
+        if (!aa || !bb) return false;
+        if (aa === bb) return true;
+        return (NEAR_ZONES[aa] || []).includes(bb) || (NEAR_ZONES[bb] || []).includes(aa);
+      }
+
+      function urgencyLevel(offer) {
+        const text = normalizeText([
+          offer?.title,
+          offer?.description,
+          offer?.requirements,
+          offer?.published_at
+        ].join(" "));
+        if (text.includes("urgent") || text.includes("immediat") || text.includes("demain") || text.includes("48h")) return "high";
+        return "normal";
+      }
+
+      function readJson(key) {
+        try {
+          return JSON.parse(localStorage.getItem(key) || "null");
+        } catch {
+          return null;
+        }
+      }
+
+      function saveSlug(slug) {
+        try {
+          if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
+        } catch (_) {}
+      }
+
+      function readSavedSlug() {
+        try {
+          return normalizeSlug(localStorage.getItem(SLUG_STORAGE_KEY) || "");
+        } catch (_) {
+          return "";
+        }
+      }
+
+      function withSlug(path, slug) {
+        const cleanSlug = normalizeSlug(slug || "");
+        if (!cleanSlug) return path;
+        const joiner = path.includes("?") ? "&" : "?";
+        return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+      }
+
+      function setSlug(nextSlug) {
+        const clean = normalizeSlug(nextSlug);
+        state.slug = clean;
+        if (clean) saveSlug(clean);
+      }
+
+      function getMatchStorageKey() {
+        return `${LOCAL_MATCH_PREFIX}${state.slug || "jobs"}`;
+      }
+
+      function loadMatchState() {
+        state.matchState = readJson(getMatchStorageKey()) || {};
+      }
+
+      function saveMatchState() {
+        try {
+          localStorage.setItem(getMatchStorageKey(), JSON.stringify(state.matchState));
+        } catch (_) {}
+      }
+
+      function getMatchKey(candidate) {
+        const offerKey = state.mission?.id || "no-offer";
+        const candidateKey = candidate.id || normalizeText(candidate.full_name + "-" + candidate.phone);
+        return `${offerKey}::${candidateKey}`;
+      }
+
+      function scoreClass(score) {
+        if (score >= 80) return "score-high";
+        if (score >= 60) return "score-mid";
+        return "score-low";
+      }
+
+      function missionField(label, value, full = false) {
+        return `<div class="field${full ? " full" : ""}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
+      }
+
+      function syncLinks() {
+        const slug = state.slug || "";
+        const homeHref = withSlug(JOBS_PATHS.home, slug);
+        const wallHref = withSlug(JOBS_PATHS.wall, slug);
+        const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
+        const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
+        const pinHref = withSlug(JOBS_PATHS.pin, slug);
+
+        brandHome.href = homeHref;
+        btnOpenHome.href = homeHref;
+        footerHomeLink.href = homeHref;
+
+        btnOpenWall.href = wallHref;
+        btnOpenBureau.href = bureauHref;
+        btnOpenCockpit.href = cockpitHref;
+        footerWallLink.href = wallHref;
+        footerPinLink.href = pinHref;
+
+        if (state.mission?.id) {
+          const missionUrl = new URL(JOBS_PATHS.mission, location.href);
+          missionUrl.searchParams.set("id", state.mission.id);
+          if (slug) missionUrl.searchParams.set("slug", slug);
+          btnOpenPublicMission.href = missionUrl.toString();
+        } else {
+          btnOpenPublicMission.href = homeHref;
+        }
+
+        miniSlug.textContent = slug || "aucun slug";
+        signalPill.textContent = slug ? `Slug JOBS — ${slug}` : "Slug JOBS — manquant";
+      }
+
+      async function fetchOfferById(id) {
+        if (!sb || !id) return null;
         const { data, error } = await sb
-          .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,workspace_slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-          .eq(DB_SLUG_COLUMN, state.slug)
+          .from("digiy_jobs_offers_pro")
+          .select("id,slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .eq("id", id)
+          .eq("status", "active")
+          .maybeSingle();
+
+        if (error) throw error;
+        return data || null;
+      }
+
+      async function fetchOffersBySlug(slug) {
+        if (!sb || !slug) return [];
+        const { data, error } = await sb
+          .from("digiy_jobs_offers_pro")
+          .select("id,slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .eq("slug", slug)
+          .eq("status", "active")
+          .order("published_at", { ascending: false })
           .order("created_at", { ascending: false });
 
         if (error) throw error;
-
-        (data || []).forEach((item) => {
-          if (!seen.has(item.id)) {
-            seen.add(item.id);
-            rows.push(item);
-          }
-        });
+        return Array.isArray(data) ? data : [];
       }
 
-      const offerIds = state.offers.map((o) => o.id).filter(Boolean);
+      async function loadMissionRail() {
+        let explicitOffer = null;
 
-      if (offerIds.length) {
-        const { data, error } = await sb
-          .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,workspace_slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-          .in("offer_id", offerIds)
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        (data || []).forEach((item) => {
-          if (!seen.has(item.id)) {
-            seen.add(item.id);
-            rows.push(item);
+        if (offerIdQ) {
+          explicitOffer = await fetchOfferById(offerIdQ);
+          if (explicitOffer?.slug && !state.slug) {
+            setSlug(explicitOffer.slug);
           }
-        });
+        }
+
+        let offers = [];
+        if (state.slug) {
+          offers = await fetchOffersBySlug(state.slug);
+        }
+
+        if (explicitOffer && !offers.some((x) => x.id === explicitOffer.id)) {
+          offers.unshift(explicitOffer);
+        }
+
+        state.offers = offers;
+
+        if (offerIdQ) {
+          state.mission = offers.find((x) => x.id === offerIdQ) || explicitOffer || null;
+        } else {
+          state.mission = offers[0] || explicitOffer || null;
+        }
+
+        if (state.mission?.slug && !state.slug) {
+          setSlug(state.mission.slug);
+        }
+
+        loadMatchState();
+        renderMissionSelect();
+        renderMission();
+        syncLinks();
       }
 
-      state.candidates = rows.sort((a, b) => {
-        const da = new Date(a.created_at || 0).getTime();
-        const db = new Date(b.created_at || 0).getTime();
-        return db - da;
-      });
-    }
-
-    function applyPreviewMode() {
-      PREVIEW_MODE = true;
-      document.body.classList.add("is-preview");
-      syncModeChip();
-      setSourceChip("missions réelles • bureau verrouillé");
-
-      const hero = document.querySelector(".hero");
-      if (hero && !document.getElementById("previewBanner")) {
-        const banner = document.createElement("div");
-        banner.id = "previewBanner";
-        banner.className = "preview-banner";
-        banner.innerHTML = `
-          <div>
-            <strong>Mode aperçu activé.</strong>
-            Tu peux voir l’esprit du cockpit JOBS PRO, mais les actions réelles restent verrouillées.
-          </div>
-          <div class="preview-actions">
-            <button id="previewPayBtn" class="gold-btn" type="button">Activer mon accès JOBS</button>
-          </div>
-        `;
-        hero.appendChild(banner);
-
-        document.getElementById("previewPayBtn")?.addEventListener("click", () => {
-          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPay === "function") {
-            window.DIGIY_GUARD.goPay();
-          } else {
-            setStatusBox("error", "guard.js est requis pour ouvrir le paiement.");
-          }
-        });
+      function renderMissionSelect() {
+        const options = [];
+        if (!state.offers.length) {
+          options.push('<option value="">Aucune mission active</option>');
+        } else {
+          state.offers.forEach((offer) => {
+            const selected = offer.id === state.mission?.id ? " selected" : "";
+            const label = `${safe(offer.title, "Mission")} • ${safe(offer.city, "Ville")} • ${sectorLabel(offer.sector)}`;
+            options.push(`<option value="${escapeHtml(offer.id)}"${selected}>${escapeHtml(label)}</option>`);
+          });
+        }
+        missionSelect.innerHTML = options.join("");
       }
 
-      $("tab-candidates")?.classList.add("preview-lock");
-      $("tab-pipeline")?.classList.add("preview-lock");
-      setTab("offers");
-    }
-
-    function clearPreviewMode() {
-      PREVIEW_MODE = false;
-      document.body.classList.remove("is-preview");
-      syncModeChip();
-      setSourceChip("Supabase réel");
-      $("tab-candidates")?.classList.remove("preview-lock");
-      $("tab-pipeline")?.classList.remove("preview-lock");
-    }
-
-    async function loadAll(preview = false) {
-      try {
-        updateSlugUI();
-
-        if (!state.slug) {
-          state.offers = [];
-          state.candidates = [];
-          state.filteredCandidates = [];
-          computeStats();
-          fillOfferFilter();
-          renderOffers();
-          renderPipeline();
-          setStatusBox(
-            "empty",
-            preview
-              ? "Aucun slug JOBS détecté. Ajoute ?slug=jobs-... pour voir les missions publiées en aperçu."
-              : "Aucun slug JOBS détecté. Ouvre ce cockpit via l’entrée PIN ou avec ?slug=jobs-..."
-          );
+      function renderMission() {
+        if (!state.mission) {
+          missionGrid.innerHTML = `
+            <div class="empty-card full">
+              <h4>Aucune mission active trouvée</h4>
+              <p>Publie une mission dans JOBS PRO ou ouvre cette page avec <b>?slug=jobs-...</b> ou <b>?id=...</b>.</p>
+            </div>
+          `;
           return;
         }
 
-        setStatusBox("loading", preview ? "Chargement de l’aperçu..." : "Chargement du cockpit...");
+        const offer = state.mission;
+        const fields = [
+          missionField("Mission", offer.title),
+          missionField("Secteur", sectorLabel(offer.sector)),
+          missionField("Ville", offer.city),
+          missionField("Pays", offer.country || "Sénégal"),
+          missionField("Contrat", contractLabel(offer.contract_type)),
+          missionField("Rémunération", offer.pay),
+          missionField("Structure", offer.employer_name || offer.slug),
+          missionField("Contact", offer.contact_phone || "—"),
+          missionField("Publiée le", formatDate(offer.published_at || offer.created_at)),
+          missionField("Logement", offer.has_housing ? "Oui" : "Non"),
+          missionField("Accueil familial", offer.has_family_welcome ? "Oui" : "Non"),
+          missionField("Slug", offer.slug || state.slug, true),
+          missionField("Description", offer.description || "—", true),
+          missionField("Exigences", offer.requirements || "—", true)
+        ];
 
-        await loadOffers();
+        missionGrid.innerHTML = fields.join("");
+      }
 
-        if (preview) {
+      async function loadCandidates() {
+        if (!sb) throw new Error("Supabase non chargé");
+        if (state.preview) {
           state.candidates = [];
-          state.filteredCandidates = [];
-          computeStats();
-          fillOfferFilter();
-          renderOffers();
-          renderPipeline();
-          setStatusBox("empty", "Aperçu du cockpit actif. Active ton accès pour voir les candidatures réelles.");
+          return;
+        }
+
+        if (!state.slug && !state.mission?.id) {
+          state.candidates = [];
+          return;
+        }
+
+        const seen = new Set();
+        const rows = [];
+
+        if (state.slug) {
+          const { data, error } = await sb
+            .from("digiy_jobs_candidates_pro")
+            .select("id,offer_id,slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .eq("slug", state.slug)
+            .order("created_at", { ascending: false });
+
+          if (error) throw error;
+
+          (data || []).forEach((row) => {
+            if (!seen.has(row.id)) {
+              seen.add(row.id);
+              rows.push(row);
+            }
+          });
+        }
+
+        if (state.mission?.id) {
+          const { data, error } = await sb
+            .from("digiy_jobs_candidates_pro")
+            .select("id,offer_id,slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .eq("offer_id", state.mission.id)
+            .order("created_at", { ascending: false });
+
+          if (error) throw error;
+
+          (data || []).forEach((row) => {
+            if (!seen.has(row.id)) {
+              seen.add(row.id);
+              rows.push(row);
+            }
+          });
+        }
+
+        state.candidates = rows.sort((a, b) => {
+          const aa = new Date(a.created_at || 0).getTime();
+          const bb = new Date(b.created_at || 0).getTime();
+          return bb - aa;
+        });
+      }
+
+      function keywordHits(text, sector) {
+        const keywords = SECTOR_KEYWORDS[String(sector || "").toLowerCase()] || [];
+        const norm = normalizeText(text);
+        let hits = 0;
+        keywords.forEach((kw) => {
+          if (norm.includes(normalizeText(kw))) hits += 1;
+        });
+        return hits;
+      }
+
+      function computeScore(candidate) {
+        if (!state.mission) {
+          return {
+            score: 0,
+            reasons: ["Aucune mission active."],
+            summary: "Pas de matching sans mission.",
+            validated: false
+          };
+        }
+
+        const offer = state.mission;
+        const reasons = [];
+        let score = 20;
+
+        const offerText = [
+          offer.title,
+          offer.description,
+          offer.requirements,
+          offer.city,
+          offer.country,
+          offer.contract_type,
+          offer.pay,
+          sectorLabel(offer.sector)
+        ].join(" ");
+
+        const candidateText = [
+          candidate.full_name,
+          candidate.trade,
+          candidate.job_title,
+          candidate.years_experience,
+          labelAvailability(candidate.availability),
+          candidate.message,
+          candidate.city,
+          candidate.country,
+          candidate.source
+        ].join(" ");
+
+        const offerTokens = new Set(tokenize(offerText));
+        const candidateTokens = new Set(tokenize(candidateText));
+        const overlap = [...candidateTokens].filter((token) => offerTokens.has(token));
+        const overlapScore = Math.min(28, overlap.length * 4);
+
+        if (overlapScore > 0) {
+          score += overlapScore;
+          reasons.push(`Vocabulaire proche entre la mission et le profil (${overlap.length} point(s) d’accroche).`);
+        } else {
+          reasons.push("Peu de vocabulaire métier commun visible dans le texte.");
+        }
+
+        const sectorHits = keywordHits(candidateText, offer.sector);
+        if (sectorHits >= 3) {
+          score += 14;
+          reasons.push("Le profil parle clairement le langage du secteur visé.");
+        } else if (sectorHits >= 1) {
+          score += 8;
+          reasons.push("Le profil montre des signes utiles pour ce secteur.");
+        } else {
+          reasons.push("Le secteur est à confirmer par lecture humaine.");
+        }
+
+        if (normalizeText(candidate.city) && normalizeText(candidate.city) === normalizeText(offer.city)) {
+          score += 18;
+          reasons.push("Même ville que la mission.");
+        } else if (nearZone(candidate.city, offer.city)) {
+          score += 10;
+          reasons.push("Ville proche de la mission.");
+        } else {
+          reasons.push("Distance ou mobilité à vérifier.");
+        }
+
+        const avail = availabilityCode(candidate.availability);
+        const urgency = urgencyLevel(offer);
+        if (avail === "immediate" && urgency === "high") {
+          score += 12;
+          reasons.push("Disponibilité très cohérente avec un besoin urgent.");
+        } else if (avail === "immediate" || avail === "this_week") {
+          score += 8;
+          reasons.push("Disponibilité exploitable rapidement.");
+        } else if (avail === "this_month" || avail === "to_discuss") {
+          score += 3;
+          reasons.push("Disponibilité possible, à cadrer avec le timing réel.");
+        } else {
+          reasons.push("Disponibilité non claire.");
+        }
+
+        const status = String(candidate.status || "new").toLowerCase();
+        if (status === "shortlist") {
+          score += 12;
+          reasons.push("Déjà shortlisté par le bureau.");
+        } else if (status === "call") {
+          score += 10;
+          reasons.push("Déjà prêt pour un rappel.");
+        } else if (status === "review") {
+          score += 6;
+          reasons.push("Déjà en revue dans le bureau.");
+        } else if (status === "accepted") {
+          score += 2;
+          reasons.push("Profil déjà accepté auparavant, à vérifier selon disponibilité réelle.");
+        } else if (status === "rejected") {
+          score -= 20;
+          reasons.push("Profil déjà rejeté dans le rail actuel.");
+        }
+
+        if ((candidate.message || "").trim().length >= 50) {
+          score += 4;
+          reasons.push("Le message candidat donne de la matière pour décider.");
+        }
+
+        if ((candidate.years_experience || "").trim().length >= 4) {
+          score += 4;
+          reasons.push("Un niveau d’expérience est renseigné.");
+        }
+
+        score = Math.max(0, Math.min(100, score));
+
+        let summary = "Match à lire calmement.";
+        if (score >= 80) {
+          summary = "Très bon match potentiel : mission et profil se parlent clairement.";
+        } else if (score >= 60) {
+          summary = "Match crédible : quelques vérifications peuvent suffire avant action.";
+        } else {
+          summary = "Match faible ou incomplet : utile surtout en secours ou pour une lecture plus fine.";
+        }
+
+        const matchKey = getMatchKey(candidate);
+        const validated = Boolean(state.matchState[matchKey]?.validated);
+
+        return { score, reasons, summary, validated };
+      }
+
+      function getVisibleRanked() {
+        const query = normalizeText(searchInput.value || "");
+        const zoneMode = filterZoneMode.value;
+        const minScore = Number(filterMinScore.value || 0);
+        const wantedStatus = filterStatus.value;
+        const wantedAvailability = filterAvailability.value;
+
+        return state.candidates
+          .map((candidate) => ({ candidate, match: computeScore(candidate) }))
+          .filter((row) => {
+            if (!state.mission) return false;
+
+            if (zoneMode === "same" && normalizeText(row.candidate.city) !== normalizeText(state.mission.city)) {
+              return false;
+            }
+
+            if (
+              zoneMode === "near" &&
+              normalizeText(row.candidate.city) !== normalizeText(state.mission.city) &&
+              !nearZone(row.candidate.city, state.mission.city)
+            ) {
+              return false;
+            }
+
+            if (row.match.score < minScore) return false;
+            if (wantedStatus !== "all" && String(row.candidate.status || "new").toLowerCase() !== wantedStatus) return false;
+            if (wantedAvailability !== "all" && availabilityCode(row.candidate.availability) !== wantedAvailability) return false;
+
+            if (!query) return true;
+
+            const hay = normalizeText([
+              row.candidate.full_name,
+              row.candidate.trade,
+              row.candidate.job_title,
+              row.candidate.city,
+              row.candidate.country,
+              row.candidate.years_experience,
+              row.candidate.message,
+              row.candidate.source,
+              state.mission?.title,
+              state.mission?.description,
+              state.mission?.requirements
+            ].join(" "));
+
+            return hay.includes(query);
+          })
+          .sort((a, b) => {
+            if (b.match.score !== a.match.score) return b.match.score - a.match.score;
+            const aa = new Date(a.candidate.created_at || 0).getTime();
+            const bb = new Date(b.candidate.created_at || 0).getTime();
+            return bb - aa;
+          });
+      }
+
+      function renderStats() {
+        statCandidates.textContent = String(state.ranked.length);
+        statStrong.textContent = String(state.ranked.filter((x) => x.match.score >= 80).length);
+        statMedium.textContent = String(state.ranked.filter((x) => x.match.score >= 60 && x.match.score < 80).length);
+        statValidated.textContent = String(Object.values(state.matchState).filter((x) => x && x.validated).length);
+      }
+
+      function renderList() {
+        candidateList.innerHTML = "";
+
+        if (state.preview) {
+          state.ranked = [];
+          renderStats();
+          candidateList.innerHTML = `
+            <div class="empty-card">
+              <h4>Mode aperçu</h4>
+              <p>Active ton accès JOBS pour lire les candidats réels et valider les matchs.</p>
+            </div>
+          `;
+          renderDetail(null);
+          return;
+        }
+
+        if (!state.mission) {
+          state.ranked = [];
+          renderStats();
+          candidateList.innerHTML = `
+            <div class="empty-card">
+              <h4>Aucune mission active</h4>
+              <p>Publie une mission JOBS PRO, ou ouvre cette page avec un slug et une offre active.</p>
+            </div>
+          `;
+          renderDetail(null);
+          return;
+        }
+
+        state.ranked = getVisibleRanked();
+        renderStats();
+
+        if (!state.ranked.length) {
+          candidateList.innerHTML = `
+            <div class="empty-card">
+              <h4>Aucun candidat trouvé</h4>
+              <p>Change les filtres, attends de nouvelles candidatures, ou importe le dernier dossier public si tu en as un.</p>
+            </div>
+          `;
+          renderDetail(null);
+          return;
+        }
+
+        if (!state.ranked.some((x) => x.candidate.id === state.selectedId)) {
+          state.selectedId = state.ranked[0].candidate.id;
+        }
+
+        state.ranked.forEach((row) => {
+          const c = row.candidate;
+          const article = document.createElement("article");
+          article.className = "candidate" + (c.id === state.selectedId ? " active" : "");
+
+          article.innerHTML = `
+            <div class="candidate-top">
+              <div>
+                <h4>${escapeHtml(c.full_name || "Sans nom")}</h4>
+                <p class="sub">${escapeHtml(safe(c.trade || c.job_title))} • ${escapeHtml(safe(c.city))}</p>
+              </div>
+              <div class="score-pill">${row.match.score}</div>
+            </div>
+
+            <div class="chips">
+              <span class="chip ${sectorClass(state.mission?.sector)}">${escapeHtml(sectorLabel(state.mission?.sector))}</span>
+              <span class="chip ${scoreClass(row.match.score)}">Score ${row.match.score}</span>
+              <span class="chip">${escapeHtml(labelAvailability(c.availability))}</span>
+              <span class="chip">${escapeHtml(statusLabel(c.status || "new"))}</span>
+              ${row.match.validated ? '<span class="chip score-high">Validé</span>' : ''}
+            </div>
+
+            <div class="candidate-note">
+              ${escapeHtml((c.message || c.years_experience || row.match.summary || "Profil à lire").slice(0, 170))}
+            </div>
+          `;
+
+          article.addEventListener("click", function(){
+            state.selectedId = c.id;
+            renderList();
+          });
+
+          candidateList.appendChild(article);
+        });
+
+        const current = state.ranked.find((x) => x.candidate.id === state.selectedId) || null;
+        renderDetail(current);
+      }
+
+      function fieldHtml(label, value, full = false) {
+        return `<div class="field${full ? " full" : ""}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
+      }
+
+      function buildPublicMissionUrl() {
+        if (!state.mission?.id) return "";
+        const u = new URL(JOBS_PATHS.mission, location.href);
+        u.searchParams.set("id", state.mission.id);
+        if (state.slug) u.searchParams.set("slug", state.slug);
+        return u.toString();
+      }
+
+      function buildCandidateSheetText(candidate) {
+        return [
+          `Nom : ${safe(candidate.full_name)}`,
+          `Téléphone : ${safe(candidate.phone)}`,
+          `Ville : ${safe(candidate.city)}`,
+          `Pays : ${safe(candidate.country)}`,
+          `Métier : ${safe(candidate.trade || candidate.job_title)}`,
+          `Expérience : ${safe(candidate.years_experience)}`,
+          `Disponibilité : ${labelAvailability(candidate.availability)}`,
+          `Statut bureau : ${statusLabel(candidate.status || "new")}`,
+          `Message : ${safe(candidate.message)}`,
+          state.mission ? `Mission liée : ${safe(state.mission.title)}` : ""
+        ].filter(Boolean).join("\n");
+      }
+
+      function buildWhatsAppUrl(candidate, score) {
+        const lines = [
+          "Bonjour,",
+          "",
+          "je vous contacte depuis DIGIY JOBS concernant une mission qui pourrait vous correspondre.",
+          state.mission?.title ? `Mission : ${state.mission.title}` : null,
+          state.mission?.employer_name ? `Structure : ${state.mission.employer_name}` : null,
+          state.mission?.city ? `Ville : ${state.mission.city}` : null,
+          state.mission?.pay ? `Rémunération : ${state.mission.pay}` : null,
+          `Compatibilité observée : ${score}/100`,
+          buildPublicMissionUrl() ? `Lien mission : ${buildPublicMissionUrl()}` : null,
+          "",
+          "Si vous êtes partant, on peut avancer sur la mise en relation."
+        ].filter(Boolean).join("\n");
+
+        const phone = String(candidate.phone || "").replace(/[^\d]/g, "");
+        const url = new URL(`https://wa.me/${phone}`);
+        url.searchParams.set("text", lines);
+        return url.toString();
+      }
+
+      function renderDetail(row) {
+        if (!row) {
+          emptyState.hidden = false;
+          detailContent.hidden = true;
+          return;
+        }
+
+        const candidate = row.candidate;
+        const key = getMatchKey(candidate);
+        const saved = state.matchState[key] || {};
+
+        emptyState.hidden = true;
+        detailContent.hidden = false;
+
+        detailName.textContent = candidate.full_name || "Sans nom";
+        detailSubtitle.textContent = [
+          safe(candidate.trade || candidate.job_title),
+          safe(candidate.city),
+          labelAvailability(candidate.availability)
+        ].join(" • ");
+
+        detailChips.innerHTML = `
+          <span class="chip ${sectorClass(state.mission?.sector)}">${escapeHtml(sectorLabel(state.mission?.sector))}</span>
+          <span class="chip ${scoreClass(row.match.score)}">Score ${row.match.score}</span>
+          <span class="chip">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
+          ${row.match.validated ? '<span class="chip score-high">Validé</span>' : ''}
+        `;
+
+        matchSummary.textContent = row.match.summary;
+        reasonList.innerHTML = row.match.reasons.map((reason) => `<div class="reason-item">${escapeHtml(reason)}</div>`).join("");
+        matchNotes.value = saved.notes || "";
+        btnOpenWA.href = buildWhatsAppUrl(candidate, row.match.score);
+
+        const detailFields = [
+          fieldHtml("Téléphone", candidate.phone),
+          fieldHtml("Ville", candidate.city),
+          fieldHtml("Pays", candidate.country || "Sénégal"),
+          fieldHtml("Métier", candidate.trade || candidate.job_title),
+          fieldHtml("Expérience", candidate.years_experience),
+          fieldHtml("Disponibilité", labelAvailability(candidate.availability)),
+          fieldHtml("Statut bureau", statusLabel(candidate.status || "new")),
+          fieldHtml("Source", candidate.source || "public_form"),
+          fieldHtml("Reçu le", formatDate(candidate.created_at)),
+          fieldHtml("Mis à jour le", formatDate(candidate.updated_at || candidate.created_at)),
+          fieldHtml("Message candidat", candidate.message || "—", true),
+          fieldHtml("Mission liée", state.mission?.title || "—", true),
+          fieldHtml("Validation", row.match.validated ? "Oui" : "Non"),
+          fieldHtml("Validé le", saved.validated_at ? formatDate(saved.validated_at) : "—"),
+          fieldHtml("Notes bureau", saved.notes || "—", true)
+        ];
+
+        detailGrid.innerHTML = detailFields.join("");
+      }
+
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      async function importPublicDossier() {
+        if (state.preview) {
+          setStatus("Mode aperçu : active ton accès JOBS pour importer un dossier public.", "warn");
+          return;
+        }
+
+        if (!sb) {
+          setStatus("Supabase non chargé. Vérifie la configuration front.", "error");
+          return;
+        }
+
+        if (!state.slug && !state.mission?.slug) {
+          setStatus("Aucun slug détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
+          return;
+        }
+
+        const dossier = readJson(PUBLIC_DOSSIER_KEY);
+        if (!dossier || !dossier.phone) {
+          setStatus("Aucun dernier dossier public intelligent trouvé dans ce navigateur.", "warn");
+          return;
+        }
+
+        const phone = normalizePhone(dossier.phone);
+        const alreadyExists = state.candidates.some((c) => normalizePhone(c.phone) === phone);
+        if (alreadyExists) {
+          setStatus("Le dernier dossier public semble déjà présent dans le bureau de cette mission.", "info");
+          return;
+        }
+
+        const trade = String(dossier.metier || dossier.buildMetier || dossier.hotelMetier || dossier.trade || "").trim() || null;
+
+        const payload = {
+          offer_id: state.mission?.id || null,
+          slug: state.slug || state.mission?.slug || null,
+          owner_id: state.mission?.owner_id || null,
+          full_name: String(dossier.nom || dossier.full_name || "Dossier public").trim(),
+          phone: phone,
+          job_title: trade || state.mission?.title || null,
+          city: String(dossier.zone || dossier.city || "").trim() || null,
+          country: String(dossier.country || "Sénégal").trim(),
+          trade: trade,
+          years_experience: String(dossier.niveau || dossier.years_experience || "").trim() || null,
+          availability: availabilityCode(dossier.dispo || dossier.availability || "") || "to_discuss",
+          message: [
+            dossier.note || null,
+            dossier.bureau_notes || null,
+            dossier.link ? `Lien dossier: ${dossier.link}` : null
+          ].filter(Boolean).join(" | ") || null,
+          status: "new",
+          source: "import_public_dossier"
+        };
+
+        if (!payload.full_name || !payload.phone) {
+          setStatus("Le dossier public trouvé est incomplet : nom ou téléphone manquant.", "warn");
+          return;
+        }
+
+        const { error } = await sb
+          .from("digiy_jobs_candidates_pro")
+          .insert(payload);
+
+        if (error) {
+          console.error(error);
+          setStatus("Impossible d’importer le dossier public dans la base JOBS pour le moment.", "error");
           return;
         }
 
         await loadCandidates();
-        computeStats();
-        fillOfferFilter();
-        applyCandidateFilters();
-        renderOffers();
-        renderPipeline();
+        renderList();
+        setStatus("Dernier dossier public importé dans le bureau JOBS.", "ok");
+      }
 
-        if (state.activeTab === "candidates" && state.filteredCandidates.length) {
-          hideStatusBox();
-        } else if (state.activeTab === "offers" && state.offers.length) {
-          hideStatusBox();
+      async function bootGuard() {
+        if (state.slug) {
+          setSlug(state.slug);
         }
-      } catch (err) {
-        console.error(err);
-        setStatusBox("error", "Erreur de chargement. Vérifie le patch SQL, les policies RLS et le slug JOBS.");
-      }
-    }
 
-    async function bootGuard() {
-      const urlSlug = String(params.get("slug") || "").trim().toLowerCase();
-      const savedSlug = readSavedSlug();
-
-      if (urlSlug) {
-        setSlug(urlSlug);
-      } else if (savedSlug) {
-        setSlug(savedSlug);
-      }
-
-      if (!sb) {
-        setSourceChip("supabase indisponible");
-        setStatusBox("error", "Supabase n’est pas chargé.");
-        return { ok: false, preview: true };
-      }
-
-      if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-        setSourceChip("guard introuvable");
-        setStatusBox("error", "guard.js introuvable ou invalide.");
-        return { ok: false, preview: true };
-      }
-
-      const session = await window.DIGIY_GUARD.ready();
-      state.session = session || null;
-
-      const sessionSlug = String(session?.slug || "").trim().toLowerCase();
-      if (sessionSlug) {
-        setSlug(sessionSlug);
-      }
-
-      if (!session?.access) {
-        applyPreviewMode();
-        return { ok: true, preview: true };
-      }
-
-      clearPreviewMode();
-      return { ok: true, preview: false };
-    }
-
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-action]");
-      if (!btn) return;
-
-      const action = btn.dataset.action;
-
-      if (action === "set-status") {
-        updateCandidateStatus(btn.dataset.id, btn.dataset.status);
-        return;
-      }
-
-      if (action === "filter-offer") {
-        if (PREVIEW_MODE) {
-          setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour voir les candidats liés.");
+        if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
+          state.preview = true;
+          miniMode.textContent = "guard manquant";
+          syncLinks();
+          setStatus("guard.js manquant ou invalide : matching réel verrouillé en aperçu.", "warn");
           return;
         }
-        const offerFilter = $("offerFilter");
-        if (offerFilter) offerFilter.value = btn.dataset.offerId || "";
-        setTab("candidates");
-        applyCandidateFilters();
+
+        const session = await window.DIGIY_GUARD.ready();
+        state.session = session || null;
+
+        const sessionSlug = normalizeSlug(session?.slug || "");
+        if (!state.slug && sessionSlug) {
+          setSlug(sessionSlug);
+        }
+
+        state.preview = !session?.access;
+        miniMode.textContent = state.preview ? "aperçu verrouillé" : "cockpit réel";
+
+        if (state.preview) {
+          setStatus("Mode aperçu : active ton accès JOBS pour ouvrir le matching réel et lire les candidatures du bureau.", "warn");
+        }
+
+        syncLinks();
       }
-    });
 
-    document.querySelectorAll(".tab").forEach((btn) => {
-      btn.addEventListener("click", () => setTab(btn.dataset.tab));
-    });
+      missionSelect.addEventListener("change", async function() {
+        const selected = String(missionSelect.value || "");
+        state.mission = state.offers.find((offer) => offer.id === selected) || null;
+        loadMatchState();
+        syncLinks();
+        renderMission();
+        await loadCandidates();
+        renderList();
+      });
 
-    $("searchInput")?.addEventListener("input", applyCandidateFilters);
-    $("statusFilter")?.addEventListener("change", applyCandidateFilters);
-    $("offerFilter")?.addEventListener("change", applyCandidateFilters);
+      searchInput.addEventListener("input", renderList);
+      filterZoneMode.addEventListener("change", renderList);
+      filterMinScore.addEventListener("change", renderList);
+      filterStatus.addEventListener("change", renderList);
+      filterAvailability.addEventListener("change", renderList);
 
-    $("clearFiltersBtn")?.addEventListener("click", () => {
-      if ($("searchInput")) $("searchInput").value = "";
-      if ($("statusFilter")) $("statusFilter").value = "";
-      if ($("offerFilter")) $("offerFilter").value = "";
-      applyCandidateFilters();
-    });
+      btnReloadMission.addEventListener("click", async function() {
+        try {
+          await loadMissionRail();
+          await loadCandidates();
+          renderList();
+          setStatus("Mission rechargée depuis le rail JOBS.", "ok");
+        } catch (error) {
+          console.error(error);
+          setStatus("Impossible de recharger la mission pour le moment.", "error");
+        }
+      });
 
-    $("refreshBtn")?.addEventListener("click", () => loadAll(PREVIEW_MODE));
+      btnImportPublic.addEventListener("click", importPublicDossier);
 
-    $("openPayBtn")?.addEventListener("click", () => {
-      if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPay === "function") {
-        window.DIGIY_GUARD.goPay();
-      } else {
-        setStatusBox("error", "guard.js est requis pour ouvrir le paiement.");
-      }
-    });
+      btnClearFilters.addEventListener("click", function() {
+        searchInput.value = "";
+        filterZoneMode.value = "all";
+        filterMinScore.value = "0";
+        filterStatus.value = "all";
+        filterAvailability.value = "all";
+        renderList();
+      });
 
-    (async () => {
-      updateSlugUI();
-      const gate = await bootGuard();
-      if (!gate.ok) return;
-      await loadAll(gate.preview);
+      btnSaveMatchNotes.addEventListener("click", function() {
+        const row = state.ranked.find((x) => x.candidate.id === state.selectedId);
+        if (!row) return;
+        const key = getMatchKey(row.candidate);
+        state.matchState[key] = state.matchState[key] || {};
+        state.matchState[key].notes = matchNotes.value.trim();
+        saveMatchState();
+        renderDetail(row);
+        setStatus("Notes de match enregistrées.", "ok");
+      });
+
+      btnCopyCandidateLink.addEventListener("click", async function() {
+        const row = state.ranked.find((x) => x.candidate.id === state.selectedId);
+        if (!row) return;
+        const text = buildCandidateSheetText(row.candidate);
+        const ok = await copyText(text);
+        if (ok) {
+          setStatus("Fiche candidat copiée.", "ok");
+        } else {
+          prompt("Copie la fiche candidat :", text);
+        }
+      });
+
+      btnCopyMissionLink.addEventListener("click", async function() {
+        const url = buildPublicMissionUrl();
+        if (!url) return;
+        const ok = await copyText(url);
+        if (ok) {
+          setStatus("Lien mission copié.", "ok");
+        } else {
+          prompt("Copie le lien mission :", url);
+        }
+      });
+
+      btnValidateMatch.addEventListener("click", function() {
+        const row = state.ranked.find((x) => x.candidate.id === state.selectedId);
+        if (!row) return;
+        const key = getMatchKey(row.candidate);
+        state.matchState[key] = state.matchState[key] || {};
+        state.matchState[key].validated = true;
+        state.matchState[key].validated_at = new Date().toISOString();
+        state.matchState[key].score = row.match.score;
+        state.matchState[key].candidate_name = row.candidate.full_name || "Sans nom";
+        state.matchState[key].mission_name = state.mission?.title || "Mission";
+        state.matchState[key].notes = matchNotes.value.trim();
+        saveMatchState();
+        renderList();
+        setStatus("Match validé localement pour ce slug.", "ok");
+      });
+
+      btnExportMatches.addEventListener("click", function() {
+        const rows = state.ranked.map((row) => {
+          const key = getMatchKey(row.candidate);
+          const saved = state.matchState[key] || {};
+          return {
+            slug: state.slug || null,
+            offer_id: state.mission?.id || null,
+            mission: state.mission?.title || "Mission",
+            sector: state.mission?.sector || null,
+            candidate_name: row.candidate.full_name || "Sans nom",
+            candidate_phone: row.candidate.phone || "",
+            trade: row.candidate.trade || row.candidate.job_title || "",
+            city: row.candidate.city || "",
+            score: row.match.score,
+            summary: row.match.summary,
+            reasons: row.match.reasons,
+            validated: !!saved.validated,
+            validated_at: saved.validated_at || null,
+            notes: saved.notes || ""
+          };
+        });
+
+        const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "digiy-jobs-matchs.json";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      btnResetValidated.addEventListener("click", function() {
+        if (!confirm("Vider toutes les validations locales pour ce slug ?")) return;
+        state.matchState = {};
+        saveMatchState();
+        renderList();
+        setStatus("Validations locales vidées.", "ok");
+      });
+
+      (async function init() {
+        try {
+          if (!sb) {
+            setStatus("Supabase non chargé. Vérifie la configuration front JOBS.", "error");
+            return;
+          }
+
+          if (!state.slug) {
+            const saved = readSavedSlug();
+            if (saved) setSlug(saved);
+          } else {
+            setSlug(state.slug);
+          }
+
+          await bootGuard();
+          await loadMissionRail();
+          await loadCandidates();
+          renderList();
+
+          if (!state.slug && !state.mission) {
+            setStatus("Aucun slug ni aucune mission détectés. Ouvre la page avec ?slug=jobs-... ou ?id=....", "warn");
+          } else if (!state.preview) {
+            setStatus("Matching JOBS chargé sur le rail réel.", "ok");
+          }
+        } catch (error) {
+          console.error(error);
+          setStatus("Erreur de chargement du matching JOBS. Vérifie le slug, les tables et les policies RLS.", "error");
+        }
+      })();
     })();
   </script>
 </body>
