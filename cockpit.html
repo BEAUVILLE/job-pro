@@ -672,7 +672,7 @@
   </style>
 </head>
 <body>
-  <a class="site-back-float" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
+  <a id="siteHomeLink" class="site-back-float" href="./index.html">← Accueil JOBS</a>
 
   <div class="top-links">
     <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
@@ -698,7 +698,8 @@
             <a id="publicWallBtn" class="nav-btn gold" href="./mur%20des%20missions.html" rel="noopener">Mur public</a>
             <a id="pinEntryBtn" class="nav-btn" href="./pin.html" rel="noopener">Entrée PIN</a>
             <a id="bureauBtn" class="nav-btn" href="./bureau.html" rel="noopener">Bureau</a>
-            <button id="openPayBtn" class="nav-btn" type="button">Activer mon accès</button>
+            <a id="matchBtn" class="nav-btn" href="./match.html" rel="noopener">Match</a>
+            <button id="openPayBtn" class="nav-btn" type="button">Ouvrir mon accès</button>
           </div>
         </div>
 
@@ -987,13 +988,14 @@
       syncModeChip();
 
       const slug = state.slug || "";
+      const homeHref = withSlug(JOBS_PATHS.home, slug);
       const wallHref = withSlug(JOBS_PATHS.wall, slug);
       const pinHref = withSlug(JOBS_PATHS.pin, slug);
       const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
       const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
-      const homeHref = withSlug(JOBS_PATHS.home, slug);
       const matchHref = withSlug(JOBS_PATHS.match, slug);
 
+      setHref("siteHomeLink", homeHref);
       setHref("homeLink", homeHref);
       setHref("wallLink", wallHref);
       setHref("pinLink", pinHref);
@@ -1004,6 +1006,7 @@
       setHref("publicWallBtn", wallHref);
       setHref("pinEntryBtn", pinHref);
       setHref("bureauBtn", bureauHref);
+      setHref("matchBtn", matchHref);
     }
 
     function setSlug(nextSlug) {
@@ -1424,16 +1427,18 @@
             Tu peux voir l’esprit du cockpit JOBS PRO, mais les actions réelles restent verrouillées.
           </div>
           <div class="preview-actions">
-            <button id="previewPayBtn" class="gold-btn" type="button">Activer mon accès JOBS</button>
+            <button id="previewPayBtn" class="gold-btn" type="button">Entrer par PIN</button>
           </div>
         `;
         hero.appendChild(banner);
 
         document.getElementById("previewPayBtn")?.addEventListener("click", () => {
-          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPay === "function") {
-            window.DIGIY_GUARD.goPay();
+          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
+            window.DIGIY_GUARD.goPin();
+          } else if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.buildPinUrl === "function") {
+            location.href = window.DIGIY_GUARD.buildPinUrl();
           } else {
-            setStatusBox("error", "guard.js est requis pour ouvrir le paiement.");
+            location.href = withSlug(JOBS_PATHS.pin, state.slug);
           }
         });
       }
@@ -1586,10 +1591,12 @@
     $("refreshBtn")?.addEventListener("click", () => loadAll(PREVIEW_MODE));
 
     $("openPayBtn")?.addEventListener("click", () => {
-      if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPay === "function") {
-        window.DIGIY_GUARD.goPay();
+      if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
+        window.DIGIY_GUARD.goPin();
+      } else if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.buildPinUrl === "function") {
+        location.href = window.DIGIY_GUARD.buildPinUrl();
       } else {
-        setStatusBox("error", "guard.js est requis pour ouvrir le paiement.");
+        location.href = withSlug(JOBS_PATHS.pin, state.slug);
       }
     });
 
