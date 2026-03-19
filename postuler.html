@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>DIGIY JOBS — Postuler</title>
   <meta name="theme-color" content="#071711" />
+  <meta
+    name="description"
+    content="DIGIY JOBS — candidature simple, claire et réelle pour les missions publiées."
+  />
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "JOBS";
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -198,8 +209,8 @@
 <body>
   <div class="wrap">
     <div class="topbar">
-      <a class="chip-link" href="index.html">← Retour au mur</a>
-      <a class="chip-link" id="offerBackLink" href="index.html" style="display:none">Retour à la mission</a>
+      <a class="chip-link" id="wallLink" href="./index.html">← Retour au mur</a>
+      <a class="chip-link" id="offerBackLink" href="./index.html" style="display:none">Retour à la mission</a>
     </div>
 
     <section class="hero">
@@ -274,7 +285,7 @@
 
         <div class="actions">
           <button id="submitBtn" type="submit" class="btn btn-primary">Envoyer ma candidature</button>
-          <a class="btn btn-secondary" href="index.html">Voir les missions</a>
+          <a class="btn btn-secondary" id="seeOffersLink" href="./index.html">Voir les missions</a>
         </div>
 
         <div id="statusBox" class="status"></div>
@@ -283,111 +294,183 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_URL =
+      window.DIGIY_SUPABASE_URL ||
+      "https://wesqmwjjtsefyjnluosj.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      window.DIGIY_SUPABASE_ANON ||
+      window.DIGIY_SUPABASE_ANON_KEY ||
+      "";
+
+    const sb =
+      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        : null;
 
     const params = new URLSearchParams(location.search);
-    const offerId = params.get('offer') || '';
+    const offerId = (params.get("offer") || params.get("id") || "").trim();
+    const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
 
     const $ = (id) => document.getElementById(id);
 
     const state = {
-      offer: null
+      offer: null,
+      workspaceSlug: slugFromUrl
     };
 
-    function normalizePhone(v=''){
-      return String(v).trim().replace(/\s+/g,'');
+    function normalizePhone(v = ""){
+      return String(v).trim().replace(/\s+/g, "");
+    }
+
+    function escapeHtml(v = "") {
+      return String(v)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
     function showStatus(type, text){
-      const box = $('statusBox');
+      const box = $("statusBox");
+      if (!box) return;
+      if (!type) {
+        box.className = "status";
+        box.textContent = "";
+        box.style.display = "none";
+        return;
+      }
       box.className = `status ${type}`;
       box.textContent = text;
+      box.style.display = "block";
+    }
+
+    function syncLinks() {
+      const slug = state.workspaceSlug || "";
+      const wallHref = slug ? `./index.html?slug=${encodeURIComponent(slug)}` : "./index.html";
+
+      if ($("wallLink")) $("wallLink").href = wallHref;
+      if ($("seeOffersLink")) $("seeOffersLink").href = wallHref;
+
+      const offerBackLink = $("offerBackLink");
+      if (offerBackLink && state.offer?.id) {
+        const href = new URL("./mission.html", location.href);
+        href.searchParams.set("id", state.offer.id);
+        if (slug) href.searchParams.set("slug", slug);
+        offerBackLink.href = href.toString();
+      }
     }
 
     async function loadOfferIfAny(){
-      if (!offerId) return;
+      if (!offerId) {
+        syncLinks();
+        return;
+      }
+
+      if (!sb) {
+        showStatus("err", "Supabase non chargé. Vérifie la configuration front.");
+        return;
+      }
 
       const { data, error } = await sb
-        .from('digiy_jobs_offers_pro')
-        .select('id,workspace_slug,title,city,country,contract_type,pay,employer_name,status')
-        .eq('id', offerId)
-        .eq('status', 'active')
+        .from("digiy_jobs_offers_pro")
+        .select("id,workspace_slug,title,city,country,contract_type,pay,employer_name,status")
+        .eq("id", offerId)
+        .eq("status", "active")
         .maybeSingle();
 
       if (error || !data) {
         console.error(error);
-        showStatus('err', 'La mission liée à cette candidature est introuvable ou indisponible.');
+        showStatus("err", "La mission liée à cette candidature est introuvable ou indisponible.");
+        syncLinks();
         return;
       }
 
       state.offer = data;
-      $('offerBox').style.display = 'block';
-      $('offerTitle').textContent = data.title || 'Mission';
-      $('offerMeta').textContent =
-        `${data.employer_name || data.workspace_slug || 'Structure'} • ${data.city || 'Ville à préciser'} • ${data.country || 'Sénégal'} • ${data.contract_type || 'Contrat à préciser'} • ${data.pay || 'Rémunération à préciser'}`;
+      state.workspaceSlug = String(data.workspace_slug || state.workspaceSlug || "").trim().toLowerCase();
 
-      $('offerBackLink').style.display = 'inline-flex';
-      $('offerBackLink').href = `mission.html?id=${encodeURIComponent(data.id)}`;
+      $("offerBox").style.display = "block";
+      $("offerTitle").textContent = data.title || "Mission";
+      $("offerMeta").textContent =
+        `${data.employer_name || data.workspace_slug || "Structure"} • ` +
+        `${data.city || "Ville à préciser"} • ` +
+        `${data.country || "Sénégal"} • ` +
+        `${data.contract_type || "Contrat à préciser"} • ` +
+        `${data.pay || "Rémunération à préciser"}`;
+
+      $("offerBackLink").style.display = "inline-flex";
+      syncLinks();
     }
 
     async function handleSubmit(e){
       e.preventDefault();
-      showStatus('', '');
-      $('statusBox').style.display = 'none';
+      showStatus("", "");
+
+      if (!sb) {
+        showStatus("err", "Supabase non chargé. Vérifie la configuration front.");
+        return;
+      }
 
       const payload = {
         offer_id: state.offer?.id || null,
-        workspace_slug: state.offer?.workspace_slug || null,
-        full_name: $('full_name').value.trim(),
-        whatsapp_phone: normalizePhone($('whatsapp_phone').value),
-        city: $('city').value.trim() || null,
-        country: $('country').value.trim() || 'Sénégal',
-        trade: $('trade').value.trim() || null,
-        years_experience: $('years_experience').value.trim() || null,
-        availability: $('availability').value || null,
-        message: $('message').value.trim() || null,
-        status: 'new',
-        source: $('source').value.trim() || 'public_form'
+        workspace_slug: state.offer?.workspace_slug || state.workspaceSlug || null,
+        full_name: $("full_name").value.trim(),
+        whatsapp_phone: normalizePhone($("whatsapp_phone").value),
+        city: $("city").value.trim() || null,
+        country: $("country").value.trim() || "Sénégal",
+        trade: $("trade").value.trim() || null,
+        years_experience: $("years_experience").value.trim() || null,
+        availability: $("availability").value || null,
+        message: $("message").value.trim() || null,
+        status: "new",
+        source: $("source").value.trim() || "public_form"
       };
 
       if (!payload.full_name || !payload.whatsapp_phone) {
-        showStatus('err', 'Nom complet et téléphone WhatsApp sont obligatoires.');
+        showStatus("err", "Nom complet et téléphone WhatsApp sont obligatoires.");
         return;
       }
 
-      const btn = $('submitBtn');
+      if (!payload.offer_id && !payload.workspace_slug) {
+        showStatus("err", "Aucune mission ni espace JOBS détecté. Ouvre la page depuis le mur public ou une fiche mission.");
+        return;
+      }
+
+      const btn = $("submitBtn");
       btn.disabled = true;
-      btn.textContent = 'Envoi en cours...';
+      btn.textContent = "Envoi en cours...";
 
       const { error } = await sb
-        .from('digiy_jobs_candidates_pro')
+        .from("digiy_jobs_candidates_pro")
         .insert(payload);
 
       btn.disabled = false;
-      btn.textContent = 'Envoyer ma candidature';
+      btn.textContent = "Envoyer ma candidature";
 
       if (error) {
         console.error(error);
-        showStatus('err', 'Impossible d’envoyer la candidature pour le moment. Vérifie le SQL/RLS puis réessaie.');
+        showStatus("err", "Impossible d’envoyer la candidature pour le moment. Vérifie le SQL/RLS puis réessaie.");
         return;
       }
 
-      $('applyForm').reset();
-      $('country').value = 'Sénégal';
-      $('source').value = 'public_form';
+      $("applyForm").reset();
+      $("country").value = "Sénégal";
+      $("source").value = "public_form";
 
       showStatus(
-        'ok',
+        "ok",
         state.offer
-          ? 'Candidature envoyée. Elle est entrée en base avec le statut "new".'
-          : 'Candidature spontanée envoyée. Elle est entrée en base avec le statut "new".'
+          ? "Candidature envoyée. Elle est entrée en base avec le statut \"new\"."
+          : "Candidature spontanée envoyée. Elle est entrée en base avec le statut \"new\"."
       );
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    $('applyForm').addEventListener('submit', handleSubmit);
+    $("applyForm").addEventListener("submit", handleSubmit);
+
+    syncLinks();
     loadOfferIfAny();
   </script>
 </body>
