@@ -40,7 +40,6 @@
       --card:#ffffffd9;
       --shadow:0 16px 42px rgba(15,23,42,.10);
       --radius:22px;
-      --radius-sm:16px;
       --max:1400px;
     }
 
@@ -187,7 +186,7 @@
     input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
     textarea{min-height:120px;resize:vertical}
 
-    .workspace{display:grid;grid-template-columns:.88fr 1.12fr;gap:18px;padding-bottom:36px}
+    .board{display:grid;grid-template-columns:.88fr 1.12fr;gap:18px;padding-bottom:36px}
     .left-col,.right-col{display:grid;gap:16px;align-content:start}
     .list-card,.detail-card{padding:16px}
     .list{
@@ -244,12 +243,12 @@
     .foot-links button,.foot-links a{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
 
     @media (max-width:1200px){
-      .hero-grid,.workspace,.stats-grid,.filter-grid,.mission-grid{grid-template-columns:1fr 1fr}
+      .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid{grid-template-columns:1fr 1fr}
       .filter-grid > *:first-child{grid-column:1 / -1}
       .mission-grid .full{grid-column:1 / -1}
     }
     @media (max-width:860px){
-      .hero-grid,.workspace,.stats-grid,.filter-grid,.mission-grid,.detail-grid,.mini-grid{grid-template-columns:1fr}
+      .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid,.detail-grid,.mini-grid{grid-template-columns:1fr}
       h1{max-width:none}
     }
   </style>
@@ -397,7 +396,7 @@
       </div>
     </section>
 
-    <section class="wrap workspace">
+    <section class="wrap board">
       <div class="left-col">
         <article class="list-card">
           <div class="list-head">
@@ -496,7 +495,6 @@
           : null;
 
       const params = new URLSearchParams(location.search);
-      const offerIdQ = String(params.get("offer") || params.get("id") || "").trim();
       const slugQ = String(params.get("slug") || "").trim().toLowerCase();
 
       const PUBLIC_DOSSIER_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
@@ -509,8 +507,7 @@
         pin: "./pin.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
-        mission: "./mission.html",
-        postuler: "./postuler.html"
+        mission: "./mission.html"
       };
 
       const NEAR_ZONES = {
@@ -630,7 +627,8 @@
         selectedId: null,
         preview: true,
         session: null,
-        matchState: {}
+        matchState: {},
+        selectedMissionIndex: 0
       };
 
       function setStatus(text, tone = "info") {
@@ -788,6 +786,17 @@
         if (clean) saveSlug(clean);
       }
 
+      function missionSignature(offer) {
+        return normalizeText([
+          offer?.slug,
+          offer?.title,
+          offer?.city,
+          offer?.contract_type,
+          offer?.published_at,
+          offer?.created_at
+        ].join("|"));
+      }
+
       function getMatchStorageKey() {
         return `${LOCAL_MATCH_PREFIX}${state.slug || "jobs"}`;
       }
@@ -803,9 +812,9 @@
       }
 
       function getMatchKey(candidate) {
-        const offerKey = state.mission?.id || "no-offer";
-        const candidateKey = candidate.id || normalizeText(candidate.full_name + "-" + candidate.phone);
-        return `${offerKey}::${candidateKey}`;
+        const missionKey = missionSignature(state.mission || { slug: state.slug || "jobs" }) || normalizeSlug(state.slug || "jobs");
+        const candidateKey = candidate.id || normalizeText((candidate.full_name || "") + "-" + (candidate.phone || ""));
+        return `${missionKey}::${candidateKey}`;
       }
 
       function scoreClass(score) {
@@ -825,6 +834,7 @@
         const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
         const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
         const pinHref = withSlug(JOBS_PATHS.pin, slug);
+        const missionHref = slug ? withSlug(JOBS_PATHS.mission, slug) : homeHref;
 
         brandHome.href = homeHref;
         btnOpenHome.href = homeHref;
@@ -836,37 +846,17 @@
         footerWallLink.href = wallHref;
         footerPinLink.href = pinHref;
 
-        if (state.mission?.id) {
-          const missionUrl = new URL(JOBS_PATHS.mission, location.href);
-          missionUrl.searchParams.set("id", state.mission.id);
-          if (slug) missionUrl.searchParams.set("slug", slug);
-          btnOpenPublicMission.href = missionUrl.toString();
-        } else {
-          btnOpenPublicMission.href = homeHref;
-        }
+        btnOpenPublicMission.href = missionHref;
 
         miniSlug.textContent = slug || "aucun slug";
         signalPill.textContent = slug ? `Slug JOBS — ${slug}` : "Slug JOBS — manquant";
-      }
-
-      async function fetchOfferById(id) {
-        if (!sb || !id) return null;
-        const { data, error } = await sb
-          .from("digiy_jobs_offers_pro")
-          .select("id,slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
-          .eq("id", id)
-          .eq("status", "active")
-          .maybeSingle();
-
-        if (error) throw error;
-        return data || null;
       }
 
       async function fetchOffersBySlug(slug) {
         if (!sb || !slug) return [];
         const { data, error } = await sb
           .from("digiy_jobs_offers_pro")
-          .select("id,slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .select("slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
           .eq("slug", slug)
           .eq("status", "active")
           .order("published_at", { ascending: false })
@@ -877,34 +867,30 @@
       }
 
       async function loadMissionRail() {
-        let explicitOffer = null;
-
-        if (offerIdQ) {
-          explicitOffer = await fetchOfferById(offerIdQ);
-          if (explicitOffer?.slug && !state.slug) {
-            setSlug(explicitOffer.slug);
-          }
+        if (!state.slug) {
+          state.offers = [];
+          state.mission = null;
+          loadMatchState();
+          renderMissionSelect();
+          renderMission();
+          syncLinks();
+          return;
         }
 
-        let offers = [];
-        if (state.slug) {
-          offers = await fetchOffersBySlug(state.slug);
-        }
-
-        if (explicitOffer && !offers.some((x) => x.id === explicitOffer.id)) {
-          offers.unshift(explicitOffer);
-        }
+        const previousSignature = missionSignature(state.mission);
+        const offers = await fetchOffersBySlug(state.slug);
 
         state.offers = offers;
 
-        if (offerIdQ) {
-          state.mission = offers.find((x) => x.id === offerIdQ) || explicitOffer || null;
+        if (!offers.length) {
+          state.selectedMissionIndex = 0;
+          state.mission = null;
         } else {
-          state.mission = offers[0] || explicitOffer || null;
-        }
-
-        if (state.mission?.slug && !state.slug) {
-          setSlug(state.mission.slug);
+          let nextIndex = offers.findIndex((offer) => missionSignature(offer) === previousSignature);
+          if (nextIndex < 0) nextIndex = Math.min(state.selectedMissionIndex, offers.length - 1);
+          if (nextIndex < 0) nextIndex = 0;
+          state.selectedMissionIndex = nextIndex;
+          state.mission = offers[nextIndex] || offers[0] || null;
         }
 
         loadMatchState();
@@ -918,10 +904,10 @@
         if (!state.offers.length) {
           options.push('<option value="">Aucune mission active</option>');
         } else {
-          state.offers.forEach((offer) => {
-            const selected = offer.id === state.mission?.id ? " selected" : "";
+          state.offers.forEach((offer, index) => {
+            const selected = index === state.selectedMissionIndex ? " selected" : "";
             const label = `${safe(offer.title, "Mission")} • ${safe(offer.city, "Ville")} • ${sectorLabel(offer.sector)}`;
-            options.push(`<option value="${escapeHtml(offer.id)}"${selected}>${escapeHtml(label)}</option>`);
+            options.push(`<option value="${index}"${selected}>${escapeHtml(label)}</option>`);
           });
         }
         missionSelect.innerHTML = options.join("");
@@ -932,7 +918,7 @@
           missionGrid.innerHTML = `
             <div class="empty-card full">
               <h4>Aucune mission active trouvée</h4>
-              <p>Publie une mission dans JOBS PRO ou ouvre cette page avec <b>?slug=jobs-...</b> ou <b>?id=...</b>.</p>
+              <p>Publie une mission dans JOBS PRO ou ouvre cette page avec <b>?slug=jobs-...</b>.</p>
             </div>
           `;
           return;
@@ -966,49 +952,20 @@
           return;
         }
 
-        if (!state.slug && !state.mission?.id) {
+        if (!state.slug) {
           state.candidates = [];
           return;
         }
 
-        const seen = new Set();
-        const rows = [];
+        const { data, error } = await sb
+          .from("digiy_jobs_candidates_pro")
+          .select("id,slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+          .eq("slug", state.slug)
+          .order("created_at", { ascending: false });
 
-        if (state.slug) {
-          const { data, error } = await sb
-            .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-            .eq("slug", state.slug)
-            .order("created_at", { ascending: false });
+        if (error) throw error;
 
-          if (error) throw error;
-
-          (data || []).forEach((row) => {
-            if (!seen.has(row.id)) {
-              seen.add(row.id);
-              rows.push(row);
-            }
-          });
-        }
-
-        if (state.mission?.id) {
-          const { data, error } = await sb
-            .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-            .eq("offer_id", state.mission.id)
-            .order("created_at", { ascending: false });
-
-          if (error) throw error;
-
-          (data || []).forEach((row) => {
-            if (!seen.has(row.id)) {
-              seen.add(row.id);
-              rows.push(row);
-            }
-          });
-        }
-
-        state.candidates = rows.sort((a, b) => {
+        state.candidates = (Array.isArray(data) ? data : []).sort((a, b) => {
           const aa = new Date(a.created_at || 0).getTime();
           const bb = new Date(b.created_at || 0).getTime();
           return bb - aa;
@@ -1238,7 +1195,7 @@
           candidateList.innerHTML = `
             <div class="empty-card">
               <h4>Aucune mission active</h4>
-              <p>Publie une mission JOBS PRO, ou ouvre cette page avec un slug et une offre active.</p>
+              <p>Publie une mission JOBS PRO, ou ouvre cette page avec un slug actif.</p>
             </div>
           `;
           renderDetail(null);
@@ -1307,10 +1264,9 @@
       }
 
       function buildPublicMissionUrl() {
-        if (!state.mission?.id) return "";
+        if (!state.slug) return "";
         const u = new URL(JOBS_PATHS.mission, location.href);
-        u.searchParams.set("id", state.mission.id);
-        if (state.slug) u.searchParams.set("slug", state.slug);
+        u.searchParams.set("slug", state.slug);
         return u.toString();
       }
 
@@ -1424,7 +1380,7 @@
           return;
         }
 
-        if (!state.slug && !state.mission?.slug) {
+        if (!state.slug) {
           setStatus("Aucun slug détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
           return;
         }
@@ -1445,8 +1401,7 @@
         const trade = String(dossier.metier || dossier.buildMetier || dossier.hotelMetier || dossier.trade || "").trim() || null;
 
         const payload = {
-          offer_id: state.mission?.id || null,
-          slug: state.slug || state.mission?.slug || null,
+          slug: state.slug || null,
           owner_id: state.mission?.owner_id || null,
           full_name: String(dossier.nom || dossier.full_name || "Dossier public").trim(),
           phone: phone,
@@ -1517,12 +1472,18 @@
       }
 
       missionSelect.addEventListener("change", async function() {
-        const selected = String(missionSelect.value || "");
-        state.mission = state.offers.find((offer) => offer.id === selected) || null;
+        const selectedIndex = Number(missionSelect.value);
+        if (!Number.isFinite(selectedIndex) || selectedIndex < 0 || selectedIndex >= state.offers.length) {
+          state.selectedMissionIndex = 0;
+          state.mission = state.offers[0] || null;
+        } else {
+          state.selectedMissionIndex = selectedIndex;
+          state.mission = state.offers[selectedIndex] || null;
+        }
+
         loadMatchState();
         syncLinks();
         renderMission();
-        await loadCandidates();
         renderList();
       });
 
@@ -1611,7 +1572,6 @@
           const saved = state.matchState[key] || {};
           return {
             slug: state.slug || null,
-            offer_id: state.mission?.id || null,
             mission: state.mission?.title || "Mission",
             sector: state.mission?.sector || null,
             candidate_name: row.candidate.full_name || "Sans nom",
@@ -1666,7 +1626,7 @@
           renderList();
 
           if (!state.slug && !state.mission) {
-            setStatus("Aucun slug ni aucune mission détectés. Ouvre la page avec ?slug=jobs-... ou ?id=....", "warn");
+            setStatus("Aucun slug ni aucune mission détectés. Ouvre la page avec ?slug=jobs-....", "warn");
           } else if (!state.preview) {
             setStatus("Matching JOBS chargé sur le rail réel.", "ok");
           }
