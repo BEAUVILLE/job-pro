@@ -1,4 +1,5 @@
-// guard.js — DIGIY JOBS PRO soft guard (slug-first, no auto-redirect, session-aware)
+// guard.js — DIGIY JOBS PRO bureau guard blindé
+// Logique : PIN d’abord -> session valide -> check accès module -> bureau
 (() => {
   "use strict";
 
@@ -12,7 +13,18 @@
     "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
 
   const MODULE_CODE = String(window.DIGIY_MODULE || "JOBS").trim().toUpperCase();
-  const PAY_URL = "https://commencer-a-payer.digiylyfe.com/";
+
+  // Session bureau PIN : courte durée
+  const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000; // 8h
+
+  // Clés de session acceptées
+  const SESSION_KEYS = [
+    "DIGIY_JOBS_PIN_SESSION",
+    "DIGIY_PIN_SESSION",
+    "DIGIY_ACCESS",
+    "DIGIY_SESSION_JOBS",
+    "digiy_jobs_session"
+  ];
 
   const qs = new URLSearchParams(location.search);
   const slugQ = (qs.get("slug") || "").trim();
@@ -26,13 +38,13 @@
     }
   }
 
-  function normPhone(p) {
-    const d = String(p || "").replace(/[^\d]/g, "");
+  function normPhone(value) {
+    const d = String(value || "").replace(/[^\d]/g, "");
     return d.length >= 9 ? d : "";
   }
 
-  function normSlug(s) {
-    return String(s || "")
+  function normSlug(value) {
+    return String(value || "")
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "-")
@@ -41,32 +53,54 @@
       .replace(/^-|-$/g, "");
   }
 
-  function upper(v) {
-    return String(v || "").trim().toUpperCase();
+  function upper(value) {
+    return String(value || "").trim().toUpperCase();
+  }
+
+  function nowMs() {
+    return Date.now();
+  }
+
+  function isRecent(ts) {
+    const n = Number(ts || 0);
+    if (!n) return false;
+    return (nowMs() - n) <= SESSION_MAX_AGE_MS;
+  }
+
+  function clearSessions() {
+    for (const key of SESSION_KEYS) {
+      try {
+        localStorage.removeItem(key);
+      } catch (_) {}
+    }
   }
 
   function readStoredSession() {
-    const keys = ["DIGIY_ACCESS", "DIGIY_SESSION_JOBS", "digiy_jobs_session"];
-
-    for (const key of keys) {
+    for (const key of SESSION_KEYS) {
       const parsed = safeJsonParse(localStorage.getItem(key));
       if (!parsed || typeof parsed !== "object") continue;
 
-      const moduleName = upper(parsed.module || MODULE_CODE);
+      const moduleName = upper(parsed.module || parsed.module_code || "");
+      const slug = normSlug(parsed.slug || "");
+      const phone = normPhone(parsed.phone || "");
+      const access = !!parsed.access;
+      const verifiedAt =
+        Number(parsed.verified_at || parsed.ts || parsed.created_at || 0) || 0;
+
+      if (!phone) continue;
       if (moduleName && moduleName !== MODULE_CODE) continue;
+      if (!isRecent(verifiedAt)) continue;
+      if (!access) continue;
 
-      const slug = normSlug(parsed.slug);
-      const phone = normPhone(parsed.phone);
-
-      if (slug || phone) {
-        return {
-          slug,
-          phone,
-          owner_id: parsed.owner_id || null,
-          module: MODULE_CODE,
-          ts: Number(parsed.ts || Date.now())
-        };
-      }
+      return {
+        key,
+        slug,
+        phone,
+        module: MODULE_CODE,
+        owner_id: parsed.owner_id || null,
+        access: true,
+        verified_at: verifiedAt
+      };
     }
 
     return null;
@@ -79,20 +113,23 @@
       owner_id: payload.owner_id || state.owner_id || null,
       module: MODULE_CODE,
       access: !!payload.access,
-      ts: Date.now()
+      verified_at: Number(payload.verified_at || nowMs()),
+      ts: nowMs()
     };
 
-    try {
-      localStorage.setItem("DIGIY_ACCESS", JSON.stringify(session));
-    } catch (_) {}
+    const targetKeys = [
+      "DIGIY_JOBS_PIN_SESSION",
+      "DIGIY_PIN_SESSION",
+      "DIGIY_ACCESS",
+      "DIGIY_SESSION_JOBS",
+      "digiy_jobs_session"
+    ];
 
-    try {
-      localStorage.setItem("DIGIY_SESSION_JOBS", JSON.stringify(session));
-    } catch (_) {}
-
-    try {
-      localStorage.setItem("digiy_jobs_session", JSON.stringify(session));
-    } catch (_) {}
+    for (const key of targetKeys) {
+      try {
+        localStorage.setItem(key, JSON.stringify(session));
+      } catch (_) {}
+    }
 
     return session;
   }
@@ -129,52 +166,21 @@
     return false;
   }
 
-  async function resolvePhoneFromSlug(slug) {
-    const s = normSlug(slug);
-    if (!s) return "";
+  function buildPinUrl(input = {}) {
+    const url = new URL("./pin.html", location.href);
 
-    const url =
-      `${SUPABASE_URL}/rest/v1/digiy_subscriptions_public` +
-      `?select=phone,slug,module&slug=eq.${encodeURIComponent(s)}&limit=1`;
+    const slug = normSlug(input.slug || state.slug || "");
+    const phone = normPhone(input.phone || state.phone || "");
 
-    const r = await fetch(url, {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-      }
-    });
+    if (slug) url.searchParams.set("slug", slug);
+    if (phone) url.searchParams.set("phone", phone);
 
-    let arr = [];
-    try {
-      arr = await r.json();
-    } catch (_) {}
-
-    if (!r.ok || !Array.isArray(arr) || !arr[0]?.phone) return "";
-
-    const row = arr[0] || {};
-    const rowModule = upper(row.module || "");
-    if (rowModule && rowModule !== MODULE_CODE) return "";
-
-    return String(row.phone || "");
+    url.searchParams.set("return", location.href);
+    return url.toString();
   }
 
-  function buildPayUrl(input = {}) {
-    const u = new URL(PAY_URL);
-
-    const phone = normPhone(input.phone || "");
-    const slug = normSlug(input.slug || "");
-
-    u.searchParams.set("module", MODULE_CODE);
-
-    if (phone) u.searchParams.set("phone", phone);
-    if (slug) u.searchParams.set("slug", slug);
-
-    u.searchParams.set("return", location.href);
-    return u.toString();
-  }
-
-  function goPay(session = {}) {
-    location.href = buildPayUrl(session);
+  function goPin(input = {}) {
+    location.replace(buildPinUrl(input));
   }
 
   const stored = readStoredSession();
@@ -185,66 +191,80 @@
     phone: normPhone(phoneQ || stored?.phone || ""),
     owner_id: stored?.owner_id || null,
     access: false,
-    resolved_from_slug: false,
+    preview: true,
     ready_flag: false,
     error: null,
-    pay_url: "",
-    source: stored ? "session" : "query"
+    pin_url: "",
+    source: stored ? "session" : "query",
+    verified_at: stored?.verified_at || null
   };
 
   let pendingPromise = null;
 
   async function check() {
-    let slug = normSlug(slugQ || state.slug || stored?.slug || "");
-    let phone = normPhone(phoneQ || state.phone || stored?.phone || "");
+    const storedSession = readStoredSession();
 
-    if (!phone && slug) {
-      const resolved = await resolvePhoneFromSlug(slug);
-      phone = normPhone(resolved);
-      if (phone) state.resolved_from_slug = true;
-    }
+    let slug = normSlug(slugQ || storedSession?.slug || state.slug || "");
+    let phone = normPhone(phoneQ || storedSession?.phone || state.phone || "");
+    let verifiedAt = Number(storedSession?.verified_at || state.verified_at || 0) || 0;
 
     state.slug = slug;
     state.phone = phone;
-    state.pay_url = buildPayUrl({ phone, slug });
+    state.verified_at = verifiedAt;
+    state.pin_url = buildPinUrl({ slug, phone });
     state.error = null;
 
-    if (slug) {
-      try {
-        const url = new URL(location.href);
-        if ((url.searchParams.get("slug") || "").trim().toLowerCase() !== slug) {
-          url.searchParams.set("slug", slug);
-          history.replaceState({}, "", url.toString());
-        }
-      } catch (_) {}
-    }
-
-    if (!phone) {
+    // On ne laisse jamais le slug seul ouvrir le bureau
+    if (!phone || !verifiedAt || !isRecent(verifiedAt)) {
+      clearSessions();
       state.access = false;
+      state.preview = true;
       state.ready_flag = true;
+      state.error = "Session PIN absente ou expirée.";
+      goPin({ slug, phone });
       return { ...state };
     }
 
+    // Vérification secondaire : abonnement module toujours actif
     const res = await rpc("digiy_has_access", {
       p_phone: phone,
       p_module: MODULE_CODE
     });
 
-    state.access = parseAccessResult(res);
+    const hasAccess = parseAccessResult(res);
+
+    if (!hasAccess) {
+      clearSessions();
+      state.access = false;
+      state.preview = true;
+      state.ready_flag = true;
+      state.error = res.ok
+        ? "Accès module JOBS non valide."
+        : `digiy_has_access HTTP ${res.status}`;
+      goPin({ slug, phone });
+      return { ...state };
+    }
+
+    state.access = true;
+    state.preview = false;
     state.ready_flag = true;
 
-    if (!res.ok) {
-      state.error = `digiy_has_access HTTP ${res.status}`;
-    }
+    saveSession({
+      slug,
+      phone,
+      owner_id: state.owner_id,
+      access: true,
+      verified_at: verifiedAt || nowMs()
+    });
 
-    if (state.access) {
-      saveSession({
-        slug: state.slug,
-        phone: state.phone,
-        owner_id: state.owner_id,
-        access: true
-      });
-    }
+    // Normalise l’URL si besoin
+    try {
+      const url = new URL(location.href);
+      if (slug && (url.searchParams.get("slug") || "").trim().toLowerCase() !== slug) {
+        url.searchParams.set("slug", slug);
+        history.replaceState({}, "", url.toString());
+      }
+    } catch (_) {}
 
     return { ...state };
   }
@@ -277,12 +297,19 @@
       return saveSession(payload);
     },
 
-    goPay() {
-      goPay(state);
+    clearSession() {
+      clearSessions();
+      state.access = false;
+      state.preview = true;
+      state.ready_flag = false;
     },
 
-    buildPayUrl() {
-      return buildPayUrl(state);
+    goPin() {
+      goPin(state);
+    },
+
+    buildPinUrl() {
+      return buildPinUrl(state);
     }
   };
 })();
