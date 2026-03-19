@@ -88,10 +88,54 @@
 
     .site-back-float:active{ transform:scale(.97); }
 
+    .top-links{
+      position:fixed;
+      top:calc(env(safe-area-inset-top, 0px) + 12px);
+      right:calc(env(safe-area-inset-right, 0px) + 12px);
+      z-index:9998;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      max-width:min(980px, calc(100vw - 130px));
+    }
+
+    .chip-link{
+      min-height:46px;
+      padding:11px 14px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:13px;
+      font-weight:950;
+      color:var(--text);
+      background:rgba(6,27,20,.82);
+      border:1px solid rgba(255,255,255,.16);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      box-shadow:0 14px 30px rgba(0,0,0,.22);
+      transition:transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+      white-space:nowrap;
+    }
+
+    .chip-link:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.10);
+      border-color:rgba(255,255,255,.24);
+    }
+
+    .chip-link.gold{
+      background:rgba(250,204,21,.12);
+      border-color:rgba(250,204,21,.32);
+      color:#fff2ae;
+    }
+
     .wrap{
       max-width:var(--max);
       margin:0 auto;
-      padding:18px 16px 80px;
+      padding:88px 16px 80px;
     }
 
     .hero{
@@ -436,6 +480,9 @@
       background:rgba(255,255,255,.07);
       color:var(--text);
       border:1px solid var(--line);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
 
     .small-btn.gold{
@@ -593,7 +640,7 @@
     }
 
     @media (max-width: 700px){
-      .wrap{padding:86px 12px 70px}
+      .wrap{padding:96px 12px 70px}
       .hero{padding:20px 14px}
       .panel{padding:14px}
       .toolbar{grid-template-columns:1fr}
@@ -601,6 +648,7 @@
       .pipeline{grid-template-columns:1fr}
       .mini-grid{grid-template-columns:1fr}
       h1{font-size:34px}
+
       .site-back-float{
         top:calc(env(safe-area-inset-top, 0px) + 10px);
         left:calc(env(safe-area-inset-left, 0px) + 10px);
@@ -608,11 +656,32 @@
         padding:10px 13px;
         font-size:13px;
       }
+
+      .top-links{
+        top:calc(env(safe-area-inset-top, 0px) + 58px);
+        right:calc(env(safe-area-inset-right, 0px) + 10px);
+        max-width:calc(100vw - 20px);
+      }
+
+      .chip-link{
+        min-height:40px;
+        padding:9px 12px;
+        font-size:12px;
+      }
     }
   </style>
 </head>
 <body>
   <a class="site-back-float" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
+
+  <div class="top-links">
+    <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
+    <a id="wallLink" class="chip-link" href="./mur%20des%20missions.html">Mur des missions</a>
+    <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
+    <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Cockpit pro</a>
+    <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
+    <a id="matchLink" class="chip-link" href="./match.html">Match</a>
+  </div>
 
   <div class="wrap">
     <section class="hero">
@@ -626,8 +695,9 @@
           </p>
 
           <div class="hero-links">
-            <a id="publicWallBtn" class="nav-btn gold" href="./" rel="noopener">Mur public</a>
+            <a id="publicWallBtn" class="nav-btn gold" href="./mur%20des%20missions.html" rel="noopener">Mur public</a>
             <a id="pinEntryBtn" class="nav-btn" href="./pin.html" rel="noopener">Entrée PIN</a>
+            <a id="bureauBtn" class="nav-btn" href="./bureau.html" rel="noopener">Bureau</a>
             <button id="openPayBtn" class="nav-btn" type="button">Activer mon accès</button>
           </div>
         </div>
@@ -640,7 +710,7 @@
       <div class="meta-line">
         <div class="meta-chip">Workspace : <strong id="workspaceChip">—</strong></div>
         <div class="meta-chip">Mode : <strong id="modeChip">détection…</strong></div>
-        <div class="meta-chip">Source : <strong>Supabase réel</strong></div>
+        <div class="meta-chip">Source : <strong id="sourceChip">détection…</strong></div>
       </div>
 
       <div class="stats">
@@ -748,6 +818,16 @@
     const params = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
 
+    const JOBS_PATHS = {
+      home: "./index.html",
+      wall: "./mur%20des%20missions.html",
+      pin: "./pin.html",
+      cockpit: "./cockpit.html",
+      bureau: "./bureau.html",
+      match: "./match.html",
+      mission: "./mission.html"
+    };
+
     const state = {
       workspaceSlug: "",
       offers: [],
@@ -757,7 +837,7 @@
       session: null
     };
 
-    let PREVIEW_MODE = false;
+    let PREVIEW_MODE = true;
 
     function escapeHtml(v = "") {
       return String(v)
@@ -782,6 +862,12 @@
 
     function normalizePhone(v = "") {
       return String(v).replace(/[^\d+]/g, "");
+    }
+
+    function normalizeSlug(v = "") {
+      return String(v || "")
+        .trim()
+        .toLowerCase();
     }
 
     function labelSector(v = "") {
@@ -822,6 +908,18 @@
       return map[String(status || "new").toLowerCase()] || status || "Statut";
     }
 
+    function setHref(id, href) {
+      const el = $(id);
+      if (el) el.href = href;
+    }
+
+    function withSlug(path, slug) {
+      const cleanSlug = normalizeSlug(slug || "");
+      if (!cleanSlug) return path;
+      const joiner = path.includes("?") ? "&" : "?";
+      return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+    }
+
     function badgeStatus(status = "new") {
       const s = String(status || "new").toLowerCase();
       const cls =
@@ -847,6 +945,11 @@
       if (box) box.classList.add("hidden");
     }
 
+    function setSourceChip(text) {
+      const chip = $("sourceChip");
+      if (chip) chip.textContent = text || "—";
+    }
+
     function syncModeChip() {
       const modeChip = $("modeChip");
       if (!modeChip) return;
@@ -855,25 +958,31 @@
 
     function updateWorkspaceUI() {
       const slug = state.workspaceSlug || "";
-      $("workspaceChip").textContent = slug || "aucun slug détecté";
+      const workspaceChip = $("workspaceChip");
+      if (workspaceChip) workspaceChip.textContent = slug || "aucun slug détecté";
       syncModeChip();
 
-      const publicWallBtn = $("publicWallBtn");
-      const pinEntryBtn = $("pinEntryBtn");
+      const wallHref = withSlug(JOBS_PATHS.wall, slug);
+      const pinHref = withSlug(JOBS_PATHS.pin, slug);
+      const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
+      const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
+      const homeHref = withSlug(JOBS_PATHS.home, slug);
+      const matchHref = withSlug(JOBS_PATHS.match, slug);
 
-      if (publicWallBtn) {
-        publicWallBtn.href = slug ? `./?slug=${encodeURIComponent(slug)}` : "./";
-      }
+      setHref("homeLink", homeHref);
+      setHref("wallLink", wallHref);
+      setHref("pinLink", pinHref);
+      setHref("cockpitLink", cockpitHref);
+      setHref("bureauLink", bureauHref);
+      setHref("matchLink", matchHref);
 
-      if (pinEntryBtn) {
-        pinEntryBtn.href = slug
-          ? `./pin.html?slug=${encodeURIComponent(slug)}`
-          : "./pin.html";
-      }
+      setHref("publicWallBtn", wallHref);
+      setHref("pinEntryBtn", pinHref);
+      setHref("bureauBtn", bureauHref);
     }
 
     function setWorkspaceSlug(nextSlug) {
-      const clean = String(nextSlug || "").trim().toLowerCase();
+      const clean = normalizeSlug(nextSlug);
       state.workspaceSlug = clean;
       updateWorkspaceUI();
     }
@@ -985,6 +1094,14 @@
           ? `https://wa.me/${encodeURIComponent(waPhone.replace("+", ""))}`
           : "#";
 
+        const matchUrl = new URL(JOBS_PATHS.match, location.href);
+        if (offer?.id) {
+          matchUrl.searchParams.set("offer", offer.id);
+        }
+        if (state.workspaceSlug) {
+          matchUrl.searchParams.set("slug", state.workspaceSlug);
+        }
+
         return `
           <article class="card">
             <div class="card-top">
@@ -1029,6 +1146,7 @@
 
             <div class="actions">
               <a class="small-btn blue" href="${waLink}" target="_blank" rel="noopener">WhatsApp</a>
+              <a class="small-btn" href="${matchUrl.toString()}" target="_blank" rel="noopener">Match</a>
               <button class="small-btn gold" data-action="set-status" data-id="${c.id}" data-status="review" type="button">review</button>
               <button class="small-btn orange" data-action="set-status" data-id="${c.id}" data-status="shortlist" type="button">shortlist</button>
               <button class="small-btn blue" data-action="set-status" data-id="${c.id}" data-status="call" type="button">call</button>
@@ -1069,6 +1187,15 @@
 
       wrap.innerHTML = state.offers.map((o) => {
         const linkedCount = counts[o.id] || 0;
+
+        const missionUrl = new URL(JOBS_PATHS.mission, location.href);
+        missionUrl.searchParams.set("id", o.id);
+        if (state.workspaceSlug) missionUrl.searchParams.set("slug", state.workspaceSlug);
+
+        const matchUrl = new URL(JOBS_PATHS.match, location.href);
+        matchUrl.searchParams.set("offer", o.id);
+        if (state.workspaceSlug) matchUrl.searchParams.set("slug", state.workspaceSlug);
+
         return `
           <article class="card">
             <div class="card-top">
@@ -1109,7 +1236,8 @@
 
             <div class="actions">
               <button class="small-btn gold" data-action="filter-offer" data-offer-id="${o.id}" type="button">Voir candidats liés</button>
-              <a class="small-btn" href="mission.html?id=${encodeURIComponent(o.id)}" target="_blank" rel="noopener">Ouvrir fiche</a>
+              <a class="small-btn" href="${missionUrl.toString()}" target="_blank" rel="noopener">Ouvrir fiche</a>
+              <a class="small-btn blue" href="${matchUrl.toString()}" target="_blank" rel="noopener">Ouvrir match</a>
             </div>
           </article>
         `;
@@ -1256,6 +1384,7 @@
       PREVIEW_MODE = true;
       document.body.classList.add("is-preview");
       syncModeChip();
+      setSourceChip("missions réelles • bureau verrouillé");
 
       const hero = document.querySelector(".hero");
       if (hero && !document.getElementById("previewBanner")) {
@@ -1291,6 +1420,7 @@
       PREVIEW_MODE = false;
       document.body.classList.remove("is-preview");
       syncModeChip();
+      setSourceChip("Supabase réel");
       $("tab-candidates")?.classList.remove("preview-lock");
       $("tab-pipeline")?.classList.remove("preview-lock");
     }
@@ -1348,23 +1478,26 @@
     }
 
     async function bootGuard() {
-      const urlSlug = String(params.get("slug") || "").trim().toLowerCase();
+      const urlSlug = normalizeSlug(params.get("slug") || "");
       if (urlSlug) setWorkspaceSlug(urlSlug);
 
       if (!sb) {
+        setSourceChip("supabase indisponible");
         setStatusBox("error", "Supabase n’est pas chargé.");
         return { ok: false, preview: true };
       }
 
       if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-        setStatusBox("error", "guard.js introuvable ou invalide.");
-        return { ok: false, preview: true };
+        applyPreviewMode();
+        setSourceChip("guard manquant");
+        setStatusBox("empty", "guard.js manquant ou invalide : cockpit chargé en aperçu verrouillé.");
+        return { ok: true, preview: true };
       }
 
       const session = await window.DIGIY_GUARD.ready();
       state.session = session || null;
 
-      const sessionSlug = String(session?.slug || "").trim().toLowerCase();
+      const sessionSlug = normalizeSlug(session?.slug || "");
       if (sessionSlug) {
         setWorkspaceSlug(sessionSlug);
       }
@@ -1394,7 +1527,8 @@
           setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour voir les candidats liés.");
           return;
         }
-        $("offerFilter").value = btn.dataset.offerId || "";
+        const offerFilter = $("offerFilter");
+        if (offerFilter) offerFilter.value = btn.dataset.offerId || "";
         setTab("candidates");
         applyCandidateFilters();
       }
@@ -1426,6 +1560,7 @@
     });
 
     (async () => {
+      updateWorkspaceUI();
       const gate = await bootGuard();
       if (!gate.ok) return;
       await loadAll(gate.preview);
