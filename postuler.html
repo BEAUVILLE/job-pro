@@ -32,23 +32,49 @@
       --max:920px;
       --shadow:0 18px 60px rgba(0,0,0,.28);
     }
+
     *{box-sizing:border-box}
+
     html,body{
-      margin:0;padding:0;color:var(--text);
+      margin:0;
+      padding:0;
+      color:var(--text);
       background:
         radial-gradient(circle at top, rgba(250,204,21,.08), transparent 22%),
         linear-gradient(180deg,var(--bg),#06120d 100%);
       font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
+
     a{color:inherit;text-decoration:none}
     button,input,textarea,select{font:inherit}
+
     .wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 80px}
-    .topbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-    .chip-link{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-height:44px;padding:10px 14px;border-radius:999px;
-      border:1px solid var(--line);background:rgba(255,255,255,.05);font-weight:800;
+
+    .topbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
     }
+
+    .chip-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      font-weight:800;
+    }
+
+    .chip-link.gold{
+      border-color:rgba(250,204,21,.28);
+      background:rgba(250,204,21,.08);
+      color:#fff3b0;
+    }
+
     .hero{
       border:1px solid var(--line);
       border-radius:30px;
@@ -59,6 +85,7 @@
         var(--bg2);
       box-shadow:var(--shadow);
     }
+
     .kicker{
       display:inline-flex;
       align-items:center;
@@ -70,17 +97,35 @@
       font-weight:900;
       margin-bottom:10px;
     }
+
     h1{
       margin:0 0 10px;
       font-size:clamp(30px,5vw,52px);
       line-height:1;
       letter-spacing:-.03em;
     }
+
     .lead{
       margin:0;
       color:var(--muted);
       line-height:1.65;
       font-size:16px;
+    }
+
+    .meta-line{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:16px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .meta-chip{
+      padding:9px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--line);
     }
 
     .offer-box{
@@ -90,11 +135,13 @@
       background:rgba(255,255,255,.04);
       padding:16px;
     }
+
     .offer-box strong{
       display:block;
       font-size:18px;
       margin-bottom:6px;
     }
+
     .offer-meta{
       color:var(--muted);
       font-size:14px;
@@ -111,22 +158,27 @@
       box-shadow:var(--shadow);
       padding:22px 18px;
     }
+
     .grid{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:14px;
     }
+
     .field{
       display:flex;
       flex-direction:column;
       gap:8px;
     }
+
     .field.full{grid-column:1 / -1}
+
     label{
       font-size:13px;
       font-weight:800;
       color:#d9fbe7;
     }
+
     input,select,textarea{
       width:100%;
       border:none;
@@ -137,24 +189,30 @@
       background:rgba(255,255,255,.08);
       border:1px solid transparent;
     }
+
     textarea{min-height:140px;resize:vertical}
+
     input::placeholder,textarea::placeholder{color:rgba(236,255,244,.42)}
+
     input:focus,select:focus,textarea:focus{
       border-color:rgba(250,204,21,.45);
       box-shadow:0 0 0 4px rgba(250,204,21,.08);
     }
+
     .hint{
       color:var(--muted);
       font-size:12px;
       line-height:1.5;
       margin-top:2px;
     }
+
     .actions{
       display:flex;
       gap:12px;
       flex-wrap:wrap;
       margin-top:18px;
     }
+
     .btn{
       display:inline-flex;
       justify-content:center;
@@ -166,16 +224,19 @@
       cursor:pointer;
       border:none;
     }
+
     .btn-primary{
       background:linear-gradient(180deg,var(--gold),#eab308);
       color:#171717;
       min-width:220px;
     }
+
     .btn-secondary{
       border:1px solid var(--line);
       background:rgba(255,255,255,.06);
       color:var(--text);
     }
+
     .status{
       margin-top:16px;
       border-radius:20px;
@@ -184,12 +245,14 @@
       line-height:1.6;
       font-weight:700;
     }
+
     .status.ok{
       display:block;
       background:rgba(34,197,94,.1);
       color:#c6ffd3;
       border:1px solid rgba(34,197,94,.22);
     }
+
     .status.err{
       display:block;
       background:rgba(251,113,133,.1);
@@ -209,8 +272,13 @@
 <body>
   <div class="wrap">
     <div class="topbar">
-      <a class="chip-link" id="wallLink" href="./index.html">← Retour au mur</a>
-      <a class="chip-link" id="offerBackLink" href="./index.html" style="display:none">Retour à la mission</a>
+      <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
+      <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
+      <a id="wallLink" class="chip-link gold" href="./mur%20des%20missions.html">Mur des missions</a>
+      <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
+      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Cockpit pro</a>
+      <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
+      <a id="offerBackLink" class="chip-link" href="./mission.html" style="display:none">Retour à la mission</a>
     </div>
 
     <section class="hero">
@@ -220,6 +288,12 @@
         Ici tu poses une candidature claire, simple et exploitable.
         Pas besoin de théâtre. Nom, téléphone, métier, disponibilité, message. Et ça part en base.
       </p>
+
+      <div class="meta-line">
+        <div class="meta-chip">Mode : <strong id="modeChip">candidature publique</strong></div>
+        <div class="meta-chip">Workspace : <strong id="workspaceChip">global</strong></div>
+        <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
+      </div>
 
       <div id="offerBox" class="offer-box" style="display:none">
         <strong id="offerTitle">Mission</strong>
@@ -285,7 +359,7 @@
 
         <div class="actions">
           <button id="submitBtn" type="submit" class="btn btn-primary">Envoyer ma candidature</button>
-          <a class="btn btn-secondary" id="seeOffersLink" href="./index.html">Voir les missions</a>
+          <a class="btn btn-secondary" id="seeOffersLink" href="./mur%20des%20missions.html">Voir les missions</a>
         </div>
 
         <div id="statusBox" class="status"></div>
@@ -309,10 +383,20 @@
         : null;
 
     const params = new URLSearchParams(location.search);
-    const offerId = (params.get("offer") || params.get("id") || "").trim();
+    const offerId = String(params.get("offer") || params.get("id") || "").trim();
     const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
 
     const $ = (id) => document.getElementById(id);
+
+    const JOBS_PATHS = {
+      home: "./index.html",
+      wall: "./mur%20des%20missions.html",
+      pin: "./pin.html",
+      cockpit: "./cockpit.html",
+      bureau: "./bureau.html",
+      postuler: "./postuler.html",
+      mission: "./mission.html"
+    };
 
     const state = {
       offer: null,
@@ -332,41 +416,62 @@
         .replaceAll("'", "&#039;");
     }
 
+    function withSlug(path, slug){
+      const cleanSlug = String(slug || "").trim().toLowerCase();
+      if (!cleanSlug) return path;
+      const joiner = path.includes("?") ? "&" : "?";
+      return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+    }
+
     function showStatus(type, text){
       const box = $("statusBox");
       if (!box) return;
+
       if (!type) {
         box.className = "status";
         box.textContent = "";
         box.style.display = "none";
         return;
       }
+
       box.className = `status ${type}`;
       box.textContent = text;
       box.style.display = "block";
     }
 
+    function syncMeta(){
+      $("workspaceChip").textContent = state.workspaceSlug || "global";
+      $("modeChip").textContent = state.offer ? "candidature liée" : "candidature publique";
+    }
+
     function syncLinks() {
       const slug = state.workspaceSlug || "";
-      const wallHref = slug ? `./index.html?slug=${encodeURIComponent(slug)}` : "./index.html";
 
-      if ($("wallLink")) $("wallLink").href = wallHref;
-      if ($("seeOffersLink")) $("seeOffersLink").href = wallHref;
+      $("homeLink").href = withSlug(JOBS_PATHS.home, slug);
+      $("wallLink").href = withSlug(JOBS_PATHS.wall, slug);
+      $("pinLink").href = withSlug(JOBS_PATHS.pin, slug);
+      $("cockpitLink").href = withSlug(JOBS_PATHS.cockpit, slug);
+      $("bureauLink").href = withSlug(JOBS_PATHS.bureau, slug);
+      $("seeOffersLink").href = withSlug(JOBS_PATHS.wall, slug);
 
       const offerBackLink = $("offerBackLink");
       if (offerBackLink && state.offer?.id) {
-        const href = new URL("./mission.html", location.href);
+        const href = new URL(JOBS_PATHS.mission, location.href);
         href.searchParams.set("id", state.offer.id);
         if (slug) href.searchParams.set("slug", slug);
         offerBackLink.href = href.toString();
+        offerBackLink.style.display = "inline-flex";
+      } else if (offerBackLink) {
+        offerBackLink.style.display = "none";
       }
+
+      syncMeta();
     }
 
     async function loadOfferIfAny(){
-      if (!offerId) {
-        syncLinks();
-        return;
-      }
+      syncLinks();
+
+      if (!offerId) return;
 
       if (!sb) {
         showStatus("err", "Supabase non chargé. Vérifie la configuration front.");
@@ -399,7 +504,6 @@
         `${data.contract_type || "Contrat à préciser"} • ` +
         `${data.pay || "Rémunération à préciser"}`;
 
-      $("offerBackLink").style.display = "inline-flex";
       syncLinks();
     }
 
@@ -433,7 +537,7 @@
       }
 
       if (!payload.offer_id && !payload.workspace_slug) {
-        showStatus("err", "Aucune mission ni espace JOBS détecté. Ouvre la page depuis le mur public ou une fiche mission.");
+        showStatus("err", "Aucune mission ni espace JOBS détecté. Ouvre la page depuis le mur des missions ou une fiche mission.");
         return;
       }
 
@@ -461,8 +565,8 @@
       showStatus(
         "ok",
         state.offer
-          ? "Candidature envoyée. Elle est entrée en base avec le statut \"new\"."
-          : "Candidature spontanée envoyée. Elle est entrée en base avec le statut \"new\"."
+          ? "Candidature envoyée. Elle est entrée en base avec le statut « new »."
+          : "Candidature spontanée envoyée. Elle est entrée en base avec le statut « new »."
       );
 
       window.scrollTo({ top: 0, behavior: "smooth" });
