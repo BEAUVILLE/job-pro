@@ -296,7 +296,7 @@
           <span class="eyebrow">Cockpit bureau DIGIY JOBS</span>
           <h1>Trier, qualifier, relier.</h1>
           <p class="lead">
-            Ce bureau lit les vraies candidatures du workspace JOBS, permet de changer leur statut,
+            Ce bureau lit les vraies candidatures du slug JOBS, permet de changer leur statut,
             d’ajouter des notes bureau locales et de déclencher la mise en relation proprement.
           </p>
           <div class="hero-tags">
@@ -308,10 +308,10 @@
         </article>
 
         <aside class="panel">
-          <span class="signal" id="signalPill">Workspace JOBS — détection…</span>
+          <span class="signal" id="signalPill">Slug JOBS — détection…</span>
           <h2>Ce que ce bureau fait maintenant</h2>
           <p>
-            Il lit les candidatures réelles, les relie aux missions actives du workspace, suit les statuts
+            Il lit les candidatures réelles, les relie aux missions actives du slug, suit les statuts
             <code>new / review / shortlist / call / accepted / rejected</code>, garde des notes locales par candidat
             et prépare la mise en relation sans faux rail de démonstration.
           </p>
@@ -607,7 +607,7 @@
       const footerWall = document.getElementById("footerWall");
 
       const state = {
-        workspaceSlug: slugQ,
+        slug: slugQ,
         preview: true,
         session: null,
         offers: [],
@@ -728,7 +728,7 @@
       }
 
       function notesKey() {
-        return `${NOTES_PREFIX}${state.workspaceSlug || "jobs"}`;
+        return `${NOTES_PREFIX}${state.slug || "jobs"}`;
       }
 
       function loadLocalNotes() {
@@ -770,7 +770,7 @@
       }
 
       function syncLinks() {
-        const slug = state.workspaceSlug || "";
+        const slug = state.slug || "";
         const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
         const homeHref = withSlug(JOBS_PATHS.home, slug);
         const pinHref = withSlug(JOBS_PATHS.pin, slug);
@@ -785,12 +785,12 @@
         footerWall.href = wallHref;
 
         miniSlug.textContent = slug || "aucun slug";
-        signalPill.textContent = slug ? `Workspace JOBS — ${slug}` : "Workspace JOBS — slug manquant";
+        signalPill.textContent = slug ? `Slug JOBS — ${slug}` : "Slug JOBS — manquant";
       }
 
       async function bootGuard() {
-        if (state.workspaceSlug) {
-          state.workspaceSlug = normalizeSlug(state.workspaceSlug);
+        if (state.slug) {
+          state.slug = normalizeSlug(state.slug);
         }
 
         if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
@@ -805,8 +805,8 @@
         state.session = session || null;
 
         const sessionSlug = normalizeSlug(session?.slug || "");
-        if (!state.workspaceSlug && sessionSlug) {
-          state.workspaceSlug = sessionSlug;
+        if (!state.slug && sessionSlug) {
+          state.slug = sessionSlug;
         }
 
         state.preview = !session?.access;
@@ -820,7 +820,7 @@
 
       async function loadOffers() {
         if (!sb) throw new Error("Supabase non chargé");
-        if (!state.workspaceSlug) {
+        if (!state.slug) {
           state.offers = [];
           state.offerMap = new Map();
           fillOfferFilter();
@@ -829,8 +829,8 @@
 
         const { data, error } = await sb
           .from("digiy_jobs_offers_pro")
-          .select("id,workspace_slug,title,sector,city,country,contract_type,pay,description,requirements,employer_name,status,published_at,created_at")
-          .eq("workspace_slug", state.workspaceSlug)
+          .select("id,slug,title,sector,city,country,contract_type,pay,description,requirements,employer_name,status,published_at,created_at")
+          .eq("slug", state.slug)
           .eq("status", "active")
           .order("published_at", { ascending: false })
           .order("created_at", { ascending: false });
@@ -861,7 +861,7 @@
           return;
         }
 
-        if (!state.workspaceSlug && !state.offers.length) {
+        if (!state.slug && !state.offers.length) {
           state.candidates = [];
           return;
         }
@@ -869,11 +869,11 @@
         const rows = [];
         const seen = new Set();
 
-        if (state.workspaceSlug) {
+        if (state.slug) {
           const { data, error } = await sb
             .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,workspace_slug,full_name,phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-            .eq("workspace_slug", state.workspaceSlug)
+            .select("id,offer_id,slug,full_name,phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .eq("slug", state.slug)
             .order("created_at", { ascending: false });
 
           if (error) throw error;
@@ -890,7 +890,7 @@
         if (offerIds.length) {
           const { data, error } = await sb
             .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,workspace_slug,full_name,phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .select("id,offer_id,slug,full_name,phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
             .in("offer_id", offerIds)
             .order("created_at", { ascending: false });
 
@@ -975,14 +975,14 @@
         if (!offer?.id) return "";
         const url = new URL(JOBS_PATHS.mission, location.href);
         url.searchParams.set("id", offer.id);
-        if (state.workspaceSlug) url.searchParams.set("slug", state.workspaceSlug);
+        if (state.slug) url.searchParams.set("slug", state.slug);
         return url.toString();
       }
 
       function matchUrl(candidate) {
         const url = new URL(JOBS_PATHS.match, location.href);
         if (candidate?.offer_id) url.searchParams.set("offer", candidate.offer_id);
-        if (state.workspaceSlug) url.searchParams.set("slug", state.workspaceSlug);
+        if (state.slug) url.searchParams.set("slug", state.slug);
         return url.toString();
       }
 
@@ -1213,8 +1213,8 @@
           return;
         }
 
-        if (!state.workspaceSlug) {
-          setStatus("Aucun workspace détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
+        if (!state.slug) {
+          setStatus("Aucun slug détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
           return;
         }
 
@@ -1235,7 +1235,7 @@
 
         const payload = {
           offer_id: selectedOfferId,
-          workspace_slug: state.workspaceSlug,
+          slug: state.slug,
           full_name: String(raw.nom || raw.full_name || "Dossier public").trim(),
           phone: phone,
           city: String(raw.zone || raw.city || "").trim() || null,
@@ -1282,8 +1282,8 @@
           return;
         }
 
-        if (!state.workspaceSlug) {
-          setStatus("Aucun workspace détecté pour ajouter une candidature.", "warn");
+        if (!state.slug) {
+          setStatus("Aucun slug détecté pour ajouter une candidature.", "warn");
           return;
         }
 
@@ -1302,7 +1302,7 @@
 
         const payload = {
           offer_id: selectedOfferId,
-          workspace_slug: state.workspaceSlug,
+          slug: state.slug,
           full_name: String(full_name).trim(),
           phone: normalizePhone(whatsapp_phone),
           city: city ? String(city).trim() : null,
@@ -1424,7 +1424,7 @@
           const linkedOffer = state.offerMap.get(candidate.offer_id) || null;
           const local = getCandidateLocal(candidate.id);
           return {
-            workspace_slug: state.workspaceSlug || null,
+            slug: state.slug || null,
             id: candidate.id,
             offer_id: candidate.offer_id,
             offer_title: linkedOffer?.title || null,
@@ -1458,7 +1458,7 @@
       });
 
       btnClearLocalNotes.addEventListener("click", function() {
-        if (!confirm("Vider uniquement les notes locales de ce workspace ?")) return;
+        if (!confirm("Vider uniquement les notes locales de ce slug ?")) return;
         state.localNotes = {};
         saveLocalNotes();
         renderList();
@@ -1484,7 +1484,7 @@
           await loadCandidates();
           renderList();
 
-          if (!state.workspaceSlug) {
+          if (!state.slug) {
             setStatus("Aucun slug détecté. Ouvre ce bureau avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
           } else if (!state.preview) {
             setStatus("Bureau JOBS chargé sur le rail réel.", "ok");
