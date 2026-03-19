@@ -277,8 +277,10 @@
       <div class="top-actions">
         <button id="btnRefresh" type="button">Rafraîchir</button>
         <button id="btnImportPublic" type="button">Importer dernier dossier public</button>
+        <a id="linkWall" href="./mur%20des%20missions.html">Mur</a>
         <a id="linkCockpit" href="./cockpit.html">Cockpit</a>
-        <a id="linkPublic" class="primary" href="./index.html">Voir le hall public</a>
+        <a id="linkMatch" href="./match.html">Match</a>
+        <a id="linkPublic" class="primary" href="./index.html">Hall public</a>
       </div>
     </div>
   </header>
@@ -310,7 +312,7 @@
           <h2>Ce que ce bureau fait maintenant</h2>
           <p>
             Il lit les candidatures réelles, les relie aux missions actives du workspace, suit les statuts
-            `new / review / shortlist / call / accepted / rejected`, garde des notes locales par candidat
+            <code>new / review / shortlist / call / accepted / rejected</code>, garde des notes locales par candidat
             et prépare la mise en relation sans faux rail de démonstration.
           </p>
           <div class="mini-grid">
@@ -444,11 +446,12 @@
 
               <article class="action-card">
                 <h4>Mise en relation</h4>
-                <p>Ouvre WhatsApp avec un message propre, copie la fiche texte, ou marque la candidature comme appelée.</p>
+                <p>Ouvre WhatsApp, copie la fiche texte, ouvre le match ou marque la candidature comme appelée.</p>
                 <div class="button-row">
                   <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
                   <button id="btnCopySheet" type="button">📋 Copier la fiche</button>
                   <button id="btnCopyMissionLink" type="button">🧷 Copier mission</button>
+                  <a id="btnOpenMatch" href="./match.html" target="_blank" rel="noopener">🎯 Ouvrir match</a>
                   <button id="btnMarkCall" type="button">📞 Marquer "à appeler"</button>
                 </div>
               </article>
@@ -469,6 +472,7 @@
           <button id="btnExportJson" type="button">Exporter JSON</button>
           <button id="btnClearLocalNotes" type="button">Vider notes locales</button>
           <a id="linkPin" href="./pin.html">Entrée PIN</a>
+          <a id="footerWall" href="./mur%20des%20missions.html">Mur</a>
           <a href="#top">Retour haut</a>
         </div>
       </div>
@@ -498,6 +502,15 @@
 
       const PUBLIC_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
       const NOTES_PREFIX = "DIGIY_JOBS_BUREAU_NOTES_V2::";
+
+      const JOBS_PATHS = {
+        home: "./index.html",
+        wall: "./mur%20des%20missions.html",
+        pin: "./pin.html",
+        cockpit: "./cockpit.html",
+        match: "./match.html",
+        mission: "./mission.html"
+      };
 
       const STATUS_LABELS = {
         new: "Nouveau",
@@ -568,6 +581,7 @@
       const statusRow = document.getElementById("statusRow");
       const bureauNotes = document.getElementById("bureauNotes");
       const btnOpenWA = document.getElementById("btnOpenWA");
+      const btnOpenMatch = document.getElementById("btnOpenMatch");
 
       const btnRefresh = document.getElementById("btnRefresh");
       const btnImportPublic = document.getElementById("btnImportPublic");
@@ -588,10 +602,13 @@
       const linkCockpit = document.getElementById("linkCockpit");
       const linkPublic = document.getElementById("linkPublic");
       const linkPin = document.getElementById("linkPin");
+      const linkWall = document.getElementById("linkWall");
+      const linkMatch = document.getElementById("linkMatch");
+      const footerWall = document.getElementById("footerWall");
 
       const state = {
         workspaceSlug: slugQ,
-        preview: false,
+        preview: true,
         session: null,
         offers: [],
         offerMap: new Map(),
@@ -703,6 +720,13 @@
         }
       }
 
+      function withSlug(path, slug) {
+        const cleanSlug = normalizeSlug(slug || "");
+        if (!cleanSlug) return path;
+        const joiner = path.includes("?") ? "&" : "?";
+        return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+      }
+
       function notesKey() {
         return `${NOTES_PREFIX}${state.workspaceSlug || "jobs"}`;
       }
@@ -747,9 +771,19 @@
 
       function syncLinks() {
         const slug = state.workspaceSlug || "";
-        linkCockpit.href = slug ? `./cockpit.html?slug=${encodeURIComponent(slug)}` : "./cockpit.html";
-        linkPublic.href = slug ? `./index.html?slug=${encodeURIComponent(slug)}` : "./index.html";
-        linkPin.href = slug ? `./pin.html?slug=${encodeURIComponent(slug)}` : "./pin.html";
+        const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
+        const homeHref = withSlug(JOBS_PATHS.home, slug);
+        const pinHref = withSlug(JOBS_PATHS.pin, slug);
+        const wallHref = withSlug(JOBS_PATHS.wall, slug);
+        const matchHref = withSlug(JOBS_PATHS.match, slug);
+
+        linkCockpit.href = cockpitHref;
+        linkPublic.href = homeHref;
+        linkPin.href = pinHref;
+        linkWall.href = wallHref;
+        linkMatch.href = matchHref;
+        footerWall.href = wallHref;
+
         miniSlug.textContent = slug || "aucun slug";
         signalPill.textContent = slug ? `Workspace JOBS — ${slug}` : "Workspace JOBS — slug manquant";
       }
@@ -760,9 +794,10 @@
         }
 
         if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-          state.preview = false;
-          miniMode.textContent = "mode URL";
+          state.preview = true;
+          miniMode.textContent = "guard manquant";
           syncLinks();
+          setStatus("guard.js manquant ou invalide : bureau JOBS chargé en aperçu verrouillé.", "warn");
           return;
         }
 
@@ -935,6 +970,22 @@
         ].join(" • ") + offerText;
       }
 
+      function missionUrl(candidate) {
+        const offer = state.offerMap.get(candidate.offer_id);
+        if (!offer?.id) return "";
+        const url = new URL(JOBS_PATHS.mission, location.href);
+        url.searchParams.set("id", offer.id);
+        if (state.workspaceSlug) url.searchParams.set("slug", state.workspaceSlug);
+        return url.toString();
+      }
+
+      function matchUrl(candidate) {
+        const url = new URL(JOBS_PATHS.match, location.href);
+        if (candidate?.offer_id) url.searchParams.set("offer", candidate.offer_id);
+        if (state.workspaceSlug) url.searchParams.set("slug", state.workspaceSlug);
+        return url.toString();
+      }
+
       function renderList() {
         const visible = getVisible();
         renderStats(visible);
@@ -1009,15 +1060,6 @@
 
       function fieldHtml(label, value, full = false) {
         return `<div class="field${full ? " full" : ""}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
-      }
-
-      function missionUrl(candidate) {
-        const offer = state.offerMap.get(candidate.offer_id);
-        if (!offer?.id) return "";
-        const url = new URL("./mission.html", location.href);
-        url.searchParams.set("id", offer.id);
-        if (state.workspaceSlug) url.searchParams.set("slug", state.workspaceSlug);
-        return url.toString();
       }
 
       function buildWhatsAppUrl(candidate) {
@@ -1127,6 +1169,7 @@
         detailSubtitle.textContent = subtitle(candidate);
         bureauNotes.value = local.notes || "";
         btnOpenWA.href = buildWhatsAppUrl(candidate);
+        btnOpenMatch.href = matchUrl(candidate);
 
         detailChips.innerHTML = `
           <span class="chip ${sectorClass(sector)}">${escapeHtml(sectorLabel(sector))}</span>
