@@ -818,7 +818,7 @@
     const params = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
     const SLUG_STORAGE_KEY = "digiy_jobs_slug";
-    const DB_SLUG_COLUMN = "workspace_slug";
+    const DB_SLUG_COLUMN = "slug";
 
     const JOBS_PATHS = {
       home: "./index.html",
@@ -1344,7 +1344,7 @@
 
       const { data, error } = await sb
         .from("digiy_jobs_offers_pro")
-        .select("id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at")
+        .select("id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at")
         .eq(DB_SLUG_COLUMN, state.slug)
         .eq("status", "active")
         .order("published_at", { ascending: false })
@@ -1367,7 +1367,7 @@
       if (state.slug) {
         const { data, error } = await sb
           .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,workspace_slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+          .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
           .eq(DB_SLUG_COLUMN, state.slug)
           .order("created_at", { ascending: false });
 
@@ -1386,7 +1386,7 @@
       if (offerIds.length) {
         const { data, error } = await sb
           .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,workspace_slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+          .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
           .in("offer_id", offerIds)
           .order("created_at", { ascending: false });
 
