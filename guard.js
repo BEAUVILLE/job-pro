@@ -1,5 +1,5 @@
-// guard.js — DIGIY JOBS PRO bureau guard blindé
-// Logique : PIN d’abord -> session valide -> check accès module -> bureau
+// guard.js — DIGIY JOBS PRO guard propre slug-first en façade
+// Logique : PIN d’abord -> session valide -> check accès module -> cockpit/bureau
 (() => {
   "use strict";
 
@@ -13,11 +13,8 @@
     "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
 
   const MODULE_CODE = String(window.DIGIY_MODULE || "JOBS").trim().toUpperCase();
-
-  // Session bureau PIN : courte durée
   const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000; // 8h
 
-  // Clés de session acceptées
   const SESSION_KEYS = [
     "DIGIY_JOBS_PIN_SESSION",
     "DIGIY_PIN_SESSION",
@@ -25,6 +22,8 @@
     "DIGIY_SESSION_JOBS",
     "digiy_jobs_session"
   ];
+
+  const SLUG_STORAGE_KEY = "digiy_jobs_slug";
 
   const qs = new URLSearchParams(location.search);
   const slugQ = (qs.get("slug") || "").trim();
@@ -67,12 +66,31 @@
     return (nowMs() - n) <= SESSION_MAX_AGE_MS;
   }
 
+  function saveSlugOnly(slug) {
+    const clean = normSlug(slug);
+    if (!clean) return;
+    try {
+      localStorage.setItem(SLUG_STORAGE_KEY, clean);
+    } catch (_) {}
+  }
+
+  function readSavedSlug() {
+    try {
+      return normSlug(localStorage.getItem(SLUG_STORAGE_KEY) || "");
+    } catch (_) {
+      return "";
+    }
+  }
+
   function clearSessions() {
     for (const key of SESSION_KEYS) {
       try {
         localStorage.removeItem(key);
       } catch (_) {}
     }
+    try {
+      localStorage.removeItem(SLUG_STORAGE_KEY);
+    } catch (_) {}
   }
 
   function readStoredSession() {
@@ -87,7 +105,7 @@
       const verifiedAt =
         Number(parsed.verified_at || parsed.ts || parsed.created_at || 0) || 0;
 
-      if (!phone) continue;
+      if (!slug) continue;
       if (moduleName && moduleName !== MODULE_CODE) continue;
       if (!isRecent(verifiedAt)) continue;
       if (!access) continue;
@@ -117,20 +135,13 @@
       ts: nowMs()
     };
 
-    const targetKeys = [
-      "DIGIY_JOBS_PIN_SESSION",
-      "DIGIY_PIN_SESSION",
-      "DIGIY_ACCESS",
-      "DIGIY_SESSION_JOBS",
-      "digiy_jobs_session"
-    ];
-
-    for (const key of targetKeys) {
+    for (const key of SESSION_KEYS) {
       try {
         localStorage.setItem(key, JSON.stringify(session));
       } catch (_) {}
     }
 
+    saveSlugOnly(session.slug);
     return session;
   }
 
@@ -184,10 +195,11 @@
   }
 
   const stored = readStoredSession();
+  const savedSlug = readSavedSlug();
 
   const state = {
     module: MODULE_CODE,
-    slug: normSlug(slugQ || stored?.slug || ""),
+    slug: normSlug(slugQ || stored?.slug || savedSlug || ""),
     phone: normPhone(phoneQ || stored?.phone || ""),
     owner_id: stored?.owner_id || null,
     access: false,
@@ -195,7 +207,7 @@
     ready_flag: false,
     error: null,
     pin_url: "",
-    source: stored ? "session" : "query",
+    source: stored ? "session" : (slugQ ? "query" : (savedSlug ? "slug_storage" : "none")),
     verified_at: stored?.verified_at || null
   };
 
@@ -203,10 +215,11 @@
 
   async function check() {
     const storedSession = readStoredSession();
+    const persistedSlug = readSavedSlug();
 
-    let slug = normSlug(slugQ || storedSession?.slug || state.slug || "");
-    let phone = normPhone(phoneQ || storedSession?.phone || state.phone || "");
-    let verifiedAt = Number(storedSession?.verified_at || state.verified_at || 0) || 0;
+    const slug = normSlug(slugQ || storedSession?.slug || state.slug || persistedSlug || "");
+    const phone = normPhone(phoneQ || storedSession?.phone || state.phone || "");
+    const verifiedAt = Number(storedSession?.verified_at || state.verified_at || 0) || 0;
 
     state.slug = slug;
     state.phone = phone;
@@ -214,9 +227,22 @@
     state.pin_url = buildPinUrl({ slug, phone });
     state.error = null;
 
-    // On ne laisse jamais le slug seul ouvrir le bureau
-    if (!phone || !verifiedAt || !isRecent(verifiedAt)) {
+    if (slug) saveSlugOnly(slug);
+
+    if (!slug) {
       clearSessions();
+      state.access = false;
+      state.preview = true;
+      state.ready_flag = true;
+      state.error = "Slug JOBS absent.";
+      goPin({ slug, phone });
+      return { ...state };
+    }
+
+    // On n’ouvre pas le cockpit réel sans session PIN fraîche
+    if (!verifiedAt || !isRecent(verifiedAt)) {
+      clearSessions();
+      saveSlugOnly(slug);
       state.access = false;
       state.preview = true;
       state.ready_flag = true;
@@ -225,7 +251,8 @@
       return { ...state };
     }
 
-    // Vérification secondaire : abonnement module toujours actif
+    // Vérification secondaire module actif
+    // Garde la compatibilité actuelle avec le backbone existant.
     const res = await rpc("digiy_has_access", {
       p_phone: phone,
       p_module: MODULE_CODE
@@ -235,6 +262,7 @@
 
     if (!hasAccess) {
       clearSessions();
+      saveSlugOnly(slug);
       state.access = false;
       state.preview = true;
       state.ready_flag = true;
@@ -257,13 +285,20 @@
       verified_at: verifiedAt || nowMs()
     });
 
-    // Normalise l’URL si besoin
     try {
       const url = new URL(location.href);
-      if (slug && (url.searchParams.get("slug") || "").trim().toLowerCase() !== slug) {
+      const currentSlug = normSlug(url.searchParams.get("slug") || "");
+      const currentPhone = normPhone(url.searchParams.get("phone") || "");
+
+      if (slug && currentSlug !== slug) {
         url.searchParams.set("slug", slug);
-        history.replaceState({}, "", url.toString());
       }
+
+      if (phone && currentPhone !== phone) {
+        url.searchParams.set("phone", phone);
+      }
+
+      history.replaceState({}, "", url.toString());
     } catch (_) {}
 
     return { ...state };
@@ -302,14 +337,19 @@
       state.access = false;
       state.preview = true;
       state.ready_flag = false;
+      state.error = null;
     },
 
-    goPin() {
-      goPin(state);
+    goPin(input = {}) {
+      goPin({ ...state, ...input });
     },
 
-    buildPinUrl() {
-      return buildPinUrl(state);
+    goPay(input = {}) {
+      goPin({ ...state, ...input });
+    },
+
+    buildPinUrl(input = {}) {
+      return buildPinUrl({ ...state, ...input });
     }
   };
 })();
