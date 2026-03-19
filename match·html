@@ -284,7 +284,7 @@
           <span class="eyebrow">Rail réel DIGIY JOBS</span>
           <h1>Le bon besoin face au bon profil.</h1>
           <p class="lead">
-            Cette page lit la mission active du workspace, récupère les candidats réels du bureau,
+            Cette page lit la mission active du slug, récupère les candidats réels du bureau,
             calcule un score lisible, explique les raisons du match et aide le bureau à trancher vite.
           </p>
           <div class="hero-tags">
@@ -296,10 +296,10 @@
         </article>
 
         <aside class="panel">
-          <span class="signal" id="signalPill">Workspace JOBS — détection…</span>
+          <span class="signal" id="signalPill">Slug JOBS — détection…</span>
           <h2>Ce que la page fait maintenant</h2>
           <p>
-            Elle charge la mission active du rail JOBS, lit les candidatures du workspace,
+            Elle charge la mission active du rail JOBS, lit les candidatures du slug,
             propose un score de compatibilité, garde les validations bureau localement
             et prépare la mise en relation sans inventer de faux backend.
           </p>
@@ -328,7 +328,7 @@
           <div class="section-head">
             <div>
               <h2>Mission active</h2>
-              <p>Le matching se base sur cette mission. Tu peux changer d’offre active si le workspace en a plusieurs.</p>
+              <p>Le matching se base sur cette mission. Tu peux changer d’offre active si le slug en a plusieurs.</p>
             </div>
             <div style="min-width:280px;display:grid;gap:8px">
               <label for="missionSelect" style="font-weight:900;color:#334155">Choisir une mission active</label>
@@ -496,6 +496,8 @@
 
       const PUBLIC_DOSSIER_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
       const LOCAL_MATCH_PREFIX = "DIGIY_JOBS_MATCH_STATE_V2::";
+      const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+      const DB_SLUG_COLUMN = "workspace_slug";
 
       const JOBS_PATHS = {
         home: "./index.html",
@@ -613,7 +615,7 @@
       const footerWallLink = document.getElementById("footerWallLink");
 
       const state = {
-        workspaceSlug: slugQ,
+        slug: slugQ,
         offers: [],
         mission: null,
         candidates: [],
@@ -653,13 +655,7 @@
       }
 
       function normalizeSlug(value = "") {
-        return String(value || "")
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "");
+        return String(value || "").trim().toLowerCase();
       }
 
       function normalizePhone(value = "") {
@@ -758,6 +754,20 @@
         }
       }
 
+      function saveSlug(slug) {
+        try {
+          if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
+        } catch (_) {}
+      }
+
+      function readSavedSlug() {
+        try {
+          return normalizeSlug(localStorage.getItem(SLUG_STORAGE_KEY) || "");
+        } catch (_) {
+          return "";
+        }
+      }
+
       function withSlug(path, slug) {
         const cleanSlug = normalizeSlug(slug || "");
         if (!cleanSlug) return path;
@@ -765,9 +775,14 @@
         return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
       }
 
+      function setSlug(nextSlug) {
+        const clean = normalizeSlug(nextSlug);
+        state.slug = clean;
+        if (clean) saveSlug(clean);
+      }
+
       function getMatchStorageKey() {
-        const slug = state.workspaceSlug || "jobs";
-        return `${LOCAL_MATCH_PREFIX}${slug}`;
+        return `${LOCAL_MATCH_PREFIX}${state.slug || "jobs"}`;
       }
 
       function loadMatchState() {
@@ -782,7 +797,7 @@
 
       function getMatchKey(candidate) {
         const offerKey = state.mission?.id || "no-offer";
-        const candidateKey = candidate.id || normalizeText(candidate.full_name + "-" + candidate.whatsapp_phone);
+        const candidateKey = candidate.id || normalizeText(candidate.full_name + "-" + candidate.phone);
         return `${offerKey}::${candidateKey}`;
       }
 
@@ -797,7 +812,7 @@
       }
 
       function syncLinks() {
-        const slug = state.workspaceSlug || "";
+        const slug = state.slug || "";
         const wallHref = withSlug(JOBS_PATHS.wall, slug);
         const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
         const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
@@ -819,14 +834,14 @@
         }
 
         miniSlug.textContent = slug || "aucun slug";
-        signalPill.textContent = slug ? `Workspace JOBS — ${slug}` : "Workspace JOBS — slug manquant";
+        signalPill.textContent = slug ? `Slug JOBS — ${slug}` : "Slug JOBS — manquant";
       }
 
       async function fetchOfferById(id) {
         if (!sb || !id) return null;
         const { data, error } = await sb
           .from("digiy_jobs_offers_pro")
-          .select("id,workspace_slug,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .select("id,workspace_slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
           .eq("id", id)
           .eq("status", "active")
           .maybeSingle();
@@ -835,12 +850,12 @@
         return data || null;
       }
 
-      async function fetchOffersByWorkspace(slug) {
+      async function fetchOffersBySlug(slug) {
         if (!sb || !slug) return [];
         const { data, error } = await sb
           .from("digiy_jobs_offers_pro")
-          .select("id,workspace_slug,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
-          .eq("workspace_slug", slug)
+          .select("id,workspace_slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .eq(DB_SLUG_COLUMN, slug)
           .eq("status", "active")
           .order("published_at", { ascending: false })
           .order("created_at", { ascending: false });
@@ -854,14 +869,14 @@
 
         if (offerIdQ) {
           explicitOffer = await fetchOfferById(offerIdQ);
-          if (explicitOffer?.workspace_slug && !state.workspaceSlug) {
-            state.workspaceSlug = normalizeSlug(explicitOffer.workspace_slug);
+          if (explicitOffer?.workspace_slug && !state.slug) {
+            setSlug(explicitOffer.workspace_slug);
           }
         }
 
         let offers = [];
-        if (state.workspaceSlug) {
-          offers = await fetchOffersByWorkspace(state.workspaceSlug);
+        if (state.slug) {
+          offers = await fetchOffersBySlug(state.slug);
         }
 
         if (explicitOffer && !offers.some((x) => x.id === explicitOffer.id)) {
@@ -876,8 +891,8 @@
           state.mission = offers[0] || explicitOffer || null;
         }
 
-        if (state.mission?.workspace_slug && !state.workspaceSlug) {
-          state.workspaceSlug = normalizeSlug(state.mission.workspace_slug);
+        if (state.mission?.workspace_slug && !state.slug) {
+          setSlug(state.mission.workspace_slug);
         }
 
         loadMatchState();
@@ -924,7 +939,7 @@
           missionField("Publiée le", formatDate(offer.published_at || offer.created_at)),
           missionField("Logement", offer.has_housing ? "Oui" : "Non"),
           missionField("Accueil familial", offer.has_family_welcome ? "Oui" : "Non"),
-          missionField("Slug workspace", offer.workspace_slug || state.workspaceSlug, true),
+          missionField("Slug", offer.workspace_slug || state.slug, true),
           missionField("Description", offer.description || "—", true),
           missionField("Exigences", offer.requirements || "—", true)
         ];
@@ -939,7 +954,7 @@
           return;
         }
 
-        if (!state.workspaceSlug && !state.mission?.id) {
+        if (!state.slug && !state.mission?.id) {
           state.candidates = [];
           return;
         }
@@ -947,11 +962,11 @@
         const seen = new Set();
         const rows = [];
 
-        if (state.workspaceSlug) {
+        if (state.slug) {
           const { data, error } = await sb
             .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-            .eq("workspace_slug", state.workspaceSlug)
+            .select("id,offer_id,workspace_slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .eq(DB_SLUG_COLUMN, state.slug)
             .order("created_at", { ascending: false });
 
           if (error) throw error;
@@ -967,7 +982,7 @@
         if (state.mission?.id) {
           const { data, error } = await sb
             .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .select("id,offer_id,workspace_slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
             .eq("offer_id", state.mission.id)
             .order("created_at", { ascending: false });
 
@@ -1026,6 +1041,7 @@
         const candidateText = [
           candidate.full_name,
           candidate.trade,
+          candidate.job_title,
           candidate.years_experience,
           labelAvailability(candidate.availability),
           candidate.message,
@@ -1160,6 +1176,7 @@
             const hay = normalizeText([
               row.candidate.full_name,
               row.candidate.trade,
+              row.candidate.job_title,
               row.candidate.city,
               row.candidate.country,
               row.candidate.years_experience,
@@ -1243,7 +1260,7 @@
             <div class="candidate-top">
               <div>
                 <h4>${escapeHtml(c.full_name || "Sans nom")}</h4>
-                <p class="sub">${escapeHtml(safe(c.trade))} • ${escapeHtml(safe(c.city))}</p>
+                <p class="sub">${escapeHtml(safe(c.trade || c.job_title))} • ${escapeHtml(safe(c.city))}</p>
               </div>
               <div class="score-pill">${row.match.score}</div>
             </div>
@@ -1281,17 +1298,17 @@
         if (!state.mission?.id) return "";
         const u = new URL(JOBS_PATHS.mission, location.href);
         u.searchParams.set("id", state.mission.id);
-        if (state.workspaceSlug) u.searchParams.set("slug", state.workspaceSlug);
+        if (state.slug) u.searchParams.set("slug", state.slug);
         return u.toString();
       }
 
       function buildCandidateSheetText(candidate) {
         return [
           `Nom : ${safe(candidate.full_name)}`,
-          `WhatsApp : ${safe(candidate.whatsapp_phone)}`,
+          `Téléphone : ${safe(candidate.phone)}`,
           `Ville : ${safe(candidate.city)}`,
           `Pays : ${safe(candidate.country)}`,
-          `Métier : ${safe(candidate.trade)}`,
+          `Métier : ${safe(candidate.trade || candidate.job_title)}`,
           `Expérience : ${safe(candidate.years_experience)}`,
           `Disponibilité : ${labelAvailability(candidate.availability)}`,
           `Statut bureau : ${statusLabel(candidate.status || "new")}`,
@@ -1315,7 +1332,7 @@
           "Si vous êtes partant, on peut avancer sur la mise en relation."
         ].filter(Boolean).join("\n");
 
-        const phone = String(candidate.whatsapp_phone || "").replace(/[^\d]/g, "");
+        const phone = String(candidate.phone || "").replace(/[^\d]/g, "");
         const url = new URL(`https://wa.me/${phone}`);
         url.searchParams.set("text", lines);
         return url.toString();
@@ -1337,7 +1354,7 @@
 
         detailName.textContent = candidate.full_name || "Sans nom";
         detailSubtitle.textContent = [
-          safe(candidate.trade),
+          safe(candidate.trade || candidate.job_title),
           safe(candidate.city),
           labelAvailability(candidate.availability)
         ].join(" • ");
@@ -1355,10 +1372,10 @@
         btnOpenWA.href = buildWhatsAppUrl(candidate, row.match.score);
 
         const detailFields = [
-          fieldHtml("Téléphone", candidate.whatsapp_phone),
+          fieldHtml("Téléphone", candidate.phone),
           fieldHtml("Ville", candidate.city),
           fieldHtml("Pays", candidate.country || "Sénégal"),
-          fieldHtml("Métier", candidate.trade),
+          fieldHtml("Métier", candidate.trade || candidate.job_title),
           fieldHtml("Expérience", candidate.years_experience),
           fieldHtml("Disponibilité", labelAvailability(candidate.availability)),
           fieldHtml("Statut bureau", statusLabel(candidate.status || "new")),
@@ -1395,8 +1412,8 @@
           return;
         }
 
-        if (!state.workspaceSlug && !state.mission?.workspace_slug) {
-          setStatus("Aucun workspace détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
+        if (!state.slug && !state.mission?.workspace_slug) {
+          setStatus("Aucun slug détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
           return;
         }
 
@@ -1407,20 +1424,24 @@
         }
 
         const phone = normalizePhone(dossier.phone);
-        const alreadyExists = state.candidates.some((c) => normalizePhone(c.whatsapp_phone) === phone);
+        const alreadyExists = state.candidates.some((c) => normalizePhone(c.phone) === phone);
         if (alreadyExists) {
           setStatus("Le dernier dossier public semble déjà présent dans le bureau de cette mission.", "info");
           return;
         }
 
+        const trade = String(dossier.metier || dossier.buildMetier || dossier.hotelMetier || dossier.trade || "").trim() || null;
+
         const payload = {
           offer_id: state.mission?.id || null,
-          workspace_slug: state.workspaceSlug || state.mission?.workspace_slug || null,
+          workspace_slug: state.slug || state.mission?.workspace_slug || null,
+          owner_id: state.mission?.owner_id || null,
           full_name: String(dossier.nom || dossier.full_name || "Dossier public").trim(),
-          whatsapp_phone: phone,
+          phone: phone,
+          job_title: trade || state.mission?.title || null,
           city: String(dossier.zone || dossier.city || "").trim() || null,
           country: String(dossier.country || "Sénégal").trim(),
-          trade: String(dossier.metier || dossier.buildMetier || dossier.hotelMetier || "").trim() || null,
+          trade: trade,
           years_experience: String(dossier.niveau || dossier.years_experience || "").trim() || null,
           availability: availabilityCode(dossier.dispo || dossier.availability || "") || "to_discuss",
           message: [
@@ -1432,7 +1453,7 @@
           source: "import_public_dossier"
         };
 
-        if (!payload.full_name || !payload.whatsapp_phone) {
+        if (!payload.full_name || !payload.phone) {
           setStatus("Le dossier public trouvé est incomplet : nom ou téléphone manquant.", "warn");
           return;
         }
@@ -1453,8 +1474,8 @@
       }
 
       async function bootGuard() {
-        if (state.workspaceSlug) {
-          state.workspaceSlug = normalizeSlug(state.workspaceSlug);
+        if (state.slug) {
+          setSlug(state.slug);
         }
 
         if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
@@ -1469,8 +1490,8 @@
         state.session = session || null;
 
         const sessionSlug = normalizeSlug(session?.slug || "");
-        if (!state.workspaceSlug && sessionSlug) {
-          state.workspaceSlug = sessionSlug;
+        if (!state.slug && sessionSlug) {
+          setSlug(sessionSlug);
         }
 
         state.preview = !session?.access;
@@ -1569,7 +1590,7 @@
         state.matchState[key].notes = matchNotes.value.trim();
         saveMatchState();
         renderList();
-        setStatus("Match validé localement pour ce workspace.", "ok");
+        setStatus("Match validé localement pour ce slug.", "ok");
       });
 
       btnExportMatches.addEventListener("click", function() {
@@ -1577,13 +1598,13 @@
           const key = getMatchKey(row.candidate);
           const saved = state.matchState[key] || {};
           return {
-            workspace_slug: state.workspaceSlug || null,
+            slug: state.slug || null,
             offer_id: state.mission?.id || null,
             mission: state.mission?.title || "Mission",
             sector: state.mission?.sector || null,
             candidate_name: row.candidate.full_name || "Sans nom",
-            candidate_phone: row.candidate.whatsapp_phone || "",
-            trade: row.candidate.trade || "",
+            candidate_phone: row.candidate.phone || "",
+            trade: row.candidate.trade || row.candidate.job_title || "",
             city: row.candidate.city || "",
             score: row.match.score,
             summary: row.match.summary,
@@ -1606,7 +1627,7 @@
       });
 
       btnResetValidated.addEventListener("click", function() {
-        if (!confirm("Vider toutes les validations locales pour ce workspace ?")) return;
+        if (!confirm("Vider toutes les validations locales pour ce slug ?")) return;
         state.matchState = {};
         saveMatchState();
         renderList();
@@ -1620,12 +1641,19 @@
             return;
           }
 
+          if (!state.slug) {
+            const saved = readSavedSlug();
+            if (saved) setSlug(saved);
+          } else {
+            setSlug(state.slug);
+          }
+
           await bootGuard();
           await loadMissionRail();
           await loadCandidates();
           renderList();
 
-          if (!state.workspaceSlug && !state.mission) {
+          if (!state.slug && !state.mission) {
             setStatus("Aucun slug ni aucune mission détectés. Ouvre la page avec ?slug=jobs-... ou ?id=....", "warn");
           } else if (!state.preview) {
             setStatus("Matching JOBS chargé sur le rail réel.", "ok");
