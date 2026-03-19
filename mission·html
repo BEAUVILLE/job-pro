@@ -298,7 +298,7 @@
 
         <div class="meta-line">
           <div class="meta-chip">Mode : <strong id="modeChip">fiche mission</strong></div>
-          <div class="meta-chip">Workspace : <strong id="workspaceChip">global</strong></div>
+          <div class="meta-chip">Slug actif : <strong id="slugChip">global</strong></div>
           <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
         </div>
 
@@ -369,6 +369,8 @@
     const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
 
     const $ = (id) => document.getElementById(id);
+    const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+    const DB_SLUG_COLUMN = "workspace_slug";
 
     const JOBS_PATHS = {
       home: "./index.html",
@@ -381,7 +383,7 @@
 
     const state = {
       offer: null,
-      workspaceSlug: slugFromUrl
+      slug: slugFromUrl
     };
 
     function escapeHtml(v = ""){
@@ -426,6 +428,20 @@
       return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
     }
 
+    function saveSlug(slug){
+      try{
+        if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
+      }catch(_){}
+    }
+
+    function readSavedSlug(){
+      try{
+        return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
+      }catch(_){
+        return "";
+      }
+    }
+
     function setLoadingMessage(text) {
       const box = $("loadingBox");
       if (!box) return;
@@ -440,12 +456,12 @@
     }
 
     function syncMeta(){
-      $("workspaceChip").textContent = state.workspaceSlug || "global";
+      $("slugChip").textContent = state.slug || "global";
       $("modeChip").textContent = "fiche mission";
     }
 
     function syncLinks() {
-      const slug = state.workspaceSlug || "";
+      const slug = state.slug || "";
 
       $("homeLink").href = withSlug(JOBS_PATHS.home, slug);
       $("wallLink").href = withSlug(JOBS_PATHS.wall, slug);
@@ -496,7 +512,9 @@
       }
 
       state.offer = data;
-      state.workspaceSlug = String(data.workspace_slug || state.workspaceSlug || "").trim().toLowerCase();
+      state.slug = String(data.workspace_slug || state.slug || "").trim().toLowerCase();
+
+      if (state.slug) saveSlug(state.slug);
 
       document.title = `${data.title || "Mission"} — DIGIY JOBS`;
 
@@ -515,15 +533,24 @@
       if (data.has_housing) goods.push('<span class="good">Logement possible</span>');
       if (data.has_family_welcome) goods.push('<span class="good">Accueil familial possible</span>');
       if (data.contact_phone) goods.push(`<span class="good">Contact : ${escapeHtml(data.contact_phone)}</span>`);
-      if (data.workspace_slug) goods.push(`<span class="good">Workspace : ${escapeHtml(data.workspace_slug)}</span>`);
+      if (state.slug) goods.push(`<span class="good">Slug : ${escapeHtml(state.slug)}</span>`);
       $("goodRow").innerHTML = goods.join("");
 
       syncLinks();
       showPage();
     }
 
-    syncLinks();
-    loadOffer();
+    (async () => {
+      if (!state.slug) {
+        const saved = readSavedSlug();
+        if (saved) state.slug = saved;
+      }
+
+      if (state.slug) saveSlug(state.slug);
+
+      syncLinks();
+      await loadOffer();
+    })();
   </script>
 </body>
 </html>
