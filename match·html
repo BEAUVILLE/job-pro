@@ -497,7 +497,6 @@
       const PUBLIC_DOSSIER_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
       const LOCAL_MATCH_PREFIX = "DIGIY_JOBS_MATCH_STATE_V2::";
       const SLUG_STORAGE_KEY = "digiy_jobs_slug";
-      const DB_SLUG_COLUMN = "workspace_slug";
 
       const JOBS_PATHS = {
         home: "./index.html",
@@ -841,7 +840,7 @@
         if (!sb || !id) return null;
         const { data, error } = await sb
           .from("digiy_jobs_offers_pro")
-          .select("id,workspace_slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .select("id,slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
           .eq("id", id)
           .eq("status", "active")
           .maybeSingle();
@@ -854,8 +853,8 @@
         if (!sb || !slug) return [];
         const { data, error } = await sb
           .from("digiy_jobs_offers_pro")
-          .select("id,workspace_slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
-          .eq(DB_SLUG_COLUMN, slug)
+          .select("id,slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .eq("slug", slug)
           .eq("status", "active")
           .order("published_at", { ascending: false })
           .order("created_at", { ascending: false });
@@ -869,8 +868,8 @@
 
         if (offerIdQ) {
           explicitOffer = await fetchOfferById(offerIdQ);
-          if (explicitOffer?.workspace_slug && !state.slug) {
-            setSlug(explicitOffer.workspace_slug);
+          if (explicitOffer?.slug && !state.slug) {
+            setSlug(explicitOffer.slug);
           }
         }
 
@@ -891,8 +890,8 @@
           state.mission = offers[0] || explicitOffer || null;
         }
 
-        if (state.mission?.workspace_slug && !state.slug) {
-          setSlug(state.mission.workspace_slug);
+        if (state.mission?.slug && !state.slug) {
+          setSlug(state.mission.slug);
         }
 
         loadMatchState();
@@ -934,12 +933,12 @@
           missionField("Pays", offer.country || "Sénégal"),
           missionField("Contrat", contractLabel(offer.contract_type)),
           missionField("Rémunération", offer.pay),
-          missionField("Structure", offer.employer_name || offer.workspace_slug),
+          missionField("Structure", offer.employer_name || offer.slug),
           missionField("Contact", offer.contact_phone || "—"),
           missionField("Publiée le", formatDate(offer.published_at || offer.created_at)),
           missionField("Logement", offer.has_housing ? "Oui" : "Non"),
           missionField("Accueil familial", offer.has_family_welcome ? "Oui" : "Non"),
-          missionField("Slug", offer.workspace_slug || state.slug, true),
+          missionField("Slug", offer.slug || state.slug, true),
           missionField("Description", offer.description || "—", true),
           missionField("Exigences", offer.requirements || "—", true)
         ];
@@ -965,8 +964,8 @@
         if (state.slug) {
           const { data, error } = await sb
             .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,workspace_slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-            .eq(DB_SLUG_COLUMN, state.slug)
+            .select("id,offer_id,slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .eq("slug", state.slug)
             .order("created_at", { ascending: false });
 
           if (error) throw error;
@@ -982,7 +981,7 @@
         if (state.mission?.id) {
           const { data, error } = await sb
             .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,workspace_slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .select("id,offer_id,slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
             .eq("offer_id", state.mission.id)
             .order("created_at", { ascending: false });
 
@@ -1412,7 +1411,7 @@
           return;
         }
 
-        if (!state.slug && !state.mission?.workspace_slug) {
+        if (!state.slug && !state.mission?.slug) {
           setStatus("Aucun slug détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
           return;
         }
@@ -1434,7 +1433,7 @@
 
         const payload = {
           offer_id: state.mission?.id || null,
-          workspace_slug: state.slug || state.mission?.workspace_slug || null,
+          slug: state.slug || state.mission?.slug || null,
           owner_id: state.mission?.owner_id || null,
           full_name: String(dossier.nom || dossier.full_name || "Dossier public").trim(),
           phone: phone,
