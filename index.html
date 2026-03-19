@@ -99,7 +99,7 @@
       gap:8px;
       flex-wrap:wrap;
       justify-content:flex-end;
-      max-width:min(720px, calc(100vw - 130px));
+      max-width:min(900px, calc(100vw - 130px));
     }
 
     .chip-link{
@@ -486,6 +486,9 @@
       background:rgba(255,255,255,.07);
       color:var(--text);
       border:1px solid var(--line);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
 
     .small-btn.gold{
@@ -649,7 +652,7 @@
     }
 
     @media (max-width: 700px){
-      .wrap{padding:92px 12px 70px}
+      .wrap{padding:96px 12px 70px}
       .hero{padding:20px 14px}
       .panel{padding:14px}
       .toolbar{grid-template-columns:1fr}
@@ -684,10 +687,12 @@
   <a class="site-back-float" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
 
   <div class="top-links">
-    <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">Maison mère</a>
+    <a id="homeLink" class="chip-link" href="./index.html">Mur public</a>
     <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
     <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Cockpit pro</a>
-    <a id="spontaneousLink" class="chip-link" href="./postuler.html">Candidature</a>
+    <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
+    <a id="postulerLink" class="chip-link" href="./postuler.html">Postuler</a>
+    <a id="missionsLink" class="chip-link" href="./mur%20des%20missions.html">Missions</a>
   </div>
 
   <div class="wrap">
@@ -702,8 +707,9 @@
           </p>
 
           <div class="hero-links">
-            <a id="publicWallBtn" class="nav-btn gold" href="./" rel="noopener">Mur public</a>
+            <a id="publicWallBtn" class="nav-btn gold" href="./index.html" rel="noopener">Mur public</a>
             <a id="pinEntryBtn" class="nav-btn" href="./pin.html" rel="noopener">Entrée PIN</a>
+            <a id="bureauBtn" class="nav-btn" href="./bureau.html" rel="noopener">Bureau</a>
             <button id="openPayBtn" class="nav-btn" type="button">Activer mon accès</button>
           </div>
         </div>
@@ -824,6 +830,17 @@
     const params = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
 
+    const JOBS_PATHS = {
+      home: "./index.html",
+      pin: "./pin.html",
+      cockpit: "./cockpit.html",
+      bureau: "./bureau.html",
+      postuler: "./postuler.html",
+      missions: "./mur%20des%20missions.html",
+      mission: "./mission.html",
+      match: "./match.html"
+    };
+
     const state = {
       workspaceSlug: "",
       offers: [],
@@ -865,20 +882,29 @@
       if (el) el.href = href;
     }
 
+    function withSlug(path) {
+      const slug = state.workspaceSlug || "";
+      if (!slug) return path;
+      const joiner = path.includes("?") ? "&" : "?";
+      return `${path}${joiner}slug=${encodeURIComponent(slug)}`;
+    }
+
     function setSourceChip(text) {
       const el = $("sourceChip");
       if (el) el.textContent = text || "—";
     }
 
     function syncLinks() {
-      const slug = state.workspaceSlug || "";
-      const slugQ = slug ? `?slug=${encodeURIComponent(slug)}` : "";
+      setHref("homeLink", withSlug(JOBS_PATHS.home));
+      setHref("pinLink", withSlug(JOBS_PATHS.pin));
+      setHref("cockpitLink", withSlug(JOBS_PATHS.cockpit));
+      setHref("bureauLink", withSlug(JOBS_PATHS.bureau));
+      setHref("postulerLink", withSlug(JOBS_PATHS.postuler));
+      setHref("missionsLink", withSlug(JOBS_PATHS.missions));
 
-      setHref("pinLink", `./pin.html${slugQ}`);
-      setHref("cockpitLink", `./cockpit.html${slugQ}`);
-      setHref("spontaneousLink", `./postuler.html${slugQ}`);
-      setHref("pinEntryBtn", `./pin.html${slugQ}`);
-      setHref("publicWallBtn", slugQ ? `./${slugQ}` : "./");
+      setHref("publicWallBtn", withSlug(JOBS_PATHS.home));
+      setHref("pinEntryBtn", withSlug(JOBS_PATHS.pin));
+      setHref("bureauBtn", withSlug(JOBS_PATHS.bureau));
     }
 
     function labelSector(v = "") {
@@ -1071,6 +1097,10 @@
           ? `https://wa.me/${encodeURIComponent(waPhone.replace("+", ""))}`
           : "#";
 
+        const matchHref =
+          `${JOBS_PATHS.match}?id=${encodeURIComponent(c.id)}` +
+          (state.workspaceSlug ? `&slug=${encodeURIComponent(state.workspaceSlug)}` : "");
+
         return `
           <article class="card">
             <div class="card-top">
@@ -1115,6 +1145,7 @@
 
             <div class="actions">
               <a class="small-btn blue" href="${waLink}" target="_blank" rel="noopener">WhatsApp</a>
+              <a class="small-btn" href="${matchHref}" target="_blank" rel="noopener">Match</a>
               <button class="small-btn gold" data-action="set-status" data-id="${c.id}" data-status="review" type="button">review</button>
               <button class="small-btn orange" data-action="set-status" data-id="${c.id}" data-status="shortlist" type="button">shortlist</button>
               <button class="small-btn blue" data-action="set-status" data-id="${c.id}" data-status="call" type="button">call</button>
@@ -1159,7 +1190,7 @@
       wrap.innerHTML = state.offers.map((o) => {
         const linkedCount = counts[o.id] || 0;
         const missionHref =
-          `./mission.html?id=${encodeURIComponent(o.id)}` +
+          `${JOBS_PATHS.mission}?id=${encodeURIComponent(o.id)}` +
           (state.workspaceSlug ? `&slug=${encodeURIComponent(state.workspaceSlug)}` : "");
 
         return `
