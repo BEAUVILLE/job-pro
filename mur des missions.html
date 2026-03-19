@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>DIGIY JOBS — Mur des missions</title>
-  <meta name="description" content="DIGIY JOBS — Missions, emplois, terrain, quartier, chantier, services et travail réel." />
+  <title>DIGIY JOBS PRO — Mur des missions</title>
+  <meta name="description" content="DIGIY JOBS PRO — Mur interne des missions, lecture par slug, navigation vers mission, bureau, cockpit et match." />
   <meta name="theme-color" content="#071711" />
 
   <script>
@@ -26,6 +26,7 @@
       --gold:#facc15;
       --gold2:#fde68a;
       --accent:#22c55e;
+      --blue:#38bdf8;
       --danger:#fb7185;
       --shadow:0 18px 60px rgba(0,0,0,.28);
       --radius:22px;
@@ -34,7 +35,6 @@
     }
 
     *{box-sizing:border-box}
-
     html,body{
       margin:0;
       padding:0;
@@ -73,6 +73,12 @@
       border-color:rgba(250,204,21,.30);
       background:rgba(250,204,21,.08);
       color:#fff5b1;
+    }
+
+    .chip-link.blue{
+      border-color:rgba(56,189,248,.28);
+      background:rgba(56,189,248,.10);
+      color:#d9f4ff;
     }
 
     .hero{
@@ -246,6 +252,12 @@
       font-weight:800;
     }
 
+    .link-btn.blue{
+      border-color:rgba(56,189,248,.28);
+      background:rgba(56,189,248,.10);
+      color:#d9f4ff;
+    }
+
     .grid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
@@ -262,7 +274,7 @@
       box-shadow:var(--shadow);
       display:flex;
       flex-direction:column;
-      min-height:300px;
+      min-height:320px;
     }
 
     .badge-row{
@@ -295,6 +307,12 @@
       border-color:rgba(34,197,94,.22);
       background:rgba(34,197,94,.10);
       color:#caffd5;
+    }
+
+    .badge.blue{
+      border-color:rgba(56,189,248,.25);
+      background:rgba(56,189,248,.10);
+      color:#d9f4ff;
     }
 
     .title{
@@ -343,10 +361,11 @@
       display:flex;
       gap:10px;
       margin-top:auto;
+      flex-wrap:wrap;
     }
 
     .btn{
-      flex:1;
+      flex:1 1 140px;
       display:inline-flex;
       justify-content:center;
       align-items:center;
@@ -355,6 +374,7 @@
       padding:13px 14px;
       font-weight:900;
       cursor:pointer;
+      text-align:center;
     }
 
     .btn-primary{
@@ -366,6 +386,12 @@
       background:rgba(255,255,255,.07);
       color:var(--text);
       border:1px solid var(--line);
+    }
+
+    .btn-blue{
+      background:rgba(56,189,248,.10);
+      color:#d9f4ff;
+      border:1px solid rgba(56,189,248,.28);
     }
 
     .empty,.loading,.error{
@@ -404,43 +430,44 @@
     <div class="top-links">
       <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
       <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
-      <a id="missionsWallLink" class="chip-link gold" href="./mur%20des%20missions.html">Mur des missions</a>
+      <a id="missionsWallLink" class="chip-link gold" href="./mur%20des%20missions.html">Mur PRO</a>
       <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
-      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Cockpit pro</a>
+      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Cockpit</a>
       <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
+      <a id="matchLink" class="chip-link blue" href="./match.html">Match</a>
     </div>
 
     <section class="hero">
       <div class="hero-grid">
         <div>
-          <div class="kicker">DIGIY JOBS • terrain • missions • travail réel</div>
-          <h1>Le mur des missions qui parlent vrai.</h1>
+          <div class="kicker">DIGIY JOBS PRO • terrain • missions • pilotage</div>
+          <h1>Le mur pro des missions actives.</h1>
           <p class="lead">
-            Chantier, quartier, boutique, salon, restauration, services, manutention,
-            conduite, artisanat. Ici on ne vend pas du rêve flou. On montre des besoins concrets,
-            des postes utiles, et des candidatures qui peuvent bouger tout de suite.
+            Ici, on lit les missions du slug actif, on ouvre la fiche mission,
+            on passe au bureau, au cockpit ou au match. Ce mur sert à piloter,
+            pas à faire de vitrine publique.
           </p>
 
           <div class="meta-line">
-            <div class="meta-chip">Mode : <strong id="modeChip">mur public</strong></div>
-            <div class="meta-chip">Workspace : <strong id="workspaceChip">global</strong></div>
-            <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
+            <div class="meta-chip">Mode : <strong id="modeChip">mur pro</strong></div>
+            <div class="meta-chip">Slug : <strong id="slugChip">—</strong></div>
+            <div class="meta-chip">Rail : <strong id="railChip">slug-first</strong></div>
+            <div class="meta-chip">Source : <strong id="sourceChip">digiy_jobs_offers_pro</strong></div>
           </div>
         </div>
 
         <div class="hero-box">
-          <h2>Ce que tu peux trouver ici</h2>
+          <h2>Ce que ce mur sert à faire</h2>
           <p>
-            Missions locales, CDI, CDD, extras, profils terrain, métiers de quartier,
-            besoins urgents et opportunités sérieuses.
+            Lire vite les missions du contexte actif, ouvrir la bonne fiche,
+            lancer le tri bureau, puis aller au match sans repasser par une porte publique.
           </p>
           <div class="pill-row">
-            <span class="pill">BTP</span>
-            <span class="pill">Coiffure</span>
-            <span class="pill">Boutique</span>
-            <span class="pill">Livraison</span>
-            <span class="pill">Restauration</span>
-            <span class="pill">Services</span>
+            <span class="pill">Lecture rapide</span>
+            <span class="pill">Fiche mission</span>
+            <span class="pill">Bureau</span>
+            <span class="pill">Cockpit</span>
+            <span class="pill">Match</span>
           </div>
         </div>
       </div>
@@ -484,7 +511,8 @@
       <div id="count" class="count">Chargement des missions...</div>
 
       <div class="toolbar-actions">
-        <a id="spontaneousLink" class="link-btn" href="./postuler.html">Candidature spontanée</a>
+        <a id="toolbarCockpitLink" class="link-btn" href="./cockpit.html">Ouvrir le cockpit</a>
+        <a id="toolbarMatchLink" class="link-btn blue" href="./match.html">Ouvrir le match</a>
       </div>
     </div>
 
@@ -510,6 +538,8 @@
     const params = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
 
+    const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+
     const JOBS_PATHS = {
       home: "./index.html",
       missions: "./mur%20des%20missions.html",
@@ -517,14 +547,28 @@
       cockpit: "./cockpit.html",
       bureau: "./bureau.html",
       postuler: "./postuler.html",
-      mission: "./mission.html"
+      mission: "./mission.html",
+      match: "./match.html"
     };
 
     const state = {
       offers: [],
       filtered: [],
-      workspaceSlug: String(params.get("slug") || "").trim().toLowerCase()
+      slug: resolveSlug()
     };
+
+    function resolveSlug(){
+      const qs = String(params.get("slug") || "").trim().toLowerCase();
+      if (qs) {
+        try { localStorage.setItem(SLUG_STORAGE_KEY, qs); } catch(_) {}
+        return qs;
+      }
+      try {
+        return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
+      } catch(_) {
+        return "";
+      }
+    }
 
     function escapeHtml(v=''){
       return String(v)
@@ -586,18 +630,43 @@
       return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
     }
 
-    function syncLinks(){
-      const slug = state.workspaceSlug || '';
+    function missionHref(item){
+      const slug = item.slug || state.slug || '';
+      const url = new URL(JOBS_PATHS.mission, location.href);
+      url.searchParams.set('id', item.id);
+      if (slug) url.searchParams.set('slug', slug);
+      return url.toString();
+    }
 
-      $('workspaceChip').textContent = slug || 'global';
-      $('modeChip').textContent = slug ? 'mur workspace' : 'mur public';
+    function matchHref(item){
+      const slug = item.slug || state.slug || '';
+      const url = new URL(JOBS_PATHS.match, location.href);
+      if (slug) url.searchParams.set('slug', slug);
+      if (item.id) url.searchParams.set('offer', item.id);
+      return url.toString();
+    }
+
+    function bureauHref(item){
+      const slug = item.slug || state.slug || '';
+      return withSlug(JOBS_PATHS.bureau, slug);
+    }
+
+    function syncLinks(){
+      const slug = state.slug || '';
+
+      $('slugChip').textContent = slug || 'aucun slug';
+      $('modeChip').textContent = slug ? 'mur pro lié au slug' : 'mur pro sans slug';
+      $('railChip').textContent = slug ? 'slug-first actif' : 'slug requis';
+      $('sourceChip').textContent = 'digiy_jobs_offers_pro';
 
       $('homeLink').href = withSlug(JOBS_PATHS.home, slug);
       $('missionsWallLink').href = withSlug(JOBS_PATHS.missions, slug);
       $('pinLink').href = withSlug(JOBS_PATHS.pin, slug);
       $('cockpitLink').href = withSlug(JOBS_PATHS.cockpit, slug);
       $('bureauLink').href = withSlug(JOBS_PATHS.bureau, slug);
-      $('spontaneousLink').href = withSlug(JOBS_PATHS.postuler, slug);
+      $('matchLink').href = withSlug(JOBS_PATHS.match, slug);
+      $('toolbarCockpitLink').href = withSlug(JOBS_PATHS.cockpit, slug);
+      $('toolbarMatchLink').href = withSlug(JOBS_PATHS.match, slug);
     }
 
     function renderStatus(type, text){
@@ -608,31 +677,15 @@
       $('cards').style.display = 'none';
     }
 
-    function missionHref(item){
-      const slug = item.workspace_slug || state.workspaceSlug || '';
-      const url = new URL(JOBS_PATHS.mission, location.href);
-      url.searchParams.set('id', item.id);
-      if (slug) url.searchParams.set('slug', slug);
-      return url.toString();
-    }
-
-    function applyHref(item){
-      const slug = item.workspace_slug || state.workspaceSlug || '';
-      const url = new URL(JOBS_PATHS.postuler, location.href);
-      url.searchParams.set('offer', item.id);
-      if (slug) url.searchParams.set('slug', slug);
-      return url.toString();
-    }
-
     function renderCards(list){
       const cards = $('cards');
 
       if (!list.length) {
         renderStatus(
           'empty',
-          state.workspaceSlug
-            ? 'Aucune mission active trouvée pour ce workspace pour le moment.'
-            : 'Aucune mission ne correspond à ce filtre pour le moment.'
+          state.slug
+            ? 'Aucune mission active trouvée pour ce slug pour le moment.'
+            : 'Aucun slug actif détecté. Ouvre cette page avec ?slug=jobs-... ou passe par le PIN.'
         );
         $('count').textContent = '0 mission trouvée';
         return;
@@ -644,9 +697,11 @@
 
       cards.innerHTML = list.map(item => {
         const flags = [];
+        const offerSlug = item.slug || state.slug || '';
+
         if (item.has_housing) flags.push('<span class="flag">Logement possible</span>');
         if (item.has_family_welcome) flags.push('<span class="flag">Accueil familial possible</span>');
-        if (item.workspace_slug) flags.push(`<span class="flag">Workspace : ${escapeHtml(item.workspace_slug)}</span>`);
+        if (offerSlug) flags.push(`<span class="flag">Slug : ${escapeHtml(offerSlug)}</span>`);
 
         return `
           <article class="card">
@@ -670,7 +725,8 @@
 
             <div class="actions">
               <a class="btn btn-secondary" href="${missionHref(item)}">Voir la mission</a>
-              <a class="btn btn-primary" href="${applyHref(item)}">Je postule</a>
+              <a class="btn btn-blue" href="${bureauHref(item)}">Bureau</a>
+              <a class="btn btn-primary" href="${matchHref(item)}">Match</a>
             </div>
           </article>
         `;
@@ -686,6 +742,7 @@
       state.filtered = state.offers.filter(item => {
         const hay = [
           item.title,
+          item.slug,
           item.sector,
           item.city,
           item.country,
@@ -693,14 +750,15 @@
           item.description,
           item.requirements,
           item.employer_name,
-          item.pay,
-          item.workspace_slug
+          item.pay
         ].join(' ').toLowerCase();
 
         if (q && !hay.includes(q)) return false;
         if (sector && String(item.sector || '').toLowerCase() !== sector) return false;
         if (city && String(item.city || '').toLowerCase() !== city) return false;
         if (contract && String(item.contract_type || '').toLowerCase() !== contract) return false;
+        if (state.slug && String(item.slug || '').toLowerCase() !== state.slug) return false;
+
         return true;
       });
 
@@ -716,20 +774,22 @@
 
       renderStatus(
         'loading',
-        state.workspaceSlug
-          ? 'Chargement des missions du workspace...'
-          : 'Chargement des missions...'
+        state.slug
+          ? 'Chargement des missions du slug...'
+          : 'Aucun slug détecté. Tentative de lecture en attente...'
       );
 
       let query = sb
         .from('digiy_jobs_offers_pro')
-        .select('id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at,created_at')
+        .select('id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at,created_at')
         .eq('status', 'active')
         .order('published_at', { ascending:false })
         .order('created_at', { ascending:false });
 
-      if (state.workspaceSlug) {
-        query = query.eq('workspace_slug', state.workspaceSlug);
+      if (state.slug) {
+        query = query.eq('slug', state.slug);
+      } else {
+        query = query.limit(0);
       }
 
       const { data, error } = await query;
