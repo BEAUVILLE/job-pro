@@ -4,10 +4,24 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <title>DIGIY JOBS PRO — Cockpit V4</title>
+  <title>DIGIY JOBS PRO — Cockpit</title>
+  <meta
+    name="description"
+    content="Cockpit DIGIY JOBS PRO : missions, candidatures, pipeline et suivi réel du terrain."
+  />
 
-  <script src="./guard.js"></script>
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY =
+      window.DIGIY_SUPABASE_ANON_KEY ||
+      window.DIGIY_SUPABASE_ANON ||
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "JOBS";
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js"></script>
 
   <style>
     :root{
@@ -137,7 +151,14 @@
       flex-wrap:wrap;
     }
 
-    .ghost-btn,.gold-btn{
+    .hero-links{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .ghost-btn,.gold-btn,.nav-btn{
       min-height:46px;
       padding:12px 16px;
       border-radius:999px;
@@ -149,7 +170,7 @@
       cursor:pointer;
     }
 
-    .ghost-btn{
+    .ghost-btn,.nav-btn{
       background:rgba(255,255,255,.07);
       color:var(--text);
       border:1px solid var(--line);
@@ -158,6 +179,12 @@
     .gold-btn{
       background:linear-gradient(180deg,var(--gold),#eab308);
       color:#171717;
+    }
+
+    .nav-btn.gold{
+      background:rgba(250,204,21,.12);
+      border-color:rgba(250,204,21,.28);
+      color:#fff2ae;
     }
 
     .meta-line{
@@ -468,6 +495,7 @@
       margin:0 0 10px;
       font-size:16px;
       line-height:1.2;
+      text-transform:uppercase;
     }
 
     .pipe-count{
@@ -605,24 +633,29 @@
     <section class="hero">
       <div class="hero-top">
         <div>
-          <div class="kicker">DIGIY JOBS PRO • cockpit v4 • candidatures réelles</div>
+          <div class="kicker">DIGIY JOBS PRO • cockpit vivant • candidatures réelles</div>
           <h1>Le bureau qui voit les vrais candidats.</h1>
           <p class="lead">
             Ici le pro suit les missions, lit les candidatures, trie les profils,
             rappelle les bons, et fait avancer le terrain sans se noyer.
           </p>
+
+          <div class="hero-links">
+            <a id="publicWallBtn" class="nav-btn gold" href="./" rel="noopener">Mur public</a>
+            <a id="pinEntryBtn" class="nav-btn" href="./pin.html" rel="noopener">Entrée PIN</a>
+            <button id="openPayBtn" class="nav-btn" type="button">Activer mon accès</button>
+          </div>
         </div>
 
         <div class="hero-actions">
           <button id="refreshBtn" class="ghost-btn" type="button">Rafraîchir</button>
-          <a class="gold-btn" href="./?slug=jobs-221771342889" rel="noopener">Voir le mur public</a>
         </div>
       </div>
 
       <div class="meta-line">
-        <div class="meta-chip">Workspace : <strong id="workspaceChip">jobs-221771342889</strong></div>
-        <div class="meta-chip">Mode : cockpit vivant</div>
-        <div class="meta-chip">Source : Supabase réel</div>
+        <div class="meta-chip">Workspace : <strong id="workspaceChip">—</strong></div>
+        <div class="meta-chip">Mode : <strong id="modeChip">détection…</strong></div>
+        <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
       </div>
 
       <div class="stats">
@@ -713,20 +746,30 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlc3Ftd2pqdHNlZnlqbmx1b3NqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxNzg4ODIsImV4cCI6MjA4MDc1NDg4Mn0.dZfYOc2iL2_wRYL3zExZFsFSBK6AbMeOid2LrIjcTdA";
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_URL =
+      window.DIGIY_SUPABASE_URL ||
+      "https://wesqmwjjtsefyjnluosj.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      window.DIGIY_SUPABASE_ANON ||
+      window.DIGIY_SUPABASE_ANON_KEY ||
+      "";
+
+    const sb =
+      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        : null;
 
     const params = new URLSearchParams(location.search);
-    const WORKSPACE_SLUG = params.get("slug") || "jobs-221771342889";
-
     const $ = (id) => document.getElementById(id);
 
     const state = {
+      workspaceSlug: "",
       offers: [],
       candidates: [],
       filteredCandidates: [],
-      activeTab: "candidates"
+      activeTab: "candidates",
+      session: null
     };
 
     let PREVIEW_MODE = false;
@@ -782,6 +825,18 @@
       return map[v] || v || "Contrat";
     }
 
+    function labelStatus(status = "new") {
+      const map = {
+        new: "Nouveau",
+        review: "En revue",
+        shortlist: "Shortlist",
+        call: "À appeler",
+        accepted: "Accepté",
+        rejected: "Refusé"
+      };
+      return map[String(status || "new").toLowerCase()] || status || "Statut";
+    }
+
     function badgeStatus(status = "new") {
       const s = String(status || "new").toLowerCase();
       const cls =
@@ -791,7 +846,7 @@
         s === "shortlist" ? "orange" :
         s === "review" ? "gold" :
         "";
-      return `<span class="badge ${cls}">${escapeHtml(s)}</span>`;
+      return `<span class="badge ${cls}">${escapeHtml(labelStatus(s))}</span>`;
     }
 
     function setStatusBox(type, text) {
@@ -805,6 +860,37 @@
     function hideStatusBox() {
       const box = $("statusBox");
       if (box) box.classList.add("hidden");
+    }
+
+    function syncModeChip() {
+      const modeChip = $("modeChip");
+      if (!modeChip) return;
+      modeChip.textContent = PREVIEW_MODE ? "aperçu verrouillé" : "cockpit réel";
+    }
+
+    function updateWorkspaceUI() {
+      const slug = state.workspaceSlug || "";
+      $("workspaceChip").textContent = slug || "aucun slug détecté";
+      syncModeChip();
+
+      const publicWallBtn = $("publicWallBtn");
+      const pinEntryBtn = $("pinEntryBtn");
+
+      if (publicWallBtn) {
+        publicWallBtn.href = slug ? `./?slug=${encodeURIComponent(slug)}` : "./";
+      }
+
+      if (pinEntryBtn) {
+        pinEntryBtn.href = slug
+          ? `./pin.html?slug=${encodeURIComponent(slug)}`
+          : "./pin.html";
+      }
+    }
+
+    function setWorkspaceSlug(nextSlug) {
+      const clean = String(nextSlug || "").trim().toLowerCase();
+      state.workspaceSlug = clean;
+      updateWorkspaceUI();
     }
 
     function setTab(tab) {
@@ -836,21 +922,13 @@
       const all = state.candidates;
       const count = (s) => all.filter((x) => (x.status || "new") === s).length;
 
-      const statOffers = $("statOffers");
-      const statCandidates = $("statCandidates");
-      const statNew = $("statNew");
-      const statReview = $("statReview");
-      const statShortlist = $("statShortlist");
-      const statCall = $("statCall");
-      const statAccepted = $("statAccepted");
-
-      if (statOffers) statOffers.textContent = state.offers.length;
-      if (statCandidates) statCandidates.textContent = all.length;
-      if (statNew) statNew.textContent = count("new");
-      if (statReview) statReview.textContent = count("review");
-      if (statShortlist) statShortlist.textContent = count("shortlist");
-      if (statCall) statCall.textContent = count("call");
-      if (statAccepted) statAccepted.textContent = count("accepted");
+      $("statOffers").textContent = state.offers.length;
+      $("statCandidates").textContent = all.length;
+      $("statNew").textContent = count("new");
+      $("statReview").textContent = count("review");
+      $("statShortlist").textContent = count("shortlist");
+      $("statCall").textContent = count("call");
+      $("statAccepted").textContent = count("accepted");
     }
 
     function fillOfferFilter() {
@@ -858,7 +936,9 @@
       if (!el) return;
       el.innerHTML =
         '<option value="">Toutes les missions</option>' +
-        state.offers.map((o) => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.title || "Mission")}</option>`).join("");
+        state.offers
+          .map((o) => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.title || "Mission")}</option>`)
+          .join("");
     }
 
     function applyCandidateFilters() {
@@ -899,9 +979,12 @@
 
       if (!state.filteredCandidates.length) {
         wrap.classList.add("hidden");
-        setStatusBox("empty", PREVIEW_MODE
-          ? "Aperçu du cockpit actif. Active ton accès pour voir les candidatures réelles."
-          : "Aucune candidature ne correspond à ce filtre.");
+        setStatusBox(
+          "empty",
+          PREVIEW_MODE
+            ? "Aperçu du cockpit actif. Active ton accès pour voir les candidatures réelles."
+            : "Aucune candidature ne correspond à ce filtre."
+        );
         return;
       }
 
@@ -913,7 +996,9 @@
       wrap.innerHTML = state.filteredCandidates.map((c) => {
         const offer = offerMap.get(c.offer_id) || null;
         const waPhone = normalizePhone(c.whatsapp_phone || "");
-        const waLink = waPhone ? `https://wa.me/${encodeURIComponent(waPhone.replace("+", ""))}` : "#";
+        const waLink = waPhone
+          ? `https://wa.me/${encodeURIComponent(waPhone.replace("+", ""))}`
+          : "#";
 
         return `
           <article class="card">
@@ -974,9 +1059,17 @@
       const wrap = $("offerCards");
       if (!wrap) return;
 
+      if (!state.workspaceSlug) {
+        wrap.classList.add("hidden");
+        setStatusBox("empty", "Aucun workspace JOBS détecté. Ouvre le cockpit avec ?slug=jobs-... ou via l’entrée PIN.");
+        return;
+      }
+
       if (!state.offers.length) {
         wrap.classList.add("hidden");
-        setStatusBox("empty", "Aucune mission trouvée pour ce workspace.");
+        setStatusBox("empty", PREVIEW_MODE
+          ? "Aucune mission publiée trouvée pour ce workspace en aperçu."
+          : "Aucune mission trouvée pour ce workspace.");
         return;
       }
 
@@ -1048,7 +1141,7 @@
         const items = state.candidates.filter((c) => (c.status || "new") === status);
         return `
           <div class="pipe">
-            <h3>${escapeHtml(status)}</h3>
+            <h3>${escapeHtml(labelStatus(status))}</h3>
             <div class="pipe-count">${items.length}</div>
             <div class="pipe-list">
               ${items.slice(0, 5).map((c) => `
@@ -1066,6 +1159,11 @@
     async function updateCandidateStatus(id, status) {
       if (PREVIEW_MODE) {
         setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour modifier les statuts.");
+        return;
+      }
+
+      if (!sb) {
+        setStatusBox("error", "Supabase indisponible.");
         return;
       }
 
@@ -1098,10 +1196,16 @@
     }
 
     async function loadOffers() {
+      if (!sb) throw new Error("Supabase indisponible");
+      if (!state.workspaceSlug) {
+        state.offers = [];
+        return;
+      }
+
       const { data, error } = await sb
         .from("digiy_jobs_offers_pro")
         .select("id,workspace_slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at")
-        .eq("workspace_slug", WORKSPACE_SLUG)
+        .eq("workspace_slug", state.workspaceSlug)
         .eq("status", "active")
         .order("published_at", { ascending: false })
         .order("created_at", { ascending: false });
@@ -1111,24 +1215,62 @@
     }
 
     async function loadCandidates() {
-      const { data, error } = await sb
-        .from("digiy_jobs_candidates_pro")
-        .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-        .order("created_at", { ascending: false });
+      if (!sb) throw new Error("Supabase indisponible");
+      if (!state.workspaceSlug && !state.offers.length) {
+        state.candidates = [];
+        return;
+      }
 
-      if (error) throw error;
+      const rows = [];
+      const seen = new Set();
 
-      const offerIds = new Set(state.offers.map((o) => o.id));
-      state.candidates = (data || []).filter((c) => {
-        if (c.workspace_slug && c.workspace_slug === WORKSPACE_SLUG) return true;
-        if (c.offer_id && offerIds.has(c.offer_id)) return true;
-        return false;
+      if (state.workspaceSlug) {
+        const { data, error } = await sb
+          .from("digiy_jobs_candidates_pro")
+          .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+          .eq("workspace_slug", state.workspaceSlug)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        (data || []).forEach((item) => {
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            rows.push(item);
+          }
+        });
+      }
+
+      const offerIds = state.offers.map((o) => o.id).filter(Boolean);
+
+      if (offerIds.length) {
+        const { data, error } = await sb
+          .from("digiy_jobs_candidates_pro")
+          .select("id,offer_id,workspace_slug,full_name,whatsapp_phone,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+          .in("offer_id", offerIds)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        (data || []).forEach((item) => {
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            rows.push(item);
+          }
+        });
+      }
+
+      state.candidates = rows.sort((a, b) => {
+        const da = new Date(a.created_at || 0).getTime();
+        const db = new Date(b.created_at || 0).getTime();
+        return db - da;
       });
     }
 
     function applyPreviewMode() {
       PREVIEW_MODE = true;
       document.body.classList.add("is-preview");
+      syncModeChip();
 
       const hero = document.querySelector(".hero");
       if (hero && !document.getElementById("previewBanner")) {
@@ -1157,13 +1299,38 @@
 
       $("tab-candidates")?.classList.add("preview-lock");
       $("tab-pipeline")?.classList.add("preview-lock");
-
       setTab("offers");
+    }
+
+    function clearPreviewMode() {
+      PREVIEW_MODE = false;
+      document.body.classList.remove("is-preview");
+      syncModeChip();
+      $("tab-candidates")?.classList.remove("preview-lock");
+      $("tab-pipeline")?.classList.remove("preview-lock");
     }
 
     async function loadAll(preview = false) {
       try {
-        $("workspaceChip").textContent = WORKSPACE_SLUG;
+        updateWorkspaceUI();
+
+        if (!state.workspaceSlug) {
+          state.offers = [];
+          state.candidates = [];
+          state.filteredCandidates = [];
+          computeStats();
+          fillOfferFilter();
+          renderOffers();
+          renderPipeline();
+          setStatusBox(
+            "empty",
+            preview
+              ? "Aucun workspace JOBS détecté. Ajoute ?slug=jobs-... pour voir les missions publiées en aperçu."
+              : "Aucun workspace JOBS détecté. Ouvre ce cockpit via l’entrée PIN ou avec ?slug=jobs-..."
+          );
+          return;
+        }
+
         setStatusBox("loading", preview ? "Chargement de l’aperçu..." : "Chargement du cockpit...");
 
         await loadOffers();
@@ -1196,24 +1363,33 @@
     }
 
     async function bootGuard() {
+      const urlSlug = String(params.get("slug") || "").trim().toLowerCase();
+      if (urlSlug) setWorkspaceSlug(urlSlug);
+
+      if (!sb) {
+        setStatusBox("error", "Supabase n’est pas chargé.");
+        return { ok: false, preview: true };
+      }
+
       if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
         setStatusBox("error", "guard.js introuvable ou invalide.");
         return { ok: false, preview: true };
       }
 
       const session = await window.DIGIY_GUARD.ready();
+      state.session = session || null;
 
-      if (session.slug) {
-        $("workspaceChip").textContent = session.slug;
-      } else {
-        $("workspaceChip").textContent = WORKSPACE_SLUG;
+      const sessionSlug = String(session?.slug || "").trim().toLowerCase();
+      if (sessionSlug) {
+        setWorkspaceSlug(sessionSlug);
       }
 
-      if (!session.access) {
+      if (!session?.access) {
         applyPreviewMode();
         return { ok: true, preview: true };
       }
 
+      clearPreviewMode();
       return { ok: true, preview: false };
     }
 
@@ -1255,6 +1431,14 @@
     });
 
     $("refreshBtn")?.addEventListener("click", () => loadAll(PREVIEW_MODE));
+
+    $("openPayBtn")?.addEventListener("click", () => {
+      if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPay === "function") {
+        window.DIGIY_GUARD.goPay();
+      } else {
+        setStatusBox("error", "guard.js est requis pour ouvrir le paiement.");
+      }
+    });
 
     (async () => {
       const gate = await bootGuard();
