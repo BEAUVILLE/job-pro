@@ -97,7 +97,7 @@
       gap:8px;
       flex-wrap:wrap;
       justify-content:flex-end;
-      max-width:min(980px, calc(100vw - 130px));
+      max-width:min(1040px, calc(100vw - 130px));
     }
 
     .chip-link{
@@ -185,13 +185,15 @@
     }
 
     .hero-actions,
-    .hero-links{
+    .hero-links,
+    .assist-actions{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
     }
 
     .hero-links{ margin-top:14px; }
+    .assist-actions{ margin-top:14px; }
 
     .ghost-btn,.gold-btn,.nav-btn{
       min-height:46px;
@@ -222,6 +224,12 @@
       color:#fff2ae;
     }
 
+    .nav-btn.blue{
+      background:rgba(56,189,248,.12);
+      border-color:rgba(56,189,248,.28);
+      color:#d8f5ff;
+    }
+
     .meta-line{
       display:flex;
       gap:12px;
@@ -236,6 +244,71 @@
       border-radius:999px;
       background:rgba(255,255,255,.05);
       border:1px solid var(--line);
+    }
+
+    .assist-card{
+      margin-top:16px;
+      border:1px solid rgba(56,189,248,.22);
+      border-radius:24px;
+      padding:18px;
+      background:linear-gradient(180deg, rgba(56,189,248,.08), rgba(255,255,255,.03));
+    }
+
+    .assist-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(56,189,248,.22);
+      color:#d8f5ff;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .assist-card h2{
+      margin:12px 0 8px;
+      font-size:24px;
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+
+    .assist-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+      max-width:880px;
+    }
+
+    .assist-list{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .assist-item{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      background:rgba(255,255,255,.04);
+    }
+
+    .assist-item strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+      color:#fff;
+    }
+
+    .assist-item span{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
     }
 
     .stats{
@@ -632,6 +705,7 @@
     @media (max-width: 1120px){
       .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
       .pipeline{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .assist-list{grid-template-columns:1fr}
     }
 
     @media (max-width: 920px){
@@ -677,11 +751,12 @@
   <div class="top-links">
     <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
     <a id="wallLink" class="chip-link" href="./mur%20des%20missions.html">Mur des missions</a>
-    <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
     <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Cockpit pro</a>
     <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
     <a id="matchLink" class="chip-link" href="./match.html">Match</a>
     <a id="qrLink" class="chip-link" href="./qr.html">QR JOBS</a>
+    <a id="clawLink" class="chip-link" href="#clawSection">Entraide / CLAW</a>
+    <a id="pinLink" class="chip-link hidden" href="./pin.html">Entrée PIN</a>
   </div>
 
   <div class="wrap">
@@ -697,11 +772,11 @@
 
           <div class="hero-links">
             <a id="publicWallBtn" class="nav-btn gold" href="./mur%20des%20missions.html" rel="noopener">Mur public</a>
-            <a id="pinEntryBtn" class="nav-btn" href="./pin.html" rel="noopener">Entrée PIN</a>
             <a id="bureauBtn" class="nav-btn" href="./bureau.html" rel="noopener">Bureau</a>
             <a id="matchBtn" class="nav-btn" href="./match.html" rel="noopener">Match</a>
             <a id="qrBtn" class="nav-btn" href="./qr.html" rel="noopener">QR JOBS</a>
-            <button id="openPayBtn" class="nav-btn" type="button">Ouvrir mon accès</button>
+            <a id="clawBtn" class="nav-btn blue" href="#clawSection" rel="noopener">Entraide / CLAW</a>
+            <button id="pinFallbackBtn" class="nav-btn hidden" type="button">Entrée PIN (secours)</button>
           </div>
         </div>
 
@@ -715,6 +790,35 @@
         <div class="meta-chip">Mode : <strong id="modeChip">détection…</strong></div>
         <div class="meta-chip">Source : <strong id="sourceChip">détection…</strong></div>
       </div>
+
+      <section id="clawSection" class="assist-card">
+        <span class="assist-kicker">CLAW by DIGIY</span>
+        <h2>L’entraide intelligente pour poser l’activité</h2>
+        <p>
+          Ici, pas de détour inutile. Depuis le cockpit, tu peux ouvrir le QR JOBS,
+          descendre au bureau, aller au match, ou passer par l’entraide pour savoir
+          quoi faire ensuite. Le PIN ne sert que de secours si la session tombe.
+        </p>
+        <div class="assist-list">
+          <div class="assist-item">
+            <strong>Diffuser</strong>
+            <span>Ouvre QR JOBS directement pour partager le bon rail sans ressortir du cockpit.</span>
+          </div>
+          <div class="assist-item">
+            <strong>Trier</strong>
+            <span>Va au bureau pour lire les candidats et avancer le terrain dossier par dossier.</span>
+          </div>
+          <div class="assist-item">
+            <strong>Décider</strong>
+            <span>Va au match pour rapprocher mission et profil sans perdre le slug actif.</span>
+          </div>
+        </div>
+        <div class="assist-actions">
+          <a id="assistQrBtn" class="gold-btn" href="./qr.html">Ouvrir QR JOBS</a>
+          <a id="assistBureauBtn" class="nav-btn" href="./bureau.html">Ouvrir le bureau</a>
+          <a id="assistMatchBtn" class="nav-btn" href="./match.html">Ouvrir le match</a>
+        </div>
+      </section>
 
       <div class="stats">
         <div class="stat">
@@ -985,10 +1089,17 @@
       modeChip.textContent = PREVIEW_MODE ? "aperçu verrouillé" : "cockpit réel";
     }
 
+    function syncPinFallbackVisibility() {
+      const hasAccess = !!state.session?.access && !PREVIEW_MODE;
+      $("pinFallbackBtn")?.classList.toggle("hidden", hasAccess);
+      $("pinLink")?.classList.toggle("hidden", hasAccess);
+    }
+
     function updateSlugUI() {
       const slugChip = $("slugChip");
       if (slugChip) slugChip.textContent = state.slug || "aucun slug détecté";
       syncModeChip();
+      syncPinFallbackVisibility();
 
       const slug = state.slug || "";
       const homeHref = withSlug(JOBS_PATHS.home, slug);
@@ -1009,10 +1120,13 @@
       setHref("qrLink", qrHref);
 
       setHref("publicWallBtn", wallHref);
-      setHref("pinEntryBtn", pinHref);
       setHref("bureauBtn", bureauHref);
       setHref("matchBtn", matchHref);
       setHref("qrBtn", qrHref);
+
+      setHref("assistQrBtn", qrHref);
+      setHref("assistBureauBtn", bureauHref);
+      setHref("assistMatchBtn", matchHref);
     }
 
     function setSlug(nextSlug) {
@@ -1420,6 +1534,7 @@
       PREVIEW_MODE = true;
       document.body.classList.add("is-preview");
       syncModeChip();
+      syncPinFallbackVisibility();
       setSourceChip("missions réelles • bureau verrouillé");
 
       const hero = document.querySelector(".hero");
@@ -1433,12 +1548,12 @@
             Tu peux voir l’esprit du cockpit JOBS PRO, mais les actions réelles restent verrouillées.
           </div>
           <div class="preview-actions">
-            <button id="previewPayBtn" class="gold-btn" type="button">Entrer par PIN</button>
+            <button id="previewPinBtn" class="gold-btn" type="button">Entrer par PIN</button>
           </div>
         `;
         hero.appendChild(banner);
 
-        document.getElementById("previewPayBtn")?.addEventListener("click", () => {
+        document.getElementById("previewPinBtn")?.addEventListener("click", () => {
           if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
             window.DIGIY_GUARD.goPin();
           } else if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.buildPinUrl === "function") {
@@ -1458,9 +1573,11 @@
       PREVIEW_MODE = false;
       document.body.classList.remove("is-preview");
       syncModeChip();
+      syncPinFallbackVisibility();
       setSourceChip("Supabase réel");
       $("tab-candidates")?.classList.remove("preview-lock");
       $("tab-pipeline")?.classList.remove("preview-lock");
+      document.getElementById("previewBanner")?.remove();
     }
 
     async function loadAll(preview = false) {
@@ -1596,7 +1713,7 @@
 
     $("refreshBtn")?.addEventListener("click", () => loadAll(PREVIEW_MODE));
 
-    $("openPayBtn")?.addEventListener("click", () => {
+    $("pinFallbackBtn")?.addEventListener("click", () => {
       if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
         window.DIGIY_GUARD.goPin();
       } else if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.buildPinUrl === "function") {
