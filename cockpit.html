@@ -681,6 +681,7 @@
     <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Cockpit pro</a>
     <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
     <a id="matchLink" class="chip-link" href="./match.html">Match</a>
+    <a id="qrLink" class="chip-link" href="./qr.html">QR JOBS</a>
   </div>
 
   <div class="wrap">
@@ -699,6 +700,7 @@
             <a id="pinEntryBtn" class="nav-btn" href="./pin.html" rel="noopener">Entrée PIN</a>
             <a id="bureauBtn" class="nav-btn" href="./bureau.html" rel="noopener">Bureau</a>
             <a id="matchBtn" class="nav-btn" href="./match.html" rel="noopener">Match</a>
+            <a id="qrBtn" class="nav-btn" href="./qr.html" rel="noopener">QR JOBS</a>
             <button id="openPayBtn" class="nav-btn" type="button">Ouvrir mon accès</button>
           </div>
         </div>
@@ -828,7 +830,8 @@
       cockpit: "./cockpit.html",
       bureau: "./bureau.html",
       match: "./match.html",
-      mission: "./mission.html"
+      mission: "./mission.html",
+      qr: "./qr.html"
     };
 
     const state = {
@@ -994,6 +997,7 @@
       const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
       const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
       const matchHref = withSlug(JOBS_PATHS.match, slug);
+      const qrHref = withSlug(JOBS_PATHS.qr, slug);
 
       setHref("siteHomeLink", homeHref);
       setHref("homeLink", homeHref);
@@ -1002,11 +1006,13 @@
       setHref("cockpitLink", cockpitHref);
       setHref("bureauLink", bureauHref);
       setHref("matchLink", matchHref);
+      setHref("qrLink", qrHref);
 
       setHref("publicWallBtn", wallHref);
       setHref("pinEntryBtn", pinHref);
       setHref("bureauBtn", bureauHref);
       setHref("matchBtn", matchHref);
+      setHref("qrBtn", qrHref);
     }
 
     function setSlug(nextSlug) {
