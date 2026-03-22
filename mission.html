@@ -29,12 +29,12 @@
       --gold:#facc15;
       --gold2:#fde68a;
       --green:#22c55e;
+      --blue:#38bdf8;
       --max:1080px;
       --shadow:0 18px 60px rgba(0,0,0,.28);
     }
 
     *{box-sizing:border-box}
-
     html,body{
       margin:0;
       padding:0;
@@ -76,6 +76,12 @@
       border-color:rgba(250,204,21,.28);
       background:rgba(250,204,21,.08);
       color:#fff3b0;
+    }
+
+    .chip-link.blue{
+      border-color:rgba(56,189,248,.28);
+      background:rgba(56,189,248,.10);
+      color:#d8f5ff;
     }
 
     .hero{
@@ -278,9 +284,11 @@
       <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
       <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
       <a id="wallLink" class="chip-link gold" href="./mur%20des%20missions.html">Mur des missions</a>
-      <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
       <a id="cockpitLink" class="chip-link" href="./cockpit.html">Cockpit pro</a>
       <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
+      <a id="matchLink" class="chip-link" href="./match.html">Match</a>
+      <a id="qrLink" class="chip-link gold" href="./qr.html">QR JOBS</a>
+      <a id="clawLink" class="chip-link blue" href="./cockpit.html#clawSection">Entraide / CLAW</a>
       <a id="postulerTop" class="chip-link" href="./postuler.html">Postuler</a>
     </div>
 
@@ -299,6 +307,7 @@
         <div class="meta-line">
           <div class="meta-chip">Mode : <strong id="modeChip">fiche mission</strong></div>
           <div class="meta-chip">Slug actif : <strong id="slugChip">global</strong></div>
+          <div class="meta-chip">Téléphone : <strong id="telChip">—</strong></div>
           <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
         </div>
 
@@ -369,22 +378,26 @@
 
       const params = new URLSearchParams(location.search);
       const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
+      const telFromUrl = String(params.get("tel") || params.get("phone") || "").trim();
 
       const $ = (id) => document.getElementById(id);
       const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+      const TEL_STORAGE_KEY = "digiy_jobs_phone";
 
       const JOBS_PATHS = {
         home: "./index.html",
         wall: "./mur%20des%20missions.html",
-        pin: "./pin.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
+        match: "./match.html",
+        qr: "./qr.html",
         postuler: "./postuler.html"
       };
 
       const state = {
         offer: null,
-        slug: slugFromUrl
+        slug: slugFromUrl,
+        tel: telFromUrl
       };
 
       function escapeHtml(v = ""){
@@ -394,6 +407,10 @@
           .replaceAll(">","&gt;")
           .replaceAll('"',"&quot;")
           .replaceAll("'","&#039;");
+      }
+
+      function safePhone(v = ""){
+        return String(v || "").replace(/[^\d+]/g, "");
       }
 
       function labelSector(v = ""){
@@ -422,11 +439,13 @@
         return map[String(v || "").toLowerCase()] || v || "Contrat";
       }
 
-      function withSlug(path, slug){
+      function withRail(path, slug, tel){
+        const u = new URL(path, location.href);
         const cleanSlug = String(slug || "").trim().toLowerCase();
-        if (!cleanSlug) return path;
-        const joiner = path.includes("?") ? "&" : "?";
-        return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+        const cleanTel = safePhone(tel || "");
+        if (cleanSlug) u.searchParams.set("slug", cleanSlug);
+        if (cleanTel) u.searchParams.set("tel", cleanTel);
+        return u.pathname + u.search;
       }
 
       function saveSlug(slug){
@@ -439,6 +458,21 @@
       function readSavedSlug(){
         try{
           return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
+        }catch(_){
+          return "";
+        }
+      }
+
+      function saveTel(tel){
+        try{
+          const clean = safePhone(tel || "");
+          if (clean) localStorage.setItem(TEL_STORAGE_KEY, clean);
+        }catch(_){}
+      }
+
+      function readSavedTel(){
+        try{
+          return safePhone(localStorage.getItem(TEL_STORAGE_KEY) || "");
         }catch(_){
           return "";
         }
@@ -459,21 +493,25 @@
 
       function syncMeta(){
         $("slugChip").textContent = state.slug || "aucun";
+        $("telChip").textContent = state.tel || "—";
         $("modeChip").textContent = "fiche mission";
         $("sourceChip").textContent = "Supabase réel";
       }
 
       function syncLinks() {
         const slug = state.slug || "";
+        const tel = state.tel || "";
 
-        $("homeLink").href = withSlug(JOBS_PATHS.home, slug);
-        $("wallLink").href = withSlug(JOBS_PATHS.wall, slug);
-        $("pinLink").href = withSlug(JOBS_PATHS.pin, slug);
-        $("cockpitLink").href = withSlug(JOBS_PATHS.cockpit, slug);
-        $("bureauLink").href = withSlug(JOBS_PATHS.bureau, slug);
-        $("otherOffersLink").href = withSlug(JOBS_PATHS.wall, slug);
-        $("postulerBtn").href = withSlug(JOBS_PATHS.postuler, slug);
-        $("postulerTop").href = withSlug(JOBS_PATHS.postuler, slug);
+        $("homeLink").href = withRail(JOBS_PATHS.home, slug, tel);
+        $("wallLink").href = withRail(JOBS_PATHS.wall, slug, tel);
+        $("cockpitLink").href = withRail(JOBS_PATHS.cockpit, slug, tel);
+        $("bureauLink").href = withRail(JOBS_PATHS.bureau, slug, tel);
+        $("matchLink").href = withRail(JOBS_PATHS.match, slug, tel);
+        $("qrLink").href = withRail(JOBS_PATHS.qr, slug, tel);
+        $("clawLink").href = withRail(JOBS_PATHS.cockpit, slug, tel) + "#clawSection";
+        $("otherOffersLink").href = withRail(JOBS_PATHS.wall, slug, tel);
+        $("postulerBtn").href = withRail(JOBS_PATHS.postuler, slug, tel);
+        $("postulerTop").href = withRail(JOBS_PATHS.postuler, slug, tel);
 
         syncMeta();
       }
@@ -493,7 +531,7 @@
 
         const { data, error } = await sb
           .from("digiy_jobs_offers_pro")
-          .select("id,slug,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
+          .select("slug,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
           .eq("slug", state.slug)
           .eq("status", "active")
           .order("published_at", { ascending: false })
@@ -515,8 +553,10 @@
 
         state.offer = offer;
         state.slug = String(offer.slug || state.slug || "").trim().toLowerCase();
+        state.tel = safePhone(state.tel || offer.contact_phone || "");
 
         if (state.slug) saveSlug(state.slug);
+        if (state.tel) saveTel(state.tel);
 
         document.title = `${offer.title || "Mission"} — DIGIY JOBS`;
 
@@ -534,7 +574,7 @@
         const goods = [];
         if (offer.has_housing) goods.push('<span class="good">Logement possible</span>');
         if (offer.has_family_welcome) goods.push('<span class="good">Accueil familial possible</span>');
-        if (offer.contact_phone) goods.push(`<span class="good">Contact : ${escapeHtml(offer.contact_phone)}</span>`);
+        if (state.tel) goods.push(`<span class="good">Contact : ${escapeHtml(state.tel)}</span>`);
         if (state.slug) goods.push(`<span class="good">Slug : ${escapeHtml(state.slug)}</span>`);
         $("goodRow").innerHTML = goods.join("");
 
@@ -548,7 +588,13 @@
           if (saved) state.slug = saved;
         }
 
+        if (!state.tel) {
+          const savedTel = readSavedTel();
+          if (savedTel) state.tel = savedTel;
+        }
+
         if (state.slug) saveSlug(state.slug);
+        if (state.tel) saveTel(state.tel);
 
         syncLinks();
         await loadOffer();
