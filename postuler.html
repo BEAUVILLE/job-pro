@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
@@ -351,7 +351,7 @@
       <div class="meta-line">
         <div class="meta-chip">Mode : <strong id="modeChip">candidature liée</strong></div>
         <div class="meta-chip">Slug actif : <strong id="slugChip">—</strong></div>
-        <div class="meta-chip">Téléphone : <strong id="telChip">—</strong></div>
+        <div class="meta-chip">Phone : <strong id="phoneChip">—</strong></div>
         <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
       </div>
 
@@ -463,11 +463,11 @@
       const $ = (id) => document.getElementById(id);
 
       const SLUG_STORAGE_KEY = "digiy_jobs_slug";
-      const TEL_STORAGE_KEY = "digiy_jobs_phone";
+      const PHONE_STORAGE_KEY = "digiy_jobs_phone";
 
       const state = {
         slug: String(params.get("slug") || "").trim().toLowerCase(),
-        tel: String(params.get("tel") || params.get("phone") || "").trim(),
+        phone: String(params.get("phone") || "").trim(),
         offer: null
       };
 
@@ -482,12 +482,12 @@
         return String(v || "").replace(/[^\d+]/g, "");
       }
 
-      function withRail(path, slug, tel){
+      function withRail(path, slug, phone){
         const u = new URL(path, location.href);
         const cleanSlug = String(slug || "").trim().toLowerCase();
-        const cleanTel = safePhone(tel || "");
+        const cleanPhone = safePhone(phone || "");
         if (cleanSlug) u.searchParams.set("slug", cleanSlug);
-        if (cleanTel) u.searchParams.set("tel", cleanTel);
+        if (cleanPhone) u.searchParams.set("phone", cleanPhone);
         return u.pathname + u.search;
       }
 
@@ -520,16 +520,16 @@
         }
       }
 
-      function saveTel(tel){
+      function savePhone(phone){
         try{
-          const clean = safePhone(tel || "");
-          if (clean) localStorage.setItem(TEL_STORAGE_KEY, clean);
+          const clean = safePhone(phone || "");
+          if (clean) localStorage.setItem(PHONE_STORAGE_KEY, clean);
         }catch(_){}
       }
 
-      function readSavedTel(){
+      function readSavedPhone(){
         try{
-          return safePhone(localStorage.getItem(TEL_STORAGE_KEY) || "");
+          return safePhone(localStorage.getItem(PHONE_STORAGE_KEY) || "");
         }catch(_){
           return "";
         }
@@ -537,24 +537,24 @@
 
       function syncMeta(){
         $("slugChip").textContent = state.slug || "aucun";
-        $("telChip").textContent = state.tel || "—";
+        $("phoneChip").textContent = state.phone || "—";
         $("modeChip").textContent = state.offer ? "candidature liée" : "candidature ouverte";
       }
 
       function syncLinks() {
         const slug = state.slug || "";
-        const tel = state.tel || "";
+        const phone = state.phone || "";
 
-        $("homeLink").href = withRail(JOBS_PATHS.home, slug, tel);
-        $("wallLink").href = withRail(JOBS_PATHS.wall, slug, tel);
-        $("missionLink").href = withRail(JOBS_PATHS.mission, slug, tel);
-        $("qrLink").href = withRail(JOBS_PATHS.qr, slug, tel);
-        $("clawLink").href = withRail(JOBS_PATHS.home, slug, tel) + "#clawSection";
-        $("assistMissionLink").href = withRail(JOBS_PATHS.mission, slug, tel);
-        $("assistWallLink").href = withRail(JOBS_PATHS.wall, slug, tel);
-        $("assistQrLink").href = withRail(JOBS_PATHS.qr, slug, tel);
-        $("assistClawLink").href = withRail(JOBS_PATHS.home, slug, tel) + "#clawSection";
-        $("seeOffersLink").href = withRail(JOBS_PATHS.wall, slug, tel);
+        $("homeLink").href = withRail(JOBS_PATHS.home, slug, phone);
+        $("wallLink").href = withRail(JOBS_PATHS.wall, slug, phone);
+        $("missionLink").href = withRail(JOBS_PATHS.mission, slug, phone);
+        $("qrLink").href = withRail(JOBS_PATHS.qr, slug, phone);
+        $("clawLink").href = withRail(JOBS_PATHS.home, slug, phone) + "#clawSection";
+        $("assistMissionLink").href = withRail(JOBS_PATHS.mission, slug, phone);
+        $("assistWallLink").href = withRail(JOBS_PATHS.wall, slug, phone);
+        $("assistQrLink").href = withRail(JOBS_PATHS.qr, slug, phone);
+        $("assistClawLink").href = withRail(JOBS_PATHS.home, slug, phone) + "#clawSection";
+        $("seeOffersLink").href = withRail(JOBS_PATHS.wall, slug, phone);
 
         syncMeta();
       }
@@ -589,10 +589,10 @@
 
         state.offer = offer;
         state.slug = String(offer.slug || state.slug || "").trim().toLowerCase();
-        state.tel = safePhone(state.tel || offer.contact_phone || "");
+        state.phone = safePhone(state.phone || offer.contact_phone || "");
 
         if (state.slug) saveSlug(state.slug);
-        if (state.tel) saveTel(state.tel);
+        if (state.phone) savePhone(state.phone);
 
         $("offerBox").style.display = "block";
         $("offerTitle").textContent = offer.title || "Mission";
@@ -679,13 +679,13 @@
           if (savedSlug) state.slug = savedSlug;
         }
 
-        if (!state.tel) {
-          const savedTel = readSavedTel();
-          if (savedTel) state.tel = savedTel;
+        if (!state.phone) {
+          const savedPhone = readSavedPhone();
+          if (savedPhone) state.phone = savedPhone;
         }
 
         if (state.slug) saveSlug(state.slug);
-        if (state.tel) saveTel(state.tel);
+        if (state.phone) savePhone(state.phone);
 
         syncLinks();
         await loadOfferBySlug();
