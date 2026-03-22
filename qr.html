@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#061b14" />
+  <title>DIGIY JOBS PRO — QR</title>
+
+  <script>
+    window.DIGIY_MODULE = "JOBS";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+    window.DIGIY_SUPABASE_URL =
+      window.DIGIY_SUPABASE_URL || "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY =
+      window.DIGIY_SUPABASE_ANON_KEY || "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON =
+      window.DIGIY_SUPABASE_ANON || window.DIGIY_SUPABASE_ANON_KEY;
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="./guard.js"></script>
+
+  <style>
+    :root{
+      --bg:#061b14;
+      --card:#0d241b;
+      --accent:#facc15;
+      --muted:#b7c9bf;
+      --text:#eafff1;
+      --line:rgba(255,255,255,.12);
+      --danger:#fb7185;
+      --ok:#22c55e;
+      --shadow:0 18px 60px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(250,204,21,.09), transparent 40%),
+        radial-gradient(circle at 90% 100%, rgba(34,197,94,.10), transparent 45%),
+        linear-gradient(135deg,#061b14,#04110c);
+      color:var(--text);
+      min-height:100vh;
+    }
+    .wrap{max-width:760px;margin:auto;padding:18px}
+    h1{font-size:1.45rem;margin-bottom:6px}
+    p{color:var(--muted);margin-bottom:14px;line-height:1.45}
+
+    .card{
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      margin-top:14px;
+      box-shadow:var(--shadow);
+    }
+
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+    .btn{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      font-weight:900;
+      border:none;
+      cursor:pointer;
+      margin-top:10px;
+      min-height:48px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transition:transform .12s ease, filter .12s ease, opacity .12s ease;
+    }
+    .btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .btn.primary{background:var(--accent);color:#052e16}
+    .btn.ghost{
+      background:transparent;
+      border:1px solid rgba(250,204,21,0.35);
+      color:#fff;
+    }
+    .btn.good{
+      background:rgba(34,197,94,.14);
+      border:1px solid rgba(34,197,94,.35);
+      color:#bbf7d0;
+    }
+
+    .mini{margin-top:10px;color:var(--muted);font-size:.92rem}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+
+    .note{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      display:none;
+      white-space:pre-wrap;
+      line-height:1.35;
+      font-weight:850;
+    }
+    .note.ok{display:block;border-color:rgba(34,197,94,.35);color:#bbf7d0;background:rgba(34,197,94,.08)}
+    .note.bad{display:block;border-color:rgba(251,113,133,.35);color:#fecaca;background:rgba(251,113,133,.08)}
+    .note.warn{display:block;border-color:rgba(250,204,21,.35);color:#fde68a;background:rgba(250,204,21,.08)}
+
+    .qrbox{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:16px;
+      border-radius:16px;
+      border:1px dashed rgba(250,204,21,.35);
+      background:rgba(0,0,0,0.12);
+      margin-top:12px;
+      min-height:220px;
+    }
+    .qrImg{
+      max-width:100%;
+      width:320px;
+      height:auto;
+      border-radius:12px;
+      background:#fff;
+      padding:10px;
+      display:block;
+      border:1px solid rgba(148,163,184,.22);
+    }
+
+    .label{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,0.12);
+      line-height:1.35;
+      word-break:break-all;
+    }
+    .label b{color:#fff}
+    .hr{height:1px;background:rgba(255,255,255,.12);margin-top:12px}
+    .pillRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .pill{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:#d6e6dd;
+      font-weight:900;
+      font-size:.9rem;
+    }
+
+    @media (max-width:680px){
+      .wrap{padding:14px}
+      .qrImg{width:260px}
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>📎 QR JOBS PRO</h1>
+  <p>
+    Un seul QR = <b>QR-PRO</b>. Derrière, le rail propose l’entrée utile du module JOBS :
+    cockpit pro, mur public et accès sécurisé.
+  </p>
+
+  <div class="card">
+    <div class="pillRow">
+      <div class="pill" id="pillSlug">slug: —</div>
+      <div class="pill" id="pillState">session: —</div>
+    </div>
+
+    <div class="row">
+      <button class="btn ghost" id="btnBack" type="button">⬅️ Retour cockpit</button>
+      <button class="btn primary" id="btnCopy" type="button">📋 Copier lien QR-PRO</button>
+    </div>
+
+    <div class="row">
+      <button class="btn good" id="btnOpen" type="button">↗️ Ouvrir QR-PRO</button>
+      <button class="btn primary" id="btnDownload" type="button">⬇️ Télécharger QR (PNG)</button>
+      <button class="btn ghost" id="btnSticker" type="button">🟩 Télécharger Sticker XL (PNG)</button>
+    </div>
+
+    <div class="qrbox">
+      <a id="qrAnchor" href="#" target="_blank" rel="noopener">
+        <img id="qrImg" class="qrImg" alt="QR DIGIY QR PRO JOBS" />
+      </a>
+    </div>
+
+    <div class="label mono" id="urlBox">URL: —</div>
+    <div class="note warn" id="note"></div>
+
+    <div class="hr"></div>
+    <div class="mini mono" id="dbg"></div>
+  </div>
+</div>
+
+<script>
+(async function(){
+  "use strict";
+
+  const QR_PRO_BASE = "https://beauville.github.io/digiy-qr-pro/";
+
+  const qrImg = document.getElementById("qrImg");
+  const qrAnchor = document.getElementById("qrAnchor");
+  const urlBox = document.getElementById("urlBox");
+  const noteEl = document.getElementById("note");
+  const dbgEl = document.getElementById("dbg");
+  const pillSlug = document.getElementById("pillSlug");
+  const pillState = document.getElementById("pillState");
+
+  const btnDownload = document.getElementById("btnDownload");
+  const btnSticker  = document.getElementById("btnSticker");
+  const btnBack     = document.getElementById("btnBack");
+  const btnCopy     = document.getElementById("btnCopy");
+  const btnOpen     = document.getElementById("btnOpen");
+
+  let slug = "";
+  let phone = "";
+  let url = "";
+  let busy = false;
+  let qrNormalDataUrl = "";
+  let qrXLDataUrl = "";
+
+  function note(msg, type){
+    noteEl.className = "note " + (type || "warn");
+    noteEl.textContent = msg || "";
+    noteEl.style.display = msg ? "block" : "none";
+  }
+
+  function setBusy(on){
+    busy = !!on;
+    btnDownload.disabled = on;
+    btnSticker.disabled = on;
+    btnCopy.disabled = on;
+    btnOpen.disabled = on;
+    btnBack.disabled = on;
+  }
+
+  function getGuardSession(){
+    const st = window.DIGIY_GUARD?.state || {};
+    const raw = window.DIGIY_GUARD?.getSession?.() || {};
+    return {
+      ok: !!st.access_ok,
+      phone: String(st.phone || raw.phone || "").trim(),
+      slug: String(st.slug || raw.slug || "").trim()
+    };
+  }
+
+  async function bootGuardSafe(){
+    try{
+      if(window.DIGIY_GUARD?.ready){
+        await window.DIGIY_GUARD.ready();
+      }
+    }catch(e){
+      console.warn("guard ready failed", e);
+    }
+  }
+
+  function getSlugSafe(){
+    const sess = getGuardSession();
+    const qsSlug = new URLSearchParams(location.search).get("slug") || "";
+    return String(sess.slug || window.DIGIY_GUARD?.state?.slug || qsSlug || "").trim();
+  }
+
+  function getPhoneSafe(){
+    const sess = getGuardSession();
+    const qsTel =
+      new URLSearchParams(location.search).get("tel") ||
+      new URLSearchParams(location.search).get("phone") || "";
+    return String(sess.phone || qsTel || "").trim();
+  }
+
+  function withSlug(path){
+    const u = new URL(path, location.href);
+    if(slug) u.searchParams.set("slug", slug);
+    return u.toString();
+  }
+
+  function syncOwnSlug(){
+    const u = new URL(location.href);
+    if(slug) u.searchParams.set("slug", slug);
+    else u.searchParams.delete("slug");
+
+    if(phone) u.searchParams.set("tel", phone);
+    else u.searchParams.delete("tel");
+
+    history.replaceState({}, "", u.toString());
+  }
+
+  async function copyText(text){
+    if(navigator.clipboard?.writeText){
+      return navigator.clipboard.writeText(text);
+    }
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try{
+      ok = document.execCommand("copy");
+    }catch(_){}
+    ta.remove();
+    if(!ok) throw new Error("copy_failed");
+  }
+
+  function directDownload(dataUrl, filename){
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  function loadScript(src){
+    return new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = src;
+      s.async = true;
+      s.onload = () => resolve(true);
+      s.onerror = () => reject(new Error("script_load_failed: " + src));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function ensureQrLib(){
+    if(window.QRCode?.toDataURL) return true;
+
+    const fallbacks = [
+      "https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"
+    ];
+
+    for(const src of fallbacks){
+      try{
+        await loadScript(src);
+        if(window.QRCode?.toDataURL) return true;
+      }catch(e){
+        console.warn("QR fallback failed", src, e);
+      }
+    }
+    return !!window.QRCode?.toDataURL;
+  }
+
+  function qrOptions(size){
+    return {
+      width: size,
+      margin: 1,
+      errorCorrectionLevel: "M",
+      color: {
+        dark: "#111827",
+        light: "#FFFFFF"
+      }
+    };
+  }
+
+  function makeQrDataUrl(text, size){
+    return new Promise((resolve, reject) => {
+      if(!window.QRCode || typeof window.QRCode.toDataURL !== "function"){
+        reject(new Error("QRCode lib missing"));
+        return;
+      }
+      window.QRCode.toDataURL(text, qrOptions(size), (err, dataUrl) => {
+        if(err) reject(err);
+        else resolve(dataUrl);
+      });
+    });
+  }
+
+  await bootGuardSafe();
+
+  slug = getSlugSafe();
+  phone = getPhoneSafe();
+
+  if(!slug){
+    alert("❌ slug manquant. Ouvre via le cockpit JOBS (slug obligatoire).");
+    return;
+  }
+
+  const sess = getGuardSession();
+  pillSlug.textContent = "slug: " + slug;
+  pillState.textContent = sess.ok
+    ? ("session: OK" + (phone ? " · " + phone : ""))
+    : "session: aperçu / slug";
+
+  syncOwnSlug();
+
+  const qrProUrl = new URL(QR_PRO_BASE);
+  qrProUrl.searchParams.set("slug", slug);
+  qrProUrl.searchParams.set("module", "JOBS");
+  if (phone) qrProUrl.searchParams.set("tel", phone);
+
+  const returnUrl = new URL("./cockpit.html", location.href);
+  returnUrl.searchParams.set("slug", slug);
+
+  const publicUrl = new URL("./mur%20des%20missions.html", location.href);
+  publicUrl.searchParams.set("slug", slug);
+
+  qrProUrl.searchParams.set("return", returnUrl.toString());
+  qrProUrl.searchParams.set("public", publicUrl.toString());
+
+  url = qrProUrl.toString();
+
+  urlBox.textContent = "URL: " + url;
+  dbgEl.textContent =
+    "slug: " + slug +
+    " | module: JOBS" +
+    " | qr-base: " + QR_PRO_BASE +
+    (phone ? " | tel: " + phone : "");
+
+  qrAnchor.href = url;
+  note("⏳ Préparation du QR local…", "warn");
+  setBusy(true);
+
+  try{
+    const ok = await ensureQrLib();
+    if(!ok){
+      throw new Error("Librairie QR introuvable");
+    }
+
+    qrNormalDataUrl = await makeQrDataUrl(url, 520);
+    qrXLDataUrl = await makeQrDataUrl(url, 900);
+
+    qrImg.onload = () => {
+      note("✅ QR-PRO JOBS prêt. Test téléphone avant impression.", "ok");
+    };
+
+    qrImg.onerror = () => {
+      note("❌ Impossible d’afficher l’image QR locale.", "bad");
+    };
+
+    qrImg.src = qrNormalDataUrl;
+  }catch(e){
+    console.error(e);
+    note("❌ Génération QR locale impossible : " + (e?.message || e), "bad");
+  }finally{
+    setBusy(false);
+  }
+
+  btnBack.onclick = () => {
+    location.href = withSlug("./cockpit.html");
+  };
+
+  btnCopy.onclick = async () => {
+    try{
+      await copyText(url);
+      note("✅ Lien QR-PRO JOBS copié.", "ok");
+    }catch(e){
+      console.error(e);
+      note("⚠️ Clipboard bloqué. Copie manuelle dans l’URL.", "warn");
+    }
+  };
+
+  btnOpen.onclick = () => {
+    window.open(url, "_blank", "noopener");
+  };
+
+  btnDownload.onclick = async () => {
+    if(busy) return;
+    if(!qrNormalDataUrl){
+      note("❌ QR normal non prêt.", "bad");
+      return;
+    }
+    setBusy(true);
+    try{
+      note("⏳ Préparation du PNG…", "warn");
+      directDownload(qrNormalDataUrl, `DIGIY_QR_PRO_JOBS_${slug}.png`);
+      note("⬇️ Téléchargement lancé (QR normal).", "ok");
+    }catch(e){
+      console.error(e);
+      note("❌ Download KO: " + (e?.message || e), "bad");
+    }finally{
+      setBusy(false);
+    }
+  };
+
+  btnSticker.onclick = async () => {
+    if(busy) return;
+    if(!qrXLDataUrl){
+      note("❌ Sticker XL non prêt.", "bad");
+      return;
+    }
+    setBusy(true);
+    try{
+      note("🟩 Préparation Sticker XL…", "warn");
+      directDownload(qrXLDataUrl, `DIGIY_STICKER_XL_JOBS_${slug}.png`);
+      note("⬇️ Sticker XL téléchargé.", "ok");
+    }catch(e){
+      console.error(e);
+      note("❌ Sticker XL KO: " + (e?.message || e), "bad");
+    }finally{
+      setBusy(false);
+    }
+  };
+
+})();
+</script>
+</body>
+</html>
