@@ -6,7 +6,7 @@
   <title>DIGIY JOBS — Hall central</title>
   <meta
     name="description"
-    content="DIGIY JOBS — hall central du module : mur public, entrée PIN, cockpit pro, bureau de tri et match candidat ↔ mission."
+    content="DIGIY JOBS — hall central du module : mur public, entrée PIN, cockpit pro, bureau, match, QR JOBS, CLAW by DIGIY et DIGIY BOOT PRO."
   />
   <meta name="theme-color" content="#0A1128" />
 
@@ -96,17 +96,19 @@
       background:linear-gradient(135deg,var(--blue),var(--blue-2));
       color:#fff;border-color:transparent;
     }
-
-    .hero{
-      padding:26px 0 16px;
+    .top-actions .gold{
+      background:linear-gradient(135deg,var(--gold),#e8bf63);
+      color:#111827;border-color:transparent;
     }
+
+    .hero{padding:26px 0 16px}
     .hero-grid{
       display:grid;
       grid-template-columns:1.04fr .96fr;
       gap:18px;
       align-items:stretch;
     }
-    .hero-card,.signal-card,.slug-card,.stat,.door,.foot{
+    .hero-card,.signal-card,.slug-card,.stat,.assist-card,.door,.foot{
       border:1px solid var(--line);
       border-radius:var(--radius);
       background:var(--card);
@@ -144,16 +146,12 @@
       line-height:1.7;
       font-size:16px;
     }
-    .hero-tags{
-      display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;
-    }
+    .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
     .tag{
       padding:10px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--muted);
     }
-    .hero-actions{
-      display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;
-    }
-    .hero-actions a,.hero-actions button{
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .hero-actions a,.hero-actions button,.assist-actions a,.assist-actions button,.door-actions a,.door-actions button{
       min-height:46px;
       border:none;
       border-radius:14px;
@@ -167,9 +165,13 @@
       background:#fff;
       color:var(--ink);
     }
-    .hero-actions .primary{
+    .hero-actions .primary,.assist-actions .primary,.door-actions .primary{
       background:linear-gradient(135deg,var(--blue),var(--blue-2));
       color:#fff;border-color:transparent;
+    }
+    .hero-actions .gold,.assist-actions .gold,.door-actions .gold{
+      background:linear-gradient(135deg,var(--gold),#e8bf63);
+      color:#111827;border-color:transparent;
     }
 
     .signal-card{
@@ -189,194 +191,122 @@
       color:#ffe7af;font-size:13px;font-weight:800;
       width:max-content;
     }
-    .signal-card h2{
-      margin:0;font-size:22px;letter-spacing:-.02em;
-    }
-    .signal-card p{
-      margin:0;color:#dbe6f6;line-height:1.65;
-    }
-    .mini-grid{
-      display:grid;grid-template-columns:1fr 1fr;gap:12px;
-    }
+    .signal-card h2{margin:0;font-size:22px;letter-spacing:-.02em}
+    .signal-card p{margin:0;color:#dbe6f6;line-height:1.65}
+    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .mini{
       border:1px solid #2d3c60;
       border-radius:18px;
       padding:14px;
       background:rgba(255,255,255,.05);
     }
-    .mini strong{
-      display:block;font-size:14px;margin-bottom:6px;
-    }
-    .mini span{
-      display:block;color:#cbd5e1;font-size:13px;line-height:1.5;
-    }
+    .mini strong{display:block;font-size:14px;margin-bottom:6px}
+    .mini span{display:block;color:#cbd5e1;font-size:13px;line-height:1.5}
 
-    .slug-section{
-      padding:8px 0 14px;
-    }
-    .slug-card{
-      padding:18px;
-    }
-    .slug-head{
+    .slug-section,.stats,.assist-section,.doors{padding:8px 0 14px}
+    .slug-card{padding:18px}
+    .slug-head,.doors-head,.assist-head{
       display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px;
     }
-    .slug-head h3{
-      margin:0;font-size:24px;letter-spacing:-.02em;
-    }
-    .slug-head p{
-      margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch;
+    .slug-head h3,.assist-head h2{margin:0;font-size:24px;letter-spacing:-.02em}
+    .doors-head h2{margin:0;font-size:28px;letter-spacing:-.03em}
+    .slug-head p,.doors-head p,.assist-head p{
+      margin:6px 0 0;color:var(--muted);line-height:1.65;max-width:76ch;
     }
     .slug-grid{
       display:grid;
-      grid-template-columns:1.2fr auto auto auto;
+      grid-template-columns:1.2fr auto auto auto auto;
       gap:12px;
       align-items:end;
     }
-    .slug-field{
-      display:grid;gap:8px;
-    }
+    .slug-field{display:grid;gap:8px}
     .slug-field label{
       font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#64748b;
     }
     .slug-field input{
-      width:100%;
-      min-height:48px;
-      border-radius:14px;
-      border:1px solid #d1d5db;
-      background:#fff;
-      color:var(--ink);
-      padding:12px 14px;
-      outline:none;
+      width:100%;min-height:48px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);padding:12px 14px;outline:none;
     }
-    .slug-field input:focus{
-      border-color:var(--blue);
-      box-shadow:0 0 0 4px rgba(14,165,233,.15);
-    }
+    .slug-field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
     .slug-grid button,.slug-grid a{
-      min-height:48px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--ink);
-      padding:12px 14px;
-      font-weight:900;
-      cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;
+      min-height:48px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--ink);
+      padding:12px 14px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
     }
-    .slug-grid .primary{
-      background:linear-gradient(135deg,var(--blue),var(--blue-2));
-      color:#fff;border-color:transparent;
-    }
+    .slug-grid .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+    .slug-grid .gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#111827;border-color:transparent}
 
-    .stats{
-      padding:8px 0 14px;
-    }
-    .stats-grid{
-      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;
-    }
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
     .stat{padding:18px}
-    .stat strong{
-      display:block;font-size:30px;line-height:1;margin-bottom:8px;
-    }
-    .stat span{
-      display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55;
-    }
+    .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
+    .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
 
-    .doors{
-      padding:8px 0 30px;
-    }
-    .doors-head{
-      display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px;
-    }
-    .doors-head h2{
-      margin:0;font-size:28px;letter-spacing:-.03em;
-    }
-    .doors-head p{
-      margin:6px 0 0;color:var(--muted);line-height:1.65;max-width:76ch;
-    }
-    .doors-grid{
+    .assist-grid{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:16px;
     }
-    .door{
-      padding:18px;
+    .assist-card{
+      padding:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
       display:grid;
       gap:14px;
       align-content:start;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
     }
-    .door-top{
-      display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+    .assist-kicker{
+      display:inline-flex;align-items:center;gap:8px;width:max-content;
+      padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;
+      font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
     }
+    .assist-card h3{margin:0;font-size:28px;letter-spacing:-.03em;line-height:1.05}
+    .assist-card p{margin:0;color:var(--muted);line-height:1.7}
+    .assist-line{
+      padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:#fff;
+      font-weight:900;color:#111827;
+    }
+    .assist-list{display:grid;gap:10px}
+    .assist-item{
+      border:1px solid var(--line);border-radius:18px;background:rgba(248,250,252,.95);padding:14px;
+    }
+    .assist-item strong{display:block;margin-bottom:6px;font-size:15px}
+    .assist-item span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
+    .assist-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+    .doors-head{margin-bottom:14px}
+    .doors-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .door{
+      padding:18px;display:grid;gap:14px;align-content:start;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
+    }
+    .door-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
     .door-icon{
       width:52px;height:52px;border-radius:16px;display:grid;place-items:center;
       font-size:22px;color:#fff;background:linear-gradient(135deg,var(--dark),#20305e);
-      box-shadow:var(--shadow);
-      flex:0 0 auto;
+      box-shadow:var(--shadow);flex:0 0 auto;
     }
-    .door h3{
-      margin:0;
-      font-size:22px;
-      letter-spacing:-.02em;
-    }
-    .door p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.65;
-      font-size:14px;
-    }
-    .door-tags{
-      display:flex;gap:8px;flex-wrap:wrap;
-    }
+    .door h3{margin:0;font-size:22px;letter-spacing:-.02em}
+    .door p{margin:0;color:var(--muted);line-height:1.65;font-size:14px}
+    .door-tags{display:flex;gap:8px;flex-wrap:wrap}
     .door-tags span{
       padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:900;color:#475569;
     }
-    .door-actions{
-      display:flex;gap:10px;flex-wrap:wrap;margin-top:auto;
-    }
-    .door-actions a,.door-actions button{
-      min-height:44px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--ink);
-      padding:10px 12px;
-      font-weight:900;
-      cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;
-    }
-    .door-actions .primary{
-      background:linear-gradient(135deg,var(--blue),var(--blue-2));
-      color:#fff;border-color:transparent;
-    }
+    .door-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
 
-    footer{
-      padding:0 0 30px;
-    }
+    footer{padding:0 0 30px}
     .foot{
-      padding:18px 20px;
-      display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;
+      padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;
     }
-    .foot p{
-      margin:0;color:var(--muted);line-height:1.6;
-    }
-    .foot-links{
-      display:flex;gap:10px;flex-wrap:wrap;
-    }
+    .foot p{margin:0;color:var(--muted);line-height:1.6}
+    .foot-links{display:flex;gap:10px;flex-wrap:wrap}
     .foot-links a,.foot-links button{
-      min-height:42px;
-      border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
+      min-height:42px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
       display:inline-flex;align-items:center;justify-content:center;
     }
 
     @media (max-width:1180px){
-      .hero-grid,.doors-grid,.stats-grid{grid-template-columns:1fr 1fr}
+      .hero-grid,.doors-grid,.stats-grid,.assist-grid{grid-template-columns:1fr 1fr}
       .slug-grid{grid-template-columns:1fr 1fr}
     }
     @media (max-width:860px){
-      .hero-grid,.doors-grid,.stats-grid,.mini-grid,.slug-grid{grid-template-columns:1fr}
+      .hero-grid,.doors-grid,.stats-grid,.mini-grid,.slug-grid,.assist-grid{grid-template-columns:1fr}
       h1{max-width:none}
     }
   </style>
@@ -394,7 +324,9 @@
 
       <div class="top-actions">
         <a href="https://digiylyfe.com/" target="_blank" rel="noopener">Maison mère</a>
+        <a href="#clawSection">CLAW by DIGIY</a>
         <a id="topPinLink" href="./pin.html">Entrée PIN</a>
+        <a id="topQrLink" href="./qr.html">QR JOBS</a>
         <a id="topWallLink" class="primary" href="./mur%20des%20missions.html">Mur des missions</a>
       </div>
     </div>
@@ -408,20 +340,25 @@
           <h1>Le hall qui relie tout le module.</h1>
           <p class="lead">
             Ici tu tiens la porte centrale de DIGIY JOBS. Depuis ce hall, tu peux ouvrir le mur public,
-            entrer par PIN, piloter le cockpit, trier au bureau et matcher mission ↔ candidat sans te perdre.
+            entrer par PIN, piloter le cockpit, lancer le QR JOBS, et t’appuyer sur <b>CLAW by DIGIY</b>
+            et <b>DIGIY BOOT PRO</b> sans casser le rail.
           </p>
 
           <div class="hero-tags">
             <span class="tag">Index propre</span>
             <span class="tag">Slug conservé</span>
             <span class="tag">Zéro workspace</span>
-            <span class="tag">Navigation recousue</span>
+            <span class="tag">QR JOBS</span>
+            <span class="tag">CLAW by DIGIY</span>
+            <span class="tag">DIGIY BOOT PRO</span>
           </div>
 
           <div class="hero-actions">
             <a id="heroWallLink" class="primary" href="./mur%20des%20missions.html">Ouvrir le mur</a>
             <a id="heroPinLink" href="./pin.html">Entrée PIN</a>
+            <a id="heroQrLink" class="gold" href="./qr.html">QR JOBS</a>
             <a id="heroCockpitLink" href="./cockpit.html">Cockpit pro</a>
+            <a href="#clawSection">Demander à CLAW</a>
           </div>
         </article>
 
@@ -430,7 +367,7 @@
           <h2>État du rail</h2>
           <p>
             Ce hall garde le slug actif, le pousse dans tous les liens du module et devient la base propre
-            pour rouvrir chaque porte sans casser la navigation.
+            pour rouvrir chaque porte sans te perdre entre public, QR, aide et pro.
           </p>
 
           <div class="mini-grid">
@@ -476,6 +413,7 @@
             <button id="btnApplySlug" class="primary" type="button">Appliquer</button>
             <button id="btnClearSlug" type="button">Vider</button>
             <a id="btnOpenPinFromSlug" href="./pin.html">Ouvrir PIN</a>
+            <a id="btnOpenQrFromSlug" class="gold" href="./qr.html">Ouvrir QR JOBS</a>
           </div>
         </article>
       </div>
@@ -502,6 +440,70 @@
       </div>
     </section>
 
+    <section class="assist-section" id="clawSection">
+      <div class="wrap">
+        <div class="assist-head">
+          <div>
+            <h2>CLAW by DIGIY + DIGIY BOOT PRO</h2>
+            <p>
+              Ici on n’invente pas de faux fichiers. On pose une façade claire dans le hall,
+              puis on pousse vers les rails réels déjà présents : PIN, cockpit, bureau et QR.
+            </p>
+          </div>
+        </div>
+
+        <div class="assist-grid">
+          <article class="assist-card">
+            <span class="assist-kicker">CLAW by DIGIY</span>
+            <h3>L’aide intelligente pour poser ton activité</h3>
+            <p>
+              CLAW aide à clarifier la mission, les besoins, le profil attendu et la bonne prochaine porte.
+              Dans JOBS, CLAW reste simple : il oriente, il n’embrouille pas.
+            </p>
+            <div class="assist-line">Bouton conseillé dans le module : <b>Demander à CLAW</b></div>
+            <div class="assist-list">
+              <div class="assist-item">
+                <strong>Lire le terrain</strong>
+                <span>Mur public pour voir l’offre visible, QR pour diffuser, PIN pour entrer côté pro.</span>
+              </div>
+              <div class="assist-item">
+                <strong>Choisir la bonne porte</strong>
+                <span>Cockpit pour piloter, bureau pour trier, match pour décider sans perdre le slug.</span>
+              </div>
+            </div>
+            <div class="assist-actions">
+              <a id="clawPinLink" class="primary" href="./pin.html">Demander à CLAW</a>
+              <a id="clawCockpitLink" href="./cockpit.html">Aller au cockpit</a>
+            </div>
+          </article>
+
+          <article class="assist-card" id="bootSection">
+            <span class="assist-kicker">DIGIY BOOT PRO</span>
+            <h3>Le parcours de démarrage du pro</h3>
+            <p>
+              BOOT PRO, c’est le chemin simple pour démarrer sans se noyer : entrer par PIN,
+              vérifier le rail, ouvrir le cockpit, puis descendre vers le bureau ou le QR selon le besoin.
+            </p>
+            <div class="assist-line">Nom du parcours de démarrage : <b>DIGIY BOOT PRO</b></div>
+            <div class="assist-list">
+              <div class="assist-item">
+                <strong>Étape 1 — Entrer</strong>
+                <span>Passe par PIN pour reconstruire une session propre et garder le même slug.</span>
+              </div>
+              <div class="assist-item">
+                <strong>Étape 2 — Poser l’activité</strong>
+                <span>Cockpit pour la vue d’ensemble, bureau pour le tri, QR pour diffuser le rail.</span>
+              </div>
+            </div>
+            <div class="assist-actions">
+              <a id="bootPinLink" class="gold" href="./pin.html">Ouvrir DIGIY BOOT PRO</a>
+              <a id="bootBureauLink" href="./bureau.html">Ouvrir le bureau</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="doors">
       <div class="wrap">
         <div class="doors-head">
@@ -509,7 +511,7 @@
             <h2>Les portes du module</h2>
             <p>
               Public d’abord, pro ensuite. Le hall reste au centre et redistribue vers chaque page utile
-              avec le même slug.
+              avec le même slug. Ici, toutes les portes actives du rail sont visibles au même endroit.
             </p>
           </div>
         </div>
@@ -537,7 +539,7 @@
             <div class="door-top">
               <div>
                 <h3>Entrée PIN</h3>
-                <p>Porte sécurisée pour ouvrir le rail pro sans mélanger public et bureau.</p>
+                <p>Porte sécurisée pour ouvrir le rail pro sans mélanger public, QR et bureau.</p>
               </div>
               <div class="door-icon">🔐</div>
             </div>
@@ -548,6 +550,24 @@
             </div>
             <div class="door-actions">
               <a id="cardPinLink" class="primary" href="./pin.html">Ouvrir</a>
+            </div>
+          </article>
+
+          <article class="door">
+            <div class="door-top">
+              <div>
+                <h3>QR JOBS</h3>
+                <p>Le QR du module pour diffuser proprement le rail JOBS, avec retour cockpit et lecture publique.</p>
+              </div>
+              <div class="door-icon">📎</div>
+            </div>
+            <div class="door-tags">
+              <span>QR</span>
+              <span>Diffusion</span>
+              <span>JOBS</span>
+            </div>
+            <div class="door-actions">
+              <a id="cardQrLink" class="gold" href="./qr.html">Ouvrir</a>
             </div>
           </article>
 
@@ -608,6 +628,42 @@
           <article class="door">
             <div class="door-top">
               <div>
+                <h3>CLAW by DIGIY</h3>
+                <p>L’aide intelligente pour poser ton activité et choisir la prochaine bonne porte du module.</p>
+              </div>
+              <div class="door-icon">🦅</div>
+            </div>
+            <div class="door-tags">
+              <span>Aide</span>
+              <span>CLAW</span>
+              <span>Orientation</span>
+            </div>
+            <div class="door-actions">
+              <a class="gold" href="#clawSection">Ouvrir</a>
+            </div>
+          </article>
+
+          <article class="door">
+            <div class="door-top">
+              <div>
+                <h3>DIGIY BOOT PRO</h3>
+                <p>Le parcours de démarrage simple pour entrer proprement et retrouver le bon rail pro.</p>
+              </div>
+              <div class="door-icon">🚀</div>
+            </div>
+            <div class="door-tags">
+              <span>Boot</span>
+              <span>Démarrage</span>
+              <span>Pro</span>
+            </div>
+            <div class="door-actions">
+              <a class="gold" href="#bootSection">Ouvrir</a>
+            </div>
+          </article>
+
+          <article class="door">
+            <div class="door-top">
+              <div>
                 <h3>Retour maison mère</h3>
                 <p>Quand il faut sortir du module et revenir à l’écosystème DIGIYLYFE.</p>
               </div>
@@ -631,13 +687,15 @@
     <div class="wrap">
       <div class="foot">
         <p>
-          DIGIY JOBS — hall central propre, slug-first, navigation recousue.
+          DIGIY JOBS — hall central propre, slug-first, QR branché, CLAW by DIGIY et DIGIY BOOT PRO intégrés sans faux rail.
         </p>
         <div class="foot-links">
           <a id="footHomeLink" href="./index.html">Accueil</a>
           <a id="footWallLink" href="./mur%20des%20missions.html">Mur</a>
           <a id="footPinLink" href="./pin.html">PIN</a>
           <a id="footCockpitLink" href="./cockpit.html">Cockpit</a>
+          <a id="footQrLink" href="./qr.html">QR JOBS</a>
+          <a href="#clawSection">CLAW</a>
         </div>
       </div>
     </div>
@@ -678,7 +736,8 @@
         pin: "./pin.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
-        match: "./match.html"
+        match: "./match.html",
+        qr: "./qr.html"
       };
 
       const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000;
@@ -687,15 +746,24 @@
       const btnApplySlug = document.getElementById("btnApplySlug");
       const btnClearSlug = document.getElementById("btnClearSlug");
       const btnOpenPinFromSlug = document.getElementById("btnOpenPinFromSlug");
+      const btnOpenQrFromSlug = document.getElementById("btnOpenQrFromSlug");
 
       const topPinLink = document.getElementById("topPinLink");
+      const topQrLink = document.getElementById("topQrLink");
       const topWallLink = document.getElementById("topWallLink");
       const heroWallLink = document.getElementById("heroWallLink");
       const heroPinLink = document.getElementById("heroPinLink");
+      const heroQrLink = document.getElementById("heroQrLink");
       const heroCockpitLink = document.getElementById("heroCockpitLink");
+
+      const clawPinLink = document.getElementById("clawPinLink");
+      const clawCockpitLink = document.getElementById("clawCockpitLink");
+      const bootPinLink = document.getElementById("bootPinLink");
+      const bootBureauLink = document.getElementById("bootBureauLink");
 
       const cardWallLink = document.getElementById("cardWallLink");
       const cardPinLink = document.getElementById("cardPinLink");
+      const cardQrLink = document.getElementById("cardQrLink");
       const cardCockpitLink = document.getElementById("cardCockpitLink");
       const cardBureauLink = document.getElementById("cardBureauLink");
       const cardMatchLink = document.getElementById("cardMatchLink");
@@ -704,6 +772,7 @@
       const footWallLink = document.getElementById("footWallLink");
       const footPinLink = document.getElementById("footPinLink");
       const footCockpitLink = document.getElementById("footCockpitLink");
+      const footQrLink = document.getElementById("footQrLink");
 
       const miniSlug = document.getElementById("miniSlug");
       const miniSession = document.getElementById("miniSession");
@@ -818,21 +887,31 @@
         const homeHref = withSlug(JOBS_PATHS.home, slug);
         const wallHref = withSlug(JOBS_PATHS.wall, slug);
         const pinHref = withSlug(JOBS_PATHS.pin, slug);
+        const qrHref = withSlug(JOBS_PATHS.qr, slug);
         const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
         const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
         const matchHref = withSlug(JOBS_PATHS.match, slug);
 
         topPinLink.href = pinHref;
+        topQrLink.href = qrHref;
         topWallLink.href = wallHref;
 
         heroWallLink.href = wallHref;
         heroPinLink.href = pinHref;
+        heroQrLink.href = qrHref;
         heroCockpitLink.href = cockpitHref;
 
         btnOpenPinFromSlug.href = pinHref;
+        btnOpenQrFromSlug.href = qrHref;
+
+        clawPinLink.href = pinHref;
+        clawCockpitLink.href = cockpitHref;
+        bootPinLink.href = pinHref;
+        bootBureauLink.href = bureauHref;
 
         cardWallLink.href = wallHref;
         cardPinLink.href = pinHref;
+        cardQrLink.href = qrHref;
         cardCockpitLink.href = cockpitHref;
         cardBureauLink.href = bureauHref;
         cardMatchLink.href = matchHref;
@@ -841,6 +920,7 @@
         footWallLink.href = wallHref;
         footPinLink.href = pinHref;
         footCockpitLink.href = cockpitHref;
+        footQrLink.href = qrHref;
 
         slugInput.value = slug;
         miniSlug.textContent = slug || "aucun slug";
