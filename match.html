@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DIGIY JOBS PRO — Match candidat ↔ mission</title>
+  <title>DIGIY JOBS PRO — Bureau de tri</title>
   <meta
     name="description"
-    content="DIGIY JOBS PRO — matching réel entre une mission publiée et les candidats du bureau, avec score, raisons de compatibilité, notes bureau et mise en relation WhatsApp."
+    content="DIGIY JOBS PRO — bureau réel de tri, qualification, suivi et mise en relation des candidatures."
   />
   <meta name="theme-color" content="#0A1128" />
 
@@ -19,7 +19,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./guard.js"></script>
-
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
@@ -30,17 +29,18 @@
       --blue-2:#38bdf8;
       --green:#10b981;
       --gold:#d4a84f;
-      --amber:#f59e0b;
       --red:#ef4444;
+      --amber:#f59e0b;
       --ink:#0f172a;
       --muted:#475569;
       --bg:#edf3f8;
       --sand:#f8f0e3;
       --line:#e2e8f0;
       --card:#ffffffd9;
-      --shadow:0 16px 42px rgba(15,23,42,.10);
+      --shadow:0 16px 40px rgba(15,23,42,.10);
       --radius:22px;
-      --max:1400px;
+      --radius-sm:16px;
+      --max:1380px;
     }
 
     *{box-sizing:border-box}
@@ -75,24 +75,20 @@
     }
     .brand small{display:block;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.08em}
     .top-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .top-actions button,.top-actions a,.top-actions select{
+    .top-actions button,.top-actions a{
       border:1px solid var(--line);
       background:#fff;
       border-radius:14px;
       padding:10px 12px;
       font-weight:900;
       cursor:pointer;
-      color:var(--ink);
       min-height:44px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
     }
     .top-actions .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
-    .top-actions .muted{
-      background:#f8fafc;
-      color:#64748b;
-    }
+    .top-actions .gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#151515;border-color:transparent}
 
     .status-wrap{padding:14px 0 0}
     .status-box{
@@ -126,10 +122,10 @@
     }
 
     .hero{padding:24px 0 14px}
-    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px;align-items:stretch}
-    .hero-card,.panel,.stat,.mission-card,.filters,.list-card,.detail-card,.mini,.field,.match-box,.foot,.empty-card{
+    .hero-card,.panel,.stat,.filters,.list-card,.detail-card,.mini,.empty-card,.foot{
       border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
     }
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:stretch}
     .hero-card{
       padding:26px;position:relative;overflow:hidden;
       background:
@@ -167,19 +163,11 @@
     .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
     .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
 
-    .mission-section{padding-bottom:16px}
-    .mission-card{padding:18px}
-    .section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
-    .section-head h2,.list-head h3,.detail-head h3{margin:0;font-size:24px;letter-spacing:-.02em}
-    .section-head p,.list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
-    .mission-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .mission-grid .full{grid-column:1 / -1}
-    .field{padding:13px;border-radius:16px;background:#fff}
-    .field small{display:block;color:#64748b;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-    .field strong{display:block;font-size:14px;line-height:1.55;word-break:break-word}
-
     .filters{padding:16px;margin-bottom:16px}
-    .filter-grid{display:grid;grid-template-columns:1.2fr repeat(4,.8fr);gap:12px}
+    .filters-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+    .filters-top h2{margin:0;font-size:24px;letter-spacing:-.02em}
+    .filters-top p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
+    .filter-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;gap:12px}
     .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .filter-actions button{
       border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
@@ -188,293 +176,327 @@
       width:100%;padding:12px 12px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);outline:none;
     }
     input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
-    textarea{min-height:120px;resize:vertical}
 
-    .board{display:grid;grid-template-columns:.88fr 1.12fr;gap:18px;padding-bottom:36px}
+    .workspace{display:grid;grid-template-columns:.92fr 1.08fr;gap:18px;padding-bottom:36px}
     .left-col,.right-col{display:grid;gap:16px;align-content:start}
     .list-card,.detail-card{padding:16px}
-    .list{
-      display:grid;gap:12px;max-height:950px;overflow:auto;padding-right:2px;
-    }
-    .candidate{
+    .list-head,.detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .list-head h3,.detail-head h3{margin:0;font-size:22px;letter-spacing:-.02em}
+    .list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.55}
+    .list{display:grid;gap:12px;max-height:920px;overflow:auto;padding-right:2px}
+    .dossier{
       border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
     }
-    .candidate:hover{transform:translateY(-1px)}
-    .candidate.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
-    .candidate-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-    .candidate h4{margin:0;font-size:18px;letter-spacing:-.02em}
+    .dossier:hover{transform:translateY(-1px)}
+    .dossier.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
+    .dossier-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .dossier h4{margin:0;font-size:18px;letter-spacing:-.02em}
     .sub{margin:4px 0 0;color:#475569;font-weight:700;font-size:14px;line-height:1.55}
     .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:900;background:#f8fafc}
-    .chip.score-high{color:#047857;background:rgba(16,185,129,.14)}
-    .chip.score-mid{color:#b45309;background:rgba(245,158,11,.14)}
-    .chip.score-low{color:#b91c1c;background:rgba(239,68,68,.10)}
-    .chip.sector-build{color:#7c5517;background:rgba(212,168,79,.12)}
-    .chip.sector-food{color:#065f46;background:rgba(16,185,129,.12)}
-    .chip.sector-driver{color:#075985;background:rgba(14,165,233,.12)}
-    .chip.sector-other{color:#334155;background:#eef2f7}
-    .candidate-note{margin-top:12px;color:var(--muted);font-size:13px;line-height:1.6}
-    .score-pill{
-      min-width:66px;height:66px;border-radius:18px;display:grid;place-items:center;font-weight:900;font-size:22px;color:#fff;
-      background:linear-gradient(135deg,var(--blue),var(--blue-2));box-shadow:0 12px 24px rgba(14,165,233,.20);
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#f8fafc;border:1px solid var(--line);
+      font-size:12px;font-weight:900;color:#334155;
+    }
+    .sector-build{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+    .sector-food{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+    .sector-shop{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}
+    .sector-service{background:#f5f3ff;color:#6d28d9;border-color:#ddd6fe}
+    .sector-driver{background:#ecfeff;color:#0f766e;border-color:#a5f3fc}
+    .status-new{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+    .status-review{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+    .status-shortlist{background:#fefce8;color:#a16207;border-color:#fde68a}
+    .status-call{background:#ecfeff;color:#155e75;border-color:#a5f3fc}
+    .status-accepted{background:#ecfdf5;color:#166534;border-color:#86efac}
+    .status-rejected{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
+    .dossier-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
     }
 
-    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
-    .detail-actions,.button-row{display:flex;gap:10px;flex-wrap:wrap}
-    .detail-actions button,.detail-actions a,.button-row button,.button-row a{
-      border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer;
-      display:inline-flex;align-items:center;gap:10px;
+    .detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .field-box{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:16px;
+      padding:12px;
     }
-    .detail-actions .primary,.button-row .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
-    .detail-actions .green,.button-row .green{background:var(--green);color:#fff;border-color:transparent}
+    .field-box.full{grid-column:1 / -1}
+    .field-box small{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:6px}
+    .field-box strong{display:block;font-size:15px;line-height:1.55;color:var(--ink)}
 
-    .match-box{padding:16px;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
-    .match-box h4{margin:0 0 8px;font-size:20px;letter-spacing:-.02em}
-    .match-box p{margin:0;color:var(--muted);line-height:1.65}
-    .reason-list{display:grid;gap:10px;margin-top:12px}
-    .reason-item{padding:12px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:#334155;line-height:1.55}
+    .detail-text{
+      margin-top:12px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      color:#334155;
+      line-height:1.7;
+      min-height:110px;
+      white-space:pre-line;
+    }
 
-    .notes-wrap{display:grid;gap:12px}
-    .empty-card{padding:24px;text-align:center;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
-    .empty-card h4{margin:0 0 8px;font-size:22px}
-    .empty-card p{margin:0;color:var(--muted);line-height:1.65;max-width:52ch;margin-inline:auto}
+    .detail-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+    .action-btn{
+      min-height:48px;border-radius:16px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:900;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;text-align:center;padding:12px;
+    }
+    .action-btn.primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+    .action-btn.gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#151515;border-color:transparent}
+    .action-btn.green{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.24);color:#065f46}
+    .action-btn.red{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.24);color:#991b1b}
+    .action-btn.amber{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.24);color:#8a4b00}
+
+    .notes-card{
+      margin-top:14px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      padding:14px;
+    }
+    .notes-card h4{margin:0 0 8px;font-size:18px}
+    .notes-card textarea{min-height:140px;resize:vertical}
+    .notes-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+    .empty-card{
+      padding:26px;text-align:center;color:var(--muted);line-height:1.7;background:#fff;
+    }
 
     footer{padding:0 0 30px}
-    .foot{padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+    .foot{
+      padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;
+    }
     .foot p{margin:0;color:var(--muted);line-height:1.6}
     .foot-links{display:flex;gap:10px;flex-wrap:wrap}
-    .foot-links button,.foot-links a{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
+    .foot-links a{
+      min-height:42px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+    }
 
-    @media (max-width:1200px){
-      .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid{grid-template-columns:1fr 1fr}
-      .filter-grid > *:first-child{grid-column:1 / -1}
-      .mission-grid .full{grid-column:1 / -1}
+    @media (max-width:1180px){
+      .hero-grid,.workspace{grid-template-columns:1fr}
+      .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .detail-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
     @media (max-width:860px){
-      .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid,.detail-grid,.mini-grid{grid-template-columns:1fr}
-      h1{max-width:none}
+      .filter-grid{grid-template-columns:1fr 1fr}
+      .detail-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:640px){
+      .filter-grid,.detail-actions,.stats-grid,.mini-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <a id="brandHome" class="brand" href="./index.html" aria-label="Retour à l’accueil JOBS">
-        <span class="brand-mark">JM</span>
+      <a class="brand" id="homeLink" href="./index.html">
+        <span class="brand-mark">JB</span>
         <span>
           DIGIY JOBS PRO
-          <small>MATCH CANDIDAT ↔ MISSION</small>
+          <small>BUREAU DE TRI</small>
         </span>
       </a>
 
       <div class="top-actions">
-        <button id="btnReloadMission" type="button">Recharger</button>
-        <button id="btnImportPublic" class="muted" type="button" title="Import direct coupé après durcissement SQL">Importer dernier dossier public</button>
-        <a id="btnOpenHome" href="./index.html">Accueil JOBS</a>
-        <a id="btnOpenWall" href="./mur%20des%20missions.html">Mur</a>
-        <a id="btnOpenBureau" href="./bureau.html">Bureau</a>
-        <a id="btnOpenCockpit" href="./cockpit.html">Cockpit</a>
-        <a id="btnOpenPublicMission" class="primary" href="./mission.html">Voir la fiche mission</a>
+        <a id="wallLink" href="./mur%20des%20missions.html">Mur des missions</a>
+        <a id="cockpitLink" href="./cockpit.html">Cockpit</a>
+        <a id="bureauLink" href="./bureau.html">Bureau</a>
+        <a id="matchLink" href="./match.html">Match</a>
+        <a id="qrLink" class="gold" href="./qr.html">QR JOBS</a>
+        <a id="clawLink" class="primary" href="./cockpit.html#clawSection">Entraide / CLAW</a>
+        <button id="btnRefreshTop" type="button">Rafraîchir</button>
       </div>
     </div>
   </header>
 
   <div class="wrap status-wrap">
-    <div id="statusBox" class="status-box"></div>
+    <div id="statusBox" class="status-box info">Chargement du bureau…</div>
   </div>
 
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <article class="hero-card">
-          <span class="eyebrow">Rail réel DIGIY JOBS</span>
-          <h1>Le bon besoin face au bon profil.</h1>
-          <p class="lead">
-            Cette page lit la mission active du slug, récupère les candidats réels du bureau,
-            calcule un score lisible, explique les raisons du match et aide le bureau à trancher vite.
-          </p>
-          <div class="hero-tags">
-            <span class="tag">Mission réelle</span>
-            <span class="tag">Candidats réels</span>
-            <span class="tag">Score lisible</span>
-            <span class="tag">WhatsApp prêt</span>
+  <main class="hero">
+    <div class="wrap hero-grid">
+      <section class="hero-card">
+        <span class="eyebrow">Bureau PRO • accès gardé • dossiers par id</span>
+        <h1>Le bureau qui trie pour de vrai.</h1>
+        <p class="lead">
+          Ici tu lis les candidatures, tu choisis le bon profil, tu notes, tu contactes, tu avances.
+          L’accès reste sur <b>slug + phone</b>. Les dossiers restent sur <b>candidate.id / offer_id</b>.
+        </p>
+
+        <div class="hero-tags">
+          <span class="tag">Session PRO active</span>
+          <span class="tag">Navigation interne directe</span>
+          <span class="tag">QR JOBS direct</span>
+          <span class="tag">CLAW direct</span>
+          <span class="tag">Aucun PIN visible ici</span>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <span class="signal" id="modePill">Mode — détection…</span>
+        <h2>État du rail</h2>
+        <p>
+          Une fois la session ouverte, tu circules entre cockpit, bureau, match, QR et entraide sans retaper le PIN.
+        </p>
+
+        <div class="mini-grid">
+          <div class="mini">
+            <strong>Slug actif</strong>
+            <span id="slugChip">—</span>
           </div>
-        </article>
-
-        <aside class="panel">
-          <span class="signal" id="signalPill">Slug JOBS — détection…</span>
-          <h2>Ce que la page fait maintenant</h2>
-          <p>
-            Elle charge la mission active du rail JOBS, lit les candidatures du slug,
-            propose un score de compatibilité, garde les validations bureau localement
-            et prépare la mise en relation sans inventer de faux backend.
-          </p>
-          <div class="mini-grid">
-            <div class="mini"><strong>Source mission</strong><span id="miniMissionSource">digiy_jobs_offers_pro</span></div>
-            <div class="mini"><strong>Source candidats</strong><span id="miniCandidateSource">digiy_jobs_candidates_pro</span></div>
-            <div class="mini"><strong>Mode</strong><span id="miniMode">cockpit réel</span></div>
-            <div class="mini"><strong>Slug</strong><span id="miniSlug">—</span></div>
+          <div class="mini">
+            <strong>Phone actif</strong>
+            <span id="phoneChip">—</span>
           </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="stats">
-      <div class="wrap stats-grid">
-        <article class="stat"><strong id="statCandidates">0</strong><span>candidats affichés</span></article>
-        <article class="stat"><strong id="statStrong">0</strong><span>matchs forts (80+)</span></article>
-        <article class="stat"><strong id="statMedium">0</strong><span>matchs à regarder (60+)</span></article>
-        <article class="stat"><strong id="statValidated">0</strong><span>matchs validés</span></article>
-      </div>
-    </section>
-
-    <section class="mission-section">
-      <div class="wrap">
-        <article class="mission-card" id="missionCard">
-          <div class="section-head">
-            <div>
-              <h2>Mission active</h2>
-              <p>Le matching se base sur cette mission. Tu peux changer d’offre active si le slug en a plusieurs.</p>
-            </div>
-            <div style="min-width:280px;display:grid;gap:8px">
-              <label for="missionSelect" style="font-weight:900;color:#334155">Choisir une mission active</label>
-              <select id="missionSelect">
-                <option value="">Aucune mission</option>
-              </select>
-            </div>
+          <div class="mini">
+            <strong>Mode</strong>
+            <span id="modeChip">Détection…</span>
           </div>
-          <div class="mission-grid" id="missionGrid"></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="wrap">
-      <div class="filters">
-        <div class="section-head" style="margin-bottom:14px">
-          <div>
-            <h2>Filtres du matching</h2>
-            <p>Tu peux serrer la recherche ou laisser le score faire le premier tri.</p>
+          <div class="mini">
+            <strong>Source</strong>
+            <span id="sourceChip">Détection…</span>
           </div>
         </div>
-
-        <div class="filter-grid">
-          <input id="searchInput" type="search" placeholder="Rechercher nom, métier, ville, message, expérience..." />
-
-          <select id="filterZoneMode">
-            <option value="all">Toutes zones</option>
-            <option value="same">Même ville mission</option>
-            <option value="near">Ville mission + proches</option>
-          </select>
-
-          <select id="filterMinScore">
-            <option value="0">Tous scores</option>
-            <option value="40">40+</option>
-            <option value="60">60+</option>
-            <option value="80">80+</option>
-          </select>
-
-          <select id="filterStatus">
-            <option value="all">Tous statuts bureau</option>
-            <option value="new">Nouveau</option>
-            <option value="review">En revue</option>
-            <option value="shortlist">Shortlist</option>
-            <option value="call">À appeler</option>
-            <option value="accepted">Accepté</option>
-            <option value="rejected">Refusé</option>
-          </select>
-
-          <select id="filterAvailability">
-            <option value="all">Toutes dispos</option>
-            <option value="immediate">Immédiate</option>
-            <option value="this_week">Cette semaine</option>
-            <option value="this_month">Ce mois-ci</option>
-            <option value="to_discuss">À discuter</option>
-          </select>
-        </div>
-
-        <div class="filter-actions">
-          <button id="btnClearFilters" type="button">Effacer les filtres</button>
-          <button id="btnExportMatches" type="button">Exporter les matchs</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="wrap board">
-      <div class="left-col">
-        <article class="list-card">
-          <div class="list-head">
-            <div>
-              <h3>Candidats classés</h3>
-              <p>Le haut de liste montre les profils les plus proches de la mission active.</p>
-            </div>
-          </div>
-          <div class="list" id="candidateList"></div>
-        </article>
-      </div>
-
-      <div class="right-col">
-        <article class="detail-card">
-          <div class="empty-card" id="emptyState">
-            <h4>Choisis un candidat</h4>
-            <p>
-              La mission est prête. Sélectionne un profil à gauche pour voir la compatibilité,
-              les raisons du score, les notes et la mise en relation.
-            </p>
-          </div>
-
-          <div id="detailContent" hidden>
-            <div class="detail-head">
-              <div>
-                <h3 id="detailName">—</h3>
-                <p id="detailSubtitle">—</p>
-              </div>
-              <div class="chips" id="detailChips"></div>
-            </div>
-
-            <div class="match-box">
-              <h4>Lecture du match</h4>
-              <p id="matchSummary">—</p>
-              <div class="reason-list" id="reasonList"></div>
-            </div>
-
-            <div class="detail-grid" id="detailGrid" style="margin-top:16px"></div>
-
-            <div class="match-box" style="margin-top:16px">
-              <h4>Notes bureau pour ce match</h4>
-              <p>Note le vrai retour : sérieux, cohérence, réactivité, point à vérifier, étape suivante.</p>
-              <div class="notes-wrap" style="margin-top:12px">
-                <textarea id="matchNotes" placeholder="Ex. Très bon profil pour démarrage rapide. Vérifier mobilité exacte. Possible mise en relation aujourd’hui."></textarea>
-                <div class="button-row">
-                  <button class="primary" id="btnSaveMatchNotes" type="button">Enregistrer les notes</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="detail-actions" style="margin-top:16px">
-              <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp candidat</a>
-              <button id="btnCopyCandidateLink" type="button">📋 Copier fiche candidat</button>
-              <button id="btnCopyMissionLink" type="button">🧷 Copier lien mission</button>
-              <button class="primary" id="btnValidateMatch" type="button">🤝 Valider ce match</button>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
+      </aside>
+    </div>
   </main>
+
+  <section class="stats">
+    <div class="wrap stats-grid">
+      <article class="stat">
+        <strong id="statCandidates">0</strong>
+        <span>candidats visibles</span>
+      </article>
+      <article class="stat">
+        <strong id="statNew">0</strong>
+        <span>nouveaux</span>
+      </article>
+      <article class="stat">
+        <strong id="statReview">0</strong>
+        <span>en revue</span>
+      </article>
+      <article class="stat">
+        <strong id="statAccepted">0</strong>
+        <span>acceptés</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="filters">
+      <div class="filters-top">
+        <div>
+          <h2>Filtrer le terrain</h2>
+          <p>
+            Ici tu gardes le contexte du module, mais tu retrouves chaque personne par son <b>id</b> et chaque mission liée par <b>offer_id</b>.
+          </p>
+        </div>
+      </div>
+
+      <div class="filter-grid">
+        <input id="searchInput" type="text" placeholder="Nom, ville, métier, téléphone, note…" />
+        <select id="filterSector">
+          <option value="all">Tous les secteurs</option>
+        </select>
+        <select id="filterOffer">
+          <option value="all">Toutes les missions</option>
+        </select>
+        <select id="filterStatus">
+          <option value="all">Tous les statuts</option>
+          <option value="new">new</option>
+          <option value="review">review</option>
+          <option value="shortlist">shortlist</option>
+          <option value="call">call</option>
+          <option value="accepted">accepted</option>
+          <option value="rejected">rejected</option>
+        </select>
+        <select id="filterAvailability">
+          <option value="all">Toutes les disponibilités</option>
+          <option value="immediate">immediate</option>
+          <option value="this_week">this_week</option>
+          <option value="this_month">this_month</option>
+          <option value="to_discuss">to_discuss</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button id="btnClearFilters" type="button">Effacer filtres</button>
+        <button id="btnExportJson" type="button">Exporter JSON</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap workspace">
+    <div class="left-col">
+      <article class="list-card">
+        <div class="list-head">
+          <div>
+            <h3>Dossiers candidats</h3>
+            <p id="countLabel">0 dossier</p>
+          </div>
+        </div>
+
+        <div id="candidateList" class="list"></div>
+      </article>
+    </div>
+
+    <div class="right-col">
+      <article class="detail-card">
+        <div class="detail-head">
+          <div>
+            <h3>Détail du dossier</h3>
+            <p>Le dossier métier suit <b>candidate.id</b>. Le module, lui, reste sur <b>slug + phone</b>.</p>
+          </div>
+        </div>
+
+        <div id="detailEmpty" class="empty-card">Choisis un candidat dans la colonne de gauche.</div>
+
+        <div id="detailContent" style="display:none">
+          <div id="detailGrid" class="detail-grid"></div>
+          <div id="detailNote" class="detail-text"></div>
+
+          <div class="detail-actions">
+            <a id="btnWhatsApp" class="action-btn primary" href="#" target="_blank" rel="noopener">WhatsApp</a>
+            <a id="btnMission" class="action-btn" href="#">Ouvrir mission</a>
+            <a id="btnMatch" class="action-btn gold" href="#">Ouvrir match</a>
+            <button id="btnCopySheet" class="action-btn" type="button">Copier fiche</button>
+            <button id="btnCopyMissionLink" class="action-btn" type="button">Copier lien mission</button>
+            <button id="btnMarkCall" class="action-btn amber" type="button">Marquer à appeler</button>
+            <button id="btnSetReview" class="action-btn" type="button">review</button>
+            <button id="btnSetShortlist" class="action-btn gold" type="button">shortlist</button>
+            <button id="btnSetAccepted" class="action-btn green" type="button">accepted</button>
+            <button id="btnSetRejected" class="action-btn red" type="button">rejected</button>
+          </div>
+
+          <div class="notes-card">
+            <h4>Notes bureau locales</h4>
+            <textarea id="bureauNotes" placeholder="Notes locales du bureau…"></textarea>
+            <div class="notes-actions">
+              <button id="btnSaveNotes" class="action-btn primary" type="button">Enregistrer notes</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
 
   <footer>
     <div class="wrap">
       <div class="foot">
-        <p>
-          DIGIY JOBS PRO — match candidat ↔ mission. Le rail qui transforme les besoins et les dossiers en lecture exploitable.
-        </p>
+        <p>Bureau JOBS recousu : navigation interne directe, dossiers par id, accès gardé par slug + phone.</p>
         <div class="foot-links">
-          <button id="btnResetValidated" type="button">Vider validations</button>
-          <a id="footerHomeLink" href="./index.html">Accueil JOBS</a>
-          <a id="footerWallLink" href="./mur%20des%20missions.html">Mur</a>
-          <a id="footerPinLink" href="./pin.html">Entrée PIN</a>
-          <a href="#top">Retour haut</a>
+          <a id="footCockpitLink" href="./cockpit.html">Cockpit</a>
+          <a id="footBureauLink" href="./bureau.html">Bureau</a>
+          <a id="footMatchLink" href="./match.html">Match</a>
+          <a id="footQrLink" href="./qr.html">QR JOBS</a>
+          <a id="footClawLink" href="./cockpit.html#clawSection">CLAW</a>
         </div>
       </div>
     </div>
@@ -499,190 +521,67 @@
           : null;
 
       const params = new URLSearchParams(location.search);
-      const slugQ = String(params.get("slug") || "").trim().toLowerCase();
+      const $ = (id) => document.getElementById(id);
 
-      const PUBLIC_DOSSIER_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
-      const LOCAL_MATCH_PREFIX = "DIGIY_JOBS_MATCH_STATE_V2::";
       const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+      const PHONE_STORAGE_KEY = "digiy_jobs_phone";
+      const LOCAL_KEY_PREFIX = "digiy_jobs_bureau_local_";
 
       const JOBS_PATHS = {
         home: "./index.html",
         wall: "./mur%20des%20missions.html",
-        pin: "./pin.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
+        match: "./match.html",
         mission: "./mission.html",
-        match: "./match.html"
+        qr: "./qr.html"
       };
 
-      const NEAR_ZONES = {
-        dakar:["rufisque","thiès","thies"],
-        rufisque:["dakar","thiès","thies","mbour"],
-        "thiès":["rufisque","dakar","mbour","saly","somone","ngaparou"],
-        thies:["rufisque","dakar","mbour","saly","somone","ngaparou"],
-        mbour:["saly","ngaparou","somone","thiès","thies","rufisque"],
-        saly:["mbour","ngaparou","somone"],
-        ngaparou:["saly","somone","mbour"],
-        somone:["ngaparou","saly","mbour"]
+      const STATUS_CLASS = {
+        new: "status-new",
+        review: "status-review",
+        shortlist: "status-shortlist",
+        call: "status-call",
+        accepted: "status-accepted",
+        rejected: "status-rejected"
       };
-
-      const SECTOR_LABELS = {
-        build:"BTP",
-        beauty:"Beauté",
-        shop:"Boutique",
-        food:"Restauration",
-        service:"Services",
-        driver:"Chauffeur",
-        market:"Marché",
-        admin:"Admin"
-      };
-
-      const STATUS_LABELS = {
-        new:"Nouveau",
-        review:"En revue",
-        shortlist:"Shortlist",
-        call:"À appeler",
-        accepted:"Accepté",
-        rejected:"Refusé"
-      };
-
-      const AVAILABILITY_LABELS = {
-        immediate:"Immédiate",
-        this_week:"Cette semaine",
-        this_month:"Ce mois-ci",
-        to_discuss:"À discuter"
-      };
-
-      const CONTRACT_LABELS = {
-        cdi:"CDI",
-        cdd:"CDD",
-        mission:"Mission",
-        stage:"Stage",
-        freelance:"Freelance",
-        extra:"Extra"
-      };
-
-      const SECTOR_KEYWORDS = {
-        build:["btp","chantier","construction","maçon","macon","électricien","electricien","plombier","soudeur","menuisier","peintre","carreleur","manoeuvre","manoeuvres","mecanicien","mécanicien"],
-        beauty:["coiffeuse","coiffeur","esthetique","esthétique","beaute","beauté","maquillage","ongles","spa"],
-        shop:["vente","vendeur","vendeuse","boutique","caisse","rayon","stock"],
-        food:["serveur","serveuse","cuisinier","cuisine","restaurant","restauration","bar","snack","chef","plonge"],
-        service:["agent","ménage","menage","gardien","entretien","polyvalent","polyvalente","assistant"],
-        driver:["chauffeur","driver","permis","conduite","transport","livraison"],
-        market:["marché","marche","commerce","vendeur","vendeuse","achat","vente"],
-        admin:["secrétaire","secretaire","bureau","admin","gestion","assistant","comptable"]
-      };
-
-      const statusBox = document.getElementById("statusBox");
-      const signalPill = document.getElementById("signalPill");
-      const miniMode = document.getElementById("miniMode");
-      const miniSlug = document.getElementById("miniSlug");
-
-      const statCandidates = document.getElementById("statCandidates");
-      const statStrong = document.getElementById("statStrong");
-      const statMedium = document.getElementById("statMedium");
-      const statValidated = document.getElementById("statValidated");
-
-      const missionGrid = document.getElementById("missionGrid");
-      const missionSelect = document.getElementById("missionSelect");
-      const candidateList = document.getElementById("candidateList");
-      const emptyState = document.getElementById("emptyState");
-      const detailContent = document.getElementById("detailContent");
-      const detailName = document.getElementById("detailName");
-      const detailSubtitle = document.getElementById("detailSubtitle");
-      const detailChips = document.getElementById("detailChips");
-      const matchSummary = document.getElementById("matchSummary");
-      const reasonList = document.getElementById("reasonList");
-      const detailGrid = document.getElementById("detailGrid");
-      const matchNotes = document.getElementById("matchNotes");
-      const btnOpenWA = document.getElementById("btnOpenWA");
-
-      const searchInput = document.getElementById("searchInput");
-      const filterZoneMode = document.getElementById("filterZoneMode");
-      const filterMinScore = document.getElementById("filterMinScore");
-      const filterStatus = document.getElementById("filterStatus");
-      const filterAvailability = document.getElementById("filterAvailability");
-
-      const btnReloadMission = document.getElementById("btnReloadMission");
-      const btnImportPublic = document.getElementById("btnImportPublic");
-      const btnClearFilters = document.getElementById("btnClearFilters");
-      const btnExportMatches = document.getElementById("btnExportMatches");
-      const btnSaveMatchNotes = document.getElementById("btnSaveMatchNotes");
-      const btnCopyCandidateLink = document.getElementById("btnCopyCandidateLink");
-      const btnCopyMissionLink = document.getElementById("btnCopyMissionLink");
-      const btnValidateMatch = document.getElementById("btnValidateMatch");
-      const btnResetValidated = document.getElementById("btnResetValidated");
-
-      const brandHome = document.getElementById("brandHome");
-      const btnOpenHome = document.getElementById("btnOpenHome");
-      const btnOpenWall = document.getElementById("btnOpenWall");
-      const btnOpenBureau = document.getElementById("btnOpenBureau");
-      const btnOpenCockpit = document.getElementById("btnOpenCockpit");
-      const btnOpenPublicMission = document.getElementById("btnOpenPublicMission");
-      const footerHomeLink = document.getElementById("footerHomeLink");
-      const footerPinLink = document.getElementById("footerPinLink");
-      const footerWallLink = document.getElementById("footerWallLink");
 
       const state = {
-        slug: slugQ,
-        offers: [],
-        mission: null,
-        candidates: [],
-        ranked: [],
-        selectedId: null,
-        preview: true,
+        slug: "",
+        phone: "",
         session: null,
-        matchState: {},
-        selectedMissionIndex: 0
+        offers: [],
+        candidates: [],
+        offerMap: new Map(),
+        selectedId: null
       };
 
-      function setStatus(text, tone = "info") {
-        if (!text) {
-          statusBox.className = "status-box";
-          statusBox.textContent = "";
-          statusBox.style.display = "none";
-          return;
-        }
-        statusBox.className = `status-box ${tone}`;
-        statusBox.textContent = text;
-        statusBox.style.display = "block";
+      const statusBox = $("statusBox");
+      const searchInput = $("searchInput");
+      const filterSector = $("filterSector");
+      const filterOffer = $("filterOffer");
+      const filterStatus = $("filterStatus");
+      const filterAvailability = $("filterAvailability");
+      const candidateList = $("candidateList");
+      const countLabel = $("countLabel");
+      const detailEmpty = $("detailEmpty");
+      const detailContent = $("detailContent");
+      const detailGrid = $("detailGrid");
+      const detailNote = $("detailNote");
+      const bureauNotes = $("bureauNotes");
+
+      function setStatus(message, kind = "info"){
+        statusBox.className = "status-box " + kind;
+        statusBox.textContent = message || "";
+        statusBox.style.display = message ? "block" : "none";
       }
 
-      function safe(value, fallback = "—") {
-        return value == null || value === "" ? fallback : String(value);
+      function safe(value){
+        return value == null || value === "" ? "—" : String(value);
       }
 
-      function formatDate(value) {
-        if (!value) return "—";
-        try {
-          return new Intl.DateTimeFormat("fr-FR", {
-            dateStyle: "medium",
-            timeStyle: "short"
-          }).format(new Date(value));
-        } catch {
-          return String(value);
-        }
-      }
-
-      function normalizeSlug(value = "") {
-        return String(value || "").trim().toLowerCase();
-      }
-
-      function normalizePhone(value = "") {
-        return String(value || "").trim().replace(/[^\d+]/g, "");
-      }
-
-      function normalizeText(value = "") {
-        return String(value || "")
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/\s+/g, " ")
-          .trim();
-      }
-
-      function escapeHtml(str = "") {
-        return String(str)
+      function escapeHtml(value){
+        return String(value ?? "")
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
           .replaceAll(">", "&gt;")
@@ -690,619 +589,159 @@
           .replaceAll("'", "&#039;");
       }
 
-      function sectorLabel(value = "") {
-        return SECTOR_LABELS[String(value || "").toLowerCase()] || safe(value, "Secteur");
+      function normalizeSlug(value = ""){
+        return String(value || "")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
       }
 
-      function contractLabel(value = "") {
-        return CONTRACT_LABELS[String(value || "").toLowerCase()] || safe(value, "Contrat");
+      function normalizePhone(value = ""){
+        return String(value || "").replace(/[^\d+]/g, "");
       }
 
-      function sectorClass(value = "") {
-        const s = String(value || "").toLowerCase();
-        if (s === "build") return "sector-build";
-        if (s === "food") return "sector-food";
-        if (s === "driver") return "sector-driver";
-        return "sector-other";
-      }
-
-      function statusLabel(value = "") {
-        return STATUS_LABELS[String(value || "").toLowerCase()] || safe(value, "Statut");
-      }
-
-      function labelAvailability(value = "") {
-        return AVAILABILITY_LABELS[String(value || "").toLowerCase()] || safe(value, "À discuter");
-      }
-
-      function availabilityCode(value = "") {
-        const v = normalizeText(value);
-        if (!v) return "";
-        if (v === "immediate" || v.includes("immediat")) return "immediate";
-        if (v === "this_week" || v.includes("semaine") || v.includes("48h")) return "this_week";
-        if (v === "this_month" || v.includes("mois")) return "this_month";
-        if (v === "to_discuss" || v.includes("discut")) return "to_discuss";
-        return String(value || "").toLowerCase();
-      }
-
-      function tokenize(value = "") {
-        const stop = new Set([
-          "de","du","des","le","la","les","un","une","et","ou","au","aux","pour","par","avec","sur","dans",
-          "mission","poste","profil","candidat","recherche","nous","vous","plus","très","tres","être","etre",
-          "savoir","faire","avoir","sera","sont","est","the","and","for"
-        ]);
-        return normalizeText(value)
-          .split(/[^a-z0-9+]+/)
-          .filter(Boolean)
-          .filter((x) => x.length >= 3)
-          .filter((x) => !stop.has(x));
-      }
-
-      function nearZone(a, b) {
-        const aa = normalizeText(a);
-        const bb = normalizeText(b);
-        if (!aa || !bb) return false;
-        if (aa === bb) return true;
-        return (NEAR_ZONES[aa] || []).includes(bb) || (NEAR_ZONES[bb] || []).includes(aa);
-      }
-
-      function urgencyLevel(offer) {
-        const text = normalizeText([
-          offer?.title,
-          offer?.description,
-          offer?.requirements,
-          offer?.published_at
-        ].join(" "));
-        if (text.includes("urgent") || text.includes("immediat") || text.includes("demain") || text.includes("48h")) return "high";
-        return "normal";
-      }
-
-      function readJson(key) {
+      function saveRail(slug, phone){
+        const cleanSlug = normalizeSlug(slug);
+        const cleanPhone = normalizePhone(phone);
         try {
-          return JSON.parse(localStorage.getItem(key) || "null");
-        } catch {
-          return null;
-        }
+          if (cleanSlug) localStorage.setItem(SLUG_STORAGE_KEY, cleanSlug);
+          if (cleanPhone) localStorage.setItem(PHONE_STORAGE_KEY, cleanPhone);
+        } catch(_) {}
       }
 
-      function saveSlug(slug) {
-        try {
-          if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
-        } catch (_) {}
+      function readSavedSlug(){
+        try { return normalizeSlug(localStorage.getItem(SLUG_STORAGE_KEY) || ""); }
+        catch(_) { return ""; }
       }
 
-      function readSavedSlug() {
-        try {
-          return normalizeSlug(localStorage.getItem(SLUG_STORAGE_KEY) || "");
-        } catch (_) {
-          return "";
-        }
+      function readSavedPhone(){
+        try { return normalizePhone(localStorage.getItem(PHONE_STORAGE_KEY) || ""); }
+        catch(_) { return ""; }
       }
 
-      function withSlug(path, slug) {
-        const cleanSlug = normalizeSlug(slug || "");
-        if (!cleanSlug) return path;
-        const joiner = path.includes("?") ? "&" : "?";
-        return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
-      }
-
-      function setSlug(nextSlug) {
-        const clean = normalizeSlug(nextSlug);
-        state.slug = clean;
-        if (clean) saveSlug(clean);
-      }
-
-      function missionSignature(offer) {
-        return normalizeText([
-          offer?.slug,
-          offer?.title,
-          offer?.city,
-          offer?.contract_type,
-          offer?.published_at,
-          offer?.created_at
-        ].join("|"));
-      }
-
-      function getMatchStorageKey() {
-        return `${LOCAL_MATCH_PREFIX}${state.slug || "jobs"}`;
-      }
-
-      function loadMatchState() {
-        state.matchState = readJson(getMatchStorageKey()) || {};
-      }
-
-      function saveMatchState() {
-        try {
-          localStorage.setItem(getMatchStorageKey(), JSON.stringify(state.matchState));
-        } catch (_) {}
-      }
-
-      function getMatchKey(candidate) {
-        const missionKey = missionSignature(state.mission || { slug: state.slug || "jobs" }) || normalizeSlug(state.slug || "jobs");
-        const candidateKey = candidate.id || normalizeText((candidate.full_name || "") + "-" + (candidate.phone || ""));
-        return `${missionKey}::${candidateKey}`;
-      }
-
-      function scoreClass(score) {
-        if (score >= 80) return "score-high";
-        if (score >= 60) return "score-mid";
-        return "score-low";
-      }
-
-      function missionField(label, value, full = false) {
-        return `<div class="field${full ? " full" : ""}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
-      }
-
-      function syncLinks() {
-        const slug = state.slug || "";
-        const homeHref = withSlug(JOBS_PATHS.home, slug);
-        const wallHref = withSlug(JOBS_PATHS.wall, slug);
-        const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
-        const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
-        const pinHref = withSlug(JOBS_PATHS.pin, slug);
-        const missionHref = slug ? withSlug(JOBS_PATHS.mission, slug) : JOBS_PATHS.mission;
-
-        brandHome.href = homeHref;
-        btnOpenHome.href = homeHref;
-        footerHomeLink.href = homeHref;
-
-        btnOpenWall.href = wallHref;
-        btnOpenBureau.href = bureauHref;
-        btnOpenCockpit.href = cockpitHref;
-        footerWallLink.href = wallHref;
-        footerPinLink.href = pinHref;
-
-        btnOpenPublicMission.href = missionHref;
-
-        miniSlug.textContent = slug || "aucun slug";
-        signalPill.textContent = slug ? `Slug JOBS — ${slug}` : "Slug JOBS — manquant";
-      }
-
-      async function fetchOffersBySlug(slug) {
-        if (!sb || !slug) return [];
-        const { data, error } = await sb
-          .from("digiy_jobs_offers_pro")
-          .select("slug,owner_id,title,sector,city,country,contract_type,pay,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,status,published_at,created_at")
-          .eq("slug", slug)
-          .eq("status", "active")
-          .order("published_at", { ascending: false })
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-        return Array.isArray(data) ? data : [];
-      }
-
-      async function loadMissionRail() {
-        if (!state.slug) {
-          state.offers = [];
-          state.mission = null;
-          loadMatchState();
-          renderMissionSelect();
-          renderMission();
-          syncLinks();
-          return;
-        }
-
-        const previousSignature = missionSignature(state.mission);
-        const offers = await fetchOffersBySlug(state.slug);
-
-        state.offers = offers;
-
-        if (!offers.length) {
-          state.selectedMissionIndex = 0;
-          state.mission = null;
-        } else {
-          let nextIndex = offers.findIndex((offer) => missionSignature(offer) === previousSignature);
-          if (nextIndex < 0) nextIndex = Math.min(state.selectedMissionIndex, offers.length - 1);
-          if (nextIndex < 0) nextIndex = 0;
-          state.selectedMissionIndex = nextIndex;
-          state.mission = offers[nextIndex] || offers[0] || null;
-        }
-
-        loadMatchState();
-        renderMissionSelect();
-        renderMission();
-        syncLinks();
-      }
-
-      function renderMissionSelect() {
-        const options = [];
-        if (!state.offers.length) {
-          options.push('<option value="">Aucune mission active</option>');
-        } else {
-          state.offers.forEach((offer, index) => {
-            const selected = index === state.selectedMissionIndex ? " selected" : "";
-            const label = `${safe(offer.title, "Mission")} • ${safe(offer.city, "Ville")} • ${sectorLabel(offer.sector)}`;
-            options.push(`<option value="${index}"${selected}>${escapeHtml(label)}</option>`);
-          });
-        }
-        missionSelect.innerHTML = options.join("");
-      }
-
-      function renderMission() {
-        if (!state.mission) {
-          missionGrid.innerHTML = `
-            <div class="empty-card full">
-              <h4>Aucune mission active trouvée</h4>
-              <p>Publie une mission dans JOBS PRO ou ouvre cette page avec <b>?slug=jobs-...</b>.</p>
-            </div>
-          `;
-          return;
-        }
-
-        const offer = state.mission;
-        const fields = [
-          missionField("Mission", offer.title),
-          missionField("Secteur", sectorLabel(offer.sector)),
-          missionField("Ville", offer.city),
-          missionField("Pays", offer.country || "Sénégal"),
-          missionField("Contrat", contractLabel(offer.contract_type)),
-          missionField("Rémunération", offer.pay),
-          missionField("Structure", offer.employer_name || offer.slug),
-          missionField("Contact", offer.contact_phone || "—"),
-          missionField("Publiée le", formatDate(offer.published_at || offer.created_at)),
-          missionField("Logement", offer.has_housing ? "Oui" : "Non"),
-          missionField("Accueil familial", offer.has_family_welcome ? "Oui" : "Non"),
-          missionField("Slug", offer.slug || state.slug, true),
-          missionField("Description", offer.description || "—", true),
-          missionField("Exigences", offer.requirements || "—", true)
-        ];
-
-        missionGrid.innerHTML = fields.join("");
-      }
-
-      async function loadCandidates() {
-        if (!sb) throw new Error("Supabase non chargé");
-        if (state.preview) {
-          state.candidates = [];
-          return;
-        }
-
-        if (!state.slug) {
-          state.candidates = [];
-          return;
-        }
-
-        const { data, error } = await sb
-          .from("digiy_jobs_candidates_pro")
-          .select("id,slug,owner_id,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-          .eq("slug", state.slug)
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        state.candidates = (Array.isArray(data) ? data : []).sort((a, b) => {
-          const aa = new Date(a.created_at || 0).getTime();
-          const bb = new Date(b.created_at || 0).getTime();
-          return bb - aa;
-        });
-      }
-
-      function keywordHits(text, sector) {
-        const keywords = SECTOR_KEYWORDS[String(sector || "").toLowerCase()] || [];
-        const norm = normalizeText(text);
-        let hits = 0;
-        keywords.forEach((kw) => {
-          if (norm.includes(normalizeText(kw))) hits += 1;
-        });
-        return hits;
-      }
-
-      function computeScore(candidate) {
-        if (!state.mission) {
-          return {
-            score: 0,
-            reasons: ["Aucune mission active."],
-            summary: "Pas de matching sans mission.",
-            validated: false
-          };
-        }
-
-        const offer = state.mission;
-        const reasons = [];
-        let score = 20;
-
-        const offerText = [
-          offer.title,
-          offer.description,
-          offer.requirements,
-          offer.city,
-          offer.country,
-          offer.contract_type,
-          offer.pay,
-          sectorLabel(offer.sector)
-        ].join(" ");
-
-        const candidateText = [
-          candidate.full_name,
-          candidate.trade,
-          candidate.job_title,
-          candidate.years_experience,
-          labelAvailability(candidate.availability),
-          candidate.message,
-          candidate.city,
-          candidate.country,
-          candidate.source
-        ].join(" ");
-
-        const offerTokens = new Set(tokenize(offerText));
-        const candidateTokens = new Set(tokenize(candidateText));
-        const overlap = [...candidateTokens].filter((token) => offerTokens.has(token));
-        const overlapScore = Math.min(28, overlap.length * 4);
-
-        if (overlapScore > 0) {
-          score += overlapScore;
-          reasons.push(`Vocabulaire proche entre la mission et le profil (${overlap.length} point(s) d’accroche).`);
-        } else {
-          reasons.push("Peu de vocabulaire métier commun visible dans le texte.");
-        }
-
-        const sectorHits = keywordHits(candidateText, offer.sector);
-        if (sectorHits >= 3) {
-          score += 14;
-          reasons.push("Le profil parle clairement le langage du secteur visé.");
-        } else if (sectorHits >= 1) {
-          score += 8;
-          reasons.push("Le profil montre des signes utiles pour ce secteur.");
-        } else {
-          reasons.push("Le secteur est à confirmer par lecture humaine.");
-        }
-
-        if (normalizeText(candidate.city) && normalizeText(candidate.city) === normalizeText(offer.city)) {
-          score += 18;
-          reasons.push("Même ville que la mission.");
-        } else if (nearZone(candidate.city, offer.city)) {
-          score += 10;
-          reasons.push("Ville proche de la mission.");
-        } else {
-          reasons.push("Distance ou mobilité à vérifier.");
-        }
-
-        const avail = availabilityCode(candidate.availability);
-        const urgency = urgencyLevel(offer);
-        if (avail === "immediate" && urgency === "high") {
-          score += 12;
-          reasons.push("Disponibilité très cohérente avec un besoin urgent.");
-        } else if (avail === "immediate" || avail === "this_week") {
-          score += 8;
-          reasons.push("Disponibilité exploitable rapidement.");
-        } else if (avail === "this_month" || avail === "to_discuss") {
-          score += 3;
-          reasons.push("Disponibilité possible, à cadrer avec le timing réel.");
-        } else {
-          reasons.push("Disponibilité non claire.");
-        }
-
-        const status = String(candidate.status || "new").toLowerCase();
-        if (status === "shortlist") {
-          score += 12;
-          reasons.push("Déjà shortlisté par le bureau.");
-        } else if (status === "call") {
-          score += 10;
-          reasons.push("Déjà prêt pour un rappel.");
-        } else if (status === "review") {
-          score += 6;
-          reasons.push("Déjà en revue dans le bureau.");
-        } else if (status === "accepted") {
-          score += 2;
-          reasons.push("Profil déjà accepté auparavant, à vérifier selon disponibilité réelle.");
-        } else if (status === "rejected") {
-          score -= 20;
-          reasons.push("Profil déjà rejeté dans le rail actuel.");
-        }
-
-        if ((candidate.message || "").trim().length >= 50) {
-          score += 4;
-          reasons.push("Le message candidat donne de la matière pour décider.");
-        }
-
-        if ((candidate.years_experience || "").trim().length >= 4) {
-          score += 4;
-          reasons.push("Un niveau d’expérience est renseigné.");
-        }
-
-        score = Math.max(0, Math.min(100, score));
-
-        let summary = "Match à lire calmement.";
-        if (score >= 80) {
-          summary = "Très bon match potentiel : mission et profil se parlent clairement.";
-        } else if (score >= 60) {
-          summary = "Match crédible : quelques vérifications peuvent suffire avant action.";
-        } else {
-          summary = "Match faible ou incomplet : utile surtout en secours ou pour une lecture plus fine.";
-        }
-
-        const matchKey = getMatchKey(candidate);
-        const validated = Boolean(state.matchState[matchKey]?.validated);
-
-        return { score, reasons, summary, validated };
-      }
-
-      function getVisibleRanked() {
-        const query = normalizeText(searchInput.value || "");
-        const zoneMode = filterZoneMode.value;
-        const minScore = Number(filterMinScore.value || 0);
-        const wantedStatus = filterStatus.value;
-        const wantedAvailability = filterAvailability.value;
-
-        return state.candidates
-          .map((candidate) => ({ candidate, match: computeScore(candidate) }))
-          .filter((row) => {
-            if (!state.mission) return false;
-
-            if (zoneMode === "same" && normalizeText(row.candidate.city) !== normalizeText(state.mission.city)) {
-              return false;
-            }
-
-            if (
-              zoneMode === "near" &&
-              normalizeText(row.candidate.city) !== normalizeText(state.mission.city) &&
-              !nearZone(row.candidate.city, state.mission.city)
-            ) {
-              return false;
-            }
-
-            if (row.match.score < minScore) return false;
-            if (wantedStatus !== "all" && String(row.candidate.status || "new").toLowerCase() !== wantedStatus) return false;
-            if (wantedAvailability !== "all" && availabilityCode(row.candidate.availability) !== wantedAvailability) return false;
-
-            if (!query) return true;
-
-            const hay = normalizeText([
-              row.candidate.full_name,
-              row.candidate.trade,
-              row.candidate.job_title,
-              row.candidate.city,
-              row.candidate.country,
-              row.candidate.years_experience,
-              row.candidate.message,
-              row.candidate.source,
-              state.mission?.title,
-              state.mission?.description,
-              state.mission?.requirements
-            ].join(" "));
-
-            return hay.includes(query);
-          })
-          .sort((a, b) => {
-            if (b.match.score !== a.match.score) return b.match.score - a.match.score;
-            const aa = new Date(a.candidate.created_at || 0).getTime();
-            const bb = new Date(b.candidate.created_at || 0).getTime();
-            return bb - aa;
-          });
-      }
-
-      function renderStats() {
-        statCandidates.textContent = String(state.ranked.length);
-        statStrong.textContent = String(state.ranked.filter((x) => x.match.score >= 80).length);
-        statMedium.textContent = String(state.ranked.filter((x) => x.match.score >= 60 && x.match.score < 80).length);
-        statValidated.textContent = String(Object.values(state.matchState).filter((x) => x && x.validated).length);
-      }
-
-      function renderList() {
-        candidateList.innerHTML = "";
-
-        if (state.preview) {
-          state.ranked = [];
-          renderStats();
-          candidateList.innerHTML = `
-            <div class="empty-card">
-              <h4>Mode aperçu</h4>
-              <p>Active ton accès JOBS pour lire les candidats réels et valider les matchs.</p>
-            </div>
-          `;
-          renderDetail(null);
-          return;
-        }
-
-        if (!state.mission) {
-          state.ranked = [];
-          renderStats();
-          candidateList.innerHTML = `
-            <div class="empty-card">
-              <h4>Aucune mission active</h4>
-              <p>Publie une mission JOBS PRO, ou ouvre cette page avec un slug actif.</p>
-            </div>
-          `;
-          renderDetail(null);
-          return;
-        }
-
-        state.ranked = getVisibleRanked();
-        renderStats();
-
-        if (!state.ranked.length) {
-          candidateList.innerHTML = `
-            <div class="empty-card">
-              <h4>Aucun candidat trouvé</h4>
-              <p>Change les filtres, attends de nouvelles candidatures, ou utilise un futur RPC d’import sécurisé.</p>
-            </div>
-          `;
-          renderDetail(null);
-          return;
-        }
-
-        if (!state.ranked.some((x) => x.candidate.id === state.selectedId)) {
-          state.selectedId = state.ranked[0].candidate.id;
-        }
-
-        state.ranked.forEach((row) => {
-          const c = row.candidate;
-          const article = document.createElement("article");
-          article.className = "candidate" + (c.id === state.selectedId ? " active" : "");
-
-          article.innerHTML = `
-            <div class="candidate-top">
-              <div>
-                <h4>${escapeHtml(c.full_name || "Sans nom")}</h4>
-                <p class="sub">${escapeHtml(safe(c.trade || c.job_title))} • ${escapeHtml(safe(c.city))}</p>
-              </div>
-              <div class="score-pill">${row.match.score}</div>
-            </div>
-
-            <div class="chips">
-              <span class="chip ${sectorClass(state.mission?.sector)}">${escapeHtml(sectorLabel(state.mission?.sector))}</span>
-              <span class="chip ${scoreClass(row.match.score)}">Score ${row.match.score}</span>
-              <span class="chip">${escapeHtml(labelAvailability(c.availability))}</span>
-              <span class="chip">${escapeHtml(statusLabel(c.status || "new"))}</span>
-              ${row.match.validated ? '<span class="chip score-high">Validé</span>' : ''}
-            </div>
-
-            <div class="candidate-note">
-              ${escapeHtml((c.message || c.years_experience || row.match.summary || "Profil à lire").slice(0, 170))}
-            </div>
-          `;
-
-          article.addEventListener("click", function(){
-            state.selectedId = c.id;
-            renderList();
-          });
-
-          candidateList.appendChild(article);
+      function withRail(path, extra = {}){
+        const u = new URL(path, location.href);
+        const slug = normalizeSlug(extra.slug || state.slug || "");
+        const phone = normalizePhone(extra.phone || state.phone || "");
+        if (slug) u.searchParams.set("slug", slug);
+        if (phone) u.searchParams.set("phone", phone);
+
+        Object.entries(extra).forEach(([k, v]) => {
+          if (["slug", "phone"].includes(k)) return;
+          if (v == null || v === "") return;
+          u.searchParams.set(k, String(v));
         });
 
-        const current = state.ranked.find((x) => x.candidate.id === state.selectedId) || null;
-        renderDetail(current);
+        return u.pathname + u.search;
       }
 
-      function fieldHtml(label, value, full = false) {
-        return `<div class="field${full ? " full" : ""}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
+      function syncLinks(){
+        $("homeLink").href = withRail(JOBS_PATHS.home);
+        $("wallLink").href = withRail(JOBS_PATHS.wall);
+        $("cockpitLink").href = withRail(JOBS_PATHS.cockpit);
+        $("bureauLink").href = withRail(JOBS_PATHS.bureau);
+        $("matchLink").href = withRail(JOBS_PATHS.match);
+        $("qrLink").href = withRail(JOBS_PATHS.qr);
+        $("clawLink").href = withRail(JOBS_PATHS.cockpit) + "#clawSection";
+        $("footCockpitLink").href = withRail(JOBS_PATHS.cockpit);
+        $("footBureauLink").href = withRail(JOBS_PATHS.bureau);
+        $("footMatchLink").href = withRail(JOBS_PATHS.match);
+        $("footQrLink").href = withRail(JOBS_PATHS.qr);
+        $("footClawLink").href = withRail(JOBS_PATHS.cockpit) + "#clawSection";
       }
 
-      function buildPublicMissionUrl() {
-        if (!state.slug) return "";
-        const u = new URL(JOBS_PATHS.mission, location.href);
-        u.searchParams.set("slug", state.slug);
-        return u.toString();
+      function syncRailMeta(){
+        $("slugChip").textContent = state.slug || "aucun";
+        $("phoneChip").textContent = state.phone || "—";
+        $("modeChip").textContent = state.session?.access ? "session PRO active" : "aperçu";
+        $("sourceChip").textContent = state.session?.source || "guard/session";
+        $("modePill").textContent = state.session?.access ? "Mode — session active" : "Mode — aperçu";
       }
 
-      function buildCandidateSheetText(candidate) {
-        return [
-          `Nom : ${safe(candidate.full_name)}`,
-          `Téléphone : ${safe(candidate.phone)}`,
-          `Ville : ${safe(candidate.city)}`,
-          `Pays : ${safe(candidate.country)}`,
-          `Métier : ${safe(candidate.trade || candidate.job_title)}`,
-          `Expérience : ${safe(candidate.years_experience)}`,
-          `Disponibilité : ${labelAvailability(candidate.availability)}`,
-          `Statut bureau : ${statusLabel(candidate.status || "new")}`,
-          `Message : ${safe(candidate.message)}`,
-          state.mission ? `Mission liée : ${safe(state.mission.title)}` : ""
-        ].filter(Boolean).join("\n");
+      function sectorLabel(sector = ""){
+        const map = {
+          build: "BTP",
+          food: "Restauration",
+          shop: "Boutique",
+          service: "Services",
+          driver: "Chauffeur",
+          market: "Marché"
+        };
+        return map[String(sector || "").toLowerCase()] || sector || "Secteur";
       }
 
-      function buildWhatsAppUrl(candidate, score) {
+      function sectorClass(sector = ""){
+        const s = String(sector || "").toLowerCase();
+        if (["build", "food", "shop", "service", "driver"].includes(s)) return "sector-" + s;
+        return "";
+      }
+
+      function statusLabel(status = "new"){
+        const map = {
+          new: "Nouveau",
+          review: "En revue",
+          shortlist: "Shortlist",
+          call: "À appeler",
+          accepted: "Accepté",
+          rejected: "Refusé"
+        };
+        return map[String(status || "new").toLowerCase()] || status || "Statut";
+      }
+
+      function availabilityLabel(v = ""){
+        const map = {
+          immediate: "Immédiate",
+          this_week: "Cette semaine",
+          this_month: "Ce mois-ci",
+          to_discuss: "À discuter"
+        };
+        return map[String(v || "").toLowerCase()] || v || "Disponibilité";
+      }
+
+      function inferSector(candidate){
+        const offer = state.offerMap.get(candidate.offer_id);
+        return String(candidate.sector || offer?.sector || "").toLowerCase();
+      }
+
+      function subtitle(candidate){
+        const offer = state.offerMap.get(candidate.offer_id);
+        const parts = [
+          candidate.trade || candidate.job_title || "Profil",
+          candidate.city || "",
+          offer?.title || ""
+        ].filter(Boolean);
+        return parts.join(" • ");
+      }
+
+      function getCandidateLocal(id){
+        try {
+          return JSON.parse(localStorage.getItem(LOCAL_KEY_PREFIX + id) || "{}");
+        } catch(_) {
+          return {};
+        }
+      }
+
+      function setCandidateLocal(id, patch){
+        const next = { ...getCandidateLocal(id), ...patch };
+        try { localStorage.setItem(LOCAL_KEY_PREFIX + id, JSON.stringify(next)); } catch(_) {}
+      }
+
+      function buildWhatsAppUrl(candidate) {
+        const linkedOffer = state.offerMap.get(candidate.offer_id);
         const lines = [
           "Bonjour,",
           "",
-          "je vous contacte depuis DIGIY JOBS concernant une mission qui pourrait vous correspondre.",
-          state.mission?.title ? `Mission : ${state.mission.title}` : null,
-          state.mission?.employer_name ? `Structure : ${state.mission.employer_name}` : null,
-          state.mission?.city ? `Ville : ${state.mission.city}` : null,
-          state.mission?.pay ? `Rémunération : ${state.mission.pay}` : null,
-          `Compatibilité observée : ${score}/100`,
-          buildPublicMissionUrl() ? `Lien mission : ${buildPublicMissionUrl()}` : null,
+          "je vous contacte depuis DIGIY JOBS concernant votre candidature.",
+          linkedOffer?.title ? `Mission : ${linkedOffer.title}` : null,
+          linkedOffer?.city ? `Ville : ${linkedOffer.city}` : null,
+          linkedOffer?.pay ? `Rémunération : ${linkedOffer.pay}` : null,
+          `Statut actuel : ${statusLabel(candidate.status || "new")}`,
+          missionUrl(candidate) ? `Lien mission : ${location.origin}${missionUrl(candidate)}` : null,
           "",
-          "Si vous êtes partant, on peut avancer sur la mise en relation."
+          "Nous pouvons avancer si vous êtes toujours disponible."
         ].filter(Boolean).join("\n");
 
         const phone = String(candidate.phone || "").replace(/[^\d]/g, "");
@@ -1311,274 +750,456 @@
         return url.toString();
       }
 
-      function renderDetail(row) {
-        if (!row) {
-          emptyState.hidden = false;
-          detailContent.hidden = true;
-          return;
-        }
-
-        const candidate = row.candidate;
-        const key = getMatchKey(candidate);
-        const saved = state.matchState[key] || {};
-
-        emptyState.hidden = true;
-        detailContent.hidden = false;
-
-        detailName.textContent = candidate.full_name || "Sans nom";
-        detailSubtitle.textContent = [
-          safe(candidate.trade || candidate.job_title),
-          safe(candidate.city),
-          labelAvailability(candidate.availability)
-        ].join(" • ");
-
-        detailChips.innerHTML = `
-          <span class="chip ${sectorClass(state.mission?.sector)}">${escapeHtml(sectorLabel(state.mission?.sector))}</span>
-          <span class="chip ${scoreClass(row.match.score)}">Score ${row.match.score}</span>
-          <span class="chip">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
-          ${row.match.validated ? '<span class="chip score-high">Validé</span>' : ''}
-        `;
-
-        matchSummary.textContent = row.match.summary;
-        reasonList.innerHTML = row.match.reasons.map((reason) => `<div class="reason-item">${escapeHtml(reason)}</div>`).join("");
-        matchNotes.value = saved.notes || "";
-        btnOpenWA.href = buildWhatsAppUrl(candidate, row.match.score);
-
-        const detailFields = [
-          fieldHtml("Téléphone", candidate.phone),
-          fieldHtml("Ville", candidate.city),
-          fieldHtml("Pays", candidate.country || "Sénégal"),
-          fieldHtml("Métier", candidate.trade || candidate.job_title),
-          fieldHtml("Expérience", candidate.years_experience),
-          fieldHtml("Disponibilité", labelAvailability(candidate.availability)),
-          fieldHtml("Statut bureau", statusLabel(candidate.status || "new")),
-          fieldHtml("Source", candidate.source || "public_form"),
-          fieldHtml("Reçu le", formatDate(candidate.created_at)),
-          fieldHtml("Mis à jour le", formatDate(candidate.updated_at || candidate.created_at)),
-          fieldHtml("Message candidat", candidate.message || "—", true),
-          fieldHtml("Mission liée", state.mission?.title || "—", true),
-          fieldHtml("Validation", row.match.validated ? "Oui" : "Non"),
-          fieldHtml("Validé le", saved.validated_at ? formatDate(saved.validated_at) : "—"),
-          fieldHtml("Notes bureau", saved.notes || "—", true)
-        ];
-
-        detailGrid.innerHTML = detailFields.join("");
+      function missionUrl(candidate){
+        const linkedOffer = state.offerMap.get(candidate.offer_id);
+        return withRail(JOBS_PATHS.mission, {
+          offer: linkedOffer?.id || candidate.offer_id || "",
+          candidate: candidate.id || ""
+        });
       }
 
-      async function copyText(text) {
-        try {
+      function matchUrl(candidate){
+        return withRail(JOBS_PATHS.match, {
+          id: candidate.id || "",
+          offer: candidate.offer_id || ""
+        });
+      }
+
+      function buildCandidateSheet(candidate) {
+        const linkedOffer = state.offerMap.get(candidate.offer_id);
+        const local = getCandidateLocal(candidate.id);
+        return [
+          `Nom : ${safe(candidate.full_name)}`,
+          `WhatsApp : ${safe(candidate.phone)}`,
+          `Ville : ${safe(candidate.city)}`,
+          `Pays : ${safe(candidate.country || "Sénégal")}`,
+          `Métier : ${safe(candidate.trade || candidate.job_title)}`,
+          `Expérience : ${safe(candidate.years_experience)}`,
+          `Disponibilité : ${availabilityLabel(candidate.availability)}`,
+          `Statut : ${statusLabel(candidate.status || "new")}`,
+          linkedOffer?.title ? `Mission : ${linkedOffer.title}` : "Mission : spontanée",
+          linkedOffer?.city ? `Ville mission : ${linkedOffer.city}` : null,
+          linkedOffer?.pay ? `Rémunération : ${linkedOffer.pay}` : null,
+          missionUrl(candidate) ? `Lien mission : ${location.origin}${missionUrl(candidate)}` : null,
+          "",
+          "Notes bureau :",
+          safe(local.notes || "")
+        ].filter(Boolean).join("\n");
+      }
+
+      function fieldHtml(label, value, full = false) {
+        return `<div class="field-box${full ? " full" : ""}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
+      }
+
+      async function copyText(text){
+        try{
           await navigator.clipboard.writeText(text);
           return true;
-        } catch {
+        }catch(_){
           return false;
         }
       }
 
-      async function importPublicDossier() {
-        const dossier = readJson(PUBLIC_DOSSIER_KEY);
+      function getVisible(){
+        const q = searchInput.value.trim().toLowerCase();
+        const sector = filterSector.value;
+        const offer = filterOffer.value;
+        const status = filterStatus.value;
+        const availability = filterAvailability.value;
 
-        if (!dossier) {
-          setStatus("Aucun dernier dossier public intelligent trouvé dans ce navigateur.", "warn");
+        return state.candidates.filter((candidate) => {
+          const linkedOffer = state.offerMap.get(candidate.offer_id);
+          const candidateSector = inferSector(candidate);
+          const hay = [
+            candidate.full_name,
+            candidate.phone,
+            candidate.city,
+            candidate.country,
+            candidate.trade,
+            candidate.job_title,
+            candidate.message,
+            candidate.years_experience,
+            candidate.status,
+            linkedOffer?.title,
+            linkedOffer?.city,
+            getCandidateLocal(candidate.id).notes
+          ].filter(Boolean).join(" ").toLowerCase();
+
+          if (q && !hay.includes(q)) return false;
+          if (sector !== "all" && candidateSector !== sector) return false;
+          if (offer !== "all" && String(candidate.offer_id || "") !== offer) return false;
+          if (status !== "all" && String(candidate.status || "new") !== status) return false;
+          if (availability !== "all" && String(candidate.availability || "") !== availability) return false;
+          return true;
+        });
+      }
+
+      function renderStats(){
+        const all = state.candidates;
+        const count = (s) => all.filter((x) => String(x.status || "new") === s).length;
+        $("statCandidates").textContent = String(all.length);
+        $("statNew").textContent = String(count("new"));
+        $("statReview").textContent = String(count("review"));
+        $("statAccepted").textContent = String(count("accepted"));
+      }
+
+      function renderFilterOptions(){
+        const sectors = [...new Set(state.candidates.map(inferSector).filter(Boolean))].sort();
+        const offers = [...state.offerMap.values()];
+
+        filterSector.innerHTML =
+          '<option value="all">Tous les secteurs</option>' +
+          sectors.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(sectorLabel(s))}</option>`).join("");
+
+        filterOffer.innerHTML =
+          '<option value="all">Toutes les missions</option>' +
+          offers.map((o) => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.title || "Mission")}</option>`).join("");
+      }
+
+      function renderList(){
+        const visible = getVisible();
+        countLabel.textContent = `${visible.length} dossier${visible.length > 1 ? "s" : ""}`;
+
+        if (!visible.length) {
+          candidateList.innerHTML = '<div class="empty-card">Aucun dossier ne correspond aux filtres actuels.</div>';
+          detailEmpty.style.display = "block";
+          detailContent.style.display = "none";
           return;
         }
 
-        setStatus("Import direct désactivé : les écritures publiques en base ont été fermées côté sécurité. Il faut maintenant un RPC d’import dédié pour pousser ce dossier dans JOBS.", "warn");
-      }
-
-      async function bootGuard() {
-        if (state.slug) {
-          setSlug(state.slug);
+        if (!state.selectedId || !visible.some((candidate) => candidate.id === state.selectedId)) {
+          state.selectedId = visible[0].id;
         }
 
-        if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-          state.preview = true;
-          miniMode.textContent = "guard manquant";
-          syncLinks();
-          setStatus("guard.js manquant ou invalide : matching réel verrouillé en aperçu.", "warn");
+        candidateList.innerHTML = "";
+        visible.forEach((candidate) => {
+          const linkedOffer = state.offerMap.get(candidate.offer_id);
+          const local = getCandidateLocal(candidate.id);
+          const sector = inferSector(candidate);
+
+          const article = document.createElement("article");
+          article.className = "dossier" + (candidate.id === state.selectedId ? " active" : "");
+          article.innerHTML = `
+            <div class="dossier-top">
+              <div>
+                <h4>${escapeHtml(candidate.full_name || "Sans nom")}</h4>
+                <p class="sub">${escapeHtml(subtitle(candidate))}</p>
+              </div>
+            </div>
+
+            <div class="chips">
+              <span class="chip ${sectorClass(sector)}">${escapeHtml(sectorLabel(sector))}</span>
+              <span class="chip ${STATUS_CLASS[String(candidate.status || "new")] || "status-new"}">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
+              <span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>
+              ${linkedOffer ? `<span class="chip">${escapeHtml(linkedOffer.title || "Mission")}</span>` : `<span class="chip">Spontanée</span>`}
+            </div>
+
+            <div class="dossier-note">
+              ${escapeHtml((local.notes || candidate.message || candidate.years_experience || "Pas encore de note.").slice(0, 170))}
+            </div>
+          `;
+          article.addEventListener("click", function(){
+            state.selectedId = candidate.id;
+            renderList();
+          });
+          candidateList.appendChild(article);
+        });
+
+        const current = visible.find((candidate) => candidate.id === state.selectedId) || null;
+        renderDetail(current);
+      }
+
+      function renderDetail(candidate){
+        if (!candidate) {
+          detailEmpty.style.display = "block";
+          detailContent.style.display = "none";
           return;
         }
 
-        const session = await window.DIGIY_GUARD.ready();
-        state.session = session || null;
+        detailEmpty.style.display = "none";
+        detailContent.style.display = "block";
 
-        const sessionSlug = normalizeSlug(session?.slug || "");
-        if (!state.slug && sessionSlug) {
-          setSlug(sessionSlug);
-        }
+        const linkedOffer = state.offerMap.get(candidate.offer_id);
+        const local = getCandidateLocal(candidate.id);
 
-        state.preview = !session?.access;
-        miniMode.textContent = state.preview ? "aperçu verrouillé" : "cockpit réel";
+        detailGrid.innerHTML = [
+          fieldHtml("Nom complet", candidate.full_name),
+          fieldHtml("WhatsApp", candidate.phone),
+          fieldHtml("Ville", candidate.city),
+          fieldHtml("Pays", candidate.country || "Sénégal"),
+          fieldHtml("Métier", candidate.trade || candidate.job_title),
+          fieldHtml("Expérience", candidate.years_experience),
+          fieldHtml("Disponibilité", availabilityLabel(candidate.availability)),
+          fieldHtml("Statut", statusLabel(candidate.status || "new")),
+          fieldHtml("Candidate ID", candidate.id),
+          fieldHtml("Offer ID", candidate.offer_id || "Spontanée"),
+          fieldHtml("Mission liée", linkedOffer?.title || "Spontanée", true)
+        ].join("");
 
-        if (state.preview) {
-          setStatus("Mode aperçu : active ton accès JOBS pour ouvrir le matching réel et lire les candidatures du bureau.", "warn");
-        }
+        detailNote.textContent = local.notes || candidate.message || "Aucune note locale pour le moment.";
+        bureauNotes.value = local.notes || "";
 
-        syncLinks();
+        $("btnWhatsApp").href = buildWhatsAppUrl(candidate);
+        $("btnMission").href = missionUrl(candidate);
+        $("btnMatch").href = matchUrl(candidate);
       }
 
-      missionSelect.addEventListener("change", async function() {
-        const selectedIndex = Number(missionSelect.value);
-        if (!Number.isFinite(selectedIndex) || selectedIndex < 0 || selectedIndex >= state.offers.length) {
-          state.selectedMissionIndex = 0;
-          state.mission = state.offers[0] || null;
-        } else {
-          state.selectedMissionIndex = selectedIndex;
-          state.mission = state.offers[selectedIndex] || null;
+      async function updateCandidateStatus(candidateId, nextStatus){
+        if (!sb) {
+          setStatus("Supabase indisponible.", "error");
+          return;
         }
 
-        loadMatchState();
-        syncLinks();
-        renderMission();
+        const { error } = await sb
+          .from("digiy_jobs_candidates_pro")
+          .update({ status: nextStatus, updated_at: new Date().toISOString() })
+          .eq("id", candidateId);
+
+        if (error) {
+          console.error(error);
+          setStatus("Impossible de mettre à jour le statut pour le moment.", "error");
+          return;
+        }
+
+        const row = state.candidates.find((item) => item.id === candidateId);
+        if (row) row.status = nextStatus;
+        renderStats();
         renderList();
-      });
+        setStatus(`Statut mis à jour : ${nextStatus}`, "ok");
+      }
+
+      async function loadOffers(){
+        if (!sb || !state.slug) {
+          state.offers = [];
+          state.offerMap = new Map();
+          return;
+        }
+
+        const { data, error } = await sb
+          .from("digiy_jobs_offers_pro")
+          .select("id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at")
+          .eq("slug", state.slug)
+          .eq("status", "active")
+          .order("published_at", { ascending: false })
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        state.offers = Array.isArray(data) ? data : [];
+        state.offerMap = new Map(state.offers.map((offer) => [offer.id, offer]));
+      }
+
+      async function loadCandidates(){
+        if (!sb || !state.slug) {
+          state.candidates = [];
+          return;
+        }
+
+        const rows = [];
+        const seen = new Set();
+
+        const bySlug = await sb
+          .from("digiy_jobs_candidates_pro")
+          .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+          .eq("slug", state.slug)
+          .order("created_at", { ascending: false });
+
+        if (bySlug.error) throw bySlug.error;
+        (bySlug.data || []).forEach((item) => {
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            rows.push(item);
+          }
+        });
+
+        const offerIds = state.offers.map((o) => o.id).filter(Boolean);
+        if (offerIds.length) {
+          const byOffer = await sb
+            .from("digiy_jobs_candidates_pro")
+            .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
+            .in("offer_id", offerIds)
+            .order("created_at", { ascending: false });
+
+          if (byOffer.error) throw byOffer.error;
+          (byOffer.data || []).forEach((item) => {
+            if (!seen.has(item.id)) {
+              seen.add(item.id);
+              rows.push(item);
+            }
+          });
+        }
+
+        state.candidates = rows.sort((a, b) => {
+          const da = new Date(a.created_at || 0).getTime();
+          const db = new Date(b.created_at || 0).getTime();
+          return db - da;
+        });
+      }
+
+      function exportJson(){
+        const payload = getVisible().map((candidate) => {
+          const linkedOffer = state.offerMap.get(candidate.offer_id) || null;
+          const local = getCandidateLocal(candidate.id);
+          return {
+            slug: state.slug || null,
+            phone: state.phone || null,
+            id: candidate.id,
+            offer_id: candidate.offer_id,
+            offer_title: linkedOffer?.title || null,
+            sector: inferSector(candidate),
+            full_name: candidate.full_name,
+            phone_candidate: candidate.phone,
+            city: candidate.city,
+            country: candidate.country,
+            trade: candidate.trade,
+            years_experience: candidate.years_experience,
+            availability: candidate.availability,
+            status: candidate.status,
+            source: candidate.source,
+            created_at: candidate.created_at,
+            updated_at: candidate.updated_at,
+            notes_locales: local.notes || ""
+          };
+        });
+
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `digiy_jobs_bureau_${state.slug || "global"}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setStatus("Export JSON prêt.", "ok");
+      }
+
+      async function refreshAll(){
+        try {
+          setStatus("Chargement du bureau…", "info");
+          await loadOffers();
+          await loadCandidates();
+          syncLinks();
+          syncRailMeta();
+          renderStats();
+          renderFilterOptions();
+          renderList();
+          setStatus("Bureau JOBS rafraîchi.", "ok");
+        } catch (error) {
+          console.error(error);
+          setStatus("Impossible de charger le bureau pour le moment.", "error");
+        }
+      }
 
       searchInput.addEventListener("input", renderList);
-      filterZoneMode.addEventListener("change", renderList);
-      filterMinScore.addEventListener("change", renderList);
+      filterSector.addEventListener("change", renderList);
+      filterOffer.addEventListener("change", renderList);
       filterStatus.addEventListener("change", renderList);
       filterAvailability.addEventListener("change", renderList);
 
-      btnReloadMission.addEventListener("click", async function() {
-        try {
-          await loadMissionRail();
-          await loadCandidates();
-          renderList();
-          setStatus("Mission rechargée depuis le rail JOBS.", "ok");
-        } catch (error) {
-          console.error(error);
-          setStatus("Impossible de recharger la mission pour le moment.", "error");
-        }
-      });
-
-      btnImportPublic.addEventListener("click", importPublicDossier);
-
-      btnClearFilters.addEventListener("click", function() {
+      $("btnRefreshTop").addEventListener("click", refreshAll);
+      $("btnClearFilters").addEventListener("click", function(){
         searchInput.value = "";
-        filterZoneMode.value = "all";
-        filterMinScore.value = "0";
+        filterSector.value = "all";
+        filterOffer.value = "all";
         filterStatus.value = "all";
         filterAvailability.value = "all";
         renderList();
       });
 
-      btnSaveMatchNotes.addEventListener("click", function() {
-        const row = state.ranked.find((x) => x.candidate.id === state.selectedId);
-        if (!row) return;
-        const key = getMatchKey(row.candidate);
-        state.matchState[key] = state.matchState[key] || {};
-        state.matchState[key].notes = matchNotes.value.trim();
-        saveMatchState();
-        renderDetail(row);
-        setStatus("Notes de match enregistrées.", "ok");
+      $("btnExportJson").addEventListener("click", exportJson);
+
+      $("btnSaveNotes").addEventListener("click", function(){
+        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+        if (!candidate) return;
+        setCandidateLocal(candidate.id, { notes: bureauNotes.value.trim(), last_contact: "Notes mises à jour" });
+        renderList();
+        renderDetail(candidate);
+        setStatus("Notes bureau locales enregistrées.", "ok");
       });
 
-      btnCopyCandidateLink.addEventListener("click", async function() {
-        const row = state.ranked.find((x) => x.candidate.id === state.selectedId);
-        if (!row) return;
-        const text = buildCandidateSheetText(row.candidate);
+      $("btnCopySheet").addEventListener("click", async function(){
+        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+        if (!candidate) return;
+        const text = buildCandidateSheet(candidate);
         const ok = await copyText(text);
         if (ok) {
+          setCandidateLocal(candidate.id, { last_contact: "Fiche copiée" });
+          renderList();
           setStatus("Fiche candidat copiée.", "ok");
         } else {
           prompt("Copie la fiche candidat :", text);
         }
       });
 
-      btnCopyMissionLink.addEventListener("click", async function() {
-        const url = buildPublicMissionUrl();
-        if (!url) return;
+      $("btnCopyMissionLink").addEventListener("click", async function(){
+        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+        if (!candidate) return;
+        const url = location.origin + missionUrl(candidate);
         const ok = await copyText(url);
         if (ok) {
+          setCandidateLocal(candidate.id, { last_contact: "Lien mission copié" });
+          renderList();
           setStatus("Lien mission copié.", "ok");
         } else {
           prompt("Copie le lien mission :", url);
         }
       });
 
-      btnValidateMatch.addEventListener("click", function() {
-        const row = state.ranked.find((x) => x.candidate.id === state.selectedId);
-        if (!row) return;
-        const key = getMatchKey(row.candidate);
-        state.matchState[key] = state.matchState[key] || {};
-        state.matchState[key].validated = true;
-        state.matchState[key].validated_at = new Date().toISOString();
-        state.matchState[key].score = row.match.score;
-        state.matchState[key].candidate_name = row.candidate.full_name || "Sans nom";
-        state.matchState[key].mission_name = state.mission?.title || "Mission";
-        state.matchState[key].notes = matchNotes.value.trim();
-        saveMatchState();
-        renderList();
-        setStatus("Match validé localement pour ce slug.", "ok");
+      $("btnMarkCall").addEventListener("click", async function(){
+        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "call");
       });
 
-      btnExportMatches.addEventListener("click", function() {
-        const rows = state.ranked.map((row) => {
-          const key = getMatchKey(row.candidate);
-          const saved = state.matchState[key] || {};
-          return {
-            slug: state.slug || null,
-            mission: state.mission?.title || "Mission",
-            sector: state.mission?.sector || null,
-            candidate_name: row.candidate.full_name || "Sans nom",
-            candidate_phone: row.candidate.phone || "",
-            trade: row.candidate.trade || row.candidate.job_title || "",
-            city: row.candidate.city || "",
-            score: row.match.score,
-            summary: row.match.summary,
-            reasons: row.match.reasons,
-            validated: !!saved.validated,
-            validated_at: saved.validated_at || null,
-            notes: saved.notes || ""
-          };
-        });
-
-        const blob = new Blob([JSON.stringify(rows, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "digiy-jobs-matchs.json";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
+      $("btnSetReview").addEventListener("click", async function(){
+        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "review");
       });
 
-      btnResetValidated.addEventListener("click", function() {
-        if (!confirm("Vider toutes les validations locales pour ce slug ?")) return;
-        state.matchState = {};
-        saveMatchState();
-        renderList();
-        setStatus("Validations locales vidées.", "ok");
+      $("btnSetShortlist").addEventListener("click", async function(){
+        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "shortlist");
       });
 
-      (async function init() {
-        try {
-          if (!sb) {
-            setStatus("Supabase non chargé. Vérifie la configuration front JOBS.", "error");
-            return;
-          }
+      $("btnSetAccepted").addEventListener("click", async function(){
+        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "accepted");
+      });
 
-          if (!state.slug) {
-            const saved = readSavedSlug();
-            if (saved) setSlug(saved);
-          } else {
-            setSlug(state.slug);
-          }
+      $("btnSetRejected").addEventListener("click", async function(){
+        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "rejected");
+      });
 
-          await bootGuard();
-          await loadMissionRail();
-          await loadCandidates();
-          renderList();
+      (async function init(){
+        const qsSlug = normalizeSlug(params.get("slug") || "");
+        const qsPhone = normalizePhone(params.get("phone") || "");
+        const savedSlug = readSavedSlug();
+        const savedPhone = readSavedPhone();
 
-          if (!state.slug && !state.mission) {
-            setStatus("Aucun slug ni aucune mission détectés. Ouvre la page avec ?slug=jobs-....", "warn");
-          } else if (!state.preview) {
-            setStatus("Matching JOBS chargé sur le rail réel.", "ok");
+        if (window.DIGIY_GUARD?.ready) {
+          try {
+            const session = await window.DIGIY_GUARD.ready();
+            state.session = session || null;
+            state.slug = normalizeSlug(session?.slug || qsSlug || savedSlug || "");
+            state.phone = normalizePhone(session?.phone || qsPhone || savedPhone || "");
+          } catch (error) {
+            console.error(error);
           }
-        } catch (error) {
-          console.error(error);
-          setStatus("Erreur de chargement du matching JOBS. Vérifie le slug, les tables et les policies RLS.", "error");
+        } else {
+          state.slug = normalizeSlug(qsSlug || savedSlug || "");
+          state.phone = normalizePhone(qsPhone || savedPhone || "");
+          state.session = { access: false, source: "no_guard" };
         }
+
+        saveRail(state.slug, state.phone);
+        syncLinks();
+        syncRailMeta();
+        await refreshAll();
       })();
     })();
   </script>
