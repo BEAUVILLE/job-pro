@@ -1,5 +1,5 @@
-// guard.js — DIGIY JOBS PRO guard propre slug-first / tel-first
-// Doctrine : PIN une seule fois -> session module valide -> circulation interne directe
+// guard.js — DIGIY JOBS PRO guard propre slug-first en façade
+// Logique : PIN d’abord -> session valide -> check accès module -> cockpit/bureau
 (() => {
   "use strict";
 
@@ -24,11 +24,10 @@
   ];
 
   const SLUG_STORAGE_KEY = "digiy_jobs_slug";
-  const PHONE_STORAGE_KEY = "digiy_jobs_phone";
 
   const qs = new URLSearchParams(location.search);
-  const slugQ = qs.get("slug") || "";
-  const phoneQ = qs.get("tel") || qs.get("phone") || "";
+  const slugQ = (qs.get("slug") || "").trim();
+  const phoneQ = (qs.get("phone") || "").trim();
 
   function safeJsonParse(raw) {
     try {
@@ -39,11 +38,8 @@
   }
 
   function normPhone(value) {
-    const raw = String(value || "").trim();
-    const cleaned = raw.replace(/[^\d+]/g, "");
-    const digits = cleaned.replace(/[^\d]/g, "");
-    if (digits.length < 9) return "";
-    return cleaned.startsWith("+") ? `+${digits}` : digits;
+    const d = String(value || "").replace(/[^\d]/g, "");
+    return d.length >= 9 ? d : "";
   }
 
   function normSlug(value) {
@@ -86,34 +82,15 @@
     }
   }
 
-  function savePhoneOnly(phone) {
-    const clean = normPhone(phone);
-    if (!clean) return;
-    try {
-      localStorage.setItem(PHONE_STORAGE_KEY, clean);
-    } catch (_) {}
-  }
-
-  function readSavedPhone() {
-    try {
-      return normPhone(localStorage.getItem(PHONE_STORAGE_KEY) || "");
-    } catch (_) {
-      return "";
-    }
-  }
-
-  function clearSessionsOnly() {
+  function clearSessions() {
     for (const key of SESSION_KEYS) {
       try {
         localStorage.removeItem(key);
       } catch (_) {}
     }
-  }
-
-  function clearAllLocalState() {
-    clearSessionsOnly();
-    try { localStorage.removeItem(SLUG_STORAGE_KEY); } catch (_) {}
-    try { localStorage.removeItem(PHONE_STORAGE_KEY); } catch (_) {}
+    try {
+      localStorage.removeItem(SLUG_STORAGE_KEY);
+    } catch (_) {}
   }
 
   function readStoredSession() {
@@ -123,7 +100,7 @@
 
       const moduleName = upper(parsed.module || parsed.module_code || "");
       const slug = normSlug(parsed.slug || "");
-      const phone = normPhone(parsed.phone || parsed.tel || "");
+      const phone = normPhone(parsed.phone || "");
       const access = !!parsed.access;
       const verifiedAt =
         Number(parsed.verified_at || parsed.ts || parsed.created_at || 0) || 0;
@@ -150,8 +127,7 @@
   function saveSession(payload = {}) {
     const session = {
       slug: normSlug(payload.slug || state.slug || ""),
-      phone: normPhone(payload.phone || payload.tel || state.phone || ""),
-      tel: normPhone(payload.phone || payload.tel || state.phone || ""),
+      phone: normPhone(payload.phone || state.phone || ""),
       owner_id: payload.owner_id || state.owner_id || null,
       module: MODULE_CODE,
       access: !!payload.access,
@@ -166,7 +142,6 @@
     }
 
     saveSlugOnly(session.slug);
-    savePhoneOnly(session.phone);
     return session;
   }
 
@@ -206,10 +181,10 @@
     const url = new URL("./pin.html", location.href);
 
     const slug = normSlug(input.slug || state.slug || "");
-    const phone = normPhone(input.phone || input.tel || state.phone || "");
+    const phone = normPhone(input.phone || state.phone || "");
 
     if (slug) url.searchParams.set("slug", slug);
-    if (phone) url.searchParams.set("tel", phone);
+    if (phone) url.searchParams.set("phone", phone);
 
     url.searchParams.set("return", location.href);
     return url.toString();
@@ -221,12 +196,11 @@
 
   const stored = readStoredSession();
   const savedSlug = readSavedSlug();
-  const savedPhone = readSavedPhone();
 
   const state = {
     module: MODULE_CODE,
     slug: normSlug(slugQ || stored?.slug || savedSlug || ""),
-    phone: normPhone(phoneQ || stored?.phone || savedPhone || ""),
+    phone: normPhone(phoneQ || stored?.phone || ""),
     owner_id: stored?.owner_id || null,
     access: false,
     preview: true,
@@ -242,10 +216,9 @@
   async function check() {
     const storedSession = readStoredSession();
     const persistedSlug = readSavedSlug();
-    const persistedPhone = readSavedPhone();
 
-    const slug = normSlug(slugQ || state.slug || storedSession?.slug || persistedSlug || "");
-    const phone = normPhone(phoneQ || state.phone || storedSession?.phone || persistedPhone || "");
+    const slug = normSlug(slugQ || storedSession?.slug || state.slug || persistedSlug || "");
+    const phone = normPhone(phoneQ || storedSession?.phone || state.phone || "");
     const verifiedAt = Number(storedSession?.verified_at || state.verified_at || 0) || 0;
 
     state.slug = slug;
@@ -255,10 +228,9 @@
     state.error = null;
 
     if (slug) saveSlugOnly(slug);
-    if (phone) savePhoneOnly(phone);
 
     if (!slug) {
-      clearSessionsOnly();
+      clearSessions();
       state.access = false;
       state.preview = true;
       state.ready_flag = true;
@@ -267,11 +239,10 @@
       return { ...state };
     }
 
-    // Session encore fraîche : on laisse passer sans refaire le PIN.
+    // On n’ouvre pas le cockpit réel sans session PIN fraîche
     if (!verifiedAt || !isRecent(verifiedAt)) {
-      clearSessionsOnly();
+      clearSessions();
       saveSlugOnly(slug);
-      if (phone) savePhoneOnly(phone);
       state.access = false;
       state.preview = true;
       state.ready_flag = true;
@@ -280,7 +251,8 @@
       return { ...state };
     }
 
-    // Vérification secondaire module actif.
+    // Vérification secondaire module actif
+    // Garde la compatibilité actuelle avec le backbone existant.
     const res = await rpc("digiy_has_access", {
       p_phone: phone,
       p_module: MODULE_CODE
@@ -289,9 +261,8 @@
     const hasAccess = parseAccessResult(res);
 
     if (!hasAccess) {
-      clearSessionsOnly();
+      clearSessions();
       saveSlugOnly(slug);
-      if (phone) savePhoneOnly(phone);
       state.access = false;
       state.preview = true;
       state.ready_flag = true;
@@ -305,26 +276,26 @@
     state.access = true;
     state.preview = false;
     state.ready_flag = true;
-    state.verified_at = nowMs();
 
     saveSession({
       slug,
       phone,
       owner_id: state.owner_id,
       access: true,
-      verified_at: state.verified_at
+      verified_at: verifiedAt || nowMs()
     });
 
     try {
       const url = new URL(location.href);
       const currentSlug = normSlug(url.searchParams.get("slug") || "");
-      const currentPhone = normPhone(url.searchParams.get("tel") || url.searchParams.get("phone") || "");
+      const currentPhone = normPhone(url.searchParams.get("phone") || "");
 
-      if (slug && currentSlug !== slug) url.searchParams.set("slug", slug);
+      if (slug && currentSlug !== slug) {
+        url.searchParams.set("slug", slug);
+      }
 
       if (phone && currentPhone !== phone) {
-        url.searchParams.set("tel", phone);
-        url.searchParams.delete("phone");
+        url.searchParams.set("phone", phone);
       }
 
       history.replaceState({}, "", url.toString());
@@ -358,33 +329,15 @@
     },
 
     saveSession(payload = {}) {
-      const saved = saveSession(payload);
-      state.slug = saved.slug;
-      state.phone = saved.phone;
-      state.access = !!saved.access;
-      state.preview = !saved.access;
-      state.verified_at = saved.verified_at;
-      state.ready_flag = true;
-      return saved;
+      return saveSession(payload);
     },
 
     clearSession() {
-      clearSessionsOnly();
+      clearSessions();
       state.access = false;
       state.preview = true;
       state.ready_flag = false;
       state.error = null;
-    },
-
-    clearAll() {
-      clearAllLocalState();
-      state.access = false;
-      state.preview = true;
-      state.ready_flag = false;
-      state.error = null;
-      state.slug = "";
-      state.phone = "";
-      state.verified_at = null;
     },
 
     goPin(input = {}) {
@@ -399,4 +352,4 @@
       return buildPinUrl({ ...state, ...input });
     }
   };
-})();
+})();;
