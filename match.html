@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DIGIY JOBS PRO — Bureau de tri</title>
+  <title>DIGIY JOBS PRO — Match candidat ↔ mission</title>
   <meta
     name="description"
-    content="DIGIY JOBS PRO — bureau réel de tri, qualification, suivi et mise en relation des candidatures."
+    content="DIGIY JOBS PRO — matching réel entre une mission publiée et les candidats du bureau, avec score lisible, raisons de compatibilité, notes bureau et mise en relation."
   />
   <meta name="theme-color" content="#0A1128" />
 
@@ -29,18 +29,17 @@
       --blue-2:#38bdf8;
       --green:#10b981;
       --gold:#d4a84f;
-      --red:#ef4444;
       --amber:#f59e0b;
+      --red:#ef4444;
       --ink:#0f172a;
       --muted:#475569;
       --bg:#edf3f8;
       --sand:#f8f0e3;
       --line:#e2e8f0;
       --card:#ffffffd9;
-      --shadow:0 16px 40px rgba(15,23,42,.10);
+      --shadow:0 16px 42px rgba(15,23,42,.10);
       --radius:22px;
-      --radius-sm:16px;
-      --max:1380px;
+      --max:1400px;
     }
 
     *{box-sizing:border-box}
@@ -74,14 +73,16 @@
       background:linear-gradient(135deg,var(--dark),#20305e);box-shadow:var(--shadow);font-size:14px;
     }
     .brand small{display:block;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.08em}
+
     .top-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .top-actions button,.top-actions a{
+    .top-actions button,.top-actions a,.top-actions select{
       border:1px solid var(--line);
       background:#fff;
       border-radius:14px;
       padding:10px 12px;
       font-weight:900;
       cursor:pointer;
+      color:var(--ink);
       min-height:44px;
       display:inline-flex;
       align-items:center;
@@ -122,10 +123,10 @@
     }
 
     .hero{padding:24px 0 14px}
-    .hero-card,.panel,.stat,.filters,.list-card,.detail-card,.mini,.empty-card,.foot{
+    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px;align-items:stretch}
+    .hero-card,.panel,.stat,.mission-card,.filters,.list-card,.detail-card,.mini,.field,.match-box,.foot,.empty-card{
       border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
     }
-    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:stretch}
     .hero-card{
       padding:26px;position:relative;overflow:hidden;
       background:
@@ -136,6 +137,7 @@
       content:"";position:absolute;right:-45px;bottom:-45px;width:170px;height:170px;border-radius:50%;
       border:26px solid rgba(10,17,40,.05);
     }
+
     .eyebrow{
       display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;border:1px solid var(--line);
       background:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
@@ -163,340 +165,320 @@
     .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
     .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
 
+    .mission-section{padding-bottom:16px}
+    .mission-card{padding:18px}
+    .section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .section-head h2,.list-head h3,.detail-head h3{margin:0;font-size:24px;letter-spacing:-.02em}
+    .section-head p,.list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
+    .mission-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .mission-grid .full{grid-column:1 / -1}
+    .field{padding:13px;border-radius:16px;background:#fff}
+    .field small{display:block;color:#64748b;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+    .field strong{display:block;font-size:14px;line-height:1.55;word-break:break-word}
+
     .filters{padding:16px;margin-bottom:16px}
-    .filters-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
-    .filters-top h2{margin:0;font-size:24px;letter-spacing:-.02em}
-    .filters-top p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
-    .filter-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;gap:12px}
+    .filter-grid{display:grid;grid-template-columns:1.2fr repeat(4,.8fr);gap:12px}
     .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .filter-actions button{
       border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
     }
+
     input,select,textarea{
       width:100%;padding:12px 12px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);outline:none;
     }
     input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
+    textarea{min-height:120px;resize:vertical}
 
-    .workspace{display:grid;grid-template-columns:.92fr 1.08fr;gap:18px;padding-bottom:36px}
+    .board{display:grid;grid-template-columns:.88fr 1.12fr;gap:18px;padding-bottom:36px}
     .left-col,.right-col{display:grid;gap:16px;align-content:start}
     .list-card,.detail-card{padding:16px}
-    .list-head,.detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
-    .list-head h3,.detail-head h3{margin:0;font-size:22px;letter-spacing:-.02em}
-    .list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.55}
-    .list{display:grid;gap:12px;max-height:920px;overflow:auto;padding-right:2px}
-    .dossier{
+    .list{
+      display:grid;gap:12px;max-height:950px;overflow:auto;padding-right:2px;
+    }
+    .candidate{
       border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
     }
-    .dossier:hover{transform:translateY(-1px)}
-    .dossier.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
-    .dossier-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-    .dossier h4{margin:0;font-size:18px;letter-spacing:-.02em}
+    .candidate:hover{transform:translateY(-1px)}
+    .candidate.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
+    .candidate-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .candidate h4{margin:0;font-size:18px;letter-spacing:-.02em}
     .sub{margin:4px 0 0;color:#475569;font-weight:700;font-size:14px;line-height:1.55}
     .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .chip{
-      display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#f8fafc;border:1px solid var(--line);
-      font-size:12px;font-weight:900;color:#334155;
-    }
-    .sector-build{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
-    .sector-food{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
-    .sector-shop{background:#f0fdf4;color:#15803d;border-color:#bbf7d0}
-    .sector-service{background:#f5f3ff;color:#6d28d9;border-color:#ddd6fe}
-    .sector-driver{background:#ecfeff;color:#0f766e;border-color:#a5f3fc}
-    .status-new{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
-    .status-review{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
-    .status-shortlist{background:#fefce8;color:#a16207;border-color:#fde68a}
-    .status-call{background:#ecfeff;color:#155e75;border-color:#a5f3fc}
-    .status-accepted{background:#ecfdf5;color:#166534;border-color:#86efac}
-    .status-rejected{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
-    .dossier-note{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.6;
-      display:-webkit-box;
-      -webkit-line-clamp:3;
-      -webkit-box-orient:vertical;
-      overflow:hidden;
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:900;background:#f8fafc}
+    .chip.score-high{color:#047857;background:rgba(16,185,129,.14)}
+    .chip.score-mid{color:#b45309;background:rgba(245,158,11,.14)}
+    .chip.score-low{color:#b91c1c;background:rgba(239,68,68,.10)}
+    .chip.sector-build{color:#7c5517;background:rgba(212,168,79,.12)}
+    .chip.sector-food{color:#065f46;background:rgba(16,185,129,.12)}
+    .chip.sector-driver{color:#075985;background:rgba(14,165,233,.12)}
+    .chip.sector-other{color:#334155;background:#eef2f7}
+    .candidate-note{margin-top:12px;color:var(--muted);font-size:13px;line-height:1.6}
+    .score-pill{
+      min-width:66px;height:66px;border-radius:18px;display:grid;place-items:center;font-weight:900;font-size:22px;color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-2));box-shadow:0 12px 24px rgba(14,165,233,.20);
     }
 
-    .detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .field-box{
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:16px;
-      padding:12px;
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+    .detail-actions,.button-row{display:flex;gap:10px;flex-wrap:wrap}
+    .detail-actions button,.detail-actions a,.button-row button,.button-row a{
+      border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;
     }
-    .field-box.full{grid-column:1 / -1}
-    .field-box small{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-bottom:6px}
-    .field-box strong{display:block;font-size:15px;line-height:1.55;color:var(--ink)}
+    .detail-actions .primary,.button-row .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+    .detail-actions .green,.button-row .green{background:var(--green);color:#fff;border-color:transparent}
+    .detail-actions .gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#151515;border-color:transparent}
 
-    .detail-text{
-      margin-top:12px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-      background:#fff;
-      color:#334155;
-      line-height:1.7;
-      min-height:110px;
-      white-space:pre-line;
-    }
+    .match-box{padding:16px;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .match-box h4{margin:0 0 8px;font-size:20px;letter-spacing:-.02em}
+    .match-box p{margin:0;color:var(--muted);line-height:1.65}
+    .reason-list{display:grid;gap:10px;margin-top:12px}
+    .reason-item{padding:12px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:#334155;line-height:1.55}
 
-    .detail-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
-    .action-btn{
-      min-height:48px;border-radius:16px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:900;cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;text-align:center;padding:12px;
-    }
-    .action-btn.primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
-    .action-btn.gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#151515;border-color:transparent}
-    .action-btn.green{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.24);color:#065f46}
-    .action-btn.red{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.24);color:#991b1b}
-    .action-btn.amber{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.24);color:#8a4b00}
-
-    .notes-card{
-      margin-top:14px;
-      border:1px solid var(--line);
-      border-radius:18px;
-      background:#fff;
-      padding:14px;
-    }
-    .notes-card h4{margin:0 0 8px;font-size:18px}
-    .notes-card textarea{min-height:140px;resize:vertical}
-    .notes-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-
-    .empty-card{
-      padding:26px;text-align:center;color:var(--muted);line-height:1.7;background:#fff;
-    }
+    .notes-wrap{display:grid;gap:12px}
+    .empty-card{padding:24px;text-align:center;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
+    .empty-card h4{margin:0 0 8px;font-size:22px}
+    .empty-card p{margin:0;color:var(--muted);line-height:1.65;max-width:52ch;margin-inline:auto}
 
     footer{padding:0 0 30px}
-    .foot{
-      padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;
-    }
+    .foot{padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
     .foot p{margin:0;color:var(--muted);line-height:1.6}
     .foot-links{display:flex;gap:10px;flex-wrap:wrap}
-    .foot-links a{
-      min-height:42px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;
-    }
+    .foot-links button,.foot-links a{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
 
-    @media (max-width:1180px){
-      .hero-grid,.workspace{grid-template-columns:1fr}
-      .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .detail-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (max-width:1200px){
+      .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid{grid-template-columns:1fr 1fr}
+      .filter-grid > *:first-child{grid-column:1 / -1}
+      .mission-grid .full{grid-column:1 / -1}
     }
     @media (max-width:860px){
-      .filter-grid{grid-template-columns:1fr 1fr}
-      .detail-grid{grid-template-columns:1fr}
-    }
-    @media (max-width:640px){
-      .filter-grid,.detail-actions,.stats-grid,.mini-grid{grid-template-columns:1fr}
+      .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid,.detail-grid,.mini-grid{grid-template-columns:1fr}
+      h1{max-width:none}
     }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <a class="brand" id="homeLink" href="./index.html">
-        <span class="brand-mark">JB</span>
+      <a id="brandHome" class="brand" href="./index.html" aria-label="Retour à l’accueil JOBS">
+        <span class="brand-mark">JM</span>
         <span>
           DIGIY JOBS PRO
-          <small>BUREAU DE TRI</small>
+          <small>MATCH CANDIDAT ↔ MISSION</small>
         </span>
       </a>
 
       <div class="top-actions">
-        <a id="wallLink" href="./mur%20des%20missions.html">Mur des missions</a>
-        <a id="cockpitLink" href="./cockpit.html">Cockpit</a>
-        <a id="bureauLink" href="./bureau.html">Bureau</a>
-        <a id="matchLink" href="./match.html">Match</a>
-        <a id="qrLink" class="gold" href="./qr.html">QR JOBS</a>
-        <a id="clawLink" class="primary" href="./cockpit.html#clawSection">Entraide / CLAW</a>
-        <button id="btnRefreshTop" type="button">Rafraîchir</button>
+        <button id="btnReloadMission" type="button">Recharger</button>
+        <a id="btnOpenHome" href="./index.html">Accueil JOBS</a>
+        <a id="btnOpenWall" href="./mur%20des%20missions.html">Mur</a>
+        <a id="btnOpenBureau" href="./bureau.html">Bureau</a>
+        <a id="btnOpenCockpit" href="./cockpit.html">Cockpit</a>
+        <a id="btnOpenQr" class="gold" href="./qr.html">QR JOBS</a>
+        <a id="btnOpenClaw" class="primary" href="./cockpit.html#clawSection">Entraide / CLAW</a>
+        <a id="btnOpenPublicMission" href="./mission.html">Voir la fiche mission</a>
       </div>
     </div>
   </header>
 
   <div class="wrap status-wrap">
-    <div id="statusBox" class="status-box info">Chargement du bureau…</div>
+    <div id="statusBox" class="status-box"></div>
   </div>
 
-  <main class="hero">
-    <div class="wrap hero-grid">
-      <section class="hero-card">
-        <span class="eyebrow">Bureau PRO • accès gardé • dossiers par id</span>
-        <h1>Le bureau qui trie pour de vrai.</h1>
-        <p class="lead">
-          Ici tu lis les candidatures, tu choisis le bon profil, tu notes, tu contactes, tu avances.
-          L’accès reste sur <b>slug + phone</b>. Les dossiers restent sur <b>candidate.id / offer_id</b>.
-        </p>
-
-        <div class="hero-tags">
-          <span class="tag">Session PRO active</span>
-          <span class="tag">Navigation interne directe</span>
-          <span class="tag">QR JOBS direct</span>
-          <span class="tag">CLAW direct</span>
-          <span class="tag">Aucun PIN visible ici</span>
-        </div>
-      </section>
-
-      <aside class="panel">
-        <span class="signal" id="modePill">Mode — détection…</span>
-        <h2>État du rail</h2>
-        <p>
-          Une fois la session ouverte, tu circules entre cockpit, bureau, match, QR et entraide sans retaper le PIN.
-        </p>
-
-        <div class="mini-grid">
-          <div class="mini">
-            <strong>Slug actif</strong>
-            <span id="slugChip">—</span>
-          </div>
-          <div class="mini">
-            <strong>Phone actif</strong>
-            <span id="phoneChip">—</span>
-          </div>
-          <div class="mini">
-            <strong>Mode</strong>
-            <span id="modeChip">Détection…</span>
-          </div>
-          <div class="mini">
-            <strong>Source</strong>
-            <span id="sourceChip">Détection…</span>
-          </div>
-        </div>
-      </aside>
-    </div>
-  </main>
-
-  <section class="stats">
-    <div class="wrap stats-grid">
-      <article class="stat">
-        <strong id="statCandidates">0</strong>
-        <span>candidats visibles</span>
-      </article>
-      <article class="stat">
-        <strong id="statNew">0</strong>
-        <span>nouveaux</span>
-      </article>
-      <article class="stat">
-        <strong id="statReview">0</strong>
-        <span>en revue</span>
-      </article>
-      <article class="stat">
-        <strong id="statAccepted">0</strong>
-        <span>acceptés</span>
-      </article>
-    </div>
-  </section>
-
-  <section class="wrap">
-    <div class="filters">
-      <div class="filters-top">
-        <div>
-          <h2>Filtrer le terrain</h2>
-          <p>
-            Ici tu gardes le contexte du module, mais tu retrouves chaque personne par son <b>id</b> et chaque mission liée par <b>offer_id</b>.
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <article class="hero-card">
+          <span class="eyebrow">Rail réel DIGIY JOBS</span>
+          <h1>Le bon besoin face au bon profil.</h1>
+          <p class="lead">
+            Cette page lit la mission active du slug, récupère les candidats réels du bureau,
+            calcule un score lisible, explique les raisons du match et aide le bureau à trancher vite.
           </p>
-        </div>
-      </div>
-
-      <div class="filter-grid">
-        <input id="searchInput" type="text" placeholder="Nom, ville, métier, téléphone, note…" />
-        <select id="filterSector">
-          <option value="all">Tous les secteurs</option>
-        </select>
-        <select id="filterOffer">
-          <option value="all">Toutes les missions</option>
-        </select>
-        <select id="filterStatus">
-          <option value="all">Tous les statuts</option>
-          <option value="new">new</option>
-          <option value="review">review</option>
-          <option value="shortlist">shortlist</option>
-          <option value="call">call</option>
-          <option value="accepted">accepted</option>
-          <option value="rejected">rejected</option>
-        </select>
-        <select id="filterAvailability">
-          <option value="all">Toutes les disponibilités</option>
-          <option value="immediate">immediate</option>
-          <option value="this_week">this_week</option>
-          <option value="this_month">this_month</option>
-          <option value="to_discuss">to_discuss</option>
-        </select>
-      </div>
-
-      <div class="filter-actions">
-        <button id="btnClearFilters" type="button">Effacer filtres</button>
-        <button id="btnExportJson" type="button">Exporter JSON</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="wrap workspace">
-    <div class="left-col">
-      <article class="list-card">
-        <div class="list-head">
-          <div>
-            <h3>Dossiers candidats</h3>
-            <p id="countLabel">0 dossier</p>
+          <div class="hero-tags">
+            <span class="tag">Mission réelle</span>
+            <span class="tag">Candidats réels</span>
+            <span class="tag">Score lisible</span>
+            <span class="tag">QR direct</span>
+            <span class="tag">CLAW direct</span>
           </div>
-        </div>
+        </article>
 
-        <div id="candidateList" class="list"></div>
-      </article>
-    </div>
-
-    <div class="right-col">
-      <article class="detail-card">
-        <div class="detail-head">
-          <div>
-            <h3>Détail du dossier</h3>
-            <p>Le dossier métier suit <b>candidate.id</b>. Le module, lui, reste sur <b>slug + phone</b>.</p>
+        <aside class="panel">
+          <span class="signal" id="signalPill">Slug JOBS — détection…</span>
+          <h2>État du rail</h2>
+          <p>
+            Le module circule en <b>slug + phone</b>. Les objets métier restent en <b>candidate.id / offer_id</b>.
+            Une session ouverte doit te laisser passer sans refaire le PIN.
+          </p>
+          <div class="mini-grid">
+            <div class="mini"><strong>Source mission</strong><span id="miniMissionSource">digiy_jobs_offers_pro</span></div>
+            <div class="mini"><strong>Source candidats</strong><span id="miniCandidateSource">digiy_jobs_candidates_pro</span></div>
+            <div class="mini"><strong>Mode</strong><span id="miniMode">cockpit réel</span></div>
+            <div class="mini"><strong>Slug / phone</strong><span id="miniSlug">—</span></div>
           </div>
-        </div>
+        </aside>
+      </div>
+    </section>
 
-        <div id="detailEmpty" class="empty-card">Choisis un candidat dans la colonne de gauche.</div>
+    <section class="stats">
+      <div class="wrap stats-grid">
+        <article class="stat"><strong id="statCandidates">0</strong><span>candidats affichés</span></article>
+        <article class="stat"><strong id="statStrong">0</strong><span>matchs forts (80+)</span></article>
+        <article class="stat"><strong id="statMedium">0</strong><span>matchs à regarder (60+)</span></article>
+        <article class="stat"><strong id="statValidated">0</strong><span>matchs validés</span></article>
+      </div>
+    </section>
 
-        <div id="detailContent" style="display:none">
-          <div id="detailGrid" class="detail-grid"></div>
-          <div id="detailNote" class="detail-text"></div>
-
-          <div class="detail-actions">
-            <a id="btnWhatsApp" class="action-btn primary" href="#" target="_blank" rel="noopener">WhatsApp</a>
-            <a id="btnMission" class="action-btn" href="#">Ouvrir mission</a>
-            <a id="btnMatch" class="action-btn gold" href="#">Ouvrir match</a>
-            <button id="btnCopySheet" class="action-btn" type="button">Copier fiche</button>
-            <button id="btnCopyMissionLink" class="action-btn" type="button">Copier lien mission</button>
-            <button id="btnMarkCall" class="action-btn amber" type="button">Marquer à appeler</button>
-            <button id="btnSetReview" class="action-btn" type="button">review</button>
-            <button id="btnSetShortlist" class="action-btn gold" type="button">shortlist</button>
-            <button id="btnSetAccepted" class="action-btn green" type="button">accepted</button>
-            <button id="btnSetRejected" class="action-btn red" type="button">rejected</button>
-          </div>
-
-          <div class="notes-card">
-            <h4>Notes bureau locales</h4>
-            <textarea id="bureauNotes" placeholder="Notes locales du bureau…"></textarea>
-            <div class="notes-actions">
-              <button id="btnSaveNotes" class="action-btn primary" type="button">Enregistrer notes</button>
+    <section class="mission-section">
+      <div class="wrap">
+        <article class="mission-card" id="missionCard">
+          <div class="section-head">
+            <div>
+              <h2>Mission active</h2>
+              <p>Le matching se base sur cette mission. Tu peux changer d’offre active si le slug en a plusieurs.</p>
+            </div>
+            <div style="min-width:280px;display:grid;gap:8px">
+              <label for="missionSelect" style="font-weight:900;color:#334155">Choisir une mission active</label>
+              <select id="missionSelect">
+                <option value="">Aucune mission</option>
+              </select>
             </div>
           </div>
+          <div class="mission-grid" id="missionGrid"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="filters">
+        <div class="section-head" style="margin-bottom:14px">
+          <div>
+            <h2>Filtres du matching</h2>
+            <p>Tu peux serrer la recherche ou laisser le score faire le premier tri.</p>
+          </div>
         </div>
-      </article>
-    </div>
-  </section>
+
+        <div class="filter-grid">
+          <input id="searchInput" type="search" placeholder="Rechercher nom, métier, ville, message, expérience..." />
+
+          <select id="filterZoneMode">
+            <option value="all">Toutes zones</option>
+            <option value="same">Même ville mission</option>
+            <option value="near">Ville mission + proches</option>
+          </select>
+
+          <select id="filterMinScore">
+            <option value="0">Tous scores</option>
+            <option value="40">40+</option>
+            <option value="60">60+</option>
+            <option value="80">80+</option>
+          </select>
+
+          <select id="filterStatus">
+            <option value="all">Tous statuts bureau</option>
+            <option value="new">Nouveau</option>
+            <option value="review">En revue</option>
+            <option value="shortlist">Shortlist</option>
+            <option value="call">À appeler</option>
+            <option value="accepted">Accepté</option>
+            <option value="rejected">Refusé</option>
+          </select>
+
+          <select id="filterAvailability">
+            <option value="all">Toutes dispos</option>
+            <option value="immediate">Immédiate</option>
+            <option value="this_week">Cette semaine</option>
+            <option value="this_month">Ce mois-ci</option>
+            <option value="to_discuss">À discuter</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button id="btnClearFilters" type="button">Effacer les filtres</button>
+          <button id="btnExportMatches" type="button">Exporter les matchs</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap board">
+      <div class="left-col">
+        <article class="list-card">
+          <div class="list-head">
+            <div>
+              <h3>Candidats classés</h3>
+              <p>Le haut de liste montre les profils les plus proches de la mission active.</p>
+            </div>
+          </div>
+          <div class="list" id="candidateList"></div>
+        </article>
+      </div>
+
+      <div class="right-col">
+        <article class="detail-card">
+          <div class="empty-card" id="emptyState">
+            <h4>Choisis un candidat</h4>
+            <p>
+              La mission est prête. Sélectionne un profil à gauche pour voir la compatibilité,
+              les raisons du score, les notes et la mise en relation.
+            </p>
+          </div>
+
+          <div id="detailContent" hidden>
+            <div class="detail-head">
+              <div>
+                <h3 id="detailName">—</h3>
+                <p id="detailSubtitle">—</p>
+              </div>
+              <div class="chips" id="detailChips"></div>
+            </div>
+
+            <div class="match-box">
+              <h4>Lecture du match</h4>
+              <p id="matchSummary">—</p>
+              <div class="reason-list" id="reasonList"></div>
+            </div>
+
+            <div class="detail-grid" id="detailGrid" style="margin-top:16px"></div>
+
+            <div class="match-box" style="margin-top:16px">
+              <h4>Notes bureau pour ce match</h4>
+              <p>Note le vrai retour : sérieux, cohérence, réactivité, point à vérifier, étape suivante.</p>
+              <div class="notes-wrap" style="margin-top:12px">
+                <textarea id="matchNotes" placeholder="Ex. Très bon profil pour démarrage rapide. Vérifier mobilité exacte. Possible mise en relation aujourd’hui."></textarea>
+                <div class="button-row">
+                  <button class="primary" id="btnSaveMatchNotes" type="button">Enregistrer les notes</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-actions" style="margin-top:16px">
+              <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp candidat</a>
+              <button id="btnCopyCandidateLink" type="button">📋 Copier fiche candidat</button>
+              <button id="btnCopyMissionLink" type="button">🧷 Copier lien mission</button>
+              <button class="gold" id="btnOpenQrDetail" type="button">📎 Ouvrir QR JOBS</button>
+              <button class="primary" id="btnValidateMatch" type="button">🤝 Valider ce match</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
 
   <footer>
     <div class="wrap">
       <div class="foot">
-        <p>Bureau JOBS recousu : navigation interne directe, dossiers par id, accès gardé par slug + phone.</p>
+        <p>
+          DIGIY JOBS PRO — match candidat ↔ mission. Le rail qui transforme les besoins et les dossiers en lecture exploitable.
+        </p>
         <div class="foot-links">
-          <a id="footCockpitLink" href="./cockpit.html">Cockpit</a>
-          <a id="footBureauLink" href="./bureau.html">Bureau</a>
-          <a id="footMatchLink" href="./match.html">Match</a>
-          <a id="footQrLink" href="./qr.html">QR JOBS</a>
-          <a id="footClawLink" href="./cockpit.html#clawSection">CLAW</a>
+          <button id="btnResetValidated" type="button">Vider validations</button>
+          <a id="footerHomeLink" href="./index.html">Accueil JOBS</a>
+          <a id="footerWallLink" href="./mur%20des%20missions.html">Mur</a>
+          <a id="footerBureauLink" href="./bureau.html">Bureau</a>
+          <a id="footerQrLink" href="./qr.html">QR JOBS</a>
+          <a id="footerClawLink" href="./cockpit.html#clawSection">CLAW</a>
+          <a href="#top">Retour haut</a>
         </div>
       </div>
     </div>
@@ -523,73 +505,175 @@
       const params = new URLSearchParams(location.search);
       const $ = (id) => document.getElementById(id);
 
+      const LOCAL_MATCH_PREFIX = "DIGIY_JOBS_MATCH_STATE_V3::";
       const SLUG_STORAGE_KEY = "digiy_jobs_slug";
       const PHONE_STORAGE_KEY = "digiy_jobs_phone";
-      const LOCAL_KEY_PREFIX = "digiy_jobs_bureau_local_";
 
       const JOBS_PATHS = {
         home: "./index.html",
         wall: "./mur%20des%20missions.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
-        match: "./match.html",
         mission: "./mission.html",
+        match: "./match.html",
         qr: "./qr.html"
       };
 
-      const STATUS_CLASS = {
-        new: "status-new",
-        review: "status-review",
-        shortlist: "status-shortlist",
-        call: "status-call",
-        accepted: "status-accepted",
-        rejected: "status-rejected"
+      const NEAR_ZONES = {
+        dakar:["rufisque","thiès","thies"],
+        rufisque:["dakar","thiès","thies","mbour"],
+        "thiès":["rufisque","dakar","mbour","saly","somone","ngaparou"],
+        thies:["rufisque","dakar","mbour","saly","somone","ngaparou"],
+        mbour:["saly","ngaparou","somone","thiès","thies","rufisque"],
+        saly:["mbour","ngaparou","somone"],
+        ngaparou:["saly","somone","mbour"],
+        somone:["ngaparou","saly","mbour"]
       };
+
+      const SECTOR_LABELS = {
+        build:"BTP",
+        beauty:"Beauté",
+        shop:"Boutique",
+        food:"Restauration",
+        service:"Services",
+        driver:"Chauffeur",
+        market:"Marché",
+        admin:"Admin"
+      };
+
+      const STATUS_LABELS = {
+        new:"Nouveau",
+        review:"En revue",
+        shortlist:"Shortlist",
+        call:"À appeler",
+        accepted:"Accepté",
+        rejected:"Refusé"
+      };
+
+      const AVAILABILITY_LABELS = {
+        immediate:"Immédiate",
+        this_week:"Cette semaine",
+        this_month:"Ce mois-ci",
+        to_discuss:"À discuter"
+      };
+
+      const CONTRACT_LABELS = {
+        cdi:"CDI",
+        cdd:"CDD",
+        mission:"Mission",
+        stage:"Stage",
+        freelance:"Freelance",
+        extra:"Extra"
+      };
+
+      const SECTOR_KEYWORDS = {
+        build:["btp","chantier","construction","maçon","macon","électricien","electricien","plombier","soudeur","menuisier","peintre","carreleur","manoeuvre","manoeuvres","mecanicien","mécanicien"],
+        beauty:["coiffeuse","coiffeur","esthetique","esthétique","beaute","beauté","maquillage","ongles","spa"],
+        shop:["vente","vendeur","vendeuse","boutique","caisse","rayon","stock"],
+        food:["serveur","serveuse","cuisinier","cuisine","restaurant","restauration","bar","snack","chef","plonge"],
+        service:["agent","ménage","menage","gardien","entretien","polyvalent","polyvalente","assistant"],
+        driver:["chauffeur","driver","permis","conduite","transport","livraison"],
+        market:["marché","marche","commerce","vendeur","vendeuse","achat","vente"],
+        admin:["secrétaire","secretaire","bureau","admin","gestion","assistant","comptable"]
+      };
+
+      const statusBox = $("statusBox");
+      const signalPill = $("signalPill");
+      const miniMode = $("miniMode");
+      const miniSlug = $("miniSlug");
+
+      const statCandidates = $("statCandidates");
+      const statStrong = $("statStrong");
+      const statMedium = $("statMedium");
+      const statValidated = $("statValidated");
+
+      const missionGrid = $("missionGrid");
+      const missionSelect = $("missionSelect");
+      const candidateList = $("candidateList");
+      const emptyState = $("emptyState");
+      const detailContent = $("detailContent");
+      const detailName = $("detailName");
+      const detailSubtitle = $("detailSubtitle");
+      const detailChips = $("detailChips");
+      const matchSummary = $("matchSummary");
+      const reasonList = $("reasonList");
+      const detailGrid = $("detailGrid");
+      const matchNotes = $("matchNotes");
+      const btnOpenWA = $("btnOpenWA");
+
+      const searchInput = $("searchInput");
+      const filterZoneMode = $("filterZoneMode");
+      const filterMinScore = $("filterMinScore");
+      const filterStatus = $("filterStatus");
+      const filterAvailability = $("filterAvailability");
+
+      const btnReloadMission = $("btnReloadMission");
+      const btnClearFilters = $("btnClearFilters");
+      const btnExportMatches = $("btnExportMatches");
+      const btnSaveMatchNotes = $("btnSaveMatchNotes");
+      const btnCopyCandidateLink = $("btnCopyCandidateLink");
+      const btnCopyMissionLink = $("btnCopyMissionLink");
+      const btnOpenQrDetail = $("btnOpenQrDetail");
+      const btnValidateMatch = $("btnValidateMatch");
+      const btnResetValidated = $("btnResetValidated");
+
+      const brandHome = $("brandHome");
+      const btnOpenHome = $("btnOpenHome");
+      const btnOpenWall = $("btnOpenWall");
+      const btnOpenBureau = $("btnOpenBureau");
+      const btnOpenCockpit = $("btnOpenCockpit");
+      const btnOpenQr = $("btnOpenQr");
+      const btnOpenClaw = $("btnOpenClaw");
+      const btnOpenPublicMission = $("btnOpenPublicMission");
+      const footerHomeLink = $("footerHomeLink");
+      const footerWallLink = $("footerWallLink");
+      const footerBureauLink = $("footerBureauLink");
+      const footerQrLink = $("footerQrLink");
+      const footerClawLink = $("footerClawLink");
 
       const state = {
         slug: "",
         phone: "",
-        session: null,
         offers: [],
+        mission: null,
         candidates: [],
-        offerMap: new Map(),
-        selectedId: null
+        ranked: [],
+        selectedId: null,
+        preview: true,
+        session: null,
+        matchState: {},
+        selectedMissionId: ""
       };
 
-      const statusBox = $("statusBox");
-      const searchInput = $("searchInput");
-      const filterSector = $("filterSector");
-      const filterOffer = $("filterOffer");
-      const filterStatus = $("filterStatus");
-      const filterAvailability = $("filterAvailability");
-      const candidateList = $("candidateList");
-      const countLabel = $("countLabel");
-      const detailEmpty = $("detailEmpty");
-      const detailContent = $("detailContent");
-      const detailGrid = $("detailGrid");
-      const detailNote = $("detailNote");
-      const bureauNotes = $("bureauNotes");
-
-      function setStatus(message, kind = "info"){
-        statusBox.className = "status-box " + kind;
-        statusBox.textContent = message || "";
-        statusBox.style.display = message ? "block" : "none";
+      function setStatus(text, tone = "info") {
+        if (!text) {
+          statusBox.className = "status-box";
+          statusBox.textContent = "";
+          statusBox.style.display = "none";
+          return;
+        }
+        statusBox.className = `status-box ${tone}`;
+        statusBox.textContent = text;
+        statusBox.style.display = "block";
       }
 
-      function safe(value){
-        return value == null || value === "" ? "—" : String(value);
+      function safe(value, fallback = "—") {
+        return value == null || value === "" ? fallback : String(value);
       }
 
-      function escapeHtml(value){
-        return String(value ?? "")
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
+      function formatDate(value) {
+        if (!value) return "—";
+        try {
+          return new Intl.DateTimeFormat("fr-FR", {
+            dateStyle: "medium",
+            timeStyle: "short"
+          }).format(new Date(value));
+        } catch {
+          return String(value);
+        }
       }
 
-      function normalizeSlug(value = ""){
+      function normalizeSlug(value = "") {
         return String(value || "")
           .trim()
           .toLowerCase()
@@ -599,38 +683,113 @@
           .replace(/^-|-$/g, "");
       }
 
-      function normalizePhone(value = ""){
-        return String(value || "").replace(/[^\d+]/g, "");
+      function normalizePhone(value = "") {
+        return String(value || "").trim().replace(/[^\d+]/g, "");
       }
 
-      function saveRail(slug, phone){
-        const cleanSlug = normalizeSlug(slug);
-        const cleanPhone = normalizePhone(phone);
-        try {
-          if (cleanSlug) localStorage.setItem(SLUG_STORAGE_KEY, cleanSlug);
-          if (cleanPhone) localStorage.setItem(PHONE_STORAGE_KEY, cleanPhone);
-        } catch(_) {}
+      function normalizeText(value = "") {
+        return String(value || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
       }
 
-      function readSavedSlug(){
+      function escapeHtml(str = "") {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function sectorLabel(value = "") {
+        return SECTOR_LABELS[String(value || "").toLowerCase()] || value || "Secteur";
+      }
+
+      function contractLabel(value = "") {
+        return CONTRACT_LABELS[String(value || "").toLowerCase()] || value || "Contrat";
+      }
+
+      function statusLabel(value = "") {
+        return STATUS_LABELS[String(value || "").toLowerCase()] || value || "Statut";
+      }
+
+      function availabilityLabel(value = "") {
+        return AVAILABILITY_LABELS[String(value || "").toLowerCase()] || value || "Disponibilité";
+      }
+
+      function scoreClass(score) {
+        if (score >= 80) return "score-high";
+        if (score >= 60) return "score-mid";
+        return "score-low";
+      }
+
+      function sectorClass(sector = "") {
+        const s = String(sector || "").toLowerCase();
+        if (["build","food","driver"].includes(s)) return "sector-" + s;
+        return "sector-other";
+      }
+
+      function readSavedSlug() {
         try { return normalizeSlug(localStorage.getItem(SLUG_STORAGE_KEY) || ""); }
-        catch(_) { return ""; }
+        catch (_) { return ""; }
       }
 
-      function readSavedPhone(){
+      function readSavedPhone() {
         try { return normalizePhone(localStorage.getItem(PHONE_STORAGE_KEY) || ""); }
-        catch(_) { return ""; }
+        catch (_) { return ""; }
       }
 
-      function withRail(path, extra = {}){
+      function saveRail(slug, phone) {
+        try {
+          if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
+          if (phone) localStorage.setItem(PHONE_STORAGE_KEY, phone);
+        } catch (_) {}
+      }
+
+      function matchStateKey() {
+        return LOCAL_MATCH_PREFIX + (state.slug || "global");
+      }
+
+      function loadMatchState() {
+        try {
+          state.matchState = JSON.parse(localStorage.getItem(matchStateKey()) || "{}");
+        } catch (_) {
+          state.matchState = {};
+        }
+      }
+
+      function saveMatchState() {
+        try {
+          localStorage.setItem(matchStateKey(), JSON.stringify(state.matchState));
+        } catch (_) {}
+      }
+
+      function getLocalMatch(candidateId) {
+        return state.matchState[String(candidateId)] || { notes: "", validated: false };
+      }
+
+      function setLocalMatch(candidateId, patch) {
+        state.matchState[String(candidateId)] = {
+          ...getLocalMatch(candidateId),
+          ...patch
+        };
+        saveMatchState();
+      }
+
+      function withRail(path, extra = {}) {
         const u = new URL(path, location.href);
         const slug = normalizeSlug(extra.slug || state.slug || "");
         const phone = normalizePhone(extra.phone || state.phone || "");
+
         if (slug) u.searchParams.set("slug", slug);
         if (phone) u.searchParams.set("phone", phone);
 
         Object.entries(extra).forEach(([k, v]) => {
-          if (["slug", "phone"].includes(k)) return;
+          if (["slug","phone"].includes(k)) return;
           if (v == null || v === "") return;
           u.searchParams.set(k, String(v));
         });
@@ -638,108 +797,308 @@
         return u.pathname + u.search;
       }
 
-      function syncLinks(){
-        $("homeLink").href = withRail(JOBS_PATHS.home);
-        $("wallLink").href = withRail(JOBS_PATHS.wall);
-        $("cockpitLink").href = withRail(JOBS_PATHS.cockpit);
-        $("bureauLink").href = withRail(JOBS_PATHS.bureau);
-        $("matchLink").href = withRail(JOBS_PATHS.match);
-        $("qrLink").href = withRail(JOBS_PATHS.qr);
-        $("clawLink").href = withRail(JOBS_PATHS.cockpit) + "#clawSection";
-        $("footCockpitLink").href = withRail(JOBS_PATHS.cockpit);
-        $("footBureauLink").href = withRail(JOBS_PATHS.bureau);
-        $("footMatchLink").href = withRail(JOBS_PATHS.match);
-        $("footQrLink").href = withRail(JOBS_PATHS.qr);
-        $("footClawLink").href = withRail(JOBS_PATHS.cockpit) + "#clawSection";
+      function syncLinks() {
+        const homeHref = withRail(JOBS_PATHS.home);
+        const wallHref = withRail(JOBS_PATHS.wall);
+        const bureauHref = withRail(JOBS_PATHS.bureau);
+        const cockpitHref = withRail(JOBS_PATHS.cockpit);
+        const qrHref = withRail(JOBS_PATHS.qr);
+
+        brandHome.href = homeHref;
+        btnOpenHome.href = homeHref;
+        btnOpenWall.href = wallHref;
+        btnOpenBureau.href = bureauHref;
+        btnOpenCockpit.href = cockpitHref;
+        btnOpenQr.href = qrHref;
+        btnOpenClaw.href = cockpitHref + "#clawSection";
+        footerHomeLink.href = homeHref;
+        footerWallLink.href = wallHref;
+        footerBureauLink.href = bureauHref;
+        footerQrLink.href = qrHref;
+        footerClawLink.href = cockpitHref + "#clawSection";
+
+        const missionHref = state.mission
+          ? withRail(JOBS_PATHS.mission, { offer: state.mission.id })
+          : withRail(JOBS_PATHS.mission);
+
+        btnOpenPublicMission.href = missionHref;
       }
 
-      function syncRailMeta(){
-        $("slugChip").textContent = state.slug || "aucun";
-        $("phoneChip").textContent = state.phone || "—";
-        $("modeChip").textContent = state.session?.access ? "session PRO active" : "aperçu";
-        $("sourceChip").textContent = state.session?.source || "guard/session";
-        $("modePill").textContent = state.session?.access ? "Mode — session active" : "Mode — aperçu";
-      }
+      function inferSector(candidate, offer) {
+        if (offer?.sector) return String(offer.sector).toLowerCase();
 
-      function sectorLabel(sector = ""){
-        const map = {
-          build: "BTP",
-          food: "Restauration",
-          shop: "Boutique",
-          service: "Services",
-          driver: "Chauffeur",
-          market: "Marché"
-        };
-        return map[String(sector || "").toLowerCase()] || sector || "Secteur";
-      }
+        const hay = normalizeText([
+          candidate.trade,
+          candidate.job_title,
+          candidate.message,
+          offer?.title,
+          offer?.description,
+          offer?.requirements
+        ].filter(Boolean).join(" "));
 
-      function sectorClass(sector = ""){
-        const s = String(sector || "").toLowerCase();
-        if (["build", "food", "shop", "service", "driver"].includes(s)) return "sector-" + s;
-        return "";
-      }
-
-      function statusLabel(status = "new"){
-        const map = {
-          new: "Nouveau",
-          review: "En revue",
-          shortlist: "Shortlist",
-          call: "À appeler",
-          accepted: "Accepté",
-          rejected: "Refusé"
-        };
-        return map[String(status || "new").toLowerCase()] || status || "Statut";
-      }
-
-      function availabilityLabel(v = ""){
-        const map = {
-          immediate: "Immédiate",
-          this_week: "Cette semaine",
-          this_month: "Ce mois-ci",
-          to_discuss: "À discuter"
-        };
-        return map[String(v || "").toLowerCase()] || v || "Disponibilité";
-      }
-
-      function inferSector(candidate){
-        const offer = state.offerMap.get(candidate.offer_id);
-        return String(candidate.sector || offer?.sector || "").toLowerCase();
-      }
-
-      function subtitle(candidate){
-        const offer = state.offerMap.get(candidate.offer_id);
-        const parts = [
-          candidate.trade || candidate.job_title || "Profil",
-          candidate.city || "",
-          offer?.title || ""
-        ].filter(Boolean);
-        return parts.join(" • ");
-      }
-
-      function getCandidateLocal(id){
-        try {
-          return JSON.parse(localStorage.getItem(LOCAL_KEY_PREFIX + id) || "{}");
-        } catch(_) {
-          return {};
+        for (const [sector, words] of Object.entries(SECTOR_KEYWORDS)) {
+          if (words.some((w) => hay.includes(normalizeText(w)))) return sector;
         }
+
+        return "other";
       }
 
-      function setCandidateLocal(id, patch){
-        const next = { ...getCandidateLocal(id), ...patch };
-        try { localStorage.setItem(LOCAL_KEY_PREFIX + id, JSON.stringify(next)); } catch(_) {}
+      function sameOrNearZone(candidateCity, missionCity, zoneMode) {
+        const cand = normalizeText(candidateCity);
+        const miss = normalizeText(missionCity);
+        if (!miss || !cand || zoneMode === "all") return true;
+        if (zoneMode === "same") return cand === miss;
+        if (cand === miss) return true;
+        const near = NEAR_ZONES[miss] || [];
+        return near.includes(cand);
       }
 
-      function buildWhatsAppUrl(candidate) {
-        const linkedOffer = state.offerMap.get(candidate.offer_id);
+      function buildReasons(candidate, offer) {
+        const reasons = [];
+        const sector = inferSector(candidate, offer);
+        const offerText = normalizeText([offer?.title, offer?.description, offer?.requirements].filter(Boolean).join(" "));
+        const candText = normalizeText([candidate.trade, candidate.job_title, candidate.message].filter(Boolean).join(" "));
+
+        if (sector !== "other") reasons.push(`Secteur cohérent : ${sectorLabel(sector)}.`);
+        if (sameOrNearZone(candidate.city, offer?.city, "near")) {
+          reasons.push(`Zone compatible : ${safe(candidate.city)} ↔ ${safe(offer?.city)}.`);
+        }
+        if (["immediate","this_week"].includes(String(candidate.availability || "").toLowerCase())) {
+          reasons.push(`Disponibilité rapide : ${availabilityLabel(candidate.availability)}.`);
+        }
+        if (candidate.years_experience) {
+          reasons.push(`Expérience déclarée : ${candidate.years_experience}.`);
+        }
+
+        const words = ["chauffeur","serveur","coiffe","vende","maçon","macon","plomb","electric","caisse","stock","chantier","cuisine","livraison"];
+        const common = words.filter((w) => offerText.includes(w) && candText.includes(w));
+        if (common.length) reasons.push(`Mots-clés communs : ${common.slice(0, 4).join(", ")}.`);
+
+        if (!reasons.length) {
+          reasons.push("Lecture neutre : profil à vérifier manuellement avec le bureau.");
+        }
+
+        return reasons;
+      }
+
+      function computeScore(candidate, offer) {
+        let score = 30;
+        const sector = inferSector(candidate, offer);
+
+        if (sector !== "other") score += 18;
+
+        if (sameOrNearZone(candidate.city, offer?.city, "same")) score += 18;
+        else if (sameOrNearZone(candidate.city, offer?.city, "near")) score += 10;
+
+        const availability = String(candidate.availability || "").toLowerCase();
+        if (availability === "immediate") score += 16;
+        else if (availability === "this_week") score += 12;
+        else if (availability === "this_month") score += 7;
+
+        const expText = normalizeText(candidate.years_experience);
+        if (/\b([3-9]|[1-9][0-9]+)\b/.test(expText)) score += 14;
+        else if (/\b(1|2)\b/.test(expText)) score += 8;
+        else if (expText) score += 4;
+
+        const offerText = normalizeText([offer?.title, offer?.description, offer?.requirements].filter(Boolean).join(" "));
+        const candText = normalizeText([candidate.trade, candidate.job_title, candidate.message].filter(Boolean).join(" "));
+        const keywords = ["chauffeur","serveur","coiffe","vende","maçon","macon","plomb","electric","caisse","stock","chantier","cuisine","livraison"];
+        const commonCount = keywords.filter((w) => offerText.includes(w) && candText.includes(w)).length;
+        score += Math.min(commonCount * 5, 15);
+
+        return Math.max(0, Math.min(100, Math.round(score)));
+      }
+
+      function rankCandidates() {
+        if (!state.mission) {
+          state.ranked = [];
+          return;
+        }
+
+        const visible = state.candidates
+          .map((candidate) => {
+            const score = computeScore(candidate, state.mission);
+            const reasons = buildReasons(candidate, state.mission);
+            const local = getLocalMatch(candidate.id);
+            return {
+              ...candidate,
+              __score: score,
+              __reasons: reasons,
+              __sector: inferSector(candidate, state.mission),
+              __local: local
+            };
+          })
+          .filter((candidate) => {
+            const q = normalizeText(searchInput.value);
+            const zoneMode = filterZoneMode.value;
+            const minScore = Number(filterMinScore.value || 0);
+            const status = filterStatus.value;
+            const availability = filterAvailability.value;
+
+            if (candidate.__score < minScore) return false;
+            if (!sameOrNearZone(candidate.city, state.mission?.city, zoneMode)) return false;
+            if (status !== "all" && String(candidate.status || "new") !== status) return false;
+            if (availability !== "all" && String(candidate.availability || "") !== availability) return false;
+
+            if (q) {
+              const hay = normalizeText([
+                candidate.full_name,
+                candidate.trade,
+                candidate.job_title,
+                candidate.city,
+                candidate.country,
+                candidate.phone,
+                candidate.message,
+                candidate.years_experience,
+                candidate.__local?.notes
+              ].filter(Boolean).join(" "));
+              if (!hay.includes(q)) return false;
+            }
+
+            return true;
+          })
+          .sort((a, b) => {
+            if (b.__score !== a.__score) return b.__score - a.__score;
+            return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+          });
+
+        state.ranked = visible;
+      }
+
+      function renderStats() {
+        statCandidates.textContent = String(state.ranked.length);
+        statStrong.textContent = String(state.ranked.filter((c) => c.__score >= 80).length);
+        statMedium.textContent = String(state.ranked.filter((c) => c.__score >= 60).length);
+        statValidated.textContent = String(state.ranked.filter((c) => c.__local?.validated).length);
+      }
+
+      function renderMissionSelect() {
+        missionSelect.innerHTML =
+          '<option value="">Aucune mission</option>' +
+          state.offers.map((offer) => {
+            const selected = String(offer.id) === String(state.selectedMissionId) ? ' selected' : '';
+            return `<option value="${escapeHtml(offer.id)}"${selected}>${escapeHtml(offer.title || "Mission")} — ${escapeHtml(safe(offer.city))}</option>`;
+          }).join("");
+      }
+
+      function renderMissionCard() {
+        if (!state.mission) {
+          missionGrid.innerHTML = `
+            <div class="field full">
+              <small>Mission</small>
+              <strong>Aucune mission active trouvée pour ce slug.</strong>
+            </div>
+          `;
+          return;
+        }
+
+        missionGrid.innerHTML = `
+          <div class="field">
+            <small>Titre</small>
+            <strong>${escapeHtml(safe(state.mission.title))}</strong>
+          </div>
+          <div class="field">
+            <small>Ville</small>
+            <strong>${escapeHtml(safe(state.mission.city))}</strong>
+          </div>
+          <div class="field">
+            <small>Pays</small>
+            <strong>${escapeHtml(safe(state.mission.country))}</strong>
+          </div>
+          <div class="field">
+            <small>Contrat</small>
+            <strong>${escapeHtml(contractLabel(state.mission.contract_type))}</strong>
+          </div>
+          <div class="field">
+            <small>Rémunération</small>
+            <strong>${escapeHtml(safe(state.mission.pay))}</strong>
+          </div>
+          <div class="field">
+            <small>Secteur</small>
+            <strong>${escapeHtml(sectorLabel(state.mission.sector))}</strong>
+          </div>
+          <div class="field">
+            <small>Employeur</small>
+            <strong>${escapeHtml(safe(state.mission.employer_name))}</strong>
+          </div>
+          <div class="field">
+            <small>Publié</small>
+            <strong>${escapeHtml(formatDate(state.mission.published_at || state.mission.created_at))}</strong>
+          </div>
+          <div class="field full">
+            <small>Description</small>
+            <strong>${escapeHtml(safe(state.mission.description))}</strong>
+          </div>
+          <div class="field full">
+            <small>Exigences</small>
+            <strong>${escapeHtml(safe(state.mission.requirements))}</strong>
+          </div>
+        `;
+      }
+
+      function renderCandidateList() {
+        if (!state.ranked.length) {
+          candidateList.innerHTML = `
+            <div class="empty-card">
+              <h4>Aucun profil affiché</h4>
+              <p>Resserre moins les filtres ou vérifie que des candidats existent pour ce slug.</p>
+            </div>
+          `;
+          emptyState.hidden = false;
+          detailContent.hidden = true;
+          return;
+        }
+
+        if (!state.selectedId || !state.ranked.some((c) => String(c.id) === String(state.selectedId))) {
+          state.selectedId = state.ranked[0].id;
+        }
+
+        candidateList.innerHTML = state.ranked.map((candidate) => {
+          const isActive = String(candidate.id) === String(state.selectedId);
+          return `
+            <article class="candidate${isActive ? " active" : ""}" data-id="${escapeHtml(candidate.id)}">
+              <div class="candidate-top">
+                <div>
+                  <h4>${escapeHtml(safe(candidate.full_name))}</h4>
+                  <p class="sub">${escapeHtml([candidate.trade || candidate.job_title || "Profil", candidate.city || "", candidate.country || ""].filter(Boolean).join(" • "))}</p>
+                </div>
+                <div class="score-pill">${candidate.__score}</div>
+              </div>
+
+              <div class="chips">
+                <span class="chip ${scoreClass(candidate.__score)}">${candidate.__score}/100</span>
+                <span class="chip ${sectorClass(candidate.__sector)}">${escapeHtml(sectorLabel(candidate.__sector))}</span>
+                <span class="chip">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
+                <span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>
+                ${candidate.__local?.validated ? '<span class="chip score-high">Validé bureau</span>' : ''}
+              </div>
+
+              <div class="candidate-note">
+                ${escapeHtml((candidate.__local?.notes || candidate.message || "Pas encore de note locale.").slice(0, 180))}
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        candidateList.querySelectorAll(".candidate").forEach((node) => {
+          node.addEventListener("click", function(){
+            state.selectedId = this.dataset.id;
+            renderCandidateList();
+            renderDetail();
+          });
+        });
+
+        renderDetail();
+      }
+
+      function buildWhatsAppLink(candidate) {
         const lines = [
           "Bonjour,",
           "",
           "je vous contacte depuis DIGIY JOBS concernant votre candidature.",
-          linkedOffer?.title ? `Mission : ${linkedOffer.title}` : null,
-          linkedOffer?.city ? `Ville : ${linkedOffer.city}` : null,
-          linkedOffer?.pay ? `Rémunération : ${linkedOffer.pay}` : null,
-          `Statut actuel : ${statusLabel(candidate.status || "new")}`,
-          missionUrl(candidate) ? `Lien mission : ${location.origin}${missionUrl(candidate)}` : null,
+          state.mission?.title ? `Mission : ${state.mission.title}` : null,
+          state.mission?.city ? `Ville mission : ${state.mission.city}` : null,
+          `Score de lecture : ${candidate.__score}/100`,
           "",
           "Nous pouvons avancer si vous êtes toujours disponible."
         ].filter(Boolean).join("\n");
@@ -750,228 +1109,90 @@
         return url.toString();
       }
 
-      function missionUrl(candidate){
-        const linkedOffer = state.offerMap.get(candidate.offer_id);
-        return withRail(JOBS_PATHS.mission, {
-          offer: linkedOffer?.id || candidate.offer_id || "",
-          candidate: candidate.id || ""
-        });
-      }
-
-      function matchUrl(candidate){
-        return withRail(JOBS_PATHS.match, {
-          id: candidate.id || "",
-          offer: candidate.offer_id || ""
-        });
-      }
-
       function buildCandidateSheet(candidate) {
-        const linkedOffer = state.offerMap.get(candidate.offer_id);
-        const local = getCandidateLocal(candidate.id);
         return [
           `Nom : ${safe(candidate.full_name)}`,
-          `WhatsApp : ${safe(candidate.phone)}`,
+          `Téléphone : ${safe(candidate.phone)}`,
           `Ville : ${safe(candidate.city)}`,
           `Pays : ${safe(candidate.country || "Sénégal")}`,
           `Métier : ${safe(candidate.trade || candidate.job_title)}`,
           `Expérience : ${safe(candidate.years_experience)}`,
           `Disponibilité : ${availabilityLabel(candidate.availability)}`,
           `Statut : ${statusLabel(candidate.status || "new")}`,
-          linkedOffer?.title ? `Mission : ${linkedOffer.title}` : "Mission : spontanée",
-          linkedOffer?.city ? `Ville mission : ${linkedOffer.city}` : null,
-          linkedOffer?.pay ? `Rémunération : ${linkedOffer.pay}` : null,
-          missionUrl(candidate) ? `Lien mission : ${location.origin}${missionUrl(candidate)}` : null,
+          `Candidate ID : ${safe(candidate.id)}`,
+          `Offer ID : ${safe(candidate.offer_id)}`,
+          `Mission : ${safe(state.mission?.title)}`,
+          `Score : ${candidate.__score}/100`,
+          "",
+          "Raisons du match :",
+          ...candidate.__reasons.map((r) => `- ${r}`),
           "",
           "Notes bureau :",
-          safe(local.notes || "")
-        ].filter(Boolean).join("\n");
+          safe(getLocalMatch(candidate.id).notes)
+        ].join("\n");
       }
 
-      function fieldHtml(label, value, full = false) {
-        return `<div class="field-box${full ? " full" : ""}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
-      }
-
-      async function copyText(text){
-        try{
+      async function copyText(text) {
+        try {
           await navigator.clipboard.writeText(text);
           return true;
-        }catch(_){
+        } catch (_) {
           return false;
         }
       }
 
-      function getVisible(){
-        const q = searchInput.value.trim().toLowerCase();
-        const sector = filterSector.value;
-        const offer = filterOffer.value;
-        const status = filterStatus.value;
-        const availability = filterAvailability.value;
+      function renderDetail() {
+        const candidate = state.ranked.find((c) => String(c.id) === String(state.selectedId)) || null;
 
-        return state.candidates.filter((candidate) => {
-          const linkedOffer = state.offerMap.get(candidate.offer_id);
-          const candidateSector = inferSector(candidate);
-          const hay = [
-            candidate.full_name,
-            candidate.phone,
-            candidate.city,
-            candidate.country,
-            candidate.trade,
-            candidate.job_title,
-            candidate.message,
-            candidate.years_experience,
-            candidate.status,
-            linkedOffer?.title,
-            linkedOffer?.city,
-            getCandidateLocal(candidate.id).notes
-          ].filter(Boolean).join(" ").toLowerCase();
-
-          if (q && !hay.includes(q)) return false;
-          if (sector !== "all" && candidateSector !== sector) return false;
-          if (offer !== "all" && String(candidate.offer_id || "") !== offer) return false;
-          if (status !== "all" && String(candidate.status || "new") !== status) return false;
-          if (availability !== "all" && String(candidate.availability || "") !== availability) return false;
-          return true;
-        });
-      }
-
-      function renderStats(){
-        const all = state.candidates;
-        const count = (s) => all.filter((x) => String(x.status || "new") === s).length;
-        $("statCandidates").textContent = String(all.length);
-        $("statNew").textContent = String(count("new"));
-        $("statReview").textContent = String(count("review"));
-        $("statAccepted").textContent = String(count("accepted"));
-      }
-
-      function renderFilterOptions(){
-        const sectors = [...new Set(state.candidates.map(inferSector).filter(Boolean))].sort();
-        const offers = [...state.offerMap.values()];
-
-        filterSector.innerHTML =
-          '<option value="all">Tous les secteurs</option>' +
-          sectors.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(sectorLabel(s))}</option>`).join("");
-
-        filterOffer.innerHTML =
-          '<option value="all">Toutes les missions</option>' +
-          offers.map((o) => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.title || "Mission")}</option>`).join("");
-      }
-
-      function renderList(){
-        const visible = getVisible();
-        countLabel.textContent = `${visible.length} dossier${visible.length > 1 ? "s" : ""}`;
-
-        if (!visible.length) {
-          candidateList.innerHTML = '<div class="empty-card">Aucun dossier ne correspond aux filtres actuels.</div>';
-          detailEmpty.style.display = "block";
-          detailContent.style.display = "none";
-          return;
-        }
-
-        if (!state.selectedId || !visible.some((candidate) => candidate.id === state.selectedId)) {
-          state.selectedId = visible[0].id;
-        }
-
-        candidateList.innerHTML = "";
-        visible.forEach((candidate) => {
-          const linkedOffer = state.offerMap.get(candidate.offer_id);
-          const local = getCandidateLocal(candidate.id);
-          const sector = inferSector(candidate);
-
-          const article = document.createElement("article");
-          article.className = "dossier" + (candidate.id === state.selectedId ? " active" : "");
-          article.innerHTML = `
-            <div class="dossier-top">
-              <div>
-                <h4>${escapeHtml(candidate.full_name || "Sans nom")}</h4>
-                <p class="sub">${escapeHtml(subtitle(candidate))}</p>
-              </div>
-            </div>
-
-            <div class="chips">
-              <span class="chip ${sectorClass(sector)}">${escapeHtml(sectorLabel(sector))}</span>
-              <span class="chip ${STATUS_CLASS[String(candidate.status || "new")] || "status-new"}">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
-              <span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>
-              ${linkedOffer ? `<span class="chip">${escapeHtml(linkedOffer.title || "Mission")}</span>` : `<span class="chip">Spontanée</span>`}
-            </div>
-
-            <div class="dossier-note">
-              ${escapeHtml((local.notes || candidate.message || candidate.years_experience || "Pas encore de note.").slice(0, 170))}
-            </div>
-          `;
-          article.addEventListener("click", function(){
-            state.selectedId = candidate.id;
-            renderList();
-          });
-          candidateList.appendChild(article);
-        });
-
-        const current = visible.find((candidate) => candidate.id === state.selectedId) || null;
-        renderDetail(current);
-      }
-
-      function renderDetail(candidate){
         if (!candidate) {
-          detailEmpty.style.display = "block";
-          detailContent.style.display = "none";
+          emptyState.hidden = false;
+          detailContent.hidden = true;
           return;
         }
 
-        detailEmpty.style.display = "none";
-        detailContent.style.display = "block";
+        emptyState.hidden = true;
+        detailContent.hidden = false;
 
-        const linkedOffer = state.offerMap.get(candidate.offer_id);
-        const local = getCandidateLocal(candidate.id);
+        const local = getLocalMatch(candidate.id);
 
-        detailGrid.innerHTML = [
-          fieldHtml("Nom complet", candidate.full_name),
-          fieldHtml("WhatsApp", candidate.phone),
-          fieldHtml("Ville", candidate.city),
-          fieldHtml("Pays", candidate.country || "Sénégal"),
-          fieldHtml("Métier", candidate.trade || candidate.job_title),
-          fieldHtml("Expérience", candidate.years_experience),
-          fieldHtml("Disponibilité", availabilityLabel(candidate.availability)),
-          fieldHtml("Statut", statusLabel(candidate.status || "new")),
-          fieldHtml("Candidate ID", candidate.id),
-          fieldHtml("Offer ID", candidate.offer_id || "Spontanée"),
-          fieldHtml("Mission liée", linkedOffer?.title || "Spontanée", true)
-        ].join("");
+        detailName.textContent = safe(candidate.full_name);
+        detailSubtitle.textContent = [candidate.trade || candidate.job_title || "Profil", candidate.city || "", candidate.country || ""].filter(Boolean).join(" • ");
+        detailChips.innerHTML = `
+          <span class="chip ${scoreClass(candidate.__score)}">${candidate.__score}/100</span>
+          <span class="chip">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
+          <span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>
+          ${local.validated ? '<span class="chip score-high">Validé bureau</span>' : ''}
+        `;
 
-        detailNote.textContent = local.notes || candidate.message || "Aucune note locale pour le moment.";
-        bureauNotes.value = local.notes || "";
+        matchSummary.textContent = candidate.__score >= 80
+          ? "Très bon rapprochement. Profil à traiter en priorité."
+          : candidate.__score >= 60
+            ? "Rapprochement utile. Vérifie vite les points clés avant appel."
+            : "Rapprochement faible ou partiel. Lecture manuelle conseillée.";
 
-        $("btnWhatsApp").href = buildWhatsAppUrl(candidate);
-        $("btnMission").href = missionUrl(candidate);
-        $("btnMatch").href = matchUrl(candidate);
+        reasonList.innerHTML = candidate.__reasons.map((reason) => `
+          <div class="reason-item">${escapeHtml(reason)}</div>
+        `).join("");
+
+        detailGrid.innerHTML = `
+          <div class="field"><small>Candidate ID</small><strong>${escapeHtml(safe(candidate.id))}</strong></div>
+          <div class="field"><small>Offer ID</small><strong>${escapeHtml(safe(candidate.offer_id))}</strong></div>
+          <div class="field"><small>Téléphone</small><strong>${escapeHtml(safe(candidate.phone))}</strong></div>
+          <div class="field"><small>Disponibilité</small><strong>${escapeHtml(availabilityLabel(candidate.availability))}</strong></div>
+          <div class="field"><small>Expérience</small><strong>${escapeHtml(safe(candidate.years_experience))}</strong></div>
+          <div class="field"><small>Source</small><strong>${escapeHtml(safe(candidate.source))}</strong></div>
+          <div class="field"><small>Créé le</small><strong>${escapeHtml(formatDate(candidate.created_at))}</strong></div>
+          <div class="field"><small>Mis à jour</small><strong>${escapeHtml(formatDate(candidate.updated_at))}</strong></div>
+        `;
+
+        matchNotes.value = local.notes || "";
+        btnOpenWA.href = buildWhatsAppLink(candidate);
       }
 
-      async function updateCandidateStatus(candidateId, nextStatus){
-        if (!sb) {
-          setStatus("Supabase indisponible.", "error");
-          return;
-        }
-
-        const { error } = await sb
-          .from("digiy_jobs_candidates_pro")
-          .update({ status: nextStatus, updated_at: new Date().toISOString() })
-          .eq("id", candidateId);
-
-        if (error) {
-          console.error(error);
-          setStatus("Impossible de mettre à jour le statut pour le moment.", "error");
-          return;
-        }
-
-        const row = state.candidates.find((item) => item.id === candidateId);
-        if (row) row.status = nextStatus;
-        renderStats();
-        renderList();
-        setStatus(`Statut mis à jour : ${nextStatus}`, "ok");
-      }
-
-      async function loadOffers(){
+      async function loadOffers() {
         if (!sb || !state.slug) {
           state.offers = [];
-          state.offerMap = new Map();
+          state.mission = null;
           return;
         }
 
@@ -984,11 +1205,16 @@
           .order("created_at", { ascending: false });
 
         if (error) throw error;
+
         state.offers = Array.isArray(data) ? data : [];
-        state.offerMap = new Map(state.offers.map((offer) => [offer.id, offer]));
+
+        const offerParam = String(params.get("offer") || "").trim();
+        const selected = state.offers.find((o) => String(o.id) === offerParam) || state.offers[0] || null;
+        state.mission = selected;
+        state.selectedMissionId = selected?.id || "";
       }
 
-      async function loadCandidates(){
+      async function loadCandidates() {
         if (!sb || !state.slug) {
           state.candidates = [];
           return;
@@ -1035,172 +1261,177 @@
         });
       }
 
-      function exportJson(){
-        const payload = getVisible().map((candidate) => {
-          const linkedOffer = state.offerMap.get(candidate.offer_id) || null;
-          const local = getCandidateLocal(candidate.id);
-          return {
-            slug: state.slug || null,
-            phone: state.phone || null,
-            id: candidate.id,
-            offer_id: candidate.offer_id,
-            offer_title: linkedOffer?.title || null,
-            sector: inferSector(candidate),
-            full_name: candidate.full_name,
-            phone_candidate: candidate.phone,
-            city: candidate.city,
-            country: candidate.country,
-            trade: candidate.trade,
-            years_experience: candidate.years_experience,
-            availability: candidate.availability,
-            status: candidate.status,
-            source: candidate.source,
-            created_at: candidate.created_at,
-            updated_at: candidate.updated_at,
-            notes_locales: local.notes || ""
-          };
-        });
-
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `digiy_jobs_bureau_${state.slug || "global"}.json`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-        setStatus("Export JSON prêt.", "ok");
+      function renderAll() {
+        signalPill.textContent = state.slug
+          ? `Slug JOBS — ${state.slug}${state.phone ? " • " + state.phone : ""}`
+          : "Slug JOBS — absent";
+        miniMode.textContent = state.session?.access ? "session PRO active" : "aperçu";
+        miniSlug.textContent = state.slug
+          ? `${state.slug}${state.phone ? " • " + state.phone : ""}`
+          : "aucun";
+        syncLinks();
+        renderMissionSelect();
+        renderMissionCard();
+        rankCandidates();
+        renderStats();
+        renderCandidateList();
       }
 
-      async function refreshAll(){
-        try {
-          setStatus("Chargement du bureau…", "info");
-          await loadOffers();
-          await loadCandidates();
-          syncLinks();
-          syncRailMeta();
-          renderStats();
-          renderFilterOptions();
-          renderList();
-          setStatus("Bureau JOBS rafraîchi.", "ok");
-        } catch (error) {
-          console.error(error);
-          setStatus("Impossible de charger le bureau pour le moment.", "error");
-        }
-      }
+      btnReloadMission.addEventListener("click", async function(){
+        await init();
+      });
 
-      searchInput.addEventListener("input", renderList);
-      filterSector.addEventListener("change", renderList);
-      filterOffer.addEventListener("change", renderList);
-      filterStatus.addEventListener("change", renderList);
-      filterAvailability.addEventListener("change", renderList);
+      missionSelect.addEventListener("change", function(){
+        const mission = state.offers.find((o) => String(o.id) === String(this.value)) || null;
+        state.mission = mission;
+        state.selectedMissionId = mission?.id || "";
+        renderAll();
+      });
 
-      $("btnRefreshTop").addEventListener("click", refreshAll);
-      $("btnClearFilters").addEventListener("click", function(){
+      searchInput.addEventListener("input", renderAll);
+      filterZoneMode.addEventListener("change", renderAll);
+      filterMinScore.addEventListener("change", renderAll);
+      filterStatus.addEventListener("change", renderAll);
+      filterAvailability.addEventListener("change", renderAll);
+
+      btnClearFilters.addEventListener("click", function(){
         searchInput.value = "";
-        filterSector.value = "all";
-        filterOffer.value = "all";
+        filterZoneMode.value = "all";
+        filterMinScore.value = "0";
         filterStatus.value = "all";
         filterAvailability.value = "all";
-        renderList();
+        renderAll();
       });
 
-      $("btnExportJson").addEventListener("click", exportJson);
-
-      $("btnSaveNotes").addEventListener("click", function(){
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        setCandidateLocal(candidate.id, { notes: bureauNotes.value.trim(), last_contact: "Notes mises à jour" });
-        renderList();
-        renderDetail(candidate);
-        setStatus("Notes bureau locales enregistrées.", "ok");
+      btnSaveMatchNotes.addEventListener("click", function(){
+        if (!state.selectedId) return;
+        setLocalMatch(state.selectedId, { notes: matchNotes.value.trim() });
+        renderAll();
+        setStatus("Notes de match enregistrées.", "ok");
       });
 
-      $("btnCopySheet").addEventListener("click", async function(){
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+      btnValidateMatch.addEventListener("click", function(){
+        if (!state.selectedId) return;
+        const current = getLocalMatch(state.selectedId);
+        setLocalMatch(state.selectedId, { validated: !current.validated });
+        renderAll();
+        setStatus(current.validated ? "Validation retirée." : "Match validé localement.", "ok");
+      });
+
+      btnCopyCandidateLink.addEventListener("click", async function(){
+        const candidate = state.ranked.find((c) => String(c.id) === String(state.selectedId));
         if (!candidate) return;
         const text = buildCandidateSheet(candidate);
         const ok = await copyText(text);
         if (ok) {
-          setCandidateLocal(candidate.id, { last_contact: "Fiche copiée" });
-          renderList();
           setStatus("Fiche candidat copiée.", "ok");
         } else {
           prompt("Copie la fiche candidat :", text);
         }
       });
 
-      $("btnCopyMissionLink").addEventListener("click", async function(){
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        const url = location.origin + missionUrl(candidate);
-        const ok = await copyText(url);
+      btnCopyMissionLink.addEventListener("click", async function(){
+        if (!state.mission) return;
+        const link = location.origin + withRail(JOBS_PATHS.mission, { offer: state.mission.id });
+        const ok = await copyText(link);
         if (ok) {
-          setCandidateLocal(candidate.id, { last_contact: "Lien mission copié" });
-          renderList();
           setStatus("Lien mission copié.", "ok");
         } else {
-          prompt("Copie le lien mission :", url);
+          prompt("Copie le lien mission :", link);
         }
       });
 
-      $("btnMarkCall").addEventListener("click", async function(){
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "call");
+      btnOpenQrDetail.addEventListener("click", function(){
+        location.href = withRail(JOBS_PATHS.qr, state.mission ? { offer: state.mission.id } : {});
       });
 
-      $("btnSetReview").addEventListener("click", async function(){
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "review");
+      btnExportMatches.addEventListener("click", function(){
+        const payload = state.ranked.map((candidate) => ({
+          slug: state.slug || null,
+          phone: state.phone || null,
+          mission_id: state.mission?.id || null,
+          mission_title: state.mission?.title || null,
+          candidate_id: candidate.id,
+          offer_id: candidate.offer_id,
+          full_name: candidate.full_name,
+          candidate_phone: candidate.phone,
+          city: candidate.city,
+          country: candidate.country,
+          trade: candidate.trade,
+          years_experience: candidate.years_experience,
+          availability: candidate.availability,
+          status: candidate.status,
+          score: candidate.__score,
+          reasons: candidate.__reasons,
+          notes_locales: getLocalMatch(candidate.id).notes || "",
+          validated_local: !!getLocalMatch(candidate.id).validated
+        }));
+
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `digiy_jobs_match_${state.slug || "global"}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setStatus("Export des matchs prêt.", "ok");
       });
 
-      $("btnSetShortlist").addEventListener("click", async function(){
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "shortlist");
+      btnResetValidated.addEventListener("click", function(){
+        if (!confirm("Vider les validations et notes locales de match pour ce slug ?")) return;
+        state.matchState = {};
+        saveMatchState();
+        renderAll();
+        setStatus("Validations locales vidées.", "ok");
       });
 
-      $("btnSetAccepted").addEventListener("click", async function(){
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "accepted");
-      });
+      async function init() {
+        try {
+          if (!sb) {
+            setStatus("Supabase non chargé. Vérifie la configuration front JOBS.", "error");
+            return;
+          }
 
-      $("btnSetRejected").addEventListener("click", async function(){
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "rejected");
-      });
+          const qsSlug = normalizeSlug(params.get("slug") || "");
+          const qsPhone = normalizePhone(params.get("phone") || "");
+          const savedSlug = readSavedSlug();
+          const savedPhone = readSavedPhone();
 
-      (async function init(){
-        const qsSlug = normalizeSlug(params.get("slug") || "");
-        const qsPhone = normalizePhone(params.get("phone") || "");
-        const savedSlug = readSavedSlug();
-        const savedPhone = readSavedPhone();
-
-        if (window.DIGIY_GUARD?.ready) {
-          try {
+          if (window.DIGIY_GUARD?.ready) {
             const session = await window.DIGIY_GUARD.ready();
             state.session = session || null;
             state.slug = normalizeSlug(session?.slug || qsSlug || savedSlug || "");
             state.phone = normalizePhone(session?.phone || qsPhone || savedPhone || "");
-          } catch (error) {
-            console.error(error);
+          } else {
+            state.slug = qsSlug || savedSlug || "";
+            state.phone = qsPhone || savedPhone || "";
+            state.session = { access: false };
           }
-        } else {
-          state.slug = normalizeSlug(qsSlug || savedSlug || "");
-          state.phone = normalizePhone(qsPhone || savedPhone || "");
-          state.session = { access: false, source: "no_guard" };
-        }
 
-        saveRail(state.slug, state.phone);
-        syncLinks();
-        syncRailMeta();
-        await refreshAll();
-      })();
+          saveRail(state.slug, state.phone);
+          loadMatchState();
+
+          await loadOffers();
+          await loadCandidates();
+
+          if (!state.slug) {
+            setStatus("Aucun slug détecté. Ouvre cette page depuis le cockpit ou le bureau avec ?slug=jobs-...", "warn");
+          } else if (!state.mission) {
+            setStatus("Aucune mission active trouvée pour ce slug.", "warn");
+          } else {
+            setStatus("Match JOBS chargé sur le rail réel.", "ok");
+          }
+
+          renderAll();
+        } catch (error) {
+          console.error(error);
+          setStatus("Erreur de chargement du match JOBS. Vérifie le slug, les tables et les policies RLS.", "error");
+        }
+      }
+
+      init();
     })();
   </script>
 </body>
