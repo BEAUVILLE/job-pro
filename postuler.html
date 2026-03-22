@@ -27,6 +27,7 @@
       --text:#ecfff4;
       --muted:rgba(236,255,244,.72);
       --gold:#facc15;
+      --blue:#38bdf8;
       --green:#22c55e;
       --danger:#fb7185;
       --max:920px;
@@ -34,7 +35,6 @@
     }
 
     *{box-sizing:border-box}
-
     html,body{
       margin:0;
       padding:0;
@@ -73,6 +73,12 @@
       border-color:rgba(250,204,21,.28);
       background:rgba(250,204,21,.08);
       color:#fff3b0;
+    }
+
+    .chip-link.blue{
+      border-color:rgba(56,189,248,.28);
+      background:rgba(56,189,248,.10);
+      color:#d8f5ff;
     }
 
     .hero{
@@ -134,6 +140,7 @@
       border-radius:22px;
       background:rgba(255,255,255,.04);
       padding:16px;
+      display:none;
     }
 
     .offer-box strong{
@@ -146,6 +153,59 @@
       color:var(--muted);
       font-size:14px;
       line-height:1.55;
+    }
+
+    .assist{
+      margin-top:16px;
+      border:1px solid rgba(56,189,248,.22);
+      border-radius:22px;
+      background:rgba(56,189,248,.08);
+      padding:16px;
+    }
+
+    .assist strong{
+      display:block;
+      margin-bottom:6px;
+      color:#d8f5ff;
+      font-size:16px;
+    }
+
+    .assist p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+    }
+
+    .assist-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .assist-actions a{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      min-height:46px;
+      padding:12px 14px;
+      border-radius:16px;
+      font-weight:900;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+    }
+
+    .assist-actions a.gold{
+      background:rgba(250,204,21,.12);
+      border-color:rgba(250,204,21,.28);
+      color:#fff3b0;
+    }
+
+    .assist-actions a.blue{
+      background:rgba(56,189,248,.12);
+      border-color:rgba(56,189,248,.28);
+      color:#d8f5ff;
     }
 
     .form-card{
@@ -191,7 +251,6 @@
     }
 
     textarea{min-height:140px;resize:vertical}
-
     input::placeholder,textarea::placeholder{color:rgba(236,255,244,.42)}
 
     input:focus,select:focus,textarea:focus{
@@ -276,10 +335,9 @@
       <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
       <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
       <a id="wallLink" class="chip-link gold" href="./mur%20des%20missions.html">Mur des missions</a>
-      <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
-      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Cockpit pro</a>
-      <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
-      <a id="offerBackLink" class="chip-link" href="./mission.html" style="display:none">Retour à la mission</a>
+      <a id="missionLink" class="chip-link" href="./mission.html">Retour à la mission</a>
+      <a id="qrLink" class="chip-link gold" href="./qr.html">QR JOBS</a>
+      <a id="clawLink" class="chip-link blue" href="./index.html#clawSection">Entraide / CLAW</a>
     </div>
 
     <section class="hero">
@@ -291,14 +349,29 @@
       </p>
 
       <div class="meta-line">
-        <div class="meta-chip">Mode : <strong id="modeChip">candidature publique</strong></div>
-        <div class="meta-chip">Slug actif : <strong id="slugChip">global</strong></div>
+        <div class="meta-chip">Mode : <strong id="modeChip">candidature liée</strong></div>
+        <div class="meta-chip">Slug actif : <strong id="slugChip">—</strong></div>
+        <div class="meta-chip">Téléphone : <strong id="telChip">—</strong></div>
         <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
       </div>
 
-      <div id="offerBox" class="offer-box" style="display:none">
+      <div id="offerBox" class="offer-box">
         <strong id="offerTitle">Mission</strong>
         <div id="offerMeta" class="offer-meta"></div>
+      </div>
+
+      <div class="assist">
+        <strong>CLAW by DIGIY</strong>
+        <p>
+          Besoin d’orientation avant d’envoyer ? CLAW te renvoie vers le mur, la mission ou le QR JOBS,
+          sans te faire repasser par un PIN inutile.
+        </p>
+        <div class="assist-actions">
+          <a id="assistMissionLink" href="./mission.html">Relire la mission</a>
+          <a id="assistWallLink" href="./mur%20des%20missions.html">Voir les missions</a>
+          <a id="assistQrLink" class="gold" href="./qr.html">Ouvrir QR JOBS</a>
+          <a id="assistClawLink" class="blue" href="./index.html#clawSection">Demander à CLAW</a>
+        </div>
       </div>
     </section>
 
@@ -369,269 +442,254 @@
   </div>
 
   <script>
-    const SUPABASE_URL =
-      window.DIGIY_SUPABASE_URL ||
-      "https://wesqmwjjtsefyjnluosj.supabase.co";
+    (function(){
+      "use strict";
 
-    const SUPABASE_ANON_KEY =
-      window.DIGIY_SUPABASE_ANON ||
-      window.DIGIY_SUPABASE_ANON_KEY ||
-      "";
+      const SUPABASE_URL =
+        window.DIGIY_SUPABASE_URL ||
+        "https://wesqmwjjtsefyjnluosj.supabase.co";
 
-    const sb =
-      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-        : null;
+      const SUPABASE_ANON_KEY =
+        window.DIGIY_SUPABASE_ANON ||
+        window.DIGIY_SUPABASE_ANON_KEY ||
+        "";
 
-    const params = new URLSearchParams(location.search);
-    const offerId = String(params.get("offer") || params.get("id") || "").trim();
-    const slugFromUrl = String(params.get("slug") || "").trim().toLowerCase();
+      const sb =
+        window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+          : null;
 
-    const $ = (id) => document.getElementById(id);
-    const SLUG_STORAGE_KEY = "digiy_jobs_slug";
-    const DB_SLUG_COLUMN = "workspace_slug";
+      const params = new URLSearchParams(location.search);
+      const $ = (id) => document.getElementById(id);
 
-    const JOBS_PATHS = {
-      home: "./index.html",
-      wall: "./mur%20des%20missions.html",
-      pin: "./pin.html",
-      cockpit: "./cockpit.html",
-      bureau: "./bureau.html",
-      postuler: "./postuler.html",
-      mission: "./mission.html"
-    };
+      const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+      const TEL_STORAGE_KEY = "digiy_jobs_phone";
 
-    const state = {
-      offer: null,
-      slug: slugFromUrl,
-      ownerId: null
-    };
-
-    function normalizePhone(v = ""){
-      return String(v).trim().replace(/\s+/g, "");
-    }
-
-    function withSlug(path, slug){
-      const cleanSlug = String(slug || "").trim().toLowerCase();
-      if (!cleanSlug) return path;
-      const joiner = path.includes("?") ? "&" : "?";
-      return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
-    }
-
-    function showStatus(type, text){
-      const box = $("statusBox");
-      if (!box) return;
-
-      if (!type) {
-        box.className = "status";
-        box.textContent = "";
-        box.style.display = "none";
-        return;
-      }
-
-      box.className = `status ${type}`;
-      box.textContent = text;
-      box.style.display = "block";
-    }
-
-    function saveSlug(slug){
-      try{
-        if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
-      }catch(_){}
-    }
-
-    function readSavedSlug(){
-      try{
-        return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
-      }catch(_){
-        return "";
-      }
-    }
-
-    function syncMeta(){
-      $("slugChip").textContent = state.slug || "global";
-      $("modeChip").textContent = state.offer ? "candidature liée" : "candidature publique";
-    }
-
-    function syncLinks() {
-      const slug = state.slug || "";
-
-      $("homeLink").href = withSlug(JOBS_PATHS.home, slug);
-      $("wallLink").href = withSlug(JOBS_PATHS.wall, slug);
-      $("pinLink").href = withSlug(JOBS_PATHS.pin, slug);
-      $("cockpitLink").href = withSlug(JOBS_PATHS.cockpit, slug);
-      $("bureauLink").href = withSlug(JOBS_PATHS.bureau, slug);
-      $("seeOffersLink").href = withSlug(JOBS_PATHS.wall, slug);
-
-      const offerBackLink = $("offerBackLink");
-      if (offerBackLink && state.offer?.id) {
-        const href = new URL(JOBS_PATHS.mission, location.href);
-        href.searchParams.set("id", state.offer.id);
-        if (slug) href.searchParams.set("slug", slug);
-        offerBackLink.href = href.toString();
-        offerBackLink.style.display = "inline-flex";
-      } else if (offerBackLink) {
-        offerBackLink.style.display = "none";
-      }
-
-      syncMeta();
-    }
-
-    async function inferOwnerIdFromSlug(){
-      if (!sb || !state.slug || state.ownerId) return;
-
-      const { data, error } = await sb
-        .from("digiy_jobs_offers_pro")
-        .select("owner_id")
-        .eq(DB_SLUG_COLUMN, state.slug)
-        .limit(1)
-        .maybeSingle();
-
-      if (!error && data?.owner_id) {
-        state.ownerId = data.owner_id;
-      }
-    }
-
-    async function loadOfferIfAny(){
-      syncLinks();
-
-      if (!offerId) {
-        if (state.slug) {
-          saveSlug(state.slug);
-          await inferOwnerIdFromSlug();
-        }
-        syncLinks();
-        return;
-      }
-
-      if (!sb) {
-        showStatus("err", "Supabase non chargé. Vérifie la configuration front.");
-        return;
-      }
-
-      const { data, error } = await sb
-        .from("digiy_jobs_offers_pro")
-        .select("id,workspace_slug,owner_id,title,city,country,contract_type,pay,employer_name,status")
-        .eq("id", offerId)
-        .eq("status", "active")
-        .maybeSingle();
-
-      if (error || !data) {
-        console.error(error);
-        showStatus("err", "La mission liée à cette candidature est introuvable ou indisponible.");
-        syncLinks();
-        return;
-      }
-
-      state.offer = data;
-      state.ownerId = data.owner_id || null;
-      state.slug = String(data.workspace_slug || state.slug || "").trim().toLowerCase();
-
-      if (state.slug) saveSlug(state.slug);
-
-      $("offerBox").style.display = "block";
-      $("offerTitle").textContent = data.title || "Mission";
-      $("offerMeta").textContent =
-        `${data.employer_name || data.workspace_slug || "Structure"} • ` +
-        `${data.city || "Ville à préciser"} • ` +
-        `${data.country || "Sénégal"} • ` +
-        `${data.contract_type || "Contrat à préciser"} • ` +
-        `${data.pay || "Rémunération à préciser"}`;
-
-      syncLinks();
-    }
-
-    async function handleSubmit(e){
-      e.preventDefault();
-      showStatus("", "");
-
-      if (!sb) {
-        showStatus("err", "Supabase non chargé. Vérifie la configuration front.");
-        return;
-      }
-
-      const fullName = $("full_name").value.trim();
-      const phone = normalizePhone($("phone").value);
-      const trade = $("trade").value.trim();
-      const slug = state.offer?.workspace_slug || state.slug || null;
-
-      if (!fullName || !phone) {
-        showStatus("err", "Nom complet et téléphone WhatsApp sont obligatoires.");
-        return;
-      }
-
-      if (!state.offer?.id && !slug) {
-        showStatus("err", "Aucun slug JOBS détecté. Ouvre la page depuis le mur des missions ou une fiche mission.");
-        return;
-      }
-
-      if (!state.ownerId && slug) {
-        await inferOwnerIdFromSlug();
-      }
-
-      const payload = {
-        offer_id: state.offer?.id || null,
-        workspace_slug: slug,
-        owner_id: state.offer?.owner_id || state.ownerId || null,
-        full_name: fullName,
-        phone: phone,
-        job_title: trade || state.offer?.title || null,
-        city: $("city").value.trim() || null,
-        country: $("country").value.trim() || "Sénégal",
-        trade: trade || null,
-        years_experience: $("years_experience").value.trim() || null,
-        availability: $("availability").value || null,
-        message: $("message").value.trim() || null,
-        status: "new",
-        source: $("source").value.trim() || "public_form"
+      const state = {
+        slug: String(params.get("slug") || "").trim().toLowerCase(),
+        tel: String(params.get("tel") || params.get("phone") || "").trim(),
+        offer: null
       };
 
-      const btn = $("submitBtn");
-      btn.disabled = true;
-      btn.textContent = "Envoi en cours...";
+      const JOBS_PATHS = {
+        home: "./index.html",
+        wall: "./mur%20des%20missions.html",
+        mission: "./mission.html",
+        qr: "./qr.html"
+      };
 
-      const { error } = await sb
-        .from("digiy_jobs_candidates_pro")
-        .insert(payload);
-
-      btn.disabled = false;
-      btn.textContent = "Envoyer ma candidature";
-
-      if (error) {
-        console.error(error);
-        showStatus(
-          "err",
-          "Impossible d’envoyer la candidature pour le moment.\nVérifie le SQL/RLS puis réessaie."
-        );
-        return;
+      function safePhone(v = ""){
+        return String(v || "").replace(/[^\d+]/g, "");
       }
 
-      $("applyForm").reset();
-      $("country").value = "Sénégal";
-      $("source").value = "public_form";
-
-      showStatus(
-        "ok",
-        state.offer
-          ? "Candidature envoyée. Elle est entrée en base avec le statut « new »."
-          : "Candidature envoyée. Elle est entrée en base avec le statut « new »."
-      );
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    $("applyForm").addEventListener("submit", handleSubmit);
-
-    (async () => {
-      if (!state.slug) {
-        const saved = readSavedSlug();
-        if (saved) state.slug = saved;
+      function withRail(path, slug, tel){
+        const u = new URL(path, location.href);
+        const cleanSlug = String(slug || "").trim().toLowerCase();
+        const cleanTel = safePhone(tel || "");
+        if (cleanSlug) u.searchParams.set("slug", cleanSlug);
+        if (cleanTel) u.searchParams.set("tel", cleanTel);
+        return u.pathname + u.search;
       }
 
-      if (state.slug) saveSlug(state.slug);
+      function showStatus(type, text){
+        const box = $("statusBox");
+        if (!box) return;
+        if (!type) {
+          box.className = "status";
+          box.textContent = "";
+          box.style.display = "none";
+          return;
+        }
+        box.className = "status " + type;
+        box.textContent = text;
+        box.style.display = "block";
+      }
 
-      syncLinks();
-      await loadOfferIfAny();
+      function saveSlug(slug){
+        try{
+          const clean = String(slug || "").trim().toLowerCase();
+          if (clean) localStorage.setItem(SLUG_STORAGE_KEY, clean);
+        }catch(_){}
+      }
+
+      function readSavedSlug(){
+        try{
+          return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
+        }catch(_){
+          return "";
+        }
+      }
+
+      function saveTel(tel){
+        try{
+          const clean = safePhone(tel || "");
+          if (clean) localStorage.setItem(TEL_STORAGE_KEY, clean);
+        }catch(_){}
+      }
+
+      function readSavedTel(){
+        try{
+          return safePhone(localStorage.getItem(TEL_STORAGE_KEY) || "");
+        }catch(_){
+          return "";
+        }
+      }
+
+      function syncMeta(){
+        $("slugChip").textContent = state.slug || "aucun";
+        $("telChip").textContent = state.tel || "—";
+        $("modeChip").textContent = state.offer ? "candidature liée" : "candidature ouverte";
+      }
+
+      function syncLinks() {
+        const slug = state.slug || "";
+        const tel = state.tel || "";
+
+        $("homeLink").href = withRail(JOBS_PATHS.home, slug, tel);
+        $("wallLink").href = withRail(JOBS_PATHS.wall, slug, tel);
+        $("missionLink").href = withRail(JOBS_PATHS.mission, slug, tel);
+        $("qrLink").href = withRail(JOBS_PATHS.qr, slug, tel);
+        $("clawLink").href = withRail(JOBS_PATHS.home, slug, tel) + "#clawSection";
+        $("assistMissionLink").href = withRail(JOBS_PATHS.mission, slug, tel);
+        $("assistWallLink").href = withRail(JOBS_PATHS.wall, slug, tel);
+        $("assistQrLink").href = withRail(JOBS_PATHS.qr, slug, tel);
+        $("assistClawLink").href = withRail(JOBS_PATHS.home, slug, tel) + "#clawSection";
+        $("seeOffersLink").href = withRail(JOBS_PATHS.wall, slug, tel);
+
+        syncMeta();
+      }
+
+      async function loadOfferBySlug(){
+        if (!state.slug || !sb) {
+          syncLinks();
+          return;
+        }
+
+        const { data, error } = await sb
+          .from("digiy_jobs_offers_pro")
+          .select("id,slug,owner_id,title,city,country,contract_type,pay,employer_name,contact_phone,status")
+          .eq("slug", state.slug)
+          .eq("status", "active")
+          .order("published_at", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (error) {
+          console.error(error);
+          showStatus("err", "Impossible de relire la mission liée pour le moment.");
+          syncLinks();
+          return;
+        }
+
+        const offer = Array.isArray(data) ? data[0] : null;
+        if (!offer) {
+          syncLinks();
+          return;
+        }
+
+        state.offer = offer;
+        state.slug = String(offer.slug || state.slug || "").trim().toLowerCase();
+        state.tel = safePhone(state.tel || offer.contact_phone || "");
+
+        if (state.slug) saveSlug(state.slug);
+        if (state.tel) saveTel(state.tel);
+
+        $("offerBox").style.display = "block";
+        $("offerTitle").textContent = offer.title || "Mission";
+        $("offerMeta").textContent =
+          `${offer.employer_name || offer.slug || "Structure"} • ` +
+          `${offer.city || "Ville à préciser"} • ` +
+          `${offer.country || "Sénégal"} • ` +
+          `${offer.contract_type || "Contrat à préciser"} • ` +
+          `${offer.pay || "Rémunération à préciser"}`;
+
+        syncLinks();
+      }
+
+      async function handleSubmit(e){
+        e.preventDefault();
+        showStatus("", "");
+
+        if (!sb) {
+          showStatus("err", "Supabase non chargé. Vérifie la configuration front.");
+          return;
+        }
+
+        const fullName = $("full_name").value.trim();
+        const phone = safePhone($("phone").value);
+        const trade = $("trade").value.trim();
+
+        if (!fullName || !phone) {
+          showStatus("err", "Nom complet et téléphone WhatsApp sont obligatoires.");
+          return;
+        }
+
+        if (!state.slug) {
+          showStatus("err", "Aucun slug JOBS détecté. Ouvre la page depuis le mur des missions ou la fiche mission.");
+          return;
+        }
+
+        const payload = {
+          offer_id: state.offer?.id || null,
+          slug: state.slug,
+          owner_id: state.offer?.owner_id || null,
+          full_name: fullName,
+          phone: phone,
+          job_title: trade || state.offer?.title || null,
+          city: $("city").value.trim() || null,
+          country: $("country").value.trim() || "Sénégal",
+          trade: trade || null,
+          years_experience: $("years_experience").value.trim() || null,
+          availability: $("availability").value || null,
+          message: $("message").value.trim() || null,
+          status: "new",
+          source: $("source").value.trim() || "public_form"
+        };
+
+        const btn = $("submitBtn");
+        btn.disabled = true;
+        btn.textContent = "Envoi en cours...";
+
+        const { error } = await sb
+          .from("digiy_jobs_candidates_pro")
+          .insert(payload);
+
+        btn.disabled = false;
+        btn.textContent = "Envoyer ma candidature";
+
+        if (error) {
+          console.error(error);
+          showStatus("err", "Impossible d’envoyer la candidature pour le moment.\nVérifie le SQL/RLS puis réessaie.");
+          return;
+        }
+
+        $("applyForm").reset();
+        $("country").value = "Sénégal";
+        $("source").value = "public_form";
+
+        showStatus("ok", "Candidature envoyée. Elle est entrée en base avec le statut « new ».");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      $("applyForm").addEventListener("submit", handleSubmit);
+
+      (async () => {
+        if (!state.slug) {
+          const savedSlug = readSavedSlug();
+          if (savedSlug) state.slug = savedSlug;
+        }
+
+        if (!state.tel) {
+          const savedTel = readSavedTel();
+          if (savedTel) state.tel = savedTel;
+        }
+
+        if (state.slug) saveSlug(state.slug);
+        if (state.tel) saveTel(state.tel);
+
+        syncLinks();
+        await loadOfferBySlug();
+      })();
     })();
   </script>
 </body>
