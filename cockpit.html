@@ -1727,9 +1727,11 @@
     });
 
     $("refreshBtn")?.addEventListener("click", async () => {
-      await bootClaw();
-      await loadAll(PREVIEW_MODE);
-    });
+  const gate = await bootGuard();
+  if (!gate?.ok) return;
+  await bootClaw();
+  await loadAll(gate.preview);
+});
 
     $("pinFallbackBtn")?.addEventListener("click", () => {
       if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
