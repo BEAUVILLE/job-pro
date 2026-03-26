@@ -907,6 +907,8 @@
     </section>
   </div>
 
+  <script src="./claw-tools.js"></script>
+
   <script>
     const SUPABASE_URL =
       window.DIGIY_SUPABASE_URL ||
@@ -1673,6 +1675,19 @@
       return { ok: true, preview: false };
     }
 
+    async function bootClaw() {
+      try {
+        if (
+          window.DIGIY_CLAW_JOBS &&
+          typeof window.DIGIY_CLAW_JOBS.ready === "function"
+        ) {
+          await window.DIGIY_CLAW_JOBS.ready();
+        }
+      } catch (err) {
+        console.warn("[CLAW JOBS] boot silencieux échoué :", err);
+      }
+    }
+
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-action]");
       if (!btn) return;
@@ -1711,7 +1726,10 @@
       applyCandidateFilters();
     });
 
-    $("refreshBtn")?.addEventListener("click", () => loadAll(PREVIEW_MODE));
+    $("refreshBtn")?.addEventListener("click", async () => {
+      await bootClaw();
+      await loadAll(PREVIEW_MODE);
+    });
 
     $("pinFallbackBtn")?.addEventListener("click", () => {
       if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
@@ -1728,6 +1746,7 @@
       updateSlugUI();
       const gate = await bootGuard();
       if (!gate.ok) return;
+      await bootClaw();
       await loadAll(gate.preview);
     })();
   </script>
