@@ -10,7 +10,7 @@
   />
   <meta name="theme-color" content="#0A1128" />
 
-  <<script>
+  <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
     window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
     window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
@@ -168,7 +168,27 @@
     .filters-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
     .filters-top h2{margin:0;font-size:24px;letter-spacing:-.02em}
     .filters-top p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
-    .filter-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr;gap:12px}
+    .filter-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:12px}
+    .search-row{margin-bottom:12px}
+    .advanced-filters{
+      margin-top:8px;
+      border:1px dashed var(--line);
+      border-radius:18px;
+      background:rgba(255,255,255,.56);
+      padding:8px 10px;
+    }
+    .advanced-filters summary{
+      cursor:pointer;
+      list-style:none;
+      font-weight:900;
+      color:#1e293b;
+      min-height:44px;
+      display:flex;
+      align-items:center;
+    }
+    .advanced-filters summary::-webkit-details-marker{display:none}
+    .advanced-filters[open]{background:#fff}
+    .advanced-body{padding-top:10px}
     .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .filter-actions button{
       border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
@@ -270,8 +290,8 @@
       <a class="brand" href="#top" aria-label="Retour en haut">
         <span class="brand-mark">JP</span>
         <span>
-          DIGIY JOBS PRO
-          <small>BUREAU DE TRI RÉEL</small>
+          DIGIY JOBS
+          <small>Je trie les candidatures</small>
         </span>
       </a>
 
@@ -279,9 +299,9 @@
         <button id="btnRefresh" type="button">Rafraîchir</button>
         <button id="btnImportPublic" type="button">Importer dernier dossier public</button>
         <a id="linkWall" href="./mur%20des%20missions.html">Mur</a>
-        <a id="linkCockpit" href="./cockpit.html">Cockpit</a>
+        <a id="linkCockpit" href="./cockpit.html">Mon espace</a>
         <a id="linkMatch" href="./match.html">Match</a>
-        <a id="linkPublic" class="primary" href="./index.html">Hall public</a>
+        <a id="linkPublic" class="primary" href="./index.html">Accueil public</a>
       </div>
     </div>
   </header>
@@ -294,33 +314,32 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <article class="hero-card">
-          <span class="eyebrow">Cockpit bureau DIGIY JOBS</span>
-          <h1>Trier, qualifier, relier.</h1>
+          <span class="eyebrow">Je trie les candidatures</span>
+          <h1>Voir vite. Choisir vite. Relancer vite.</h1>
           <p class="lead">
-            Ce bureau lit les vraies candidatures du slug JOBS, permet de changer leur statut,
-            d’ajouter des notes bureau locales et de déclencher la mise en relation proprement.
+            Ici tu ouvres les vraies candidatures, tu poses un état clair,
+            tu notes l'essentiel et tu passes à l'action sans te perdre.
           </p>
           <div class="hero-tags">
-            <span class="tag">Candidatures réelles</span>
-            <span class="tag">Statuts réels</span>
+            <span class="tag">Lecture rapide</span>
+            <span class="tag">Statut clair</span>
             <span class="tag">Mission liée</span>
-            <span class="tag">WhatsApp prêt</span>
+            <span class="tag">Contact prêt</span>
           </div>
         </article>
 
         <aside class="panel">
-          <span class="signal" id="signalPill">Slug JOBS — détection…</span>
-          <h2>Ce que ce bureau fait maintenant</h2>
+          <span class="signal" id="signalPill">Repère actif — détection…</span>
+          <h2>Ce que cette page permet</h2>
           <p>
-            Il lit les candidatures réelles, les relie aux missions actives du slug, suit les statuts
-            <code>new / review / shortlist / call / accepted / rejected</code>, garde des notes locales par candidat
-            et prépare la mise en relation sans faux rail de démonstration.
+            Elle relie les candidatures aux missions actives, garde un état clair par personne,
+            mémorise tes notes utiles et prépare la mise en relation sans détour.
           </p>
           <div class="mini-grid">
-            <div class="mini"><strong>Source candidats</strong><span id="miniCandidates">digiy_jobs_candidates_pro</span></div>
-            <div class="mini"><strong>Source missions</strong><span id="miniOffers">digiy_jobs_offers_pro</span></div>
+            <div class="mini"><strong>Candidatures</strong><span id="miniCandidates">Chargement…</span></div>
+            <div class="mini"><strong>Missions</strong><span id="miniOffers">Chargement…</span></div>
             <div class="mini"><strong>Mode</strong><span id="miniMode">détection…</span></div>
-            <div class="mini"><strong>Slug</strong><span id="miniSlug">—</span></div>
+            <div class="mini"><strong>Repère actif</strong><span id="miniSlug">—</span></div>
           </div>
         </aside>
       </div>
@@ -339,57 +358,63 @@
       <div class="filters">
         <div class="filters-top">
           <div>
-            <h2>Bureau de tri</h2>
+            <h2>Recherche rapide</h2>
             <p>
-              Filtre les entrées, ouvre une candidature, mets un statut clair, note l’essentiel,
-              puis passe à l’action sans te perdre.
+              Commence par rechercher une personne, puis ouvre les filtres avancés seulement si besoin.
             </p>
           </div>
         </div>
 
-        <div class="filter-grid">
+        <div class="search-row">
           <input id="searchInput" type="search" placeholder="Rechercher nom, métier, ville, message..." />
-
-          <select id="filterSector">
-            <option value="all">Tous secteurs</option>
-            <option value="build">BTP</option>
-            <option value="beauty">Beauté</option>
-            <option value="shop">Boutique</option>
-            <option value="food">Restauration</option>
-            <option value="service">Services</option>
-            <option value="driver">Chauffeur</option>
-            <option value="market">Marché</option>
-            <option value="admin">Admin</option>
-            <option value="unknown">Sans mission liée</option>
-          </select>
-
-          <select id="filterOffer">
-            <option value="all">Toutes missions</option>
-          </select>
-
-          <select id="filterStatus">
-            <option value="all">Tous statuts</option>
-            <option value="new">Nouveau</option>
-            <option value="review">En revue</option>
-            <option value="shortlist">Shortlist</option>
-            <option value="call">À appeler</option>
-            <option value="accepted">Accepté</option>
-            <option value="rejected">Refusé</option>
-          </select>
-
-          <select id="filterAvailability">
-            <option value="all">Toutes dispos</option>
-            <option value="immediate">Immédiate</option>
-            <option value="this_week">Cette semaine</option>
-            <option value="this_month">Ce mois-ci</option>
-            <option value="to_discuss">À discuter</option>
-          </select>
         </div>
 
-        <div class="filter-actions">
-          <button id="btnClearFilters" type="button">Effacer les filtres</button>
-          <button id="btnAddManual" type="button">Ajouter une candidature manuelle</button>
-        </div>
+        <details class="advanced-filters">
+          <summary>Filtres avancés</summary>
+          <div class="advanced-body">
+            <div class="filter-grid">
+              <select id="filterSector">
+                <option value="all">Tous secteurs</option>
+                <option value="build">BTP</option>
+                <option value="beauty">Beauté</option>
+                <option value="shop">Boutique</option>
+                <option value="food">Restauration</option>
+                <option value="service">Services</option>
+                <option value="driver">Chauffeur</option>
+                <option value="market">Marché</option>
+                <option value="admin">Admin</option>
+                <option value="unknown">Sans mission liée</option>
+              </select>
+
+              <select id="filterOffer">
+                <option value="all">Toutes missions</option>
+              </select>
+
+              <select id="filterStatus">
+                <option value="all">Tous statuts</option>
+                <option value="new">Nouveau</option>
+                <option value="review">En revue</option>
+                <option value="shortlist">Shortlist</option>
+                <option value="call">À appeler</option>
+                <option value="accepted">Accepté</option>
+                <option value="rejected">Refusé</option>
+              </select>
+
+              <select id="filterAvailability">
+                <option value="all">Toutes dispos</option>
+                <option value="immediate">Immédiate</option>
+                <option value="this_week">Cette semaine</option>
+                <option value="this_month">Ce mois-ci</option>
+                <option value="to_discuss">À discuter</option>
+              </select>
+            </div>
+
+            <div class="filter-actions">
+              <button id="btnClearFilters" type="button">Effacer les filtres</button>
+              <button id="btnAddManual" type="button">Ajouter une candidature manuelle</button>
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -467,12 +492,12 @@
     <div class="wrap">
       <div class="foot">
         <p>
-          DIGIY JOBS PRO — bureau réel de tri et de suivi. Léger dans le front, propre dans le rail.
+          DIGIY JOBS · tri clair · suivi simple · mise en relation propre.
         </p>
         <div class="foot-links">
           <button id="btnExportJson" type="button">Exporter JSON</button>
           <button id="btnClearLocalNotes" type="button">Vider notes locales</button>
-          <a id="linkPin" href="./pin.html">Entrée PIN</a>
+          <a id="linkPin" href="./pin.html">Entrée code</a>
           <a id="footerWall" href="./mur%20des%20missions.html">Mur</a>
           <a href="#top">Retour haut</a>
         </div>
@@ -785,8 +810,8 @@
         linkMatch.href = matchHref;
         footerWall.href = wallHref;
 
-        miniSlug.textContent = slug || "aucun slug";
-        signalPill.textContent = slug ? `Slug JOBS — ${slug}` : "Slug JOBS — manquant";
+        miniSlug.textContent = slug || "aucun repère";
+        signalPill.textContent = slug ? `Repère actif — ${slug}` : "Repère actif — manquant";
       }
 
       async function bootGuard() {
@@ -811,11 +836,11 @@
         }
 
         state.preview = !session?.access;
-        miniMode.textContent = state.preview ? "aperçu verrouillé" : "bureau réel";
+        miniMode.textContent = state.preview ? "accès à ouvrir" : "lecture active";
         syncLinks();
 
         if (state.preview) {
-          setStatus("Mode aperçu : active ton accès JOBS pour ouvrir le bureau réel et lire les candidatures.", "warn");
+          setStatus("Mode aperçu : ouvre ton accès pour lire les candidatures réelles.", "warn");
         }
       }
 
@@ -1125,7 +1150,7 @@
         }
 
         if (!sb) {
-          setStatus("Supabase non chargé. Vérifie la configuration front.", "error");
+          setStatus("Chargement indisponible pour le moment.", "error");
           return;
         }
 
@@ -1210,12 +1235,12 @@
         }
 
         if (!sb) {
-          setStatus("Supabase non chargé. Vérifie la configuration front.", "error");
+          setStatus("Chargement indisponible pour le moment.", "error");
           return;
         }
 
         if (!state.slug) {
-          setStatus("Aucun slug détecté. Ouvre la page avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
+          setStatus("Aucun identifiant détecté. Ouvre la page avec ton lien ou via l'entrée code.", "warn");
           return;
         }
 
@@ -1279,12 +1304,12 @@
         }
 
         if (!sb) {
-          setStatus("Supabase non chargé. Vérifie la configuration front.", "error");
+          setStatus("Chargement indisponible pour le moment.", "error");
           return;
         }
 
         if (!state.slug) {
-          setStatus("Aucun slug détecté pour ajouter une candidature.", "warn");
+          setStatus("Aucun identifiant détecté pour ajouter une candidature.", "warn");
           return;
         }
 
@@ -1475,7 +1500,7 @@
       (async function init() {
         try {
           if (!sb) {
-            setStatus("Supabase non chargé. Vérifie la configuration front JOBS.", "error");
+            setStatus("Chargement indisponible pour le moment.", "error");
             return;
           }
 
@@ -1486,13 +1511,13 @@
           renderList();
 
           if (!state.slug) {
-            setStatus("Aucun slug détecté. Ouvre ce bureau avec ?slug=jobs-... ou via l’entrée PIN.", "warn");
+            setStatus("Aucun identifiant détecté. Ouvre cette page avec ton lien ou via l'entrée code.", "warn");
           } else if (!state.preview) {
-            setStatus("Bureau JOBS chargé sur le rail réel.", "ok");
+            setStatus("Candidatures chargées. Tu peux trier et agir.", "ok");
           }
         } catch (error) {
           console.error(error);
-          setStatus("Erreur de chargement du bureau JOBS. Vérifie le slug, les tables et les policies RLS.", "error");
+          setStatus("Erreur de chargement des candidatures. Vérifie l'accès et réessaie.", "error");
         }
       })();
     })();
