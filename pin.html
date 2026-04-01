@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#071711" />
   <title>DIGIY JOBS PRO — Accès PIN</title>
-  <meta name="description" content="Accès sécurisé DIGIY JOBS PRO par slug / téléphone / PIN." />
+  <meta name="description" content="Accès sécurisé DIGIY JOBS par identifiant, téléphone et code." />
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -133,7 +133,7 @@
         </p>
 
         <div class="field">
-          <label for="slug">Slug</label>
+          <label for="slug">Identifiant</label>
           <input id="slug" type="text" placeholder="jobs-221771342889" autocomplete="off" />
         </div>
 
@@ -157,7 +157,7 @@
         </div>
 
         <div class="grid">
-          <a id="btnCockpit" class="btn secondary hidden" href="./cockpit.html">🧭 Cockpit</a>
+          <a id="btnCockpit" class="btn secondary hidden" href="./cockpit.html">🧭 Mon espace</a>
           <a id="btnBureau" class="btn secondary hidden" href="./bureau.html">🏢 Bureau</a>
           <a id="btnMatch" class="btn secondary hidden" href="./match.html">🤝 Match</a>
           <a id="btnQr" class="btn secondary hidden" href="./qr.html">🔳 QR</a>
@@ -167,7 +167,7 @@
 
         <div class="meta">
           <div class="row"><div class="k">Module</div><div class="v">JOBS</div></div>
-          <div class="row"><div class="k">Retour cible</div><div id="returnInfo" class="v">cockpit.html</div></div>
+          <div class="row"><div class="k">Retour</div><div id="returnInfo" class="v">Mon espace</div></div>
           <div class="row"><div class="k">Session</div><div id="sessionInfo" class="v">Aucune</div></div>
         </div>
       </div>
@@ -567,7 +567,7 @@
 
         if (saved?.verified_at || saved?.validated_at) {
           el.sessionInfo.textContent = "Active";
-          setStatus("Session locale déjà fraîche. Tu peux reprendre le cockpit.", "ok");
+          setStatus("Session locale déjà fraîche. Tu peux reprendre ton espace.", "ok");
         }
       }
 
@@ -578,17 +578,17 @@
           const pin = normPin(el.pin.value);
 
           if (!slug && !phone) {
-            setStatus("Renseigne au moins le slug ou le téléphone.", "err");
+            setStatus("Renseigne au moins l’identifiant ou le téléphone.", "err");
             return;
           }
 
           if (!pin) {
-            setStatus("Entre ton PIN.", "err");
+            setStatus("Entre ton code.", "err");
             return;
           }
 
           el.btnOpen.disabled = true;
-          setStatus("Vérification du PIN...");
+          setStatus("Vérification du code...");
 
           if (slug && !phone) {
             const sub = await resolveSubBySlug(slug);
@@ -601,18 +601,18 @@
           }
 
           if (!slug) {
-            setStatus("Slug inconnu.", "err");
+            setStatus("Identifiant inconnu.", "err");
             return;
           }
 
           if (!phone) {
-            setStatus("Téléphone introuvable pour ce slug.", "err");
+            setStatus("Téléphone introuvable pour cet identifiant.", "err");
             return;
           }
 
           const auth = await verifyPin(phone, pin);
           if (!auth?.ok) {
-            setStatus("PIN invalide.", "err");
+            setStatus("Code invalide.", "err");
             return;
           }
 
@@ -624,7 +624,7 @@
 
           el.sessionInfo.textContent = "Active";
           refreshLinks(session.slug, session.phone);
-          setStatus("PIN validé. Ouverture de ton espace JOBS...", "ok");
+          setStatus("Code validé. Ouverture de ton espace JOBS...", "ok");
 
           setTimeout(() => {
             window.location.href = buildReturnUrl(session);
