@@ -349,7 +349,7 @@
       <div class="wrap stats-grid">
         <article class="stat"><strong id="statTotal">0</strong><span>candidatures visibles</span></article>
         <article class="stat"><strong id="statNew">0</strong><span>nouvelles</span></article>
-        <article class="stat"><strong id="statShortlist">0</strong><span>shortlist / à appeler</span></article>
+        <article class="stat"><strong id="statShortlist">0</strong><span>sélectionnés / à contacter</span></article>
         <article class="stat"><strong id="statAccepted">0</strong><span>acceptées</span></article>
       </div>
     </section>
@@ -393,11 +393,11 @@
               <select id="filterStatus">
                 <option value="all">Tous statuts</option>
                 <option value="new">Nouveau</option>
-                <option value="review">En revue</option>
-                <option value="shortlist">Shortlist</option>
-                <option value="call">À appeler</option>
-                <option value="accepted">Accepté</option>
-                <option value="rejected">Refusé</option>
+                <option value="review">En lecture</option>
+                <option value="shortlist">Sélectionné</option>
+                <option value="call">À contacter</option>
+                <option value="accepted">Retenu</option>
+                <option value="rejected">Non retenu</option>
               </select>
 
               <select id="filterAvailability">
@@ -540,11 +540,11 @@
 
       const STATUS_LABELS = {
         new: "Nouveau",
-        review: "En revue",
-        shortlist: "Shortlist",
-        call: "À appeler",
-        accepted: "Accepté",
-        rejected: "Refusé"
+        review: "En lecture",
+        shortlist: "Sélectionné",
+        call: "À contacter",
+        accepted: "Retenu",
+        rejected: "Non retenu"
       };
 
       const STATUS_CLASS = {
@@ -823,7 +823,7 @@
           state.preview = true;
           miniMode.textContent = "guard manquant";
           syncLinks();
-          setStatus("guard.js manquant ou invalide : bureau JOBS chargé en aperçu verrouillé.", "warn");
+          setStatus("Accès protégé indisponible : le bureau s’ouvre en aperçu guidé.", "warn");
           return;
         }
 

@@ -284,11 +284,11 @@
       <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
       <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
       <a id="wallLink" class="chip-link gold" href="./mur%20des%20missions.html">Mur des missions</a>
-      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Cockpit pro</a>
+      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Mon espace</a>
       <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
       <a id="matchLink" class="chip-link" href="./match.html">Match</a>
-      <a id="qrLink" class="chip-link gold" href="./qr.html">QR JOBS</a>
-      <a id="clawLink" class="chip-link blue" href="./cockpit.html#clawSection">Entraide / CLAW</a>
+      <a id="qrLink" class="chip-link gold" href="./qr.html">Mon partage</a>
+      <a id="clawLink" class="chip-link blue" href="./cockpit.html#clawSection">Aide guidée</a>
       <a id="postulerTop" class="chip-link" href="./postuler.html">Postuler</a>
     </div>
 
@@ -306,9 +306,9 @@
 
         <div class="meta-line">
           <div class="meta-chip">Mode : <strong id="modeChip">fiche mission</strong></div>
-          <div class="meta-chip">Slug actif : <strong id="slugChip">global</strong></div>
+          <div class="meta-chip">Repère actif : <strong id="slugChip">global</strong></div>
           <div class="meta-chip">Téléphone : <strong id="telChip">—</strong></div>
-          <div class="meta-chip">Source : <strong id="sourceChip">Supabase réel</strong></div>
+          <div class="meta-chip">Lecture : <strong id="sourceChip">données en direct</strong></div>
         </div>
 
         <div class="meta-grid">
@@ -495,7 +495,7 @@
         $("slugChip").textContent = state.slug || "aucun";
         $("telChip").textContent = state.tel || "—";
         $("modeChip").textContent = "fiche mission";
-        $("sourceChip").textContent = "Supabase réel";
+        $("sourceChip").textContent = "données en direct";
       }
 
       function syncLinks() {

@@ -751,11 +751,11 @@
   <div class="top-links">
     <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
     <a id="wallLink" class="chip-link" href="./mur%20des%20missions.html">Mur des missions</a>
-    <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Cockpit pro</a>
+    <a id="cockpitLink" class="chip-link gold" href="./cockpit.html">Vue d'ensemble</a>
     <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
     <a id="matchLink" class="chip-link" href="./match.html">Match</a>
-    <a id="qrLink" class="chip-link" href="./qr.html">QR JOBS</a>
-    <a id="clawLink" class="chip-link" href="#clawSection">Entraide / CLAW</a>
+    <a id="qrLink" class="chip-link" href="./qr.html">Mon partage</a>
+    <a id="clawLink" class="chip-link" href="#clawSection">Aide guidée</a>
     <a id="pinLink" class="chip-link hidden" href="./pin.html">Entrée PIN</a>
   </div>
 
@@ -774,8 +774,8 @@
             <a id="publicWallBtn" class="nav-btn gold" href="./mur%20des%20missions.html" rel="noopener">Mur public</a>
             <a id="bureauBtn" class="nav-btn" href="./bureau.html" rel="noopener">Bureau</a>
             <a id="matchBtn" class="nav-btn" href="./match.html" rel="noopener">Match</a>
-            <a id="qrBtn" class="nav-btn" href="./qr.html" rel="noopener">QR JOBS</a>
-            <a id="clawBtn" class="nav-btn blue" href="#clawSection" rel="noopener">Entraide / CLAW</a>
+            <a id="qrBtn" class="nav-btn" href="./qr.html" rel="noopener">Mon partage</a>
+            <a id="clawBtn" class="nav-btn blue" href="#clawSection" rel="noopener">Aide guidée</a>
             <button id="pinFallbackBtn" class="nav-btn hidden" type="button">Entrée PIN (secours)</button>
           </div>
         </div>
@@ -786,23 +786,23 @@
       </div>
 
       <div class="meta-line">
-        <div class="meta-chip">Slug actif : <strong id="slugChip">—</strong></div>
+        <div class="meta-chip">Repère actif : <strong id="slugChip">—</strong></div>
         <div class="meta-chip">Mode : <strong id="modeChip">détection…</strong></div>
-        <div class="meta-chip">Source : <strong id="sourceChip">détection…</strong></div>
+        <div class="meta-chip">Lecture : <strong id="sourceChip">détection…</strong></div>
       </div>
 
       <section id="clawSection" class="assist-card">
-        <span class="assist-kicker">CLAW by DIGIY</span>
+        <span class="assist-kicker">Aide guidée</span>
         <h2>L’entraide intelligente pour poser l’activité</h2>
         <p>
-          Ici, pas de détour inutile. Depuis le cockpit, tu peux ouvrir le QR JOBS,
-          descendre au bureau, aller au match, ou passer par l’entraide pour savoir
+          Ici, pas de détour inutile. Depuis cet espace, tu peux ouvrir ton partage,
+          descendre au bureau, aller au match, ou passer par l’aide guidée pour savoir
           quoi faire ensuite. Le PIN ne sert que de secours si la session tombe.
         </p>
         <div class="assist-list">
           <div class="assist-item">
             <strong>Diffuser</strong>
-            <span>Ouvre QR JOBS directement pour partager le bon rail sans ressortir du cockpit.</span>
+            <span>Ouvre ton partage directement pour diffuser la bonne porte sans ressortir de l’espace.</span>
           </div>
           <div class="assist-item">
             <strong>Trier</strong>
@@ -814,7 +814,7 @@
           </div>
         </div>
         <div class="assist-actions">
-          <a id="assistQrBtn" class="gold-btn" href="./qr.html">Ouvrir QR JOBS</a>
+          <a id="assistQrBtn" class="gold-btn" href="./qr.html">Ouvrir mon partage</a>
           <a id="assistBureauBtn" class="nav-btn" href="./bureau.html">Ouvrir le bureau</a>
           <a id="assistMatchBtn" class="nav-btn" href="./match.html">Ouvrir le match</a>
         </div>
@@ -873,11 +873,11 @@
             <select id="statusFilter">
               <option value="">Tous les statuts</option>
               <option value="new">new</option>
-              <option value="review">review</option>
-              <option value="shortlist">shortlist</option>
-              <option value="call">call</option>
-              <option value="accepted">accepted</option>
-              <option value="rejected">rejected</option>
+              <option value="review">En lecture</option>
+              <option value="shortlist">Sélectionné</option>
+              <option value="call">À contacter</option>
+              <option value="accepted">Retenu</option>
+              <option value="rejected">Non retenu</option>
             </select>
           </div>
 
@@ -1020,11 +1020,11 @@
     function labelStatus(status = "new") {
       const map = {
         new: "Nouveau",
-        review: "En revue",
-        shortlist: "Shortlist",
-        call: "À appeler",
-        accepted: "Accepté",
-        rejected: "Refusé"
+        review: "En lecture",
+        shortlist: "Sélectionné",
+        call: "À contacter",
+        accepted: "Retenu",
+        rejected: "Non retenu"
       };
       return map[String(status || "new").toLowerCase()] || status || "Statut";
     }
@@ -1088,7 +1088,7 @@
     function syncModeChip() {
       const modeChip = $("modeChip");
       if (!modeChip) return;
-      modeChip.textContent = PREVIEW_MODE ? "aperçu verrouillé" : "cockpit réel";
+      modeChip.textContent = PREVIEW_MODE ? "aperçu guidé" : "lecture active";
     }
 
     function syncPinFallbackVisibility() {
@@ -1296,11 +1296,11 @@
             <div class="actions">
               <a class="small-btn blue" href="${waLink}" target="_blank" rel="noopener">WhatsApp</a>
               <a class="small-btn" href="${matchUrl.toString()}" target="_blank" rel="noopener">Match</a>
-              <button class="small-btn gold" data-action="set-status" data-id="${c.id}" data-status="review" type="button">review</button>
-              <button class="small-btn orange" data-action="set-status" data-id="${c.id}" data-status="shortlist" type="button">shortlist</button>
-              <button class="small-btn blue" data-action="set-status" data-id="${c.id}" data-status="call" type="button">call</button>
-              <button class="small-btn green" data-action="set-status" data-id="${c.id}" data-status="accepted" type="button">accepted</button>
-              <button class="small-btn red" data-action="set-status" data-id="${c.id}" data-status="rejected" type="button">rejected</button>
+              <button class="small-btn gold" data-action="set-status" data-id="${c.id}" data-status="review" type="button">En lecture</button>
+              <button class="small-btn orange" data-action="set-status" data-id="${c.id}" data-status="shortlist" type="button">Sélectionné</button>
+              <button class="small-btn blue" data-action="set-status" data-id="${c.id}" data-status="call" type="button">À contacter</button>
+              <button class="small-btn green" data-action="set-status" data-id="${c.id}" data-status="accepted" type="button">Retenu</button>
+              <button class="small-btn red" data-action="set-status" data-id="${c.id}" data-status="rejected" type="button">Non retenu</button>
             </div>
           </article>
         `;
@@ -1537,7 +1537,7 @@
       document.body.classList.add("is-preview");
       syncModeChip();
       syncPinFallbackVisibility();
-      setSourceChip("missions réelles • bureau verrouillé");
+      setSourceChip("missions visibles • bureau fermé");
 
       const hero = document.querySelector(".hero");
       if (hero && !document.getElementById("previewBanner")) {
@@ -1576,7 +1576,7 @@
       document.body.classList.remove("is-preview");
       syncModeChip();
       syncPinFallbackVisibility();
-      setSourceChip("Supabase réel");
+      setSourceChip("données en direct");
       $("tab-candidates")?.classList.remove("preview-lock");
       $("tab-pipeline")?.classList.remove("preview-lock");
       document.getElementById("previewBanner")?.remove();

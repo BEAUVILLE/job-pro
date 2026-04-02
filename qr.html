@@ -161,7 +161,7 @@
 
 <body>
 <div class="wrap">
-  <h1>📎 Mon QR JOBS</h1>
+  <h1>📎 Mon partage</h1>
   <p>
     Un seul QR = <b>ton QR de partage</b>. Derrière, le rail propose l’entrée utile de JOBS :
     ton espace, les missions visibles et l’accès sécurisé.
@@ -169,8 +169,8 @@
 
   <div class="card">
     <div class="pillRow">
-      <div class="pill" id="pillSlug">identifiant : —</div>
-      <div class="pill" id="pillState">session : —</div>
+      <div class="pill" id="pillSlug">Mon repère : —</div>
+      <div class="pill" id="pillState">Accès : —</div>
     </div>
 
     <div class="row">
@@ -186,15 +186,15 @@
 
     <div class="qrbox">
       <a id="qrAnchor" href="#" target="_blank" rel="noopener">
-        <img id="qrImg" class="qrImg" alt="QR JOBS" />
+        <img id="qrImg" class="qrImg" alt="QR de partage" />
       </a>
     </div>
 
-    <div class="label mono" id="urlBox">URL: —</div>
+    <div class="label mono hidden" id="urlBox" aria-hidden="true"></div>
     <div class="note warn" id="note"></div>
 
     <div class="hr"></div>
-    <div class="mini mono" id="dbg"></div>
+    <div class="mini mono hidden" id="dbg" aria-hidden="true"></div>
   </div>
 </div>
 
@@ -380,15 +380,15 @@
   phone = getPhoneSafe();
 
   if(!slug){
-    alert("❌ slug manquant. Ouvre via le cockpit JOBS (slug obligatoire).");
+    alert("❌ Repère manquant. Ouvre cette page depuis ton espace.");
     return;
   }
 
   const sess = getGuardSession();
-  pillSlug.textContent = "slug: " + slug;
+  pillSlug.textContent = "Mon repère : " + slug;
   pillState.textContent = sess.ok
-    ? ("session: OK" + (phone ? " · " + phone : ""))
-    : "session: aperçu / slug";
+    ? ("Accès ouvert" + (phone ? " · " + phone : ""))
+    : "Accès à ouvrir";
 
   syncOwnSlug();
 
@@ -408,12 +408,8 @@
 
   url = qrProUrl.toString();
 
-  urlBox.textContent = "URL: " + url;
-  dbgEl.textContent =
-    "slug: " + slug +
-    " | module: JOBS" +
-    " | qr-base: " + QR_PRO_BASE +
-    (phone ? " | tel: " + phone : "");
+  urlBox.textContent = "";
+  dbgEl.textContent = "";
 
   qrAnchor.href = url;
   note("⏳ Préparation du QR local…", "warn");
@@ -429,7 +425,7 @@
     qrXLDataUrl = await makeQrDataUrl(url, 900);
 
     qrImg.onload = () => {
-      note("✅ QR-PRO JOBS prêt. Test téléphone avant impression.", "ok");
+      note("✅ Votre visuel est prêt. Test téléphone avant impression.", "ok");
     };
 
     qrImg.onerror = () => {
@@ -451,7 +447,7 @@
   btnCopy.onclick = async () => {
     try{
       await copyText(url);
-      note("✅ Lien QR-PRO JOBS copié.", "ok");
+      note("✅ Lien copié.", "ok");
     }catch(e){
       console.error(e);
       note("⚠️ Clipboard bloqué. Copie manuelle dans l’URL.", "warn");

@@ -89,6 +89,7 @@
     }
     .top-actions .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
     .top-actions .gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#151515;border-color:transparent}
+    .mobile-secondary{display:inline-flex}
 
     .status-wrap{padding:14px 0 0}
     .status-box{
@@ -253,6 +254,8 @@
     @media (max-width:860px){
       .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid,.detail-grid,.mini-grid{grid-template-columns:1fr}
       h1{max-width:none}
+      .mobile-secondary{display:none !important}
+      .top-actions{gap:8px}
     }
   </style>
 </head>
@@ -272,10 +275,10 @@
         <a id="btnOpenHome" href="./index.html">Accueil JOBS</a>
         <a id="btnOpenWall" href="./mur%20des%20missions.html">Mur</a>
         <a id="btnOpenBureau" href="./bureau.html">Bureau</a>
-        <a id="btnOpenCockpit" href="./cockpit.html">Cockpit</a>
-        <a id="btnOpenQr" class="gold" href="./qr.html">QR JOBS</a>
-        <a id="btnOpenClaw" class="primary" href="./cockpit.html#clawSection">Entraide / CLAW</a>
-        <a id="btnOpenPublicMission" href="./mission.html">Voir la fiche mission</a>
+        <a id="btnOpenCockpit" href="./cockpit.html">Mon espace</a>
+        <a id="btnOpenQr" class="gold" href="./qr.html">Mon partage</a>
+        <a id="btnOpenClaw" class="primary mobile-secondary" href="./cockpit.html#clawSection">Aide guidée</a>
+        <a id="btnOpenPublicMission" class="mobile-secondary" href="./mission.html">Voir la fiche mission</a>
       </div>
     </div>
   </header>
@@ -288,33 +291,33 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <article class="hero-card">
-          <span class="eyebrow">Rail réel DIGIY JOBS</span>
+          <span class="eyebrow">Lecture réelle JOBS</span>
           <h1>Le bon besoin face au bon profil.</h1>
           <p class="lead">
-            Cette page lit la mission active du slug, récupère les candidats réels du bureau,
+            Cette page lit la mission active du repère, récupère les candidats réels du bureau,
             calcule un score lisible, explique les raisons du match et aide le bureau à trancher vite.
           </p>
           <div class="hero-tags">
             <span class="tag">Mission réelle</span>
             <span class="tag">Candidats réels</span>
             <span class="tag">Score lisible</span>
-            <span class="tag">QR direct</span>
-            <span class="tag">CLAW direct</span>
+            <span class="tag">Partage direct</span>
+            <span class="tag">Aide directe</span>
           </div>
         </article>
 
         <aside class="panel">
-          <span class="signal" id="signalPill">Slug JOBS — détection…</span>
-          <h2>État du rail</h2>
+          <span class="signal" id="signalPill">Repère JOBS — détection…</span>
+          <h2>État de lecture</h2>
           <p>
-            Le module circule en <b>slug + phone</b>. Les objets métier restent en <b>candidate.id / offer_id</b>.
-            Une session ouverte doit te laisser passer sans refaire le PIN.
+            Cette page garde ton repère et ton téléphone pour te laisser circuler sans refaire le code d’accès.
+            Les liens utiles restent branchés automatiquement pendant la lecture.
           </p>
           <div class="mini-grid">
-            <div class="mini"><strong>Source mission</strong><span id="miniMissionSource">digiy_jobs_offers_pro</span></div>
-            <div class="mini"><strong>Source candidats</strong><span id="miniCandidateSource">digiy_jobs_candidates_pro</span></div>
-            <div class="mini"><strong>Mode</strong><span id="miniMode">cockpit réel</span></div>
-            <div class="mini"><strong>Slug / phone</strong><span id="miniSlug">—</span></div>
+            <div class="mini"><strong>Mission lue</strong><span id="miniMissionSource">missions en direct</span></div>
+            <div class="mini"><strong>Candidats lus</strong><span id="miniCandidateSource">candidatures en direct</span></div>
+            <div class="mini"><strong>Mode</strong><span id="miniMode">lecture active</span></div>
+            <div class="mini"><strong>Repère / téléphone</strong><span id="miniSlug">—</span></div>
           </div>
         </aside>
       </div>
@@ -335,7 +338,7 @@
           <div class="section-head">
             <div>
               <h2>Mission active</h2>
-              <p>Le matching se base sur cette mission. Tu peux changer d’offre active si le slug en a plusieurs.</p>
+              <p>Le matching se base sur cette mission. Tu peux changer d’offre active si le repère en a plusieurs.</p>
             </div>
             <div style="min-width:280px;display:grid;gap:8px">
               <label for="missionSelect" style="font-weight:900;color:#334155">Choisir une mission active</label>
@@ -377,11 +380,11 @@
           <select id="filterStatus">
             <option value="all">Tous statuts bureau</option>
             <option value="new">Nouveau</option>
-            <option value="review">En revue</option>
-            <option value="shortlist">Shortlist</option>
-            <option value="call">À appeler</option>
-            <option value="accepted">Accepté</option>
-            <option value="rejected">Refusé</option>
+            <option value="review">En lecture</option>
+            <option value="shortlist">Sélectionné</option>
+            <option value="call">À contacter</option>
+            <option value="accepted">Retenu</option>
+            <option value="rejected">Non retenu</option>
           </select>
 
           <select id="filterAvailability">
@@ -455,7 +458,7 @@
               <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp candidat</a>
               <button id="btnCopyCandidateLink" type="button">📋 Copier fiche candidat</button>
               <button id="btnCopyMissionLink" type="button">🧷 Copier lien mission</button>
-              <button class="gold" id="btnOpenQrDetail" type="button">📎 Ouvrir QR JOBS</button>
+              <button class="gold" id="btnOpenQrDetail" type="button">📎 Ouvrir mon partage</button>
               <button class="primary" id="btnValidateMatch" type="button">🤝 Valider ce match</button>
             </div>
           </div>
@@ -475,8 +478,8 @@
           <a id="footerHomeLink" href="./index.html">Accueil JOBS</a>
           <a id="footerWallLink" href="./mur%20des%20missions.html">Mur</a>
           <a id="footerBureauLink" href="./bureau.html">Bureau</a>
-          <a id="footerQrLink" href="./qr.html">QR JOBS</a>
-          <a id="footerClawLink" href="./cockpit.html#clawSection">CLAW</a>
+          <a id="footerQrLink" href="./qr.html">Mon partage</a>
+          <a id="footerClawLink" href="./cockpit.html#clawSection">Aide</a>
           <a href="#top">Retour haut</a>
         </div>
       </div>
@@ -542,11 +545,11 @@
 
       const STATUS_LABELS = {
         new:"Nouveau",
-        review:"En revue",
-        shortlist:"Shortlist",
-        call:"À appeler",
-        accepted:"Accepté",
-        rejected:"Refusé"
+        review:"En lecture",
+        shortlist:"Sélectionné",
+        call:"À contacter",
+        accepted:"Retenu",
+        rejected:"Non retenu"
       };
 
       const AVAILABILITY_LABELS = {

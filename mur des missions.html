@@ -430,9 +430,9 @@
     <div class="top-links">
       <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
       <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
-      <a id="missionsWallLink" class="chip-link gold" href="./mur%20des%20missions.html">Mur PRO</a>
-      <a id="pinLink" class="chip-link" href="./pin.html">Entrée PIN</a>
-      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Cockpit</a>
+      <a id="missionsWallLink" class="chip-link gold" href="./mur%20des%20missions.html">Vue des missions</a>
+      <a id="pinLink" class="chip-link" href="./pin.html">Code d’accès</a>
+      <a id="cockpitLink" class="chip-link" href="./cockpit.html">Mon espace</a>
       <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
       <a id="matchLink" class="chip-link blue" href="./match.html">Match</a>
     </div>
@@ -450,9 +450,9 @@
 
           <div class="meta-line">
             <div class="meta-chip">Mode : <strong id="modeChip">mur pro</strong></div>
-            <div class="meta-chip">Slug : <strong id="slugChip">—</strong></div>
-            <div class="meta-chip">Rail : <strong id="railChip">slug-first</strong></div>
-            <div class="meta-chip">Source : <strong id="sourceChip">digiy_jobs_offers_pro</strong></div>
+            <div class="meta-chip">Repère : <strong id="slugChip">—</strong></div>
+            <div class="meta-chip">Parcours : <strong id="railChip">lecture guidée</strong></div>
+            <div class="meta-chip">Lecture : <strong id="sourceChip">missions en direct</strong></div>
           </div>
         </div>
 
@@ -656,8 +656,8 @@
 
       $('slugChip').textContent = slug || 'aucun slug';
       $('modeChip').textContent = slug ? 'mur pro lié au slug' : 'mur pro sans slug';
-      $('railChip').textContent = slug ? 'slug-first actif' : 'slug requis';
-      $('sourceChip').textContent = 'digiy_jobs_offers_pro';
+      $('railChip').textContent = slug ? 'repère actif' : 'repère requis';
+      $('sourceChip').textContent = 'missions en direct';
 
       $('homeLink').href = withSlug(JOBS_PATHS.home, slug);
       $('missionsWallLink').href = withSlug(JOBS_PATHS.missions, slug);
