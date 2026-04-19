@@ -347,15 +347,16 @@
           <div class="hero-tags">
             <span class="tag">Index propre</span>
             <span class="tag">Identifiant gardé</span>
-            <span class="tag">Zéro workspace</span>
+            <span class="tag">Zéro détour</span>
             <span class="tag">QR de partage</span>
             <span class="tag">Aide guidée</span>
             <span class="tag">Parcours de démarrage</span>
           </div>
 
           <div class="hero-actions">
-            <a id="heroWallLink" class="primary" href="./mur%20des%20missions.html">Voir les missions</a>
+            <a id="heroWallLink" class="primary" href="./mur des missions.html">Voir les missions</a>
             <a id="heroPinLink" href="./pin.html">Entrer</a>
+            <a id="heroQrLink" class="gold" href="./qr.html">Mon QR</a>
             <a id="heroCockpitLink" href="./cockpit.html">Mon espace</a>
           </div>
         </article>
@@ -378,7 +379,7 @@
               <span id="miniSession">Détection…</span>
             </div>
             <div class="mini">
-              <strong>Mission publique</strong>
+              <strong>Missions visibles</strong>
               <span id="miniOffers">—</span>
             </div>
             <div class="mini">
@@ -445,7 +446,7 @@
             <h2>Aide guidée + parcours de démarrage</h2>
             <p>
               Ici on n’invente pas de faux fichiers. On pose une façade claire dans l’entrée,
-              puis on pousse vers les rails réels déjà présents : accès sécurisé, espace, bureau et QR.
+              puis on pousse vers les pages réelles déjà présentes : accès sécurisé, espace, bureau et QR.
             </p>
           </div>
         </div>
@@ -490,7 +491,7 @@
               </div>
               <div class="assist-item">
                 <strong>Étape 2 — Poser l’activité</strong>
-                <span>Espace pour la vue d’ensemble, bureau pour le tri, QR pour diffuser le rail.</span>
+                <span>Espace pour la vue d’ensemble, bureau pour le tri, QR pour diffuser la bonne porte.</span>
               </div>
             </div>
             <div class="assist-actions">
@@ -509,7 +510,7 @@
             <h2>Les portes utiles</h2>
             <p>
               Public d’abord, pro ensuite. Le hall reste au centre et redistribue vers chaque page utile
-              avec le même identifiant. Ici, toutes les portes actives du rail sont visibles au même endroit.
+              avec le même identifiant. Ici, toutes les portes actives sont visibles au même endroit.
             </p>
           </div>
         </div>
@@ -529,7 +530,7 @@
               <span>Identifiant gardé</span>
             </div>
             <div class="door-actions">
-              <a id="cardWallLink" class="primary" href="./mur%20des%20missions.html">Ouvrir</a>
+              <a id="cardWallLink" class="primary" href="./mur des missions.html">Ouvrir</a>
             </div>
           </article>
 
@@ -555,7 +556,7 @@
             <div class="door-top">
               <div>
                 <h3>Mon QR</h3>
-                <p>Le QR de partage pour diffuser proprement le rail JOBS, avec retour espace et lecture publique.</p>
+                <p>Le QR de partage pour diffuser proprement DIGIY JOBS, avec retour espace et lecture publique.</p>
               </div>
               <div class="door-icon">📎</div>
             </div>
@@ -573,7 +574,7 @@
             <div class="door-top">
               <div>
                 <h3>Mon espace</h3>
-                <p>Vue d’ensemble du rail JOBS : missions, candidatures, pipeline et accès rapide.</p>
+                <p>Vue d’ensemble de DIGIY JOBS : missions, candidatures, pipeline et accès rapide.</p>
               </div>
               <div class="door-icon">🧭</div>
             </div>
@@ -645,7 +646,7 @@
             <div class="door-top">
               <div>
                 <h3>Boot JOBS</h3>
-                <p>Le parcours de démarrage simple pour entrer proprement et retrouver le bon rail privé.</p>
+                <p>Le parcours de démarrage simple pour entrer proprement et retrouver la bonne suite privée.</p>
               </div>
               <div class="door-icon">🚀</div>
             </div>
@@ -689,7 +690,7 @@
         </p>
         <div class="foot-links">
           <a id="footHomeLink" href="./index.html">Accueil</a>
-          <a id="footWallLink" href="./mur%20des%20missions.html">Mur</a>
+          <a id="footWallLink" href="./mur des missions.html">Mur</a>
           <a id="footPinLink" href="./pin.html">Accès</a>
           <a id="footCockpitLink" href="./cockpit.html">Espace</a>
           <a id="footQrLink" href="./qr.html">Mon QR</a>
@@ -730,7 +731,7 @@
 
       const JOBS_PATHS = {
         home: "./index.html",
-        wall: "./mur%20des%20missions.html",
+        wall: "./mur des missions.html",
         pin: "./pin.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
@@ -863,9 +864,9 @@
 
       function withSlug(path, slug) {
         const cleanSlug = normalizeSlug(slug || "");
-        if (!cleanSlug) return path;
-        const joiner = path.includes("?") ? "&" : "?";
-        return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+        const url = new URL(path, window.location.href);
+        if (cleanSlug) url.searchParams.set("slug", cleanSlug);
+        return url.toString();
       }
 
       function replaceUrlSlug(slug) {
@@ -879,6 +880,10 @@
         history.replaceState({}, "", url.toString());
       }
 
+      function setHref(el, href) {
+        if (el) el.href = href;
+      }
+
       function syncLinks() {
         const slug = state.slug || "";
 
@@ -890,60 +895,60 @@
         const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
         const matchHref = withSlug(JOBS_PATHS.match, slug);
 
-        topPinLink.href = pinHref;
-        topQrLink.href = qrHref;
-        topWallLink.href = wallHref;
+        setHref(topPinLink, pinHref);
+        setHref(topQrLink, qrHref);
+        setHref(topWallLink, wallHref);
 
-        heroWallLink.href = wallHref;
-        heroPinLink.href = pinHref;
-        heroQrLink.href = qrHref;
-        heroCockpitLink.href = cockpitHref;
+        setHref(heroWallLink, wallHref);
+        setHref(heroPinLink, pinHref);
+        setHref(heroQrLink, qrHref);
+        setHref(heroCockpitLink, cockpitHref);
 
-        btnOpenPinFromSlug.href = pinHref;
-        btnOpenQrFromSlug.href = qrHref;
+        setHref(btnOpenPinFromSlug, pinHref);
+        setHref(btnOpenQrFromSlug, qrHref);
 
-        clawPinLink.href = pinHref;
-        clawCockpitLink.href = cockpitHref;
-        bootPinLink.href = pinHref;
-        bootBureauLink.href = bureauHref;
+        setHref(clawPinLink, pinHref);
+        setHref(clawCockpitLink, cockpitHref);
+        setHref(bootPinLink, pinHref);
+        setHref(bootBureauLink, bureauHref);
 
-        cardWallLink.href = wallHref;
-        cardPinLink.href = pinHref;
-        cardQrLink.href = qrHref;
-        cardCockpitLink.href = cockpitHref;
-        cardBureauLink.href = bureauHref;
-        cardMatchLink.href = matchHref;
+        setHref(cardWallLink, wallHref);
+        setHref(cardPinLink, pinHref);
+        setHref(cardQrLink, qrHref);
+        setHref(cardCockpitLink, cockpitHref);
+        setHref(cardBureauLink, bureauHref);
+        setHref(cardMatchLink, matchHref);
 
-        footHomeLink.href = homeHref;
-        footWallLink.href = wallHref;
-        footPinLink.href = pinHref;
-        footCockpitLink.href = cockpitHref;
-        footQrLink.href = qrHref;
+        setHref(footHomeLink, homeHref);
+        setHref(footWallLink, wallHref);
+        setHref(footPinLink, pinHref);
+        setHref(footCockpitLink, cockpitHref);
+        setHref(footQrLink, qrHref);
 
-        slugInput.value = slug;
-        miniSlug.textContent = slug || "aucun slug";
-        statSlug.textContent = slug || "—";
+        if (slugInput) slugInput.value = slug;
+        if (miniSlug) miniSlug.textContent = slug || "aucun identifiant";
+        if (statSlug) statSlug.textContent = slug || "—";
       }
 
       function syncMode() {
         const access = !!state.session?.access;
-        miniSession.textContent = access ? "Session pro active" : "Public / sans session";
-        modePill.textContent = access ? "Mode — session pro active" : "Mode — hall public";
-        statMode.textContent = access ? "Pro" : "Public";
+        if (miniSession) miniSession.textContent = access ? "Session pro active" : "Public / sans session";
+        if (modePill) modePill.textContent = access ? "Mode — session pro active" : "Mode — hall public";
+        if (statMode) statMode.textContent = access ? "Pro" : "Public";
 
         if (!access) {
-          miniCandidates.textContent = "Verrouillée";
-          statCandidates.textContent = "🔒";
+          if (miniCandidates) miniCandidates.textContent = "Verrouillée";
+          if (statCandidates) statCandidates.textContent = "🔒";
         }
       }
 
       async function loadCounts() {
         if (!sb || !state.slug) {
-          miniOffers.textContent = "—";
-          statOffers.textContent = "—";
+          if (miniOffers) miniOffers.textContent = "—";
+          if (statOffers) statOffers.textContent = "—";
           if (!state.session?.access) {
-            miniCandidates.textContent = "Verrouillée";
-            statCandidates.textContent = "🔒";
+            if (miniCandidates) miniCandidates.textContent = "Verrouillée";
+            if (statCandidates) statCandidates.textContent = "🔒";
           }
           return;
         }
@@ -958,11 +963,11 @@
           if (offersError) throw offersError;
 
           const offersText = String(offersCount ?? 0);
-          miniOffers.textContent = offersText + " mission(s)";
-          statOffers.textContent = offersText;
+          if (miniOffers) miniOffers.textContent = offersText + " mission(s)";
+          if (statOffers) statOffers.textContent = offersText;
         } catch (_) {
-          miniOffers.textContent = "Lecture impossible";
-          statOffers.textContent = "—";
+          if (miniOffers) miniOffers.textContent = "Lecture impossible";
+          if (statOffers) statOffers.textContent = "—";
         }
 
         if (state.session?.access) {
@@ -975,11 +980,11 @@
             if (candidatesError) throw candidatesError;
 
             const candidatesText = String(candidatesCount ?? 0);
-            miniCandidates.textContent = candidatesText + " candidat(s)";
-            statCandidates.textContent = candidatesText;
+            if (miniCandidates) miniCandidates.textContent = candidatesText + " candidat(s)";
+            if (statCandidates) statCandidates.textContent = candidatesText;
           } catch (_) {
-            miniCandidates.textContent = "Lecture impossible";
-            statCandidates.textContent = "—";
+            if (miniCandidates) miniCandidates.textContent = "Lecture impossible";
+            if (statCandidates) statCandidates.textContent = "—";
           }
         }
       }
@@ -993,20 +998,26 @@
         loadCounts();
       }
 
-      btnApplySlug.addEventListener("click", function() {
-        applySlug(slugInput.value);
-      });
+      if (btnApplySlug) {
+        btnApplySlug.addEventListener("click", function() {
+          applySlug(slugInput ? slugInput.value : "");
+        });
+      }
 
-      slugInput.addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          applySlug(slugInput.value);
-        }
-      });
+      if (slugInput) {
+        slugInput.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            applySlug(slugInput.value);
+          }
+        });
+      }
 
-      btnClearSlug.addEventListener("click", function() {
-        applySlug("");
-      });
+      if (btnClearSlug) {
+        btnClearSlug.addEventListener("click", function() {
+          applySlug("");
+        });
+      }
 
       (async function init() {
         const urlSlug = normalizeSlug(params.get("slug") || "");
