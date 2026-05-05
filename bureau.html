@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DIGIY JOBS — Bureau de tri</title>
+  <title>DIGIY JOBS — Bureau protégé</title>
   <meta
     name="description"
-    content="DIGIY JOBS — bureau réel de tri, qualification, suivi et mise en relation des candidatures."
+    content="DIGIY JOBS — bureau protégé pour trier, suivre et mettre en relation les candidatures."
   />
   <meta name="theme-color" content="#0A1128" />
 
@@ -274,6 +274,28 @@
     .foot-links{display:flex;gap:10px;flex-wrap:wrap}
     .foot-links a,.foot-links button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
 
+
+
+    @media (max-width:640px){
+      .wrap{width:min(calc(100% - 20px), var(--max))}
+      .topbar-inner{align-items:flex-start;flex-direction:column;padding:10px 0}
+      .top-actions{width:100%;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+      .top-actions button,.top-actions a{white-space:nowrap;min-width:max-content;padding:9px 11px;font-size:13px}
+      .brand-mark{width:40px;height:40px;border-radius:13px}
+      .hero{padding-top:14px}
+      .hero-card,.panel,.filters,.list-card,.detail-card,.action-card,.empty-card,.foot{border-radius:18px}
+      .hero-card{padding:20px}
+      h1{font-size:34px;line-height:1.02}
+      .lead{font-size:14px}
+      .hero-tags{gap:8px}
+      .tag{font-size:12px;padding:8px 10px}
+      .stats-grid{grid-template-columns:1fr 1fr}
+      .stat{padding:14px}
+      .stat strong{font-size:25px}
+      .list{max-height:none;overflow:visible}
+      .button-row button,.button-row a{width:100%;justify-content:center}
+    }
+
     @media (max-width:1200px){
       .hero-grid,.workspace,.stats-grid,.filter-grid,.action-grid{grid-template-columns:1fr 1fr}
       .filter-grid > *:first-child{grid-column:1 / -1}
@@ -297,11 +319,11 @@
 
       <div class="top-actions">
         <button id="btnRefresh" type="button">Rafraîchir</button>
-        <button id="btnImportPublic" type="button">Importer dernier dossier public</button>
-        <a id="linkWall" href="./mur%20des%20missions.html">Mur</a>
+        <button id="btnImportPublic" type="button">Récupérer le dernier dossier</button>
+        <a id="linkWall" href="./mur%20des%20missions.html">Missions</a>
         <a id="linkCockpit" href="./cockpit.html">Mon espace</a>
-        <a id="linkMatch" href="./match.html">Match</a>
-        <a id="linkPublic" class="primary" href="./index.html">Accueil public</a>
+        <a id="linkMatch" href="./match.html">Rapprocher</a>
+        <a id="linkPublic" class="primary" href="./index.html">Voir l’accueil</a>
       </div>
     </div>
   </header>
@@ -329,17 +351,17 @@
         </article>
 
         <aside class="panel">
-          <span class="signal" id="signalPill">Repère actif — détection…</span>
-          <h2>Ce que cette page permet</h2>
+          <span class="signal" id="signalPill">Coffre protégé — détection…</span>
+          <h2>Ton bureau de tri</h2>
           <p>
-            Elle relie les candidatures aux missions actives, garde un état clair par personne,
+            Elle garde les candidatures dans le coffre JOBS, relie chaque personne à une mission,
             mémorise tes notes utiles et prépare la mise en relation sans détour.
           </p>
           <div class="mini-grid">
             <div class="mini"><strong>Candidatures</strong><span id="miniCandidates">Chargement…</span></div>
             <div class="mini"><strong>Missions</strong><span id="miniOffers">Chargement…</span></div>
             <div class="mini"><strong>Mode</strong><span id="miniMode">détection…</span></div>
-            <div class="mini"><strong>Repère actif</strong><span id="miniSlug">—</span></div>
+            <div class="mini"><strong>Accès</strong><span id="miniSlug">Session protégée</span></div>
           </div>
         </aside>
       </div>
@@ -360,7 +382,7 @@
           <div>
             <h2>Recherche rapide</h2>
             <p>
-              Commence par rechercher une personne, puis ouvre les filtres avancés seulement si besoin.
+              Commence par le nom, le métier ou la ville. Les grands filtres restent rangés pour ne pas charger l’écran.
             </p>
           </div>
         </div>
@@ -411,7 +433,7 @@
 
             <div class="filter-actions">
               <button id="btnClearFilters" type="button">Effacer les filtres</button>
-              <button id="btnAddManual" type="button">Ajouter une candidature manuelle</button>
+              <button id="btnAddManual" type="button">Ajouter une candidature</button>
             </div>
           </div>
         </details>
@@ -423,8 +445,8 @@
         <article class="list-card">
           <div class="list-head">
             <div>
-              <h3>Liste des candidatures</h3>
-              <p>Un clic pour ouvrir la fiche bureau de la candidature sélectionnée.</p>
+              <h3>Candidatures à traiter</h3>
+              <p>Un clic suffit pour ouvrir la fiche, appeler, noter ou changer le statut.</p>
             </div>
           </div>
           <div class="list" id="list"></div>
@@ -453,15 +475,15 @@
             <div class="detail-grid" id="detailGrid"></div>
 
             <div class="action-card" style="margin-top:16px">
-              <h4>Statut bureau</h4>
-              <p>Donne un état clair à cette candidature pour que le bureau sache où elle en est.</p>
+              <h4>Où en est cette personne ?</h4>
+              <p>Un état simple pour savoir quoi faire ensuite : lire, appeler, retenir ou refuser.</p>
               <div class="status-row" id="statusRow"></div>
             </div>
 
             <div class="action-grid" style="margin-top:16px">
               <article class="action-card">
-                <h4>Notes bureau</h4>
-                <p>Note ce qui aide vraiment : sérieux, disponibilité réelle, qualité du contact, suite à donner.</p>
+                <h4>Notes utiles</h4>
+                <p>Écris ce qui aide vraiment : sérieux, disponibilité, qualité du contact, suite à donner.</p>
                 <div class="notes-wrap">
                   <textarea id="bureauNotes" placeholder="Ex. Profil propre. Répond vite. À rappeler demain matin."></textarea>
                   <div class="button-row">
@@ -471,13 +493,13 @@
               </article>
 
               <article class="action-card">
-                <h4>Mise en relation</h4>
-                <p>Ouvre WhatsApp, copie la fiche texte, ouvre le match ou marque la candidature comme appelée.</p>
+                <h4>Passer à l’action</h4>
+                <p>Appelle, écris sur WhatsApp, copie la fiche ou rapproche la candidature d’une mission.</p>
                 <div class="button-row">
                   <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
                   <button id="btnCopySheet" type="button">📋 Copier la fiche</button>
-                  <button id="btnCopyMissionLink" type="button">🧷 Copier mission</button>
-                  <a id="btnOpenMatch" href="./match.html" target="_blank" rel="noopener">🎯 Ouvrir match</a>
+                  <button id="btnCopyMissionLink" type="button">🧷 Copier la mission</button>
+                  <a id="btnOpenMatch" href="./match.html" target="_blank" rel="noopener">🎯 Rapprocher</a>
                   <button id="btnMarkCall" type="button">📞 Marquer "à appeler"</button>
                 </div>
               </article>
@@ -492,13 +514,13 @@
     <div class="wrap">
       <div class="foot">
         <p>
-          DIGIY JOBS · tri clair · suivi simple · mise en relation propre.
+          DIGIY JOBS · coffre protégé · tri clair · mise en relation propre.
         </p>
         <div class="foot-links">
           <button id="btnExportJson" type="button">Exporter JSON</button>
           <button id="btnClearLocalNotes" type="button">Vider notes locales</button>
           <a id="linkPin" href="./pin.html">Entrée code</a>
-          <a id="footerWall" href="./mur%20des%20missions.html">Mur</a>
+          <a id="footerWall" href="./mur%20des%20missions.html">Missions</a>
           <a href="#top">Retour haut</a>
         </div>
       </div>
@@ -622,6 +644,8 @@
 
       const statusBox = document.getElementById("statusBox");
       const signalPill = document.getElementById("signalPill");
+      const miniCandidates = document.getElementById("miniCandidates");
+      const miniOffers = document.getElementById("miniOffers");
       const miniMode = document.getElementById("miniMode");
       const miniSlug = document.getElementById("miniSlug");
 
@@ -653,6 +677,18 @@
         statusBox.className = `status-box ${tone}`;
         statusBox.textContent = text;
         statusBox.style.display = "block";
+      }
+
+
+      function cleanVisibleUrl() {
+        try {
+          const url = new URL(location.href);
+          ["slug", "phone", "tel", "resa_tel", "owner_phone"].forEach((key) => url.searchParams.delete(key));
+          const cleaned = url.pathname + (url.search ? url.search : "") + (url.hash || "");
+          if (cleaned !== location.pathname + location.search + location.hash) {
+            history.replaceState({}, document.title, cleaned);
+          }
+        } catch (_) {}
       }
 
       function normalizeSlug(value = "") {
@@ -746,13 +782,6 @@
         }
       }
 
-      function withSlug(path, slug) {
-        const cleanSlug = normalizeSlug(slug || "");
-        if (!cleanSlug) return path;
-        const joiner = path.includes("?") ? "&" : "?";
-        return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
-      }
-
       function notesKey() {
         return `${NOTES_PREFIX}${state.slug || "jobs"}`;
       }
@@ -796,22 +825,15 @@
       }
 
       function syncLinks() {
-        const slug = state.slug || "";
-        const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
-        const homeHref = withSlug(JOBS_PATHS.home, slug);
-        const pinHref = withSlug(JOBS_PATHS.pin, slug);
-        const wallHref = withSlug(JOBS_PATHS.wall, slug);
-        const matchHref = withSlug(JOBS_PATHS.match, slug);
+        linkCockpit.href = JOBS_PATHS.cockpit;
+        linkPublic.href = JOBS_PATHS.home;
+        linkPin.href = JOBS_PATHS.pin;
+        linkWall.href = JOBS_PATHS.wall;
+        linkMatch.href = JOBS_PATHS.match;
+        footerWall.href = JOBS_PATHS.wall;
 
-        linkCockpit.href = cockpitHref;
-        linkPublic.href = homeHref;
-        linkPin.href = pinHref;
-        linkWall.href = wallHref;
-        linkMatch.href = matchHref;
-        footerWall.href = wallHref;
-
-        miniSlug.textContent = slug || "aucun repère";
-        signalPill.textContent = slug ? `Repère actif — ${slug}` : "Repère actif — manquant";
+        miniSlug.textContent = state.preview ? "Code PIN demandé" : "Session ouverte";
+        signalPill.textContent = state.preview ? "Coffre protégé — accès à ouvrir" : "Coffre protégé — session ouverte";
       }
 
       async function bootGuard() {
@@ -823,7 +845,7 @@
           state.preview = true;
           miniMode.textContent = "guard manquant";
           syncLinks();
-          setStatus("Accès protégé indisponible : le bureau s’ouvre en aperçu guidé.", "warn");
+          setStatus("Coffre protégé indisponible : le bureau s’ouvre en aperçu guidé.", "warn");
           return;
         }
 
@@ -835,12 +857,13 @@
           state.slug = sessionSlug;
         }
 
+        cleanVisibleUrl();
         state.preview = !session?.access;
         miniMode.textContent = state.preview ? "accès à ouvrir" : "lecture active";
         syncLinks();
 
         if (state.preview) {
-          setStatus("Mode aperçu : ouvre ton accès pour lire les candidatures réelles.", "warn");
+          setStatus("Mode aperçu : entre ton code PIN pour ouvrir les candidatures réelles.", "warn");
         }
       }
 
@@ -877,6 +900,10 @@
             })
           );
         filterOffer.innerHTML = options.join("");
+        if (miniOffers) {
+          const count = state.offers.length;
+          miniOffers.textContent = count ? `${count} mission${count > 1 ? "s" : ""} active${count > 1 ? "s" : ""}` : "Aucune mission active";
+        }
       }
 
       async function loadCandidates() {
@@ -984,6 +1011,12 @@
           }).length
         );
         statAccepted.textContent = String(visible.filter((c) => String(c.status || "new") === "accepted").length);
+
+        if (miniCandidates) {
+          miniCandidates.textContent = visible.length
+            ? `${visible.length} candidature${visible.length > 1 ? "s" : ""} visible${visible.length > 1 ? "s" : ""}`
+            : (state.preview ? "Coffre à ouvrir" : "Aucune candidature visible");
+        }
       }
 
       function subtitle(candidate) {
@@ -1001,14 +1034,12 @@
         if (!offer?.id) return "";
         const url = new URL(JOBS_PATHS.mission, location.href);
         url.searchParams.set("id", offer.id);
-        if (state.slug) url.searchParams.set("slug", state.slug);
         return url.toString();
       }
 
       function matchUrl(candidate) {
         const url = new URL(JOBS_PATHS.match, location.href);
         if (candidate?.offer_id) url.searchParams.set("offer", candidate.offer_id);
-        if (state.slug) url.searchParams.set("slug", state.slug);
         return url.toString();
       }
 
@@ -1145,7 +1176,7 @@
 
       async function updateCandidateStatus(id, status) {
         if (state.preview) {
-          setStatus("Mode aperçu : active ton accès JOBS pour modifier les statuts.", "warn");
+          setStatus("Mode aperçu : entre ton code PIN pour modifier les statuts.", "warn");
           return;
         }
 
@@ -1230,7 +1261,7 @@
 
       async function importPublicDossier() {
         if (state.preview) {
-          setStatus("Mode aperçu : active ton accès JOBS pour importer un dossier public.", "warn");
+          setStatus("Mode aperçu : entre ton code PIN pour récupérer un dossier.", "warn");
           return;
         }
 
@@ -1240,7 +1271,7 @@
         }
 
         if (!state.slug) {
-          setStatus("Aucun identifiant détecté. Ouvre la page avec ton lien ou via l'entrée code.", "warn");
+          setStatus("Session non reconnue. Entre ton code PIN pour ouvrir ton bureau JOBS.", "warn");
           return;
         }
 
@@ -1294,12 +1325,12 @@
 
         await loadCandidates();
         renderList();
-        setStatus("Dernier dossier public importé dans la base JOBS.", "ok");
+        setStatus("Dernier dossier récupéré dans le bureau JOBS.", "ok");
       }
 
       async function addManualCandidate() {
         if (state.preview) {
-          setStatus("Mode aperçu : active ton accès JOBS pour ajouter une candidature.", "warn");
+          setStatus("Mode aperçu : entre ton code PIN pour ajouter une candidature.", "warn");
           return;
         }
 
@@ -1309,7 +1340,7 @@
         }
 
         if (!state.slug) {
-          setStatus("Aucun identifiant détecté pour ajouter une candidature.", "warn");
+          setStatus("Session non reconnue pour ajouter une candidature.", "warn");
           return;
         }
 
@@ -1358,7 +1389,7 @@
 
         await loadCandidates();
         renderList();
-        setStatus("Candidature manuelle ajoutée dans le bureau JOBS.", "ok");
+        setStatus("Candidature ajoutée dans le bureau JOBS.", "ok");
       }
 
       async function copyText(text) {
@@ -1450,7 +1481,6 @@
           const linkedOffer = state.offerMap.get(candidate.offer_id) || null;
           const local = getCandidateLocal(candidate.id);
           return {
-            slug: state.slug || null,
             id: candidate.id,
             offer_id: candidate.offer_id,
             offer_title: linkedOffer?.title || null,
@@ -1511,7 +1541,7 @@
           renderList();
 
           if (!state.slug) {
-            setStatus("Aucun identifiant détecté. Ouvre cette page avec ton lien ou via l'entrée code.", "warn");
+            setStatus("Session non reconnue. Entre ton code PIN pour ouvrir ton bureau JOBS.", "warn");
           } else if (!state.preview) {
             setStatus("Candidatures chargées. Tu peux trier et agir.", "ok");
           }
