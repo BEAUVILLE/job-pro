@@ -1,10 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#061b14" />
-  <title>DIGIY JOBS — Mon QR</title>
+  <title>DIGIY JOBS — Mon partage</title>
+  <meta
+    name="description"
+    content="DIGIY JOBS PRO — créer un QR public propre vers les missions ou une fiche mission, depuis le coffre professionnel."
+  />
 
   <script>
     window.DIGIY_MODULE = "JOBS";
@@ -17,6 +21,7 @@
       window.DIGIY_SUPABASE_ANON || window.DIGIY_SUPABASE_ANON_KEY;
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script src="./guard.js"></script>
 
@@ -24,15 +29,20 @@
     :root{
       --bg:#061b14;
       --card:#0d241b;
+      --card2:#123426;
       --accent:#facc15;
       --muted:#b7c9bf;
       --text:#eafff1;
       --line:rgba(255,255,255,.12);
       --danger:#fb7185;
       --ok:#22c55e;
+      --blue:#38bdf8;
       --shadow:0 18px 60px rgba(0,0,0,.45);
+      --max:820px;
     }
+
     *{box-sizing:border-box;margin:0;padding:0}
+
     body{
       font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
       background:
@@ -41,39 +51,139 @@
         linear-gradient(135deg,#061b14,#04110c);
       color:var(--text);
       min-height:100vh;
+      padding-bottom:86px;
     }
-    .wrap{max-width:760px;margin:auto;padding:18px}
-    h1{font-size:1.45rem;margin-bottom:6px}
-    p{color:var(--muted);margin-bottom:14px;line-height:1.45}
+
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+
+    .wrap{max-width:var(--max);margin:auto;padding:18px}
+
+    .topbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .chip-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      font-weight:900;
+    }
+
+    .chip-link.gold{
+      border-color:rgba(250,204,21,.32);
+      background:rgba(250,204,21,.09);
+      color:#fff3b0;
+    }
+
+    .chip-link.blue{
+      border-color:rgba(56,189,248,.28);
+      background:rgba(56,189,248,.10);
+      color:#d8f5ff;
+    }
+
+    .hero{
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:22px 18px;
+      background:
+        radial-gradient(circle at 88% 18%, rgba(250,204,21,.14), transparent 18%),
+        linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018)),
+        var(--card);
+      box-shadow:var(--shadow);
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:10px;
+      font-size:12px;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+      color:#fff0b8;
+      font-weight:950;
+    }
+
+    h1{
+      font-size:clamp(30px,5vw,48px);
+      line-height:1;
+      letter-spacing:-.035em;
+      margin-bottom:10px;
+    }
+
+    p{
+      color:var(--muted);
+      margin-bottom:14px;
+      line-height:1.55;
+    }
+
+    .pillRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .pill{
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:#d6e6dd;
+      font-weight:900;
+      font-size:.9rem;
+    }
 
     .card{
-      background:rgba(255,255,255,0.03);
+      background:rgba(255,255,255,0.035);
       border:1px solid var(--line);
-      border-radius:16px;
+      border-radius:24px;
       padding:16px;
       margin-top:14px;
       box-shadow:var(--shadow);
     }
 
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .card h2{
+      font-size:20px;
+      margin-bottom:8px;
+      letter-spacing:-.02em;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
 
     .btn{
       width:100%;
       padding:12px;
-      border-radius:12px;
-      font-weight:900;
+      border-radius:14px;
+      font-weight:950;
       border:none;
       cursor:pointer;
-      margin-top:10px;
-      min-height:48px;
+      min-height:50px;
       text-decoration:none;
       display:inline-flex;
       align-items:center;
       justify-content:center;
       transition:transform .12s ease, filter .12s ease, opacity .12s ease;
+      text-align:center;
     }
+
     .btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05)}
     .btn:disabled{opacity:.55;cursor:not-allowed}
+
     .btn.primary{background:var(--accent);color:#052e16}
     .btn.ghost{
       background:transparent;
@@ -85,9 +195,22 @@
       border:1px solid rgba(34,197,94,.35);
       color:#bbf7d0;
     }
+    .btn.blue{
+      background:rgba(56,189,248,.12);
+      border:1px solid rgba(56,189,248,.30);
+      color:#d8f5ff;
+    }
 
-    .mini{margin-top:10px;color:var(--muted);font-size:.92rem}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .mini{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.45;
+    }
+
+    .mono{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+    }
 
     .note{
       margin-top:10px;
@@ -102,18 +225,20 @@
     .note.ok{display:block;border-color:rgba(34,197,94,.35);color:#bbf7d0;background:rgba(34,197,94,.08)}
     .note.bad{display:block;border-color:rgba(251,113,133,.35);color:#fecaca;background:rgba(251,113,133,.08)}
     .note.warn{display:block;border-color:rgba(250,204,21,.35);color:#fde68a;background:rgba(250,204,21,.08)}
+    .note.info{display:block;border-color:rgba(56,189,248,.30);color:#d8f5ff;background:rgba(56,189,248,.09)}
 
     .qrbox{
       display:flex;
       justify-content:center;
       align-items:center;
       padding:16px;
-      border-radius:16px;
+      border-radius:20px;
       border:1px dashed rgba(250,204,21,.35);
       background:rgba(0,0,0,0.12);
       margin-top:12px;
-      min-height:220px;
+      min-height:230px;
     }
+
     .qrImg{
       max-width:100%;
       width:320px;
@@ -131,372 +256,478 @@
       border-radius:12px;
       border:1px solid var(--line);
       background:rgba(0,0,0,0.12);
-      line-height:1.35;
-      word-break:break-all;
-    }
-    .label b{color:#fff}
-    .hr{height:1px;background:rgba(255,255,255,.12);margin-top:12px}
-    .pillRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:10px;
-    }
-    .pill{
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
+      line-height:1.4;
+      word-break:break-word;
       color:#d6e6dd;
+    }
+
+    .label b{color:#fff}
+
+    .locked{
+      display:none;
+      border:1px solid rgba(250,204,21,.28);
+      background:rgba(250,204,21,.08);
+    }
+
+    .locked h2{
+      font-size:22px;
+      margin-bottom:8px;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      z-index:60;
+      left:50%;
+      bottom:calc(10px + env(safe-area-inset-bottom));
+      transform:translateX(-50%);
+      width:min(calc(100% - 18px),640px);
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(7,23,17,.88);
+      backdrop-filter:blur(12px);
+      border-radius:22px;
+      padding:8px;
+      box-shadow:0 16px 55px rgba(0,0,0,.35);
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+    }
+
+    .bottom-nav a{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:2px;
+      min-height:48px;
+      border-radius:16px;
+      color:rgba(236,255,244,.76);
+      font-size:11px;
       font-weight:900;
-      font-size:.9rem;
+      text-align:center;
+    }
+
+    .bottom-nav a.active{
+      background:rgba(250,204,21,.13);
+      color:#fff3b0;
+      border:1px solid rgba(250,204,21,.22);
+    }
+
+    .bottom-nav b{
+      font-size:17px;
+      line-height:1;
     }
 
     @media (max-width:680px){
       .wrap{padding:14px}
       .qrImg{width:260px}
+      .row{grid-template-columns:1fr}
+      .topbar .chip-link:nth-child(n+5){display:none}
     }
   </style>
 </head>
 
 <body>
-<div class="wrap">
-  <h1>📎 Mon partage</h1>
-  <p>
-    Un seul QR = <b>ton QR de partage</b>. Derrière, le rail propose l’entrée utile de JOBS :
-    ton espace, les missions visibles et l’accès sécurisé.
-  </p>
+  <div class="wrap">
+    <nav class="topbar" aria-label="Navigation professionnelle JOBS">
+      <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Site</a>
+      <a class="chip-link" href="./cockpit.html">Mon espace</a>
+      <a class="chip-link gold" href="./publier-mission.html">Proposer un poste</a>
+      <a class="chip-link" href="./bureau.html">Bureau</a>
+      <a class="chip-link blue" href="./match.html">Match</a>
+      <a class="chip-link" href="./pin.html">Code PIN</a>
+    </nav>
 
-  <div class="card">
-    <div class="pillRow">
-      <div class="pill" id="pillSlug">Mon repère : —</div>
-      <div class="pill" id="pillState">Accès : —</div>
-    </div>
+    <section class="hero">
+      <div class="kicker">JOBS PRO • partage public</div>
+      <h1>Mon QR propre.</h1>
+      <p>
+        Ce QR est fait pour partager les missions, pas pour exposer le coffre.
+        Le public arrive sur les opportunités visibles. Le professionnel garde son accès derrière le code PIN.
+      </p>
 
-    <div class="row">
-      <button class="btn ghost" id="btnBack" type="button">⬅️ Retour espace</button>
-      <button class="btn primary" id="btnCopy" type="button">📋 Copier le lien</button>
-    </div>
+      <div class="pillRow">
+        <div class="pill" id="pillTarget">Cible : missions publiques</div>
+        <div class="pill" id="pillState">Accès : vérification…</div>
+      </div>
+    </section>
 
-    <div class="row">
-      <button class="btn good" id="btnOpen" type="button">↗️ Ouvrir mon QR</button>
-      <button class="btn primary" id="btnDownload" type="button">⬇️ Télécharger QR (PNG)</button>
-      <button class="btn ghost" id="btnSticker" type="button">🟩 Télécharger Sticker XL (PNG)</button>
-    </div>
+    <section id="lockedBox" class="card locked">
+      <h2>Code PIN demandé</h2>
+      <p>
+        Cette page sert à préparer un QR depuis le coffre JOBS.
+        Entre ton code PIN : la session reste ouverte pendant 8h sur les pages internes.
+      </p>
+      <a class="btn primary" href="./pin.html">Entrer mon code PIN</a>
+    </section>
 
-    <div class="qrbox">
-      <a id="qrAnchor" href="#" target="_blank" rel="noopener">
-        <img id="qrImg" class="qrImg" alt="QR de partage" />
-      </a>
-    </div>
+    <section id="shareCard" class="card" hidden>
+      <h2 id="shareTitle">QR des missions</h2>
+      <p id="shareText">
+        Le QR ouvre le mur public des missions. Aucun téléphone ni repère interne n’est ajouté dans le lien.
+      </p>
 
-    <div class="label mono hidden" id="urlBox" aria-hidden="true"></div>
-    <div class="note warn" id="note"></div>
+      <div class="row">
+        <button class="btn ghost" id="btnBack" type="button">⬅️ Retour espace</button>
+        <button class="btn primary" id="btnCopy" type="button">📋 Copier le lien public</button>
+      </div>
 
-    <div class="hr"></div>
-    <div class="mini mono hidden" id="dbg" aria-hidden="true"></div>
+      <div class="row">
+        <button class="btn good" id="btnOpen" type="button">↗️ Ouvrir le lien</button>
+        <button class="btn primary" id="btnDownload" type="button">⬇️ Télécharger QR</button>
+      </div>
+
+      <div class="row">
+        <button class="btn blue" id="btnSticker" type="button">🟩 Télécharger Sticker XL</button>
+        <a class="btn ghost" id="btnPublicWall" href="./mur%20des%20missions.html">Voir les missions publiques</a>
+      </div>
+
+      <div class="qrbox">
+        <a id="qrAnchor" href="#" target="_blank" rel="noopener">
+          <img id="qrImg" class="qrImg" alt="QR public DIGIY JOBS" />
+        </a>
+      </div>
+
+      <div class="label mono" id="urlBox"></div>
+      <div class="note info" id="note"></div>
+      <div class="mini">
+        Conseil terrain : teste le QR avec un téléphone avant d’imprimer. Le bon QR amène au public.
+        Le coffre, lui, reste derrière le PIN.
+      </div>
+    </section>
   </div>
-</div>
 
-<script>
-(async function(){
-  "use strict";
+  <nav class="bottom-nav" aria-label="Navigation mobile JOBS">
+    <a href="./cockpit.html"><b>🏠</b><span>Accueil</span></a>
+    <a href="./publier-mission.html"><b>➕</b><span>Poste</span></a>
+    <a href="./bureau.html"><b>🗂️</b><span>Bureau</span></a>
+    <a href="./match.html"><b>🎯</b><span>Match</span></a>
+    <a href="./qr.html" class="active"><b>📎</b><span>QR</span></a>
+  </nav>
 
-  const QR_PRO_BASE = "https://beauville.github.io/digiy-qr-pro/";
+  <script>
+    (async function(){
+      "use strict";
 
-  const qrImg = document.getElementById("qrImg");
-  const qrAnchor = document.getElementById("qrAnchor");
-  const urlBox = document.getElementById("urlBox");
-  const noteEl = document.getElementById("note");
-  const dbgEl = document.getElementById("dbg");
-  const pillSlug = document.getElementById("pillSlug");
-  const pillState = document.getElementById("pillState");
+      const SENSITIVE_QUERY_KEYS = [
+        "slug",
+        "phone",
+        "tel",
+        "resa_tel",
+        "owner_phone",
+        "owner_id",
+        "business_code",
+        "keybox_code",
+        "keybox_location",
+        "access_note"
+      ];
 
-  const btnDownload = document.getElementById("btnDownload");
-  const btnSticker  = document.getElementById("btnSticker");
-  const btnBack     = document.getElementById("btnBack");
-  const btnCopy     = document.getElementById("btnCopy");
-  const btnOpen     = document.getElementById("btnOpen");
+      const qrImg = document.getElementById("qrImg");
+      const qrAnchor = document.getElementById("qrAnchor");
+      const urlBox = document.getElementById("urlBox");
+      const noteEl = document.getElementById("note");
+      const pillState = document.getElementById("pillState");
+      const pillTarget = document.getElementById("pillTarget");
+      const lockedBox = document.getElementById("lockedBox");
+      const shareCard = document.getElementById("shareCard");
 
-  let slug = "";
-  let phone = "";
-  let url = "";
-  let busy = false;
-  let qrNormalDataUrl = "";
-  let qrXLDataUrl = "";
+      const btnDownload = document.getElementById("btnDownload");
+      const btnSticker  = document.getElementById("btnSticker");
+      const btnBack     = document.getElementById("btnBack");
+      const btnCopy     = document.getElementById("btnCopy");
+      const btnOpen     = document.getElementById("btnOpen");
+      const btnPublicWall = document.getElementById("btnPublicWall");
 
-  function note(msg, type){
-    noteEl.className = "note " + (type || "warn");
-    noteEl.textContent = msg || "";
-    noteEl.style.display = msg ? "block" : "none";
-  }
+      const shareTitle = document.getElementById("shareTitle");
+      const shareText = document.getElementById("shareText");
 
-  function setBusy(on){
-    busy = !!on;
-    btnDownload.disabled = on;
-    btnSticker.disabled = on;
-    btnCopy.disabled = on;
-    btnOpen.disabled = on;
-    btnBack.disabled = on;
-  }
+      let busy = false;
+      let publicUrl = "";
+      let qrNormalDataUrl = "";
+      let qrXLDataUrl = "";
 
-  function getGuardSession(){
-    const st = window.DIGIY_GUARD?.state || {};
-    const raw = window.DIGIY_GUARD?.getSession?.() || {};
-    return {
-      ok: !!st.access_ok,
-      phone: String(st.phone || raw.phone || "").trim(),
-      slug: String(st.slug || raw.slug || "").trim()
-    };
-  }
+      function scrubSensitiveUrl(){
+        try{
+          const url = new URL(location.href);
+          let changed = false;
 
-  async function bootGuardSafe(){
-    try{
-      if(window.DIGIY_GUARD?.ready){
-        await window.DIGIY_GUARD.ready();
+          SENSITIVE_QUERY_KEYS.forEach((key) => {
+            if (url.searchParams.has(key)) {
+              url.searchParams.delete(key);
+              changed = true;
+            }
+          });
+
+          if (changed) {
+            const clean = url.pathname + (url.search ? url.search : "") + url.hash;
+            history.replaceState({}, document.title, clean);
+          }
+        }catch(_){}
       }
-    }catch(e){
-      console.warn("guard ready failed", e);
-    }
-  }
 
-  function getSlugSafe(){
-    const sess = getGuardSession();
-    const qsSlug = new URLSearchParams(location.search).get("slug") || "";
-    return String(sess.slug || window.DIGIY_GUARD?.state?.slug || qsSlug || "").trim();
-  }
+      function getOfferId(){
+        try{
+          const p = new URLSearchParams(location.search);
+          return String(p.get("offer") || p.get("id") || "").trim();
+        }catch(_){
+          return "";
+        }
+      }
 
-  function getPhoneSafe(){
-    const sess = getGuardSession();
-    const qsTel =
-      new URLSearchParams(location.search).get("tel") ||
-      new URLSearchParams(location.search).get("phone") || "";
-    return String(sess.phone || qsTel || "").trim();
-  }
+      function note(msg, type){
+        noteEl.className = "note " + (type || "info");
+        noteEl.textContent = msg || "";
+        noteEl.style.display = msg ? "block" : "none";
+      }
 
-  function withSlug(path){
-    const u = new URL(path, location.href);
-    if(slug) u.searchParams.set("slug", slug);
-    return u.toString();
-  }
+      function setBusy(on){
+        busy = !!on;
+        btnDownload.disabled = on;
+        btnSticker.disabled = on;
+        btnCopy.disabled = on;
+        btnOpen.disabled = on;
+        btnBack.disabled = on;
+      }
 
-  function syncOwnSlug(){
-    const u = new URL(location.href);
-    if(slug) u.searchParams.set("slug", slug);
-    else u.searchParams.delete("slug");
+      async function bootGuardSafe(){
+        try{
+          if(window.DIGIY_GUARD?.ready){
+            return await window.DIGIY_GUARD.ready();
+          }
+        }catch(e){
+          console.warn("guard ready failed", e);
+        }
+        return null;
+      }
 
-    if(phone) u.searchParams.set("tel", phone);
-    else u.searchParams.delete("tel");
+      function isGuardOpen(session){
+        if (session && session.access) return true;
+        const st = window.DIGIY_GUARD?.state || {};
+        return !!st.access_ok;
+      }
 
-    history.replaceState({}, "", u.toString());
-  }
+      function setLocked(){
+        pillState.textContent = "Accès : code PIN demandé";
+        lockedBox.style.display = "block";
+        shareCard.hidden = true;
+        note("", "info");
+      }
 
-  async function copyText(text){
-    if(navigator.clipboard?.writeText){
-      return navigator.clipboard.writeText(text);
-    }
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.setAttribute("readonly", "");
-    ta.style.position = "fixed";
-    ta.style.left = "-9999px";
-    document.body.appendChild(ta);
-    ta.select();
-    let ok = false;
-    try{
-      ok = document.execCommand("copy");
-    }catch(_){}
-    ta.remove();
-    if(!ok) throw new Error("copy_failed");
-  }
+      function setOpen(){
+        pillState.textContent = "Accès : session ouverte";
+        lockedBox.style.display = "none";
+        shareCard.hidden = false;
+      }
 
-  function directDownload(dataUrl, filename){
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
+      async function copyText(text){
+        if(navigator.clipboard?.writeText){
+          return navigator.clipboard.writeText(text);
+        }
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try{
+          ok = document.execCommand("copy");
+        }catch(_){}
+        ta.remove();
+        if(!ok) throw new Error("copy_failed");
+      }
 
-  function loadScript(src){
-    return new Promise((resolve, reject) => {
-      const s = document.createElement("script");
-      s.src = src;
-      s.async = true;
-      s.onload = () => resolve(true);
-      s.onerror = () => reject(new Error("script_load_failed: " + src));
-      document.head.appendChild(s);
-    });
-  }
+      function directDownload(dataUrl, filename){
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
 
-  async function ensureQrLib(){
-    if(window.QRCode?.toDataURL) return true;
+      function loadScript(src){
+        return new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = src;
+          s.async = true;
+          s.onload = () => resolve(true);
+          s.onerror = () => reject(new Error("script_load_failed: " + src));
+          document.head.appendChild(s);
+        });
+      }
 
-    const fallbacks = [
-      "https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js",
-      "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"
-    ];
-
-    for(const src of fallbacks){
-      try{
-        await loadScript(src);
+      async function ensureQrLib(){
         if(window.QRCode?.toDataURL) return true;
-      }catch(e){
-        console.warn("QR fallback failed", src, e);
-      }
-    }
-    return !!window.QRCode?.toDataURL;
-  }
 
-  function qrOptions(size){
-    return {
-      width: size,
-      margin: 1,
-      errorCorrectionLevel: "M",
-      color: {
-        dark: "#111827",
-        light: "#FFFFFF"
-      }
-    };
-  }
+        const fallbacks = [
+          "https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js",
+          "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"
+        ];
 
-  function makeQrDataUrl(text, size){
-    return new Promise((resolve, reject) => {
-      if(!window.QRCode || typeof window.QRCode.toDataURL !== "function"){
-        reject(new Error("QRCode lib missing"));
+        for(const src of fallbacks){
+          try{
+            await loadScript(src);
+            if(window.QRCode?.toDataURL) return true;
+          }catch(e){
+            console.warn("QR fallback failed", src, e);
+          }
+        }
+
+        return !!window.QRCode?.toDataURL;
+      }
+
+      function qrOptions(size){
+        return {
+          width: size,
+          margin: 1,
+          errorCorrectionLevel: "M",
+          color: {
+            dark: "#111827",
+            light: "#FFFFFF"
+          }
+        };
+      }
+
+      function makeQrDataUrl(text, size){
+        return new Promise((resolve, reject) => {
+          if(!window.QRCode || typeof window.QRCode.toDataURL !== "function"){
+            reject(new Error("QRCode lib missing"));
+            return;
+          }
+
+          window.QRCode.toDataURL(text, qrOptions(size), (err, dataUrl) => {
+            if(err) reject(err);
+            else resolve(dataUrl);
+          });
+        });
+      }
+
+      function buildPublicUrl(){
+        const offerId = getOfferId();
+
+        if (offerId) {
+          const u = new URL("./mission.html", location.href);
+          u.searchParams.set("id", offerId);
+          pillTarget.textContent = "Cible : fiche mission";
+          shareTitle.textContent = "QR de la mission";
+          shareText.textContent = "Le QR ouvre directement la fiche mission publique. Aucun téléphone ni repère interne n’est ajouté.";
+          return u.toString();
+        }
+
+        const u = new URL("./mur%20des%20missions.html", location.href);
+        pillTarget.textContent = "Cible : missions publiques";
+        shareTitle.textContent = "QR des missions";
+        shareText.textContent = "Le QR ouvre le mur public des missions. Aucun téléphone ni repère interne n’est ajouté.";
+        return u.toString();
+      }
+
+      async function renderQr(){
+        publicUrl = buildPublicUrl();
+
+        btnPublicWall.href = "./mur%20des%20missions.html";
+        qrAnchor.href = publicUrl;
+        urlBox.innerHTML = "<b>Lien public :</b><br>" + publicUrl;
+
+        note("⏳ Préparation du QR local…", "info");
+        setBusy(true);
+
+        try{
+          const ok = await ensureQrLib();
+          if(!ok){
+            throw new Error("Librairie QR introuvable");
+          }
+
+          qrNormalDataUrl = await makeQrDataUrl(publicUrl, 520);
+          qrXLDataUrl = await makeQrDataUrl(publicUrl, 900);
+
+          qrImg.onload = () => {
+            note("✅ QR prêt. Test téléphone conseillé avant impression.", "ok");
+          };
+
+          qrImg.onerror = () => {
+            note("❌ Impossible d’afficher l’image QR locale.", "bad");
+          };
+
+          qrImg.src = qrNormalDataUrl;
+        }catch(e){
+          console.error(e);
+          note("❌ Génération QR locale impossible : " + (e?.message || e), "bad");
+        }finally{
+          setBusy(false);
+        }
+      }
+
+      scrubSensitiveUrl();
+
+      const session = await bootGuardSafe();
+      if(!isGuardOpen(session)){
+        setLocked();
         return;
       }
-      window.QRCode.toDataURL(text, qrOptions(size), (err, dataUrl) => {
-        if(err) reject(err);
-        else resolve(dataUrl);
-      });
-    });
-  }
 
-  await bootGuardSafe();
+      setOpen();
+      await renderQr();
 
-  slug = getSlugSafe();
-  phone = getPhoneSafe();
+      btnBack.onclick = () => {
+        location.href = "./cockpit.html";
+      };
 
-  if(!slug){
-    alert("❌ Repère manquant. Ouvre cette page depuis ton espace.");
-    return;
-  }
+      btnCopy.onclick = async () => {
+        try{
+          await copyText(publicUrl);
+          note("✅ Lien public copié.", "ok");
+        }catch(e){
+          console.error(e);
+          note("⚠️ Clipboard bloqué. Copie le lien affiché sous le QR.", "warn");
+        }
+      };
 
-  const sess = getGuardSession();
-  pillSlug.textContent = "Mon repère : " + slug;
-  pillState.textContent = sess.ok
-    ? ("Accès ouvert" + (phone ? " · " + phone : ""))
-    : "Accès à ouvrir";
+      btnOpen.onclick = () => {
+        window.open(publicUrl, "_blank", "noopener");
+      };
 
-  syncOwnSlug();
+      btnDownload.onclick = async () => {
+        if(busy) return;
+        if(!qrNormalDataUrl){
+          note("❌ QR normal non prêt.", "bad");
+          return;
+        }
 
-  const qrProUrl = new URL(QR_PRO_BASE);
-  qrProUrl.searchParams.set("slug", slug);
-  qrProUrl.searchParams.set("module", "JOBS");
-  if (phone) qrProUrl.searchParams.set("tel", phone);
+        setBusy(true);
+        try{
+          note("⏳ Préparation du PNG…", "info");
+          directDownload(qrNormalDataUrl, "DIGIY_JOBS_QR_PUBLIC.png");
+          note("⬇️ Téléchargement lancé.", "ok");
+        }catch(e){
+          console.error(e);
+          note("❌ Téléchargement impossible : " + (e?.message || e), "bad");
+        }finally{
+          setBusy(false);
+        }
+      };
 
-  const returnUrl = new URL("./cockpit.html", location.href);
-  returnUrl.searchParams.set("slug", slug);
+      btnSticker.onclick = async () => {
+        if(busy) return;
+        if(!qrXLDataUrl){
+          note("❌ Sticker XL non prêt.", "bad");
+          return;
+        }
 
-  const publicUrl = new URL("./mur%20des%20missions.html", location.href);
-  publicUrl.searchParams.set("slug", slug);
-
-  qrProUrl.searchParams.set("return", returnUrl.toString());
-  qrProUrl.searchParams.set("public", publicUrl.toString());
-
-  url = qrProUrl.toString();
-
-  urlBox.textContent = "";
-  dbgEl.textContent = "";
-
-  qrAnchor.href = url;
-  note("⏳ Préparation du QR local…", "warn");
-  setBusy(true);
-
-  try{
-    const ok = await ensureQrLib();
-    if(!ok){
-      throw new Error("Librairie QR introuvable");
-    }
-
-    qrNormalDataUrl = await makeQrDataUrl(url, 520);
-    qrXLDataUrl = await makeQrDataUrl(url, 900);
-
-    qrImg.onload = () => {
-      note("✅ Votre visuel est prêt. Test téléphone avant impression.", "ok");
-    };
-
-    qrImg.onerror = () => {
-      note("❌ Impossible d’afficher l’image QR locale.", "bad");
-    };
-
-    qrImg.src = qrNormalDataUrl;
-  }catch(e){
-    console.error(e);
-    note("❌ Génération QR locale impossible : " + (e?.message || e), "bad");
-  }finally{
-    setBusy(false);
-  }
-
-  btnBack.onclick = () => {
-    location.href = withSlug("./cockpit.html");
-  };
-
-  btnCopy.onclick = async () => {
-    try{
-      await copyText(url);
-      note("✅ Lien copié.", "ok");
-    }catch(e){
-      console.error(e);
-      note("⚠️ Clipboard bloqué. Copie manuelle dans l’URL.", "warn");
-    }
-  };
-
-  btnOpen.onclick = () => {
-    window.open(url, "_blank", "noopener");
-  };
-
-  btnDownload.onclick = async () => {
-    if(busy) return;
-    if(!qrNormalDataUrl){
-      note("❌ QR normal non prêt.", "bad");
-      return;
-    }
-    setBusy(true);
-    try{
-      note("⏳ Préparation du PNG…", "warn");
-      directDownload(qrNormalDataUrl, `DIGIY_QR_PRO_JOBS_${slug}.png`);
-      note("⬇️ Téléchargement lancé (QR normal).", "ok");
-    }catch(e){
-      console.error(e);
-      note("❌ Download KO: " + (e?.message || e), "bad");
-    }finally{
-      setBusy(false);
-    }
-  };
-
-  btnSticker.onclick = async () => {
-    if(busy) return;
-    if(!qrXLDataUrl){
-      note("❌ Sticker XL non prêt.", "bad");
-      return;
-    }
-    setBusy(true);
-    try{
-      note("🟩 Préparation Sticker XL…", "warn");
-      directDownload(qrXLDataUrl, `DIGIY_STICKER_XL_JOBS_${slug}.png`);
-      note("⬇️ Sticker XL téléchargé.", "ok");
-    }catch(e){
-      console.error(e);
-      note("❌ Sticker XL KO: " + (e?.message || e), "bad");
-    }finally{
-      setBusy(false);
-    }
-  };
-
-})();
-</script>
+        setBusy(true);
+        try{
+          note("🟩 Préparation Sticker XL…", "info");
+          directDownload(qrXLDataUrl, "DIGIY_JOBS_STICKER_PUBLIC_XL.png");
+          note("⬇️ Sticker XL téléchargé.", "ok");
+        }catch(e){
+          console.error(e);
+          note("❌ Sticker XL impossible : " + (e?.message || e), "bad");
+        }finally{
+          setBusy(false);
+        }
+      };
+    })();
+  </script>
 </body>
 </html>
+
