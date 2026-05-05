@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>DIGIY JOBS — Entrée principale</title>
   <meta
     name="description"
@@ -17,8 +18,9 @@
     window.DIGIY_MODULE = "JOBS";
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -34,7 +36,7 @@
       --bg:#edf3f8;
       --sand:#f8f0e3;
       --line:#e2e8f0;
-      --card:#ffffffd9;
+      --card:#ffffffdc;
       --shadow:0 16px 42px rgba(15,23,42,.10);
       --radius:22px;
       --max:1320px;
@@ -42,9 +44,11 @@
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
+
     body{
       margin:0;
-      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      padding-bottom:calc(90px + env(safe-area-inset-bottom,0px));
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--ink);
       background:
         radial-gradient(circle at top left, rgba(14,165,233,.08), transparent 30%),
@@ -54,33 +58,73 @@
 
     a{text-decoration:none;color:inherit}
     button,input{font:inherit}
-    .wrap{width:min(calc(100% - 28px), var(--max));margin:0 auto}
+
+    .wrap{
+      width:min(calc(100% - 28px), var(--max));
+      margin:0 auto;
+    }
 
     .topbar{
-      position:sticky;top:0;z-index:50;
+      position:sticky;
+      top:0;
+      z-index:50;
       backdrop-filter:blur(10px);
-      background:rgba(237,243,248,.82);
+      -webkit-backdrop-filter:blur(10px);
+      background:rgba(237,243,248,.86);
       border-bottom:1px solid rgba(226,232,240,.92);
     }
+
     .topbar-inner{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 0;
     }
+
     .brand{
-      display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.02em;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:900;
+      letter-spacing:.02em;
     }
+
     .brand-mark{
-      width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:#fff;
-      background:linear-gradient(135deg,var(--dark),#20305e);
+      width:48px;
+      height:48px;
+      border-radius:15px;
+      overflow:hidden;
+      background:#fff;
       box-shadow:var(--shadow);
-      font-size:14px;
+      flex:0 0 auto;
     }
+
+    .brand-mark img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
     .brand small{
-      display:block;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.08em;
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      letter-spacing:.08em;
     }
+
     .top-actions{
-      display:flex;gap:10px;flex-wrap:wrap;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
     }
-    .top-actions a,.top-actions button{
+
+    .top-actions a,
+    .top-actions button,
+    .btn{
       min-height:44px;
       border:1px solid var(--line);
       background:#fff;
@@ -91,29 +135,45 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
+      gap:8px;
+      color:var(--ink);
     }
-    .top-actions .primary{
+
+    .top-actions .primary,
+    .btn.primary{
       background:linear-gradient(135deg,var(--blue),var(--blue-2));
-      color:#fff;border-color:transparent;
+      color:#fff;
+      border-color:transparent;
     }
-    .top-actions .gold{
+
+    .top-actions .gold,
+    .btn.gold{
       background:linear-gradient(135deg,var(--gold),#e8bf63);
-      color:#111827;border-color:transparent;
+      color:#111827;
+      border-color:transparent;
     }
 
     .hero{padding:26px 0 16px}
+
     .hero-grid{
       display:grid;
       grid-template-columns:1.04fr .96fr;
       gap:18px;
       align-items:stretch;
     }
-    .hero-card,.signal-card,.slug-card,.stat,.assist-card,.door,.foot{
+
+    .hero-card,
+    .signal-card,
+    .stat,
+    .assist-card,
+    .door,
+    .foot{
       border:1px solid var(--line);
       border-radius:var(--radius);
       background:var(--card);
       box-shadow:var(--shadow);
     }
+
     .hero-card{
       padding:28px;
       position:relative;
@@ -122,38 +182,89 @@
         radial-gradient(circle at top right, rgba(212,168,79,.16), transparent 30%),
         linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.90));
     }
+
     .hero-card::after{
       content:"";
-      position:absolute;right:-46px;bottom:-46px;width:170px;height:170px;border-radius:50%;
+      position:absolute;
+      right:-46px;
+      bottom:-46px;
+      width:170px;
+      height:170px;
+      border-radius:50%;
       border:26px solid rgba(10,17,40,.05);
+      pointer-events:none;
     }
+
     .eyebrow{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 11px;border-radius:999px;border:1px solid var(--line);
-      background:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#6b4f1f;
     }
+
     h1{
       margin:16px 0 12px;
       font-size:clamp(34px,4vw,60px);
       line-height:.98;
       letter-spacing:-.04em;
-      max-width:12ch;
+      max-width:13ch;
     }
+
     .lead{
       margin:0;
-      max-width:68ch;
+      max-width:70ch;
       color:#334155;
-      line-height:1.7;
+      line-height:1.72;
       font-size:16px;
+      font-weight:650;
     }
-    .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+    .hero-tags{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
     .tag{
-      padding:10px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--muted);
+      padding:10px 12px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      font-size:14px;
+      font-weight:800;
+      color:var(--muted);
     }
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-    .hero-actions a,.hero-actions button,.assist-actions a,.assist-actions button,.door-actions a,.door-actions button{
+
+    .route-rail,
+    .hero-actions,
+    .assist-actions,
+    .door-actions,
+    .foot-links{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+
+    .route-rail a,
+    .hero-actions a,
+    .hero-actions button,
+    .assist-actions a,
+    .assist-actions button,
+    .door-actions a,
+    .door-actions button,
+    .foot-links a,
+    .foot-links button{
       min-height:46px;
-      border:none;
       border-radius:14px;
       padding:12px 14px;
       font-weight:900;
@@ -161,175 +272,29 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--ink);
-    }
-    .hero-actions .primary,.assist-actions .primary,.door-actions .primary{
-      background:linear-gradient(135deg,var(--blue),var(--blue-2));
-      color:#fff;border-color:transparent;
-    }
-    .hero-actions .gold,.assist-actions .gold,.door-actions .gold{
-      background:linear-gradient(135deg,var(--gold),#e8bf63);
-      color:#111827;border-color:transparent;
-    }
-
-    .signal-card{
-      padding:18px;
-      background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));
-      color:#fff;
-      border-color:#27365a;
-      display:grid;
-      gap:14px;
-      align-content:start;
-    }
-    .signal-pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 12px;border-radius:14px;
-      background:rgba(212,168,79,.13);
-      border:1px solid rgba(212,168,79,.22);
-      color:#ffe7af;font-size:13px;font-weight:800;
-      width:max-content;
-    }
-    .signal-card h2{margin:0;font-size:22px;letter-spacing:-.02em}
-    .signal-card p{margin:0;color:#dbe6f6;line-height:1.65}
-    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .mini{
-      border:1px solid #2d3c60;
-      border-radius:18px;
-      padding:14px;
-      background:rgba(255,255,255,.05);
-    }
-    .mini strong{display:block;font-size:14px;margin-bottom:6px}
-    .mini span{display:block;color:#cbd5e1;font-size:13px;line-height:1.5}
-
-    .slug-section,.stats,.assist-section,.doors{padding:8px 0 14px}
-    .slug-card{padding:18px}
-    .slug-head,.doors-head,.assist-head{
-      display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px;
-    }
-    .slug-head h3,.assist-head h2{margin:0;font-size:24px;letter-spacing:-.02em}
-    .doors-head h2{margin:0;font-size:28px;letter-spacing:-.03em}
-    .slug-head p,.doors-head p,.assist-head p{
-      margin:6px 0 0;color:var(--muted);line-height:1.65;max-width:76ch;
-    }
-    .slug-grid{
-      display:grid;
-      grid-template-columns:1.2fr auto auto auto auto;
-      gap:12px;
-      align-items:end;
-    }
-    .slug-field{display:grid;gap:8px}
-    .slug-field label{
-      font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#64748b;
-    }
-    .slug-field input{
-      width:100%;min-height:48px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);padding:12px 14px;outline:none;
-    }
-    .slug-field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
-    .slug-grid button,.slug-grid a{
-      min-height:48px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--ink);
-      padding:12px 14px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
-    }
-    .slug-grid .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
-    .slug-grid .gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#111827;border-color:transparent}
-
-    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-    .stat{padding:18px}
-    .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
-    .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
-
-    .assist-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:16px;
-    }
-    .assist-card{
-      padding:20px;
-      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
-      display:grid;
-      gap:14px;
-      align-content:start;
-    }
-    .assist-kicker{
-      display:inline-flex;align-items:center;gap:8px;width:max-content;
-      padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;
-      font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
-    }
-    .assist-card h3{margin:0;font-size:28px;letter-spacing:-.03em;line-height:1.05}
-    .assist-card p{margin:0;color:var(--muted);line-height:1.7}
-    .assist-line{
-      padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:#fff;
-      font-weight:900;color:#111827;
-    }
-    .assist-list{display:grid;gap:10px}
-    .assist-item{
-      border:1px solid var(--line);border-radius:18px;background:rgba(248,250,252,.95);padding:14px;
-    }
-    .assist-item strong{display:block;margin-bottom:6px;font-size:15px}
-    .assist-item span{display:block;color:var(--muted);font-size:14px;line-height:1.6}
-    .assist-actions{display:flex;gap:10px;flex-wrap:wrap}
-
-    .doors-head{margin-bottom:14px}
-    .doors-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-    .door{
-      padding:18px;display:grid;gap:14px;align-content:start;
-      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
-    }
-    .door-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-    .door-icon{
-      width:52px;height:52px;border-radius:16px;display:grid;place-items:center;
-      font-size:22px;color:#fff;background:linear-gradient(135deg,var(--dark),#20305e);
-      box-shadow:var(--shadow);flex:0 0 auto;
-    }
-    .door h3{margin:0;font-size:22px;letter-spacing:-.02em}
-    .door p{margin:0;color:var(--muted);line-height:1.65;font-size:14px}
-    .door-tags{display:flex;gap:8px;flex-wrap:wrap}
-    .door-tags span{
-      padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:900;color:#475569;
-    }
-    .door-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
-
-    footer{padding:0 0 30px}
-    .foot{
-      padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;
-    }
-    .foot p{margin:0;color:var(--muted);line-height:1.6}
-    .foot-links{display:flex;gap:10px;flex-wrap:wrap}
-    .foot-links a,.foot-links button{
-      min-height:42px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;
-    }
-
-
-
-    .route-rail{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin:14px 0 0;
-    }
-    .route-rail a{
-      min-height:42px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
       gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
       border:1px solid var(--line);
       background:#fff;
       color:var(--ink);
-      font-weight:900;
-      font-size:13px;
-      box-shadow:0 10px 26px rgba(15,23,42,.08);
     }
-    .route-rail a.gold{
+
+    .route-rail a.gold,
+    .hero-actions .gold,
+    .assist-actions .gold,
+    .door-actions .gold{
       background:linear-gradient(135deg,var(--gold),#e8bf63);
       color:#111827;
       border-color:transparent;
     }
+
+    .hero-actions .primary,
+    .assist-actions .primary,
+    .door-actions .primary{
+      background:linear-gradient(135deg,var(--blue),var(--blue-2));
+      color:#fff;
+      border-color:transparent;
+    }
+
     .audio-card{
       position:relative;
       margin-top:18px;
@@ -343,6 +308,7 @@
       box-shadow:0 18px 42px rgba(15,23,42,.10), 0 0 0 1px rgba(212,168,79,.08) inset;
       overflow:hidden;
     }
+
     .audio-top{
       display:flex;
       justify-content:space-between;
@@ -352,6 +318,7 @@
       position:relative;
       z-index:1;
     }
+
     .audio-lead{
       display:inline-flex;
       align-items:center;
@@ -368,6 +335,7 @@
       width:max-content;
       max-width:100%;
     }
+
     .audio-lead .pulse{
       width:8px;
       height:8px;
@@ -376,6 +344,7 @@
       box-shadow:0 0 14px rgba(212,168,79,.75);
       animation:jobsAudioPulse 1.55s ease-in-out infinite;
     }
+
     .audio-title{
       margin-top:10px;
       font-size:21px;
@@ -384,6 +353,7 @@
       color:#0f172a;
       line-height:1.12;
     }
+
     .audio-text{
       margin-top:7px;
       color:#334155;
@@ -392,17 +362,20 @@
       line-height:1.62;
       max-width:68ch;
     }
+
     .audio-hint{
       margin-top:9px;
       color:#6b4f1f;
       font-size:13px;
       font-weight:900;
     }
+
     .audio-actions{
       display:flex;
       gap:9px;
       flex-wrap:wrap;
     }
+
     .audio-btn{
       min-height:48px;
       border-radius:999px;
@@ -415,13 +388,20 @@
       box-shadow:0 12px 28px rgba(212,168,79,.22);
       transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
-    .audio-btn:hover{transform:translateY(-1px);filter:saturate(1.05);box-shadow:0 16px 34px rgba(212,168,79,.30)}
+
+    .audio-btn:hover{
+      transform:translateY(-1px);
+      filter:saturate(1.05);
+      box-shadow:0 16px 34px rgba(212,168,79,.30);
+    }
+
     .audio-btn.stop{
       background:#fff;
       color:#b45309;
       border-color:rgba(245,158,11,.34);
       box-shadow:none;
     }
+
     .audio-progress-wrap{
       height:6px;
       margin-top:14px;
@@ -431,43 +411,399 @@
       position:relative;
       z-index:1;
     }
+
     .audio-progress{
       height:100%;
       width:0%;
       background:linear-gradient(90deg,var(--gold),var(--blue),var(--green));
       transition:width .2s linear;
     }
-    .audio-glow{
-      position:absolute;
-      right:14px;
-      bottom:8px;
-      width:90px;
-      height:90px;
-      border-radius:999px;
-      background:radial-gradient(circle, rgba(212,168,79,.20), transparent 64%);
-      pointer-events:none;
-      filter:blur(3px);
-    }
+
     @keyframes jobsAudioPulse{
       0%,100%{transform:scale(1);opacity:1}
       50%{transform:scale(1.25);opacity:.72}
     }
 
-    @media (max-width:1180px){
-      .hero-grid,.doors-grid,.stats-grid,.assist-grid{grid-template-columns:1fr 1fr}
-      .slug-grid{grid-template-columns:1fr 1fr}
+    .signal-card{
+      padding:18px;
+      background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));
+      color:#fff;
+      border-color:#27365a;
+      display:grid;
+      gap:14px;
+      align-content:start;
     }
+
+    .signal-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(212,168,79,.13);
+      border:1px solid rgba(212,168,79,.22);
+      color:#ffe7af;
+      font-size:13px;
+      font-weight:800;
+      width:max-content;
+    }
+
+    .signal-card h2{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.02em;
+    }
+
+    .signal-card p{
+      margin:0;
+      color:#dbe6f6;
+      line-height:1.65;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .mini{
+      border:1px solid #2d3c60;
+      border-radius:18px;
+      padding:14px;
+      background:rgba(255,255,255,.05);
+    }
+
+    .mini strong{
+      display:block;
+      font-size:14px;
+      margin-bottom:6px;
+    }
+
+    .mini span{
+      display:block;
+      color:#cbd5e1;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .stats,
+    .assist-section,
+    .doors{
+      padding:8px 0 14px;
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .stat{
+      padding:18px;
+    }
+
+    .stat strong{
+      display:block;
+      font-size:30px;
+      line-height:1;
+      margin-bottom:8px;
+    }
+
+    .stat span{
+      display:block;
+      color:var(--muted);
+      font-weight:750;
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    .assist-head,
+    .doors-head{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+
+    .assist-head h2,
+    .doors-head h2{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-.03em;
+    }
+
+    .assist-head p,
+    .doors-head p{
+      margin:6px 0 0;
+      color:var(--muted);
+      line-height:1.65;
+      max-width:76ch;
+      font-weight:650;
+    }
+
+    .assist-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .assist-card{
+      padding:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
+      display:grid;
+      gap:14px;
+      align-content:start;
+    }
+
+    .assist-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      width:max-content;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#6b4f1f;
+    }
+
+    .assist-card h3{
+      margin:0;
+      font-size:28px;
+      letter-spacing:-.03em;
+      line-height:1.05;
+    }
+
+    .assist-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+      font-weight:650;
+    }
+
+    .assist-line{
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:900;
+      color:#111827;
+    }
+
+    .assist-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .assist-item{
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(248,250,252,.95);
+      padding:14px;
+    }
+
+    .assist-item strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:15px;
+    }
+
+    .assist-item span{
+      display:block;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+      font-weight:650;
+    }
+
+    .doors-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .door{
+      padding:18px;
+      display:grid;
+      gap:14px;
+      align-content:start;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
+    }
+
+    .door-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .door-icon{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      font-size:22px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--dark),#20305e);
+      box-shadow:var(--shadow);
+      flex:0 0 auto;
+    }
+
+    .door h3{
+      margin:0;
+      font-size:22px;
+      letter-spacing:-.02em;
+    }
+
+    .door p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+      font-size:14px;
+      font-weight:650;
+    }
+
+    .door-tags{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .door-tags span{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:12px;
+      font-weight:900;
+      color:#475569;
+    }
+
+    footer{
+      padding:0 0 30px;
+    }
+
+    .foot{
+      padding:18px 20px;
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .foot p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-weight:650;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:9998;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+      background:rgba(10,17,40,.94);
+      border-top:1px solid rgba(255,255,255,.12);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+
+    .bottom-nav-inner{
+      width:min(760px,100%);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+    }
+
+    .bottom-nav a{
+      min-height:54px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      align-content:center;
+      gap:2px;
+      color:rgba(255,255,255,.76);
+      font-size:11px;
+      font-weight:1000;
+      text-align:center;
+      border:1px solid transparent;
+      text-decoration:none;
+      background:transparent;
+      padding:0 4px;
+    }
+
+    .bottom-nav .ico{
+      font-size:18px;
+      line-height:1;
+    }
+
+    .bottom-nav a.active{
+      background:linear-gradient(135deg,var(--gold),var(--blue));
+      color:#081018;
+    }
+
+    @media (max-width:1180px){
+      .hero-grid,
+      .doors-grid,
+      .stats-grid,
+      .assist-grid{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
     @media (max-width:860px){
-      .hero-grid,.doors-grid,.stats-grid,.mini-grid,.slug-grid,.assist-grid{grid-template-columns:1fr}
-      h1{max-width:none}
+      .topbar-inner{
+        align-items:flex-start;
+      }
+
+      .top-actions{
+        display:none;
+      }
+
+      .hero-grid,
+      .doors-grid,
+      .stats-grid,
+      .mini-grid,
+      .assist-grid{
+        grid-template-columns:1fr;
+      }
+
+      h1{
+        max-width:none;
+      }
+
+      .hero-card{
+        padding:22px;
+      }
+
+      .hero-actions a,
+      .assist-actions a,
+      .door-actions a{
+        width:100%;
+      }
     }
   </style>
 </head>
+
 <body>
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <a class="brand" href="https://digiylyfe.com/" target="_blank" rel="noopener" aria-label="Ouvrir DIGIYLYFE">
-        <span class="brand-mark">DJ</span>
+      <a class="brand" href="https://digiylyfe.com/" aria-label="Ouvrir DIGIYLYFE">
+        <span class="brand-mark">
+          <img src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg" alt="Logo DIGIYLYFE">
+        </span>
         <span>
           DIGIY JOBS
           <small>ENTRÉE PRINCIPALE</small>
@@ -475,9 +811,9 @@
       </a>
 
       <div class="top-actions">
-        <a href="https://digiylyfe.com/" target="_blank" rel="noopener">🌍 Site</a>
-        <a href="https://pro-espace.digiylyfe.com/" target="_blank" rel="noopener">🧭 HUB</a>
-        <a class="gold" href="https://tarifs.digiylyfe.com/" target="_blank" rel="noopener">📦 Tarifs</a>
+        <a href="https://digiylyfe.com/">🌍 Site</a>
+        <a href="https://digiy-hub.digiylyfe.com/">🧭 HUB</a>
+        <a class="gold" href="https://tarifs.digiylyfe.com/">📦 Tarifs</a>
         <a href="#clawSection">Aide guidée</a>
         <a id="topPinLink" href="./pin.html">Entrée sécurisée</a>
         <a id="topQrLink" href="./qr.html">Mon QR</a>
@@ -490,27 +826,29 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <article class="hero-card">
-          <span class="eyebrow">JOBS • entrée claire • circulation simple</span>
-          <h1>L’entrée qui relie tout sans confusion.</h1>
+          <span class="eyebrow">JOBS • missions • candidats • bureau</span>
+
+          <h1>L’entrée qui relie le travail et les personnes.</h1>
+
           <p class="lead">
-            Ici tu tiens la porte centrale de JOBS. Depuis cette entrée, tu peux ouvrir les missions,
-            entrer avec ton code, gérer ton espace, diffuser ton partage, et t’appuyer sur <b>l’aide guidée</b>
-            sans casser la circulation.
+            Ici, on garde le chemin simple : les missions visibles côté public, l’accès sécurisé côté professionnel,
+            le bureau pour trier, et l’aide guidée pour avancer sans se perdre. JOBS touche au travail et aux personnes :
+            on avance avec ordre, respect et clarté.
           </p>
 
           <div class="hero-tags">
-            <span class="tag">Index propre</span>
-            <span class="tag">Identifiant gardé</span>
-            <span class="tag">Zéro détour</span>
+            <span class="tag">Missions visibles</span>
+            <span class="tag">Accès sécurisé</span>
+            <span class="tag">Candidats protégés</span>
             <span class="tag">QR de partage</span>
             <span class="tag">Aide guidée</span>
-            <span class="tag">Parcours de démarrage</span>
+            <span class="tag">Décision humaine</span>
           </div>
 
           <nav class="route-rail" aria-label="Repères DIGIY">
-            <a href="https://digiylyfe.com/" target="_blank" rel="noopener">🌍 Site</a>
-            <a href="https://pro-espace.digiylyfe.com/" target="_blank" rel="noopener">🧭 HUB</a>
-            <a class="gold" href="https://tarifs.digiylyfe.com/" target="_blank" rel="noopener">📦 Tarifs</a>
+            <a href="https://digiylyfe.com/">🌍 Site</a>
+            <a href="https://digiy-hub.digiylyfe.com/">🧭 HUB</a>
+            <a class="gold" href="https://tarifs.digiylyfe.com/">📦 Tarifs</a>
           </nav>
 
           <div class="audio-card" aria-label="Explication audio DIGIY JOBS">
@@ -524,18 +862,21 @@
                 </div>
                 <div class="audio-hint">👉 Une minute pour comprendre le chemin avant de cliquer.</div>
               </div>
+
               <div class="audio-actions">
                 <button class="audio-btn" id="btnJobsAudio" type="button">🎧 Écouter DIGIY</button>
                 <button class="audio-btn stop" id="btnJobsAudioStop" type="button">⏹ Stop</button>
               </div>
             </div>
-            <div class="audio-progress-wrap" aria-hidden="true"><div class="audio-progress" id="jobsAudioProgress"></div></div>
-            <div class="audio-glow" aria-hidden="true"></div>
+
+            <div class="audio-progress-wrap" aria-hidden="true">
+              <div class="audio-progress" id="jobsAudioProgress"></div>
+            </div>
           </div>
 
           <div class="hero-actions">
-            <a id="heroWallLink" class="primary" href="./mur des missions.html">Voir les missions</a>
-            <a id="heroPinLink" href="./pin.html">Entrer</a>
+            <a id="heroWallLink" class="primary" href="./mur%20des%20missions.html">Voir les missions</a>
+            <a id="heroPinLink" href="./pin.html">Entrer avec mon code</a>
             <a id="heroQrLink" class="gold" href="./qr.html">Mon QR</a>
             <a id="heroCockpitLink" href="./cockpit.html">Mon espace</a>
           </div>
@@ -543,78 +884,59 @@
 
         <aside class="signal-card">
           <span class="signal-pill" id="modePill">Mode — détection…</span>
+
           <h2>État de l’accès</h2>
+
           <p>
-            Cette entrée garde l’identifiant actif, le pousse dans tous les liens utiles et devient la base propre
-            pour rouvrir chaque porte sans te perdre entre public, QR, aide et espace privé.
+            Cette entrée ne met pas les informations sensibles dans la barre d’adresse.
+            Si une session professionnelle est déjà ouverte, l’appareil la reconnaît et les portes internes restent directes.
           </p>
 
           <div class="mini-grid">
             <div class="mini">
-              <strong>Repère actif</strong>
-              <span id="miniSlug">—</span>
+              <strong>Contexte</strong>
+              <span id="miniContext">Gardé dans l’appareil si présent</span>
             </div>
+
             <div class="mini">
               <strong>Session</strong>
               <span id="miniSession">Détection…</span>
             </div>
+
             <div class="mini">
-              <strong>Missions visibles</strong>
-              <span id="miniOffers">—</span>
+              <strong>Missions</strong>
+              <span id="miniOffers">À ouvrir depuis le mur public</span>
             </div>
+
             <div class="mini">
-              <strong>Lecture candidatures</strong>
-              <span id="miniCandidates">Verrouillée</span>
+              <strong>Candidatures</strong>
+              <span id="miniCandidates">Protégées côté bureau</span>
             </div>
           </div>
         </aside>
       </div>
     </section>
 
-    <section class="slug-section">
-      <div class="wrap">
-        <article class="slug-card">
-          <div class="slug-head">
-            <div>
-              <h3>Piloter l’identifiant</h3>
-              <p>
-                Colle ton identifiant ici pour recoudre instantanément tous les liens utiles.
-                Exemple : <b>jobs-221771342889</b>
-              </p>
-            </div>
-          </div>
-
-          <div class="slug-grid">
-            <div class="slug-field">
-              <label for="slugInput">Identifiant JOBS</label>
-              <input id="slugInput" type="text" placeholder="jobs-221771342889" />
-            </div>
-            <button id="btnApplySlug" class="primary" type="button">Appliquer</button>
-            <button id="btnClearSlug" type="button">Vider</button>
-            <a id="btnOpenPinFromSlug" href="./pin.html">Ouvrir l’accès</a>
-            <a id="btnOpenQrFromSlug" class="gold" href="./qr.html">Ouvrir mon QR</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
     <section class="stats">
       <div class="wrap stats-grid">
         <article class="stat">
-          <strong id="statSlug">—</strong>
-          <span>identifiant actuellement posé</span>
+          <strong id="statContext">✓</strong>
+          <span>contexte gardé dans l’appareil quand il existe</span>
         </article>
+
         <article class="stat">
           <strong id="statMode">Public</strong>
           <span>mode de lecture actuel</span>
         </article>
+
         <article class="stat">
-          <strong id="statOffers">—</strong>
-          <span>missions actives visibles</span>
+          <strong>👁️</strong>
+          <span>missions visibles côté public</span>
         </article>
+
         <article class="stat">
-          <strong id="statCandidates">🔒</strong>
-          <span>candidats lisibles côté tri</span>
+          <strong>🔒</strong>
+          <span>données candidat protégées</span>
         </article>
       </div>
     </section>
@@ -625,8 +947,8 @@
           <div>
             <h2>Aide guidée + parcours de démarrage</h2>
             <p>
-              Ici on n’invente pas de faux fichiers. On pose une façade claire dans l’entrée,
-              puis on pousse vers les pages réelles déjà présentes : accès sécurisé, espace, bureau et QR.
+              L’aide guidée sert à choisir la bonne porte : lire les missions, entrer avec le code,
+              ouvrir le bureau ou partager le QR. Elle oriente, elle ne remplace pas la décision humaine.
             </p>
           </div>
         </div>
@@ -634,22 +956,30 @@
         <div class="assist-grid">
           <article class="assist-card">
             <span class="assist-kicker">Aide guidée</span>
-            <h3>L’aide intelligente pour poser ton activité</h3>
+
+            <h3>Mon assistant DIGIY pour mieux orienter</h3>
+
             <p>
-              Mon assistant DIGIY aide à clarifier la mission, les besoins, le profil attendu et la bonne prochaine porte.
-              Dans JOBS, il reste simple : il oriente, il n’embrouille pas.
+              Mon assistant DIGIY aide à clarifier une mission, comprendre un profil, préparer un tri
+              et choisir le prochain geste sans mélanger public et privé.
             </p>
-            <div class="assist-line">Bouton conseillé dans le module : <b>Demander à Mon assistant DIGIY</b></div>
+
+            <div class="assist-line">
+              Bouton conseillé dans le module : <b>Demander à Mon assistant DIGIY</b>
+            </div>
+
             <div class="assist-list">
               <div class="assist-item">
                 <strong>Lire le terrain</strong>
-                <span>Missions visibles pour lire l’offre, QR pour diffuser, accès sécurisé pour entrer côté privé.</span>
+                <span>Missions visibles pour comprendre l’offre, QR pour diffuser, accès sécurisé pour entrer côté privé.</span>
               </div>
+
               <div class="assist-item">
                 <strong>Choisir la bonne porte</strong>
-                <span>Espace pour piloter, bureau pour trier, sélection pour décider sans perdre l’identifiant.</span>
+                <span>Espace pour piloter, bureau pour trier, sélection pour décider sans exposer les candidats.</span>
               </div>
             </div>
+
             <div class="assist-actions">
               <a id="clawPinLink" class="primary" href="./pin.html">Demander à Mon assistant DIGIY</a>
               <a id="clawCockpitLink" href="./cockpit.html">Aller à mon espace</a>
@@ -658,22 +988,30 @@
 
           <article class="assist-card" id="bootSection">
             <span class="assist-kicker">Parcours de démarrage</span>
+
             <h3>Le parcours de démarrage</h3>
+
             <p>
-              C’est le chemin simple pour démarrer sans se noyer : entrer avec ton code,
-              vérifier l’accès, ouvrir ton espace, puis descendre vers le bureau ou le QR selon le besoin.
+              C’est le chemin simple pour démarrer : entrer avec le code,
+              ouvrir l’espace, puis descendre vers le bureau ou le QR selon le besoin.
             </p>
-            <div class="assist-line">Nom du parcours de démarrage : <b>Boot JOBS</b></div>
+
+            <div class="assist-line">
+              Nom du parcours de démarrage : <b>Boot JOBS</b>
+            </div>
+
             <div class="assist-list">
               <div class="assist-item">
                 <strong>Étape 1 — Entrer</strong>
-                <span>Passe par le code d’accès pour reconstruire une session propre et garder le même identifiant.</span>
+                <span>Passe par le code d’accès pour ouvrir une session propre.</span>
               </div>
+
               <div class="assist-item">
                 <strong>Étape 2 — Poser l’activité</strong>
                 <span>Espace pour la vue d’ensemble, bureau pour le tri, QR pour diffuser la bonne porte.</span>
               </div>
             </div>
+
             <div class="assist-actions">
               <a id="bootPinLink" class="gold" href="./pin.html">Ouvrir Boot JOBS</a>
               <a id="bootBureauLink" href="./bureau.html">Ouvrir le bureau</a>
@@ -689,8 +1027,8 @@
           <div>
             <h2>Les portes utiles</h2>
             <p>
-              Public d’abord, pro ensuite. Le hall reste au centre et redistribue vers chaque page utile
-              avec le même identifiant. Ici, toutes les portes actives sont visibles au même endroit.
+              Public d’abord, pro ensuite. Le hall redistribue vers chaque page utile,
+              sans afficher ni transporter d’information sensible dans les liens.
             </p>
           </div>
         </div>
@@ -704,13 +1042,15 @@
               </div>
               <div class="door-icon">🧱</div>
             </div>
+
             <div class="door-tags">
               <span>Public</span>
               <span>Missions</span>
-              <span>Identifiant gardé</span>
+              <span>Lecture simple</span>
             </div>
+
             <div class="door-actions">
-              <a id="cardWallLink" class="primary" href="./mur des missions.html">Ouvrir</a>
+              <a id="cardWallLink" class="primary" href="./mur%20des%20missions.html">Ouvrir</a>
             </div>
           </article>
 
@@ -718,15 +1058,17 @@
             <div class="door-top">
               <div>
                 <h3>Entrée sécurisée</h3>
-                <p>Porte sécurisée pour ouvrir l’espace privé sans mélanger public, QR et bureau.</p>
+                <p>Porte pour ouvrir l’espace privé sans mélanger public, QR et bureau.</p>
               </div>
               <div class="door-icon">🔐</div>
             </div>
+
             <div class="door-tags">
               <span>Privé</span>
               <span>Code</span>
-              <span>Accès</span>
+              <span>Session 8h</span>
             </div>
+
             <div class="door-actions">
               <a id="cardPinLink" class="primary" href="./pin.html">Ouvrir</a>
             </div>
@@ -736,15 +1078,17 @@
             <div class="door-top">
               <div>
                 <h3>Mon QR</h3>
-                <p>Le QR de partage pour diffuser proprement DIGIY JOBS, avec retour espace et lecture publique.</p>
+                <p>Le QR de partage pour diffuser proprement DIGIY JOBS.</p>
               </div>
               <div class="door-icon">📎</div>
             </div>
+
             <div class="door-tags">
               <span>QR</span>
               <span>Diffusion</span>
               <span>JOBS</span>
             </div>
+
             <div class="door-actions">
               <a id="cardQrLink" class="gold" href="./qr.html">Ouvrir</a>
             </div>
@@ -758,11 +1102,13 @@
               </div>
               <div class="door-icon">🧭</div>
             </div>
+
             <div class="door-tags">
               <span>Privé</span>
               <span>Espace</span>
               <span>Pilotage</span>
             </div>
+
             <div class="door-actions">
               <a id="cardCockpitLink" class="primary" href="./cockpit.html">Ouvrir</a>
             </div>
@@ -776,11 +1122,13 @@
               </div>
               <div class="door-icon">📂</div>
             </div>
+
             <div class="door-tags">
               <span>Pro</span>
               <span>Tri</span>
               <span>Suivi</span>
             </div>
+
             <div class="door-actions">
               <a id="cardBureauLink" class="primary" href="./bureau.html">Ouvrir</a>
             </div>
@@ -794,11 +1142,13 @@
               </div>
               <div class="door-icon">🎯</div>
             </div>
+
             <div class="door-tags">
               <span>Pro</span>
               <span>Match</span>
               <span>Décision</span>
             </div>
+
             <div class="door-actions">
               <a id="cardMatchLink" class="primary" href="./match.html">Ouvrir</a>
             </div>
@@ -808,15 +1158,17 @@
             <div class="door-top">
               <div>
                 <h3>Aide guidée</h3>
-                <p>L’aide intelligente pour poser ton activité et choisir la prochaine bonne porte.</p>
+                <p>L’aide pour poser ton activité et choisir la prochaine bonne porte.</p>
               </div>
               <div class="door-icon">🦅</div>
             </div>
+
             <div class="door-tags">
               <span>Aide</span>
               <span>Assistant</span>
               <span>Orientation</span>
             </div>
+
             <div class="door-actions">
               <a class="gold" href="#clawSection">Ouvrir</a>
             </div>
@@ -830,11 +1182,13 @@
               </div>
               <div class="door-icon">🚀</div>
             </div>
+
             <div class="door-tags">
               <span>Boot</span>
               <span>Démarrage</span>
               <span>Privé</span>
             </div>
+
             <div class="door-actions">
               <a class="gold" href="#bootSection">Ouvrir</a>
             </div>
@@ -848,13 +1202,15 @@
               </div>
               <div class="door-icon">♾️</div>
             </div>
+
             <div class="door-tags">
               <span>DIGIYLYFE</span>
               <span>Global</span>
               <span>Maison mère</span>
             </div>
+
             <div class="door-actions">
-              <a class="primary" href="https://digiylyfe.com/" target="_blank" rel="noopener">Ouvrir</a>
+              <a class="primary" href="https://digiylyfe.com/">Ouvrir</a>
             </div>
           </article>
         </div>
@@ -866,11 +1222,12 @@
     <div class="wrap">
       <div class="foot">
         <p>
-          DIGIY JOBS — entrée principale claire, identifiant gardé, QR branché et circulation simple.
+          DIGIY JOBS — entrée principale claire, missions publiques, espace privé protégé et circulation simple.
         </p>
+
         <div class="foot-links">
           <a id="footHomeLink" href="./index.html">Accueil</a>
-          <a id="footWallLink" href="./mur des missions.html">Mur</a>
+          <a id="footWallLink" href="./mur%20des%20missions.html">Mur</a>
           <a id="footPinLink" href="./pin.html">Accès</a>
           <a id="footCockpitLink" href="./cockpit.html">Espace</a>
           <a id="footQrLink" href="./qr.html">Mon QR</a>
@@ -880,38 +1237,48 @@
     </div>
   </footer>
 
+  <nav class="bottom-nav" aria-label="Navigation rapide DIGIY JOBS">
+    <div class="bottom-nav-inner">
+      <a class="active" href="./index.html"><span class="ico">🏠</span><span>Accueil</span></a>
+      <a href="./mur%20des%20missions.html"><span class="ico">🧱</span><span>Missions</span></a>
+      <a href="./pin.html"><span class="ico">🔐</span><span>Accès</span></a>
+      <a href="./qr.html"><span class="ico">📎</span><span>QR</span></a>
+      <a href="https://digiy-hub.digiylyfe.com/"><span class="ico">🧭</span><span>HUB</span></a>
+    </div>
+  </nav>
+
   <script>
     (function(){
       "use strict";
 
-      const SUPABASE_URL =
-        window.DIGIY_SUPABASE_URL ||
-        "https://wesqmwjjtsefyjnluosj.supabase.co";
+      const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000;
+      const CONTEXT_KEY = "digiy_jobs_slug";
+      const LAST_CONTEXT_KEY = "digiy_jobs_last_slug";
 
-      const SUPABASE_ANON_KEY =
-        window.DIGIY_SUPABASE_ANON ||
-        window.DIGIY_SUPABASE_ANON_KEY ||
-        "";
+      const SENSITIVE_KEYS = [
+        "slug",
+        "phone",
+        "tel",
+        "jobs_tel",
+        "owner_phone",
+        "contact_phone",
+        "return",
+        "from"
+      ];
 
-      const sb =
-        window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-          : null;
-
-      const params = new URLSearchParams(location.search);
-
-      const SLUG_STORAGE_KEY = "digiy_jobs_slug";
       const SESSION_KEYS = [
         "DIGIY_JOBS_PIN_SESSION",
+        "DIGIY_JOBS_SESSION",
+        "DIGIY_JOBS_ACCESS",
         "DIGIY_PIN_SESSION",
         "DIGIY_ACCESS",
         "DIGIY_SESSION_JOBS",
         "digiy_jobs_session"
       ];
 
-      const JOBS_PATHS = {
+      const ROUTES = {
         home: "./index.html",
-        wall: "./mur des missions.html",
+        wall: "./mur%20des%20missions.html",
         pin: "./pin.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
@@ -919,57 +1286,12 @@
         qr: "./qr.html"
       };
 
-      const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000;
-
-      const slugInput = document.getElementById("slugInput");
-      const btnApplySlug = document.getElementById("btnApplySlug");
-      const btnClearSlug = document.getElementById("btnClearSlug");
-      const btnOpenPinFromSlug = document.getElementById("btnOpenPinFromSlug");
-      const btnOpenQrFromSlug = document.getElementById("btnOpenQrFromSlug");
-
-      const topPinLink = document.getElementById("topPinLink");
-      const topQrLink = document.getElementById("topQrLink");
-      const topWallLink = document.getElementById("topWallLink");
-      const heroWallLink = document.getElementById("heroWallLink");
-      const heroPinLink = document.getElementById("heroPinLink");
-      const heroQrLink = document.getElementById("heroQrLink");
-      const heroCockpitLink = document.getElementById("heroCockpitLink");
-
-      const clawPinLink = document.getElementById("clawPinLink");
-      const clawCockpitLink = document.getElementById("clawCockpitLink");
-      const bootPinLink = document.getElementById("bootPinLink");
-      const bootBureauLink = document.getElementById("bootBureauLink");
-
-      const cardWallLink = document.getElementById("cardWallLink");
-      const cardPinLink = document.getElementById("cardPinLink");
-      const cardQrLink = document.getElementById("cardQrLink");
-      const cardCockpitLink = document.getElementById("cardCockpitLink");
-      const cardBureauLink = document.getElementById("cardBureauLink");
-      const cardMatchLink = document.getElementById("cardMatchLink");
-
-      const footHomeLink = document.getElementById("footHomeLink");
-      const footWallLink = document.getElementById("footWallLink");
-      const footPinLink = document.getElementById("footPinLink");
-      const footCockpitLink = document.getElementById("footCockpitLink");
-      const footQrLink = document.getElementById("footQrLink");
-
-      const miniSlug = document.getElementById("miniSlug");
-      const miniSession = document.getElementById("miniSession");
-      const miniOffers = document.getElementById("miniOffers");
-      const miniCandidates = document.getElementById("miniCandidates");
-      const modePill = document.getElementById("modePill");
-
-      const statSlug = document.getElementById("statSlug");
-      const statMode = document.getElementById("statMode");
-      const statOffers = document.getElementById("statOffers");
-      const statCandidates = document.getElementById("statCandidates");
-
       const state = {
-        slug: "",
-        session: null
+        session: null,
+        contextStored: false
       };
 
-      function normalizeSlug(value = "") {
+      function normalizeContext(value) {
         return String(value || "")
           .trim()
           .toLowerCase()
@@ -979,16 +1301,12 @@
           .replace(/^-|-$/g, "");
       }
 
-      function normalizePhone(value = "") {
+      function normalizePhone(value) {
         return String(value || "").replace(/[^\d]/g, "");
       }
 
       function safeJsonParse(raw) {
-        try {
-          return JSON.parse(raw);
-        } catch (_) {
-          return null;
-        }
+        try { return JSON.parse(raw); } catch (_) { return null; }
       }
 
       function isRecent(ts) {
@@ -997,224 +1315,168 @@
         return (Date.now() - n) <= SESSION_MAX_AGE_MS;
       }
 
-      function readSavedSlug() {
+      function saveContext(value) {
+        const clean = normalizeContext(value);
+        if (!clean) return;
+
         try {
-          return normalizeSlug(localStorage.getItem(SLUG_STORAGE_KEY) || "");
+          localStorage.setItem(CONTEXT_KEY, clean);
+          localStorage.setItem(LAST_CONTEXT_KEY, clean);
+          sessionStorage.setItem(CONTEXT_KEY, clean);
+          sessionStorage.setItem(LAST_CONTEXT_KEY, clean);
+          state.contextStored = true;
+        } catch (_) {}
+      }
+
+      function readSavedContext() {
+        try {
+          return normalizeContext(
+            sessionStorage.getItem(CONTEXT_KEY) ||
+            sessionStorage.getItem(LAST_CONTEXT_KEY) ||
+            localStorage.getItem(CONTEXT_KEY) ||
+            localStorage.getItem(LAST_CONTEXT_KEY) ||
+            ""
+          );
         } catch (_) {
           return "";
         }
       }
 
-      function saveSlug(slug) {
-        const clean = normalizeSlug(slug);
+      function cleanVisibleUrl() {
         try {
-          if (clean) {
-            localStorage.setItem(SLUG_STORAGE_KEY, clean);
-          } else {
-            localStorage.removeItem(SLUG_STORAGE_KEY);
+          const url = new URL(location.href);
+          const incomingContext = normalizeContext(url.searchParams.get("slug") || "");
+          const incomingPhone = normalizePhone(
+            url.searchParams.get("phone") ||
+            url.searchParams.get("tel") ||
+            url.searchParams.get("jobs_tel") ||
+            ""
+          );
+
+          if (incomingContext) saveContext(incomingContext);
+
+          if (incomingPhone) {
+            try {
+              localStorage.setItem("digiy_jobs_phone", incomingPhone);
+              sessionStorage.setItem("digiy_jobs_phone", incomingPhone);
+            } catch (_) {}
+          }
+
+          let changed = false;
+          SENSITIVE_KEYS.forEach((key) => {
+            if (url.searchParams.has(key)) {
+              url.searchParams.delete(key);
+              changed = true;
+            }
+          });
+
+          if (changed) {
+            history.replaceState({}, document.title, url.pathname + url.search + url.hash);
           }
         } catch (_) {}
       }
 
       function readSession() {
         for (const key of SESSION_KEYS) {
-          const parsed = safeJsonParse(localStorage.getItem(key));
+          let parsed = null;
+
+          try {
+            parsed = safeJsonParse(localStorage.getItem(key));
+            if (!parsed) parsed = safeJsonParse(sessionStorage.getItem(key));
+          } catch (_) {}
+
           if (!parsed || typeof parsed !== "object") continue;
 
           const moduleCode = String(parsed.module || parsed.module_code || "").trim().toUpperCase();
-          const slug = normalizeSlug(parsed.slug || "");
+          const access = !!parsed.access || !!parsed.access_ok || !!parsed.ok || !!parsed.has_access;
+          const context = normalizeContext(parsed.slug || "");
           const phone = normalizePhone(parsed.phone || "");
-          const access = !!parsed.access;
-          const verifiedAt = Number(parsed.verified_at || parsed.ts || parsed.created_at || 0) || 0;
+
+          const verifiedAt =
+            Number(parsed.verified_at || parsed.validated_at_ms || parsed.ts || 0) ||
+            (parsed.validated_at ? new Date(parsed.validated_at).getTime() : 0);
 
           if (moduleCode && moduleCode !== "JOBS") continue;
-          if (!slug) continue;
           if (!access) continue;
+          if (!context && !phone) continue;
           if (!isRecent(verifiedAt)) continue;
 
+          if (context) saveContext(context);
+
           return {
-            slug,
-            phone,
             access: true,
+            context,
+            phone,
             verified_at: verifiedAt
           };
         }
+
         return null;
       }
 
-      function withSlug(path, slug) {
-        const cleanSlug = normalizeSlug(slug || "");
-        const url = new URL(path, window.location.href);
-        if (cleanSlug) url.searchParams.set("slug", cleanSlug);
-        return url.toString();
-      }
-
-      function replaceUrlSlug(slug) {
-        const url = new URL(location.href);
-        const clean = normalizeSlug(slug || "");
-        if (clean) {
-          url.searchParams.set("slug", clean);
-        } else {
-          url.searchParams.delete("slug");
-        }
-        history.replaceState({}, "", url.toString());
-      }
-
-      function setHref(el, href) {
+      function setHref(id, href) {
+        const el = document.getElementById(id);
         if (el) el.href = href;
       }
 
       function syncLinks() {
-        const slug = state.slug || "";
+        setHref("topPinLink", ROUTES.pin);
+        setHref("topQrLink", ROUTES.qr);
+        setHref("topWallLink", ROUTES.wall);
 
-        const homeHref = withSlug(JOBS_PATHS.home, slug);
-        const wallHref = withSlug(JOBS_PATHS.wall, slug);
-        const pinHref = withSlug(JOBS_PATHS.pin, slug);
-        const qrHref = withSlug(JOBS_PATHS.qr, slug);
-        const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
-        const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
-        const matchHref = withSlug(JOBS_PATHS.match, slug);
+        setHref("heroWallLink", ROUTES.wall);
+        setHref("heroPinLink", ROUTES.pin);
+        setHref("heroQrLink", ROUTES.qr);
+        setHref("heroCockpitLink", ROUTES.cockpit);
 
-        setHref(topPinLink, pinHref);
-        setHref(topQrLink, qrHref);
-        setHref(topWallLink, wallHref);
+        setHref("clawPinLink", ROUTES.pin);
+        setHref("clawCockpitLink", ROUTES.cockpit);
+        setHref("bootPinLink", ROUTES.pin);
+        setHref("bootBureauLink", ROUTES.bureau);
 
-        setHref(heroWallLink, wallHref);
-        setHref(heroPinLink, pinHref);
-        setHref(heroQrLink, qrHref);
-        setHref(heroCockpitLink, cockpitHref);
+        setHref("cardWallLink", ROUTES.wall);
+        setHref("cardPinLink", ROUTES.pin);
+        setHref("cardQrLink", ROUTES.qr);
+        setHref("cardCockpitLink", ROUTES.cockpit);
+        setHref("cardBureauLink", ROUTES.bureau);
+        setHref("cardMatchLink", ROUTES.match);
 
-        setHref(btnOpenPinFromSlug, pinHref);
-        setHref(btnOpenQrFromSlug, qrHref);
-
-        setHref(clawPinLink, pinHref);
-        setHref(clawCockpitLink, cockpitHref);
-        setHref(bootPinLink, pinHref);
-        setHref(bootBureauLink, bureauHref);
-
-        setHref(cardWallLink, wallHref);
-        setHref(cardPinLink, pinHref);
-        setHref(cardQrLink, qrHref);
-        setHref(cardCockpitLink, cockpitHref);
-        setHref(cardBureauLink, bureauHref);
-        setHref(cardMatchLink, matchHref);
-
-        setHref(footHomeLink, homeHref);
-        setHref(footWallLink, wallHref);
-        setHref(footPinLink, pinHref);
-        setHref(footCockpitLink, cockpitHref);
-        setHref(footQrLink, qrHref);
-
-        if (slugInput) slugInput.value = slug;
-        if (miniSlug) miniSlug.textContent = slug || "aucun identifiant";
-        if (statSlug) statSlug.textContent = slug || "—";
+        setHref("footHomeLink", ROUTES.home);
+        setHref("footWallLink", ROUTES.wall);
+        setHref("footPinLink", ROUTES.pin);
+        setHref("footCockpitLink", ROUTES.cockpit);
+        setHref("footQrLink", ROUTES.qr);
       }
 
       function syncMode() {
-        const access = !!state.session?.access;
-        if (miniSession) miniSession.textContent = access ? "Session pro active" : "Public / sans session";
-        if (modePill) modePill.textContent = access ? "Mode — session pro active" : "Mode — hall public";
-        if (statMode) statMode.textContent = access ? "Pro" : "Public";
+        const sessionActive = !!state.session?.access;
+        const savedContext = !!readSavedContext();
 
-        if (!access) {
-          if (miniCandidates) miniCandidates.textContent = "Verrouillée";
-          if (statCandidates) statCandidates.textContent = "🔒";
-        }
+        const modePill = document.getElementById("modePill");
+        const miniSession = document.getElementById("miniSession");
+        const miniContext = document.getElementById("miniContext");
+        const miniCandidates = document.getElementById("miniCandidates");
+        const statMode = document.getElementById("statMode");
+        const statContext = document.getElementById("statContext");
+
+        if (modePill) modePill.textContent = sessionActive ? "Mode — session pro active" : "Mode — hall public";
+        if (miniSession) miniSession.textContent = sessionActive ? "Session pro active" : "Public / sans session";
+        if (miniContext) miniContext.textContent = savedContext ? "Contexte gardé dans cet appareil" : "Aucun contexte privé affiché";
+        if (miniCandidates) miniCandidates.textContent = sessionActive ? "À ouvrir dans le bureau" : "Protégées côté bureau";
+        if (statMode) statMode.textContent = sessionActive ? "Pro" : "Public";
+        if (statContext) statContext.textContent = savedContext ? "✓" : "—";
       }
 
-      async function loadCounts() {
-        if (!sb || !state.slug) {
-          if (miniOffers) miniOffers.textContent = "—";
-          if (statOffers) statOffers.textContent = "—";
-          if (!state.session?.access) {
-            if (miniCandidates) miniCandidates.textContent = "Verrouillée";
-            if (statCandidates) statCandidates.textContent = "🔒";
-          }
-          return;
-        }
-
-        try {
-          const { count: offersCount, error: offersError } = await sb
-            .from("digiy_jobs_offers_pro")
-            .select("id", { count: "exact", head: true })
-            .eq("slug", state.slug)
-            .eq("status", "active");
-
-          if (offersError) throw offersError;
-
-          const offersText = String(offersCount ?? 0);
-          if (miniOffers) miniOffers.textContent = offersText + " mission(s)";
-          if (statOffers) statOffers.textContent = offersText;
-        } catch (_) {
-          if (miniOffers) miniOffers.textContent = "Lecture impossible";
-          if (statOffers) statOffers.textContent = "—";
-        }
-
-        if (state.session?.access) {
-          try {
-            const { count: candidatesCount, error: candidatesError } = await sb
-              .from("digiy_jobs_candidates_pro")
-              .select("id", { count: "exact", head: true })
-              .eq("slug", state.slug);
-
-            if (candidatesError) throw candidatesError;
-
-            const candidatesText = String(candidatesCount ?? 0);
-            if (miniCandidates) miniCandidates.textContent = candidatesText + " candidat(s)";
-            if (statCandidates) statCandidates.textContent = candidatesText;
-          } catch (_) {
-            if (miniCandidates) miniCandidates.textContent = "Lecture impossible";
-            if (statCandidates) statCandidates.textContent = "—";
-          }
-        }
-      }
-
-      function applySlug(nextSlug) {
-        const clean = normalizeSlug(nextSlug);
-        state.slug = clean;
-        saveSlug(clean);
-        replaceUrlSlug(clean);
-        syncLinks();
-        loadCounts();
-      }
-
-      if (btnApplySlug) {
-        btnApplySlug.addEventListener("click", function() {
-          applySlug(slugInput ? slugInput.value : "");
-        });
-      }
-
-      if (slugInput) {
-        slugInput.addEventListener("keydown", function(e) {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            applySlug(slugInput.value);
-          }
-        });
-      }
-
-      if (btnClearSlug) {
-        btnClearSlug.addEventListener("click", function() {
-          applySlug("");
-        });
-      }
-
-      (async function init() {
-        const urlSlug = normalizeSlug(params.get("slug") || "");
-        const savedSlug = readSavedSlug();
+      function init() {
+        cleanVisibleUrl();
         state.session = readSession();
-
-        const sessionSlug = normalizeSlug(state.session?.slug || "");
-        state.slug = urlSlug || sessionSlug || savedSlug || "";
-
-        if (state.slug) {
-          saveSlug(state.slug);
-        }
+        if (readSavedContext()) state.contextStored = true;
 
         syncLinks();
         syncMode();
-        await loadCounts();
-      })();
+      }
+
+      init();
     })();
   </script>
 
@@ -1222,11 +1484,13 @@
     (function(){
       "use strict";
 
-      const AUDIO_TEXT = "Bienvenue dans DIGIY JOBS. Ici, on relie trois choses : les missions, les candidats et le bureau de tri. Le mur des missions sert à montrer les opportunités visibles. L’entrée sécurisée sert à protéger l’espace privé. Le bureau aide à lire les candidatures, noter, suivre et décider. Le QR sert à partager proprement. Mon assistant DIGIY accompagne pour clarifier une mission, comprendre un profil et choisir la bonne prochaine porte. JOBS est sensible, parce qu’il touche au travail et aux personnes. Alors DIGIY avance avec ordre, respect et clarté : public d’abord, privé ensuite, décision humaine toujours.";
+      const AUDIO_TEXT =
+        "Bienvenue dans DIGIY JOBS. Ici, on relie trois choses : les missions, les candidats et le bureau de tri. Le mur des missions sert à montrer les opportunités visibles. L’entrée sécurisée protège l’espace privé. Le bureau aide à lire les candidatures, noter, suivre et décider. Le QR sert à partager proprement. Mon assistant DIGIY accompagne pour clarifier une mission, comprendre un profil et choisir la bonne prochaine porte. JOBS est sensible, parce qu’il touche au travail et aux personnes. Alors DIGIY avance avec ordre, respect et clarté : public d’abord, privé ensuite, décision humaine toujours.";
 
       const btnPlay = document.getElementById("btnJobsAudio");
       const btnStop = document.getElementById("btnJobsAudioStop");
       const progress = document.getElementById("jobsAudioProgress");
+
       let playing = false;
       let timer = null;
       let startedAt = 0;
@@ -1237,7 +1501,9 @@
           return voices.find(v => /^fr/i.test(v.lang || "") && /audrey|amelie|hortense|julie|thomas|paul|french/i.test(v.name || ""))
               || voices.find(v => /^fr/i.test(v.lang || ""))
               || null;
-        }catch(_){ return null; }
+        }catch(_){
+          return null;
+        }
       }
 
       function setProgress(value){
@@ -1245,8 +1511,9 @@
       }
 
       function stopAudio(){
-        try{ window.speechSynthesis.cancel(); }catch(_){ }
+        try{ window.speechSynthesis.cancel(); }catch(_){}
         clearInterval(timer);
+        timer = null;
         playing = false;
         startedAt = 0;
         setProgress(0);
@@ -1258,9 +1525,14 @@
           alert("Audio indisponible sur ce navigateur.");
           return;
         }
-        if(playing){ stopAudio(); return; }
+
+        if(playing){
+          stopAudio();
+          return;
+        }
 
         stopAudio();
+
         const utter = new SpeechSynthesisUtterance(AUDIO_TEXT);
         utter.lang = "fr-FR";
         utter.rate = 0.86;
@@ -1274,7 +1546,9 @@
           playing = true;
           startedAt = Date.now();
           if(btnPlay) btnPlay.textContent = "⏸️ Lecture en cours";
+
           const estimated = Math.max(42000, AUDIO_TEXT.split(/\s+/).length * 430);
+
           timer = setInterval(function(){
             const pct = ((Date.now() - startedAt) / estimated) * 96;
             setProgress(pct);
@@ -1295,13 +1569,16 @@
 
       if(btnPlay) btnPlay.addEventListener("click", playAudio);
       if(btnStop) btnStop.addEventListener("click", stopAudio);
+
       if(window.speechSynthesis && typeof window.speechSynthesis.onvoiceschanged !== "undefined"){
         window.speechSynthesis.onvoiceschanged = pickVoice;
       }
+
       window.addEventListener("beforeunload", stopAudio);
-      document.addEventListener("visibilitychange", function(){ if(document.hidden) stopAudio(); });
+      document.addEventListener("visibilitychange", function(){
+        if(document.hidden) stopAudio();
+      });
     })();
   </script>
-
 </body>
 </html>
