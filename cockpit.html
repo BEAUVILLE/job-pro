@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#061b14"/>
   <meta
     name="description"
-    content="DIGIY JOBS — espace recruteur pour suivre missions, candidatures et pipeline réel."
+    content="DIGIY JOBS — espace recruteur sécurisé pour suivre missions, candidatures et pipeline réel."
   />
   <title>DIGIY JOBS — Mon espace</title>
 
@@ -15,7 +15,13 @@
     window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
     window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
     window.DIGIY_MODULE = "JOBS";
+    window.DIGIY_LOGIN_URL = "./pin.html";
   </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./guard.js"></script>
   <script src="./claw-tools.js"></script>
@@ -48,7 +54,7 @@
         radial-gradient(circle at top, rgba(250,204,21,.08), transparent 26%),
         linear-gradient(180deg,var(--bg),#04110c 100%);
       color:var(--text);
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-family:Outfit,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
 
     a{color:inherit;text-decoration:none}
@@ -86,7 +92,7 @@
       color:#fff2ae;
     }
 
-    .site-back-float:active{ transform:scale(.97); }
+    .site-back-float:active{transform:scale(.97)}
 
     .top-links{
       position:fixed;
@@ -135,7 +141,7 @@
     .wrap{
       max-width:var(--max);
       margin:0 auto;
-      padding:88px 16px 80px;
+      padding:88px 16px 96px;
     }
 
     .hero{
@@ -182,6 +188,7 @@
       line-height:1.65;
       max-width:820px;
       font-size:15px;
+      font-weight:650;
     }
 
     .hero-actions,
@@ -192,8 +199,8 @@
       flex-wrap:wrap;
     }
 
-    .hero-links{ margin-top:14px; }
-    .assist-actions{ margin-top:14px; }
+    .hero-links{margin-top:14px}
+    .assist-actions{margin-top:14px}
 
     .ghost-btn,.gold-btn,.nav-btn{
       min-height:46px;
@@ -663,7 +670,7 @@
       flex-wrap:wrap;
     }
 
-    .preview-banner strong{ color:#fff8cf; }
+    .preview-banner strong{color:#fff8cf}
 
     .preview-actions{
       display:flex;
@@ -686,6 +693,7 @@
       border-radius:24px;
       background:rgba(6,27,20,.55);
       backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
       color:#fff2ae;
       font-weight:900;
       letter-spacing:.01em;
@@ -702,19 +710,67 @@
       pointer-events:none;
     }
 
-    @media (max-width: 1120px){
+    .bottom-nav{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:9997;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+      background:rgba(6,27,20,.94);
+      border-top:1px solid rgba(255,255,255,.12);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+
+    .bottom-nav-inner{
+      width:min(760px,100%);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+    }
+
+    .bottom-nav a{
+      min-height:54px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      align-content:center;
+      gap:2px;
+      color:rgba(234,255,241,.78);
+      font-size:11px;
+      font-weight:1000;
+      text-align:center;
+      border:1px solid transparent;
+      text-decoration:none;
+      background:transparent;
+      padding:0 4px;
+    }
+
+    .bottom-nav .ico{
+      font-size:18px;
+      line-height:1;
+    }
+
+    .bottom-nav a.active{
+      background:linear-gradient(135deg,var(--gold),var(--blue));
+      color:#081018;
+    }
+
+    @media (max-width:1120px){
       .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
       .pipeline{grid-template-columns:repeat(3,minmax(0,1fr))}
       .assist-list{grid-template-columns:1fr}
     }
 
-    @media (max-width: 920px){
+    @media (max-width:920px){
       .toolbar{grid-template-columns:1fr 1fr}
       .cards{grid-template-columns:1fr}
     }
 
-    @media (max-width: 700px){
-      .wrap{padding:96px 12px 70px}
+    @media (max-width:700px){
+      .wrap{padding:96px 12px 96px}
       .hero{padding:20px 14px}
       .panel{padding:14px}
       .toolbar{grid-template-columns:1fr}
@@ -745,6 +801,7 @@
     }
   </style>
 </head>
+
 <body>
   <a id="siteHomeLink" class="site-back-float" href="./index.html">← Accueil JOBS</a>
 
@@ -768,6 +825,7 @@
           <p class="lead">
             Ici le pro suit les missions, lit les candidatures, trie les profils,
             rappelle les bons, et fait avancer le terrain sans se noyer.
+            Les informations sensibles restent dans l’espace sécurisé.
           </p>
 
           <div class="hero-links">
@@ -776,7 +834,7 @@
             <a id="matchBtn" class="nav-btn" href="./match.html" rel="noopener">Match</a>
             <a id="qrBtn" class="nav-btn" href="./qr.html" rel="noopener">Mon partage</a>
             <a id="clawBtn" class="nav-btn blue" href="#clawSection" rel="noopener">Aide guidée</a>
-            <button id="pinFallbackBtn" class="nav-btn hidden" type="button">Entrée PIN (secours)</button>
+            <button id="pinFallbackBtn" class="nav-btn hidden" type="button">Entrée PIN</button>
           </div>
         </div>
 
@@ -786,7 +844,7 @@
       </div>
 
       <div class="meta-line">
-        <div class="meta-chip">Repère actif : <strong id="slugChip">—</strong></div>
+        <div class="meta-chip">Contexte : <strong id="slugChip">coffre local</strong></div>
         <div class="meta-chip">Mode : <strong id="modeChip">détection…</strong></div>
         <div class="meta-chip">Lecture : <strong id="sourceChip">détection…</strong></div>
       </div>
@@ -799,6 +857,7 @@
           descendre au bureau, aller au match, ou passer par l’aide guidée pour savoir
           quoi faire ensuite. Le PIN ne sert que de secours si la session tombe.
         </p>
+
         <div class="assist-list">
           <div class="assist-item">
             <strong>Diffuser</strong>
@@ -810,9 +869,10 @@
           </div>
           <div class="assist-item">
             <strong>Décider</strong>
-            <span>Va au match pour rapprocher mission et profil sans perdre le slug actif.</span>
+            <span>Va au match pour rapprocher mission et profil sans perdre la session active.</span>
           </div>
         </div>
+
         <div class="assist-actions">
           <a id="assistQrBtn" class="gold-btn" href="./qr.html">Ouvrir mon partage</a>
           <a id="assistBureauBtn" class="nav-btn" href="./bureau.html">Ouvrir le bureau</a>
@@ -865,14 +925,14 @@
         <div class="toolbar" data-lockable="true">
           <div class="field">
             <label for="searchInput">Recherche</label>
-            <input id="searchInput" type="text" placeholder="Nom, téléphone, métier, ville, message..." />
+            <input id="searchInput" type="text" placeholder="Nom, contact, métier, ville, message..." />
           </div>
 
           <div class="field">
             <label for="statusFilter">Statut</label>
             <select id="statusFilter">
               <option value="">Tous les statuts</option>
-              <option value="new">new</option>
+              <option value="new">Nouveau</option>
               <option value="review">En lecture</option>
               <option value="shortlist">Sélectionné</option>
               <option value="call">À contacter</option>
@@ -907,7 +967,15 @@
     </section>
   </div>
 
-  <script src="./claw-tools.js"></script>
+  <nav class="bottom-nav" aria-label="Navigation rapide DIGIY JOBS">
+    <div class="bottom-nav-inner">
+      <a href="./index.html"><span class="ico">🏠</span><span>Accueil</span></a>
+      <a href="./mur%20des%20missions.html"><span class="ico">🧱</span><span>Missions</span></a>
+      <a class="active" href="./cockpit.html"><span class="ico">🧭</span><span>Espace</span></a>
+      <a href="./bureau.html"><span class="ico">📂</span><span>Bureau</span></a>
+      <a href="./qr.html"><span class="ico">📎</span><span>QR</span></a>
+    </div>
+  </nav>
 
   <script>
     const SUPABASE_URL =
@@ -921,13 +989,28 @@
 
     const sb =
       window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth:{persistSession:false,autoRefreshToken:false}
+          })
         : null;
 
-    const params = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
+
     const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+    const LAST_SLUG_STORAGE_KEY = "digiy_jobs_last_slug";
     const DB_SLUG_COLUMN = "slug";
+
+    const CLEAN_QUERY_KEYS = [
+      "slug",
+      "phone",
+      "tel",
+      "jobs_tel",
+      "owner_phone",
+      "contact_phone",
+      "module",
+      "return",
+      "from"
+    ];
 
     const JOBS_PATHS = {
       home: "./index.html",
@@ -962,6 +1045,41 @@
       return false;
     }
 
+    function normalizeSlug(v = "") {
+      return String(v || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    function normalizePhone(v = "") {
+      return String(v).replace(/[^\d+]/g, "");
+    }
+
+    function cleanVisibleUrl() {
+      try {
+        const url = new URL(location.href);
+
+        const incomingSlug = normalizeSlug(url.searchParams.get("slug") || "");
+        if (incomingSlug) saveSlug(incomingSlug);
+
+        let changed = false;
+        CLEAN_QUERY_KEYS.forEach((key) => {
+          if (url.searchParams.has(key)) {
+            url.searchParams.delete(key);
+            changed = true;
+          }
+        });
+
+        if (changed) {
+          history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+        }
+      } catch (_) {}
+    }
+
     function escapeHtml(v = "") {
       return String(v)
         .replaceAll("&", "&amp;")
@@ -981,14 +1099,6 @@
       } catch {
         return v;
       }
-    }
-
-    function normalizePhone(v = "") {
-      return String(v).replace(/[^\d+]/g, "");
-    }
-
-    function normalizeSlug(v = "") {
-      return String(v || "").trim().toLowerCase();
     }
 
     function labelSector(v = "") {
@@ -1031,25 +1141,46 @@
 
     function setHref(id, href) {
       const el = $(id);
-      if (el) el.href = href;
+      if (el) el.href = cleanPath(href);
     }
 
-    function withSlug(path, slug) {
-      const cleanSlug = normalizeSlug(slug || "");
-      if (!cleanSlug) return path;
-      const joiner = path.includes("?") ? "&" : "?";
-      return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
+    function cleanPath(path) {
+      try {
+        const url = new URL(path, location.href);
+        CLEAN_QUERY_KEYS.forEach((key) => url.searchParams.delete(key));
+
+        if (url.origin === location.origin) {
+          const file = url.pathname.split("/").pop() || "index.html";
+          return `./${file}${url.search || ""}${url.hash || ""}`;
+        }
+
+        return url.toString();
+      } catch (_) {
+        return path;
+      }
     }
 
     function saveSlug(slug) {
+      const clean = normalizeSlug(slug);
+      if (!clean) return;
+
       try {
-        if (slug) localStorage.setItem(SLUG_STORAGE_KEY, slug);
+        localStorage.setItem(SLUG_STORAGE_KEY, clean);
+        localStorage.setItem(LAST_SLUG_STORAGE_KEY, clean);
+        sessionStorage.setItem(SLUG_STORAGE_KEY, clean);
+        sessionStorage.setItem(LAST_SLUG_STORAGE_KEY, clean);
       } catch (_) {}
     }
 
     function readSavedSlug() {
       try {
-        return normalizeSlug(localStorage.getItem(SLUG_STORAGE_KEY) || "");
+        return normalizeSlug(
+          sessionStorage.getItem(SLUG_STORAGE_KEY) ||
+          sessionStorage.getItem(LAST_SLUG_STORAGE_KEY) ||
+          localStorage.getItem(SLUG_STORAGE_KEY) ||
+          localStorage.getItem(LAST_SLUG_STORAGE_KEY) ||
+          ""
+        );
       } catch (_) {
         return "";
       }
@@ -1099,36 +1230,28 @@
 
     function updateSlugUI() {
       const slugChip = $("slugChip");
-      if (slugChip) slugChip.textContent = state.slug || "aucun slug détecté";
+      if (slugChip) slugChip.textContent = state.slug ? "coffre actif" : "coffre non ouvert";
+
       syncModeChip();
       syncPinFallbackVisibility();
 
-      const slug = state.slug || "";
-      const homeHref = withSlug(JOBS_PATHS.home, slug);
-      const wallHref = withSlug(JOBS_PATHS.wall, slug);
-      const pinHref = withSlug(JOBS_PATHS.pin, slug);
-      const bureauHref = withSlug(JOBS_PATHS.bureau, slug);
-      const cockpitHref = withSlug(JOBS_PATHS.cockpit, slug);
-      const matchHref = withSlug(JOBS_PATHS.match, slug);
-      const qrHref = withSlug(JOBS_PATHS.qr, slug);
+      setHref("siteHomeLink", JOBS_PATHS.home);
+      setHref("homeLink", JOBS_PATHS.home);
+      setHref("wallLink", JOBS_PATHS.wall);
+      setHref("pinLink", JOBS_PATHS.pin);
+      setHref("cockpitLink", JOBS_PATHS.cockpit);
+      setHref("bureauLink", JOBS_PATHS.bureau);
+      setHref("matchLink", JOBS_PATHS.match);
+      setHref("qrLink", JOBS_PATHS.qr);
 
-      setHref("siteHomeLink", homeHref);
-      setHref("homeLink", homeHref);
-      setHref("wallLink", wallHref);
-      setHref("pinLink", pinHref);
-      setHref("cockpitLink", cockpitHref);
-      setHref("bureauLink", bureauHref);
-      setHref("matchLink", matchHref);
-      setHref("qrLink", qrHref);
+      setHref("publicWallBtn", JOBS_PATHS.wall);
+      setHref("bureauBtn", JOBS_PATHS.bureau);
+      setHref("matchBtn", JOBS_PATHS.match);
+      setHref("qrBtn", JOBS_PATHS.qr);
 
-      setHref("publicWallBtn", wallHref);
-      setHref("bureauBtn", bureauHref);
-      setHref("matchBtn", matchHref);
-      setHref("qrBtn", qrHref);
-
-      setHref("assistQrBtn", qrHref);
-      setHref("assistBureauBtn", bureauHref);
-      setHref("assistMatchBtn", matchHref);
+      setHref("assistQrBtn", JOBS_PATHS.qr);
+      setHref("assistBureauBtn", JOBS_PATHS.bureau);
+      setHref("assistMatchBtn", JOBS_PATHS.match);
     }
 
     function setSlug(nextSlug) {
@@ -1179,6 +1302,7 @@
     function fillOfferFilter() {
       const el = $("offerFilter");
       if (!el) return;
+
       el.innerHTML =
         '<option value="">Toutes les missions</option>' +
         state.offers
@@ -1249,7 +1373,6 @@
         const matchUrl = new URL(JOBS_PATHS.match, location.href);
         matchUrl.searchParams.set("id", c.id);
         if (offer?.id) matchUrl.searchParams.set("offer", offer.id);
-        if (state.slug) matchUrl.searchParams.set("slug", state.slug);
 
         return `
           <article class="card">
@@ -1274,7 +1397,7 @@
 
             <div class="mini-grid">
               <div class="mini">
-                <div class="mini-label">Téléphone</div>
+                <div class="mini-label">Contact candidat</div>
                 <div class="mini-value">${escapeHtml(displayPhone || "—")}</div>
               </div>
               <div class="mini">
@@ -1294,7 +1417,7 @@
             <div class="body" style="margin-top:12px;">${escapeHtml(c.message || "Aucun message laissé.")}</div>
 
             <div class="actions">
-              <a class="small-btn blue" href="${waLink}" target="_blank" rel="noopener">WhatsApp</a>
+              ${waPhone ? `<a class="small-btn blue" href="${waLink}" target="_blank" rel="noopener">Contacter</a>` : ""}
               <a class="small-btn" href="${matchUrl.toString()}" target="_blank" rel="noopener">Match</a>
               <button class="small-btn gold" data-action="set-status" data-id="${c.id}" data-status="review" type="button">En lecture</button>
               <button class="small-btn orange" data-action="set-status" data-id="${c.id}" data-status="shortlist" type="button">Sélectionné</button>
@@ -1313,7 +1436,7 @@
 
       if (!state.slug) {
         wrap.classList.add("hidden");
-        setStatusBox("empty", "Aucun slug JOBS détecté. Ouvre le cockpit avec ?slug=jobs-... ou via l’entrée PIN.");
+        setStatusBox("empty", "Session JOBS non retrouvée. Repasse par l’entrée sécurisée.");
         return;
       }
 
@@ -1322,8 +1445,8 @@
         setStatusBox(
           "empty",
           PREVIEW_MODE
-            ? "Aucune mission publiée trouvée pour ce slug en aperçu."
-            : "Aucune mission trouvée pour ce slug."
+            ? "Aucune mission publiée trouvée en aperçu."
+            : "Aucune mission trouvée pour cet espace."
         );
         return;
       }
@@ -1342,11 +1465,9 @@
 
         const missionUrl = new URL(JOBS_PATHS.mission, location.href);
         missionUrl.searchParams.set("id", o.id);
-        if (state.slug) missionUrl.searchParams.set("slug", state.slug);
 
         const matchUrl = new URL(JOBS_PATHS.match, location.href);
         matchUrl.searchParams.set("offer", o.id);
-        if (state.slug) matchUrl.searchParams.set("slug", state.slug);
 
         return `
           <article class="card">
@@ -1402,8 +1523,10 @@
 
       const buckets = ["new", "review", "shortlist", "call", "accepted", "rejected"];
       wrap.classList.remove("hidden");
+
       wrap.innerHTML = buckets.map((status) => {
         const items = state.candidates.filter((c) => String(c.status || "new").toLowerCase() === status);
+
         return `
           <div class="pipe">
             <h3>${escapeHtml(labelStatus(status))}</h3>
@@ -1432,7 +1555,7 @@
         return;
       }
 
-      setStatusBox("loading", `Mise à jour vers "${status}"...`);
+      setStatusBox("loading", `Mise à jour vers "${labelStatus(status)}"...`);
 
       const { error } = await sb
         .from("digiy_jobs_candidates_pro")
@@ -1441,7 +1564,7 @@
 
       if (error) {
         console.error(error);
-        setStatusBox("error", `Impossible de mettre à jour le statut "${status}". Vérifie le patch SQL/RLS.`);
+        setStatusBox("error", `Impossible de mettre à jour le statut. Vérifie les droits JOBS côté Supabase.`);
         return;
       }
 
@@ -1454,7 +1577,7 @@
       if (state.activeTab === "offers") renderOffers();
       if (state.activeTab === "pipeline") renderPipeline();
 
-      setStatusBox("loading", `Statut mis à jour : ${status}`);
+      setStatusBox("loading", `Statut mis à jour : ${labelStatus(status)}`);
       setTimeout(() => {
         if (state.activeTab === "candidates" && state.filteredCandidates.length) hideStatusBox();
       }, 900);
@@ -1462,6 +1585,7 @@
 
     async function loadOffers() {
       if (!sb) throw new Error("Supabase indisponible");
+
       if (!state.slug) {
         state.offers = [];
         return;
@@ -1472,8 +1596,8 @@
         .select("id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at")
         .eq(DB_SLUG_COLUMN, state.slug)
         .eq("status", "active")
-        .order("published_at", { ascending: false })
-        .order("created_at", { ascending: false });
+        .order("published_at", { ascending:false })
+        .order("created_at", { ascending:false });
 
       if (error) throw error;
       state.offers = Array.isArray(data) ? data : [];
@@ -1481,6 +1605,7 @@
 
     async function loadCandidates() {
       if (!sb) throw new Error("Supabase indisponible");
+
       if (!state.slug && !state.offers.length) {
         state.candidates = [];
         return;
@@ -1494,7 +1619,7 @@
           .from("digiy_jobs_candidates_pro")
           .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
           .eq(DB_SLUG_COLUMN, state.slug)
-          .order("created_at", { ascending: false });
+          .order("created_at", { ascending:false });
 
         if (error) throw error;
 
@@ -1513,7 +1638,7 @@
           .from("digiy_jobs_candidates_pro")
           .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
           .in("offer_id", offerIds)
-          .order("created_at", { ascending: false });
+          .order("created_at", { ascending:false });
 
         if (error) throw error;
 
@@ -1540,6 +1665,7 @@
       setSourceChip("missions visibles • bureau fermé");
 
       const hero = document.querySelector(".hero");
+
       if (hero && !document.getElementById("previewBanner")) {
         const banner = document.createElement("div");
         banner.id = "previewBanner";
@@ -1547,12 +1673,13 @@
         banner.innerHTML = `
           <div>
             <strong>Mode aperçu activé.</strong>
-            Tu peux voir l’esprit du cockpit JOBS PRO, mais les actions réelles restent verrouillées.
+            Tu peux voir l’esprit du cockpit JOBS, mais les actions réelles restent verrouillées.
           </div>
           <div class="preview-actions">
             <button id="previewPinBtn" class="gold-btn" type="button">Entrer par PIN</button>
           </div>
         `;
+
         hero.appendChild(banner);
 
         document.getElementById("previewPinBtn")?.addEventListener("click", () => {
@@ -1561,7 +1688,7 @@
           } else if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.buildPinUrl === "function") {
             location.href = window.DIGIY_GUARD.buildPinUrl();
           } else {
-            location.href = withSlug(JOBS_PATHS.pin, state.slug);
+            location.href = JOBS_PATHS.pin;
           }
         });
       }
@@ -1597,8 +1724,8 @@
           setStatusBox(
             "empty",
             preview
-              ? "Aucun slug JOBS détecté. Ajoute ?slug=jobs-... pour voir les missions publiées en aperçu."
-              : "Aucun slug JOBS détecté. Ouvre ce cockpit via l’entrée PIN ou avec ?slug=jobs-..."
+              ? "Aucune session JOBS détectée pour afficher les missions."
+              : "Session JOBS non retrouvée. Repasse par l’entrée sécurisée."
           );
           return;
         }
@@ -1632,47 +1759,41 @@
         }
       } catch (err) {
         console.error(err);
-        setStatusBox("error", "Erreur de chargement. Vérifie le patch SQL, les policies RLS et le slug JOBS.");
+        setStatusBox("error", "Erreur de chargement. Vérifie les droits JOBS côté Supabase et la session active.");
       }
     }
 
     async function bootGuard() {
-      const urlSlug = normalizeSlug(params.get("slug") || "");
-      const savedSlug = readSavedSlug();
+      cleanVisibleUrl();
 
-      if (urlSlug) {
-        setSlug(urlSlug);
-      } else if (savedSlug) {
-        setSlug(savedSlug);
-      }
+      const savedSlug = readSavedSlug();
+      if (savedSlug) setSlug(savedSlug);
 
       if (!sb) {
         setSourceChip("supabase indisponible");
         setStatusBox("error", "Supabase n’est pas chargé.");
-        return { ok: false, preview: true };
+        return { ok:false, preview:true };
       }
 
       if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
         applyPreviewMode();
         setSourceChip("guard manquant");
-        return { ok: true, preview: true };
+        return { ok:true, preview:true };
       }
 
       const session = await window.DIGIY_GUARD.ready();
       state.session = session || null;
 
       const sessionSlug = normalizeSlug(session?.slug || "");
-      if (sessionSlug) {
-        setSlug(sessionSlug);
-      }
+      if (sessionSlug) setSlug(sessionSlug);
 
       if (!session?.access) {
         applyPreviewMode();
-        return { ok: true, preview: true };
+        return { ok:true, preview:true };
       }
 
       clearPreviewMode();
-      return { ok: true, preview: false };
+      return { ok:true, preview:false };
     }
 
     async function bootClaw() {
@@ -1704,8 +1825,10 @@
           setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour voir les candidats liés.");
           return;
         }
+
         const offerFilter = $("offerFilter");
         if (offerFilter) offerFilter.value = btn.dataset.offerId || "";
+
         setTab("candidates");
         applyCandidateFilters();
       }
@@ -1727,11 +1850,11 @@
     });
 
     $("refreshBtn")?.addEventListener("click", async () => {
-  const gate = await bootGuard();
-  if (!gate?.ok) return;
-  await bootClaw();
-  await loadAll(gate.preview);
-});
+      const gate = await bootGuard();
+      if (!gate?.ok) return;
+      await bootClaw();
+      await loadAll(gate.preview);
+    });
 
     $("pinFallbackBtn")?.addEventListener("click", () => {
       if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
@@ -1739,15 +1862,17 @@
       } else if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.buildPinUrl === "function") {
         location.href = window.DIGIY_GUARD.buildPinUrl();
       } else {
-        location.href = withSlug(JOBS_PATHS.pin, state.slug);
+        location.href = JOBS_PATHS.pin;
       }
     });
 
     (async () => {
       if (fixBrokenSearch()) return;
       updateSlugUI();
+
       const gate = await bootGuard();
       if (!gate.ok) return;
+
       await bootClaw();
       await loadAll(gate.preview);
     })();
