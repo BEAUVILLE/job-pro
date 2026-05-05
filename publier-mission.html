@@ -1,0 +1,957 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>DIGIY JOBS PRO — Proposer un poste</title>
+  <meta name="description" content="DIGIY JOBS PRO — proposer une mission depuis le coffre professionnel, sans exposer les données sensibles en façade." />
+  <meta name="theme-color" content="#071711" />
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "JOBS";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js"></script>
+
+  <style>
+    :root{
+      --bg:#071711;
+      --bg2:#0b2319;
+      --card:#102a20;
+      --card2:#123426;
+      --line:rgba(255,255,255,.12);
+      --text:#ecfff4;
+      --muted:rgba(236,255,244,.72);
+      --gold:#facc15;
+      --gold2:#fde68a;
+      --green:#22c55e;
+      --blue:#38bdf8;
+      --red:#fb7185;
+      --shadow:0 18px 60px rgba(0,0,0,.28);
+      --radius:28px;
+      --radius-sm:18px;
+      --max:1040px;
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      padding:0;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, rgba(250,204,21,.09), transparent 24%),
+        radial-gradient(circle at 80% 15%, rgba(34,197,94,.08), transparent 22%),
+        linear-gradient(180deg,var(--bg),#06120d 100%);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+
+    .wrap{
+      width:min(calc(100% - 24px),var(--max));
+      margin:0 auto;
+      padding:16px 0 90px;
+    }
+
+    .topbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:14px;
+    }
+
+    .chip-link,.ghost-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-weight:850;
+    }
+
+    .chip-link.gold,.ghost-btn.gold{
+      border-color:rgba(250,204,21,.28);
+      background:rgba(250,204,21,.08);
+      color:#fff3b0;
+    }
+
+    .chip-link.blue{
+      border-color:rgba(56,189,248,.28);
+      background:rgba(56,189,248,.10);
+      color:#d8f5ff;
+    }
+
+    .hero{
+      border:1px solid var(--line);
+      border-radius:34px;
+      padding:24px 18px;
+      background:
+        radial-gradient(circle at 86% 18%, rgba(250,204,21,.16), transparent 18%),
+        linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.018)),
+        var(--bg2);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.12fr .88fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    .kicker{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      font-size:12px;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+      color:var(--gold2);
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(32px,5.5vw,58px);
+      line-height:.98;
+      letter-spacing:-.04em;
+      max-width:12ch;
+    }
+
+    .lead{
+      margin:0;
+      color:var(--muted);
+      line-height:1.65;
+      font-size:16px;
+      max-width:760px;
+    }
+
+    .hero-box{
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:18px;
+      background:rgba(255,255,255,.045);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-height:100%;
+    }
+
+    .hero-box h2{
+      margin:0;
+      font-size:21px;
+      letter-spacing:-.02em;
+    }
+
+    .hero-box p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:14px;
+    }
+
+    .mini-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:auto;
+    }
+
+    .mini{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:13px;
+      background:rgba(255,255,255,.05);
+    }
+
+    .mini small{
+      display:block;
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .mini strong{
+      display:block;
+      line-height:1.3;
+      word-break:break-word;
+    }
+
+    .status{
+      margin-top:14px;
+      border-radius:22px;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.045);
+      color:var(--muted);
+      line-height:1.62;
+      display:none;
+      font-weight:750;
+    }
+
+    .status.ok{
+      display:block;
+      color:#c6ffd3;
+      background:rgba(34,197,94,.10);
+      border-color:rgba(34,197,94,.24);
+    }
+
+    .status.warn{
+      display:block;
+      color:#fff1b9;
+      background:rgba(250,204,21,.10);
+      border-color:rgba(250,204,21,.24);
+    }
+
+    .status.err{
+      display:block;
+      color:#ffd9df;
+      background:rgba(251,113,133,.10);
+      border-color:rgba(251,113,133,.24);
+    }
+
+    .status.info{
+      display:block;
+      color:#d8f5ff;
+      background:rgba(56,189,248,.09);
+      border-color:rgba(56,189,248,.22);
+    }
+
+    .form-card{
+      margin-top:18px;
+      border:1px solid var(--line);
+      border-radius:34px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
+        var(--card);
+      box-shadow:var(--shadow);
+      padding:20px 18px;
+    }
+
+    .form-head{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      margin-bottom:16px;
+    }
+
+    .form-head h2{
+      margin:0 0 6px;
+      font-size:25px;
+      letter-spacing:-.02em;
+    }
+
+    .form-head p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      max-width:680px;
+      font-size:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .field.full{grid-column:1 / -1}
+
+    label{
+      font-size:13px;
+      color:#d9fbe7;
+      font-weight:900;
+    }
+
+    input,select,textarea{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:18px;
+      padding:14px 14px;
+      color:var(--text);
+      background:rgba(255,255,255,.075);
+      border:1px solid transparent;
+    }
+
+    input::placeholder,textarea::placeholder{
+      color:rgba(236,255,244,.42);
+    }
+
+    textarea{
+      min-height:140px;
+      resize:vertical;
+      line-height:1.55;
+    }
+
+    input:focus,select:focus,textarea:focus{
+      border-color:rgba(250,204,21,.45);
+      box-shadow:0 0 0 4px rgba(250,204,21,.08);
+    }
+
+    .hint{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .toggle-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .toggle{
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:14px;
+      background:rgba(255,255,255,.045);
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      cursor:pointer;
+      min-height:82px;
+    }
+
+    .toggle input{
+      width:20px;
+      height:20px;
+      margin:2px 0 0;
+      accent-color:var(--gold);
+      flex:0 0 auto;
+    }
+
+    .toggle strong{
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .toggle span{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+      align-items:center;
+    }
+
+    .btn{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      min-height:54px;
+      padding:14px 18px;
+      border-radius:19px;
+      font-weight:950;
+      border:1px solid transparent;
+    }
+
+    .btn-primary{
+      background:linear-gradient(180deg,var(--gold),#eab308);
+      color:#171717;
+      min-width:230px;
+    }
+
+    .btn-secondary{
+      border-color:var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+    }
+
+    .btn-blue{
+      border-color:rgba(56,189,248,.28);
+      background:rgba(56,189,248,.10);
+      color:#d8f5ff;
+    }
+
+    .result-links{
+      display:none;
+      margin-top:14px;
+      border:1px solid rgba(34,197,94,.22);
+      background:rgba(34,197,94,.08);
+      border-radius:24px;
+      padding:14px;
+    }
+
+    .result-links strong{
+      display:block;
+      margin-bottom:10px;
+      color:#c6ffd3;
+    }
+
+    .result-links .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .locked{
+      display:none;
+      margin-top:18px;
+      border:1px solid rgba(250,204,21,.25);
+      background:rgba(250,204,21,.08);
+      border-radius:28px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .locked h2{
+      margin:0 0 8px;
+      font-size:24px;
+    }
+
+    .locked p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.65;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      z-index:50;
+      left:50%;
+      bottom:calc(10px + env(safe-area-inset-bottom));
+      transform:translateX(-50%);
+      width:min(calc(100% - 18px),640px);
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(7,23,17,.86);
+      backdrop-filter:blur(12px);
+      border-radius:22px;
+      padding:8px;
+      box-shadow:0 16px 55px rgba(0,0,0,.35);
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+    }
+
+    .bottom-nav a{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:2px;
+      min-height:48px;
+      border-radius:16px;
+      color:rgba(236,255,244,.76);
+      font-size:11px;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .bottom-nav a.active{
+      background:rgba(250,204,21,.13);
+      color:#fff3b0;
+      border:1px solid rgba(250,204,21,.22);
+    }
+
+    .bottom-nav b{
+      font-size:17px;
+      line-height:1;
+    }
+
+    @media (max-width: 820px){
+      .hero-grid{grid-template-columns:1fr}
+      h1{max-width:none}
+    }
+
+    @media (max-width: 680px){
+      .wrap{width:min(calc(100% - 18px),var(--max));padding-top:12px}
+      .hero{padding:22px 14px;border-radius:28px}
+      .form-card{padding:18px 14px;border-radius:28px}
+      .grid,.toggle-row,.mini-grid{grid-template-columns:1fr}
+      h1{font-size:35px}
+      .btn{width:100%}
+      .topbar .chip-link:nth-child(n+5){display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="topbar" aria-label="Navigation professionnelle JOBS">
+      <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Site</a>
+      <a class="chip-link" href="./index.html">Accueil JOBS</a>
+      <a class="chip-link" href="./cockpit.html">Mon espace</a>
+      <a class="chip-link gold" href="./publier-mission.html">Proposer un poste</a>
+      <a class="chip-link" href="./bureau.html">Bureau</a>
+      <a class="chip-link blue" href="./match.html">Match</a>
+      <a class="chip-link" href="./pin.html">Entrer mon code</a>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">JOBS PRO • coffre • mission</div>
+          <h1>Proposer un poste.</h1>
+          <p class="lead">
+            Décris le besoin clairement : métier, ville, contrat, rémunération, conditions.
+            DIGIY prépare la mission pour que les bons candidats puissent la lire et postuler.
+          </p>
+        </div>
+
+        <aside class="hero-box">
+          <h2>Le bon geste</h2>
+          <p>
+            Ici, le pro ne cherche pas un candidat au hasard. Il pose d’abord un poste propre.
+            Ensuite le bureau reçoit les candidatures et le match rapproche les bons profils.
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini">
+              <small>Accès</small>
+              <strong id="accessMini">Vérification…</strong>
+            </div>
+            <div class="mini">
+              <small>Session</small>
+              <strong id="sessionMini">Coffre protégé</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div id="statusBox" class="status info">Ouverture du coffre JOBS…</div>
+    </section>
+
+    <section id="lockedBox" class="locked">
+      <h2>Code PIN demandé</h2>
+      <p>
+        Cette page sert à proposer un poste côté professionnel. Entre ton code PIN JOBS :
+        une fois la session ouverte, elle reste active pendant 8h sur les pages internes.
+      </p>
+      <a class="btn btn-primary" href="./pin.html">Entrer mon code PIN</a>
+    </section>
+
+    <section id="formCard" class="form-card" hidden>
+      <div class="form-head">
+        <div>
+          <h2>Nouvelle mission</h2>
+          <p>
+            Les mots doivent parler au terrain. Une mission claire donne plus de chances
+            de recevoir une candidature utile.
+          </p>
+        </div>
+        <button id="btnReset" class="ghost-btn" type="button">Vider le formulaire</button>
+      </div>
+
+      <form id="missionForm">
+        <div class="grid">
+          <div class="field full">
+            <label for="title">Intitulé du poste *</label>
+            <input id="title" name="title" type="text" placeholder="Ex : Maçon confirmé pour chantier à Saly" required maxlength="160" />
+            <div class="hint">Écris comme une annonce que le candidat comprend vite.</div>
+          </div>
+
+          <div class="field">
+            <label for="sector">Secteur *</label>
+            <select id="sector" name="sector" required>
+              <option value="">Choisir</option>
+              <option value="build">BTP / travaux</option>
+              <option value="beauty">Beauté</option>
+              <option value="shop">Boutique</option>
+              <option value="food">Restauration</option>
+              <option value="service">Services</option>
+              <option value="driver">Chauffeur</option>
+              <option value="market">Commerce / marché</option>
+              <option value="admin">Bureau / admin</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="contract_type">Type de contrat *</label>
+            <select id="contract_type" name="contract_type" required>
+              <option value="">Choisir</option>
+              <option value="mission">Mission</option>
+              <option value="extra">Extra</option>
+              <option value="cdd">CDD</option>
+              <option value="cdi">CDI</option>
+              <option value="stage">Stage</option>
+              <option value="freelance">Freelance</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="city">Ville *</label>
+            <input id="city" name="city" type="text" placeholder="Ex : Saly, Mbour, Dakar" required maxlength="90" />
+          </div>
+
+          <div class="field">
+            <label for="country">Pays</label>
+            <input id="country" name="country" type="text" value="Sénégal" maxlength="90" />
+          </div>
+
+          <div class="field">
+            <label for="pay">Rémunération</label>
+            <input id="pay" name="pay" type="text" placeholder="Ex : 10 000 FCFA / jour, à discuter, 150 000 FCFA / mois" maxlength="120" />
+          </div>
+
+          <div class="field">
+            <label for="employer_name">Nom visible de la structure</label>
+            <input id="employer_name" name="employer_name" type="text" placeholder="Ex : Chantier Saly, Restaurant, Boutique…" maxlength="120" />
+            <div class="hint">Nom public seulement. Pas de téléphone ici.</div>
+          </div>
+
+          <div class="field full">
+            <label for="description">Description de la mission *</label>
+            <textarea id="description" name="description" required placeholder="Explique le travail à faire, le rythme, le lieu, et ce que tu attends."></textarea>
+          </div>
+
+          <div class="field full">
+            <label for="requirements">Conditions / exigences</label>
+            <textarea id="requirements" name="requirements" placeholder="Ex : être ponctuel, savoir travailler proprement, expérience chantier, disponible cette semaine…"></textarea>
+          </div>
+        </div>
+
+        <div class="toggle-row">
+          <label class="toggle" for="has_housing">
+            <input id="has_housing" name="has_housing" type="checkbox" />
+            <span>
+              <strong>Logement possible</strong>
+              <span>À cocher seulement si une solution de logement existe réellement.</span>
+            </span>
+          </label>
+
+          <label class="toggle" for="has_family_welcome">
+            <input id="has_family_welcome" name="has_family_welcome" type="checkbox" />
+            <span>
+              <strong>Accueil familial possible</strong>
+              <span>Utile pour les dossiers accompagnés où l’arrivée doit être sécurisée.</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="submitBtn" class="btn btn-primary" type="submit">Publier la mission</button>
+          <a class="btn btn-secondary" href="./bureau.html">Ouvrir le bureau</a>
+          <a class="btn btn-blue" href="./match.html">Ouvrir le match</a>
+        </div>
+
+        <div id="resultLinks" class="result-links">
+          <strong>Mission enregistrée.</strong>
+          <div class="links">
+            <a id="publicMissionLink" class="chip-link gold" href="./mission.html">Voir la fiche publique</a>
+            <a id="publicApplyLink" class="chip-link blue" href="./postuler.html">Lien candidature</a>
+            <a class="chip-link" href="./bureau.html">Traiter au bureau</a>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Navigation mobile JOBS">
+    <a href="./cockpit.html"><b>🏠</b><span>Accueil</span></a>
+    <a href="./publier-mission.html" class="active"><b>➕</b><span>Poste</span></a>
+    <a href="./bureau.html"><b>🗂️</b><span>Bureau</span></a>
+    <a href="./match.html"><b>🎯</b><span>Match</span></a>
+    <a href="./pin.html"><b>🔐</b><span>Code</span></a>
+  </nav>
+
+  <script>
+    (function(){
+      "use strict";
+
+      const SUPABASE_URL =
+        window.DIGIY_SUPABASE_URL ||
+        "https://wesqmwjjtsefyjnluosj.supabase.co";
+
+      const SUPABASE_ANON_KEY =
+        window.DIGIY_SUPABASE_ANON ||
+        window.DIGIY_SUPABASE_ANON_KEY ||
+        "";
+
+      const sb =
+        window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+          : null;
+
+      const SENSITIVE_QUERY_KEYS = [
+        "slug",
+        "phone",
+        "tel",
+        "resa_tel",
+        "owner_phone",
+        "owner_id",
+        "business_code",
+        "keybox_code",
+        "keybox_location",
+        "access_note"
+      ];
+
+      const state = {
+        access: false,
+        session: null,
+        slug: "",
+        phone: "",
+        saving: false
+      };
+
+      const $ = (id) => document.getElementById(id);
+
+      function scrubSensitiveUrl(){
+        try{
+          const url = new URL(location.href);
+          let changed = false;
+
+          SENSITIVE_QUERY_KEYS.forEach((key) => {
+            if (url.searchParams.has(key)) {
+              url.searchParams.delete(key);
+              changed = true;
+            }
+          });
+
+          if (changed) {
+            const clean = url.pathname + (url.search ? url.search : "") + url.hash;
+            history.replaceState({}, document.title, clean);
+          }
+        }catch(_){}
+      }
+
+      function normalizeSlug(value = ""){
+        return String(value || "")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
+
+      function normalizePhone(value = ""){
+        return String(value || "").trim().replace(/[^\d+]/g, "");
+      }
+
+      function cleanText(value = ""){
+        return String(value || "").trim();
+      }
+
+      function showStatus(type, text){
+        const box = $("statusBox");
+        if (!box) return;
+        box.className = type ? "status " + type : "status";
+        box.textContent = text || "";
+        box.style.display = text ? "block" : "none";
+      }
+
+      function setLocked(){
+        state.access = false;
+        $("lockedBox").style.display = "block";
+        $("formCard").hidden = true;
+        $("accessMini").textContent = "Code PIN demandé";
+        $("sessionMini").textContent = "Session non ouverte";
+        showStatus("warn", "Coffre protégé : entre ton code PIN JOBS pour proposer un poste.");
+      }
+
+      function setOpen(){
+        $("lockedBox").style.display = "none";
+        $("formCard").hidden = false;
+        $("accessMini").textContent = "Ouvert";
+        $("sessionMini").textContent = "Session 8h";
+        showStatus("ok", "Coffre ouvert. Tu peux proposer un poste.");
+      }
+
+      async function bootGuard(){
+        scrubSensitiveUrl();
+
+        if (!sb) {
+          $("accessMini").textContent = "Erreur";
+          $("sessionMini").textContent = "Supabase absent";
+          showStatus("err", "Supabase n’est pas chargé. Vérifie la configuration front.");
+          $("lockedBox").style.display = "none";
+          $("formCard").hidden = true;
+          return;
+        }
+
+        if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
+          setLocked();
+          showStatus("warn", "Guard JOBS absent ou non chargé. La page reste protégée.");
+          return;
+        }
+
+        try{
+          const session = await window.DIGIY_GUARD.ready();
+          state.session = session || null;
+          state.access = !!session?.access;
+          state.slug = normalizeSlug(
+            session?.slug ||
+            session?.job_slug ||
+            session?.jobs_slug ||
+            ""
+          );
+          state.phone = normalizePhone(
+            session?.phone ||
+            session?.owner_phone ||
+            session?.tel ||
+            ""
+          );
+
+          if (!state.access) {
+            setLocked();
+            return;
+          }
+
+          if (!state.slug) {
+            $("lockedBox").style.display = "none";
+            $("formCard").hidden = true;
+            $("accessMini").textContent = "Ouvert";
+            $("sessionMini").textContent = "Repère manquant";
+            showStatus("warn", "Session ouverte, mais aucun repère JOBS n’a été trouvé. Rentre par le PIN JOBS pour rattacher la mission au bon compte.");
+            return;
+          }
+
+          setOpen();
+        }catch(error){
+          console.error(error);
+          setLocked();
+          showStatus("err", "Impossible de vérifier la session JOBS pour le moment.");
+        }
+      }
+
+      function getOptionalOwnerId(){
+        const s = state.session || {};
+        return (
+          s.owner_id ||
+          s.user_id ||
+          s.profile_id ||
+          s.account_id ||
+          null
+        );
+      }
+
+      function buildPayload(){
+        const payload = {
+          slug: state.slug,
+          title: cleanText($("title").value),
+          sector: cleanText($("sector").value),
+          city: cleanText($("city").value),
+          country: cleanText($("country").value) || "Sénégal",
+          contract_type: cleanText($("contract_type").value),
+          pay: cleanText($("pay").value) || null,
+          description: cleanText($("description").value),
+          requirements: cleanText($("requirements").value) || null,
+          has_housing: $("has_housing").checked,
+          has_family_welcome: $("has_family_welcome").checked,
+          employer_name: cleanText($("employer_name").value) || null,
+          status: "active"
+        };
+
+        const ownerId = getOptionalOwnerId();
+        if (ownerId) payload.owner_id = ownerId;
+
+        if (state.phone) payload.contact_phone = state.phone;
+
+        return payload;
+      }
+
+      function validatePayload(payload){
+        if (!state.access || !state.slug) {
+          return "Session JOBS non ouverte. Entre ton code PIN avant de proposer un poste.";
+        }
+
+        if (!payload.title) return "Ajoute l’intitulé du poste.";
+        if (!payload.sector) return "Choisis le secteur.";
+        if (!payload.contract_type) return "Choisis le type de contrat.";
+        if (!payload.city) return "Ajoute la ville.";
+        if (!payload.description) return "Ajoute la description de la mission.";
+
+        return "";
+      }
+
+      async function saveMission(event){
+        event.preventDefault();
+
+        if (state.saving) return;
+
+        const payload = buildPayload();
+        const validationError = validatePayload(payload);
+
+        if (validationError) {
+          showStatus("warn", validationError);
+          return;
+        }
+
+        state.saving = true;
+        $("submitBtn").disabled = true;
+        $("submitBtn").textContent = "Publication…";
+        $("resultLinks").style.display = "none";
+        showStatus("info", "Enregistrement de la mission dans le coffre JOBS…");
+
+        const { data, error } = await sb
+          .from("digiy_jobs_offers_pro")
+          .insert(payload)
+          .select("id,title")
+          .single();
+
+        state.saving = false;
+        $("submitBtn").disabled = false;
+        $("submitBtn").textContent = "Publier la mission";
+
+        if (error) {
+          console.error(error);
+          showStatus(
+            "err",
+            "Impossible de publier la mission pour le moment.\nSi le message console indique permission denied, le front est prêt : il faudra ouvrir la bonne policy/RPC côté Supabase pour l’écriture PRO."
+          );
+          return;
+        }
+
+        const offerId = data?.id || "";
+        showStatus("ok", "Mission publiée. Elle peut maintenant être lue côté public et traitée côté bureau.");
+
+        if (offerId) {
+          $("publicMissionLink").href = "./mission.html?id=" + encodeURIComponent(offerId);
+          $("publicApplyLink").href = "./postuler.html?offer=" + encodeURIComponent(offerId);
+          $("resultLinks").style.display = "block";
+        } else {
+          $("resultLinks").style.display = "none";
+        }
+
+        $("missionForm").reset();
+        $("country").value = "Sénégal";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      $("missionForm").addEventListener("submit", saveMission);
+
+      $("btnReset").addEventListener("click", function(){
+        if (!confirm("Vider le formulaire ?")) return;
+        $("missionForm").reset();
+        $("country").value = "Sénégal";
+        $("resultLinks").style.display = "none";
+        showStatus("info", "Formulaire vidé.");
+      });
+
+      bootGuard();
+    })();
+  </script>
+</body>
+</html>
