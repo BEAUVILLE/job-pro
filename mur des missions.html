@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>DIGIY JOBS PRO — Mur des missions</title>
-  <meta name="description" content="DIGIY JOBS PRO — Mur interne des missions, lecture par slug, navigation vers mission, bureau, cockpit et match." />
+  <meta name="description" content="DIGIY JOBS PRO — mur interne des missions, lecture par session sécurisée, navigation vers mission, bureau, cockpit et match." />
   <meta name="theme-color" content="#071711" />
 
   <script>
@@ -14,6 +14,7 @@
     window.DIGIY_MODULE = "JOBS";
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js"></script>
 
   <style>
     :root{
@@ -42,13 +43,13 @@
         radial-gradient(circle at top, rgba(250,204,21,.08), transparent 26%),
         linear-gradient(180deg,var(--bg),#05110c 100%);
       color:var(--text);
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
 
     a{color:inherit;text-decoration:none}
     button,input,select{font:inherit}
 
-    .wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 80px}
+    .wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 88px}
 
     .top-links{
       display:flex;
@@ -66,7 +67,7 @@
       border-radius:999px;
       border:1px solid var(--line);
       background:rgba(255,255,255,.05);
-      font-weight:800;
+      font-weight:850;
     }
 
     .chip-link.gold{
@@ -110,14 +111,14 @@
       text-transform:uppercase;
       color:var(--gold2);
       margin-bottom:12px;
-      font-weight:800;
+      font-weight:900;
     }
 
     h1{
       margin:0 0 10px;
       font-size:clamp(32px,5vw,60px);
       line-height:.98;
-      letter-spacing:-.03em;
+      letter-spacing:-.035em;
     }
 
     .lead{
@@ -136,24 +137,10 @@
       backdrop-filter:blur(6px);
     }
 
-    .hero-box h2{
-      margin:0 0 8px;
-      font-size:20px;
-    }
+    .hero-box h2{margin:0 0 8px;font-size:20px}
+    .hero-box p{margin:0 0 14px;color:var(--muted);line-height:1.55;font-size:14px}
 
-    .hero-box p{
-      margin:0 0 14px;
-      color:var(--muted);
-      line-height:1.55;
-      font-size:14px;
-    }
-
-    .pill-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
+    .pill-row{display:flex;flex-wrap:wrap;gap:10px}
     .pill{
       border:1px solid rgba(250,204,21,.26);
       color:#fff7cc;
@@ -161,7 +148,7 @@
       border-radius:999px;
       padding:9px 12px;
       font-size:13px;
-      font-weight:700;
+      font-weight:800;
     }
 
     .meta-line{
@@ -180,6 +167,8 @@
       border:1px solid var(--line);
     }
 
+    .meta-chip strong{color:#fffbe4}
+
     .filters{
       margin-top:18px;
       display:grid;
@@ -188,22 +177,11 @@
       align-items:end;
     }
 
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
+    .field{display:flex;flex-direction:column;gap:8px}
+    .field label{font-size:13px;font-weight:800;color:#d8fbe6}
 
-    .field label{
-      font-size:13px;
-      font-weight:700;
-      color:#d8fbe6;
-    }
-
-    .field input,
-    .field select{
+    .field input,.field select{
       width:100%;
-      border:none;
       outline:none;
       border-radius:16px;
       padding:14px 15px;
@@ -213,12 +191,7 @@
     }
 
     .field input::placeholder{color:rgba(236,255,244,.46)}
-
-    .field input:focus,
-    .field select:focus{
-      border-color:rgba(250,204,21,.45);
-      box-shadow:0 0 0 4px rgba(250,204,21,.08);
-    }
+    .field input:focus,.field select:focus{border-color:rgba(250,204,21,.45);box-shadow:0 0 0 4px rgba(250,204,21,.08)}
 
     .toolbar{
       display:flex;
@@ -229,61 +202,39 @@
       flex-wrap:wrap;
     }
 
-    .count{
-      font-size:14px;
-      color:var(--muted);
-    }
-
-    .toolbar-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
+    .count{font-size:14px;color:var(--muted)}
+    .toolbar-actions{display:flex;gap:10px;flex-wrap:wrap}
 
     .link-btn{
       display:inline-flex;
       align-items:center;
+      justify-content:center;
       gap:10px;
+      min-height:46px;
       padding:12px 16px;
       border-radius:999px;
       border:1px solid rgba(250,204,21,.3);
       background:rgba(250,204,21,.08);
       color:#fff5b1;
-      font-weight:800;
+      font-weight:900;
     }
 
-    .link-btn.blue{
-      border-color:rgba(56,189,248,.28);
-      background:rgba(56,189,248,.10);
-      color:#d9f4ff;
-    }
+    .link-btn.blue{border-color:rgba(56,189,248,.28);background:rgba(56,189,248,.10);color:#d9f4ff}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:16px;
-    }
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 
     .card{
       border:1px solid var(--line);
       border-radius:24px;
       padding:18px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
-        var(--card);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),var(--card);
       box-shadow:var(--shadow);
       display:flex;
       flex-direction:column;
       min-height:320px;
     }
 
-    .badge-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:12px;
-    }
-
+    .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
     .badge{
       display:inline-flex;
       align-items:center;
@@ -291,79 +242,24 @@
       border-radius:999px;
       padding:7px 10px;
       font-size:12px;
-      font-weight:800;
+      font-weight:850;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.05);
       color:#e9fff1;
     }
 
-    .badge.gold{
-      border-color:rgba(250,204,21,.28);
-      background:rgba(250,204,21,.09);
-      color:#fff2af;
-    }
+    .badge.gold{border-color:rgba(250,204,21,.28);background:rgba(250,204,21,.09);color:#fff2af}
+    .badge.green{border-color:rgba(34,197,94,.22);background:rgba(34,197,94,.10);color:#caffd5}
+    .badge.blue{border-color:rgba(56,189,248,.25);background:rgba(56,189,248,.10);color:#d9f4ff}
 
-    .badge.green{
-      border-color:rgba(34,197,94,.22);
-      background:rgba(34,197,94,.10);
-      color:#caffd5;
-    }
+    .title{font-size:24px;line-height:1.1;font-weight:950;margin:0 0 8px;letter-spacing:-.02em}
+    .meta{display:flex;flex-wrap:wrap;gap:10px 14px;color:var(--muted);font-size:14px;margin-bottom:12px}
+    .desc{color:var(--muted);line-height:1.6;font-size:14px;margin:0 0 16px;flex:1}
 
-    .badge.blue{
-      border-color:rgba(56,189,248,.25);
-      background:rgba(56,189,248,.10);
-      color:#d9f4ff;
-    }
+    .flags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+    .flag{font-size:12px;font-weight:850;padding:8px 10px;border-radius:999px;background:rgba(34,197,94,.1);color:#bcffcc;border:1px solid rgba(34,197,94,.22)}
 
-    .title{
-      font-size:24px;
-      line-height:1.1;
-      font-weight:900;
-      margin:0 0 8px;
-      letter-spacing:-.02em;
-    }
-
-    .meta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px 14px;
-      color:var(--muted);
-      font-size:14px;
-      margin-bottom:12px;
-    }
-
-    .desc{
-      color:var(--muted);
-      line-height:1.6;
-      font-size:14px;
-      margin:0 0 16px;
-      flex:1;
-    }
-
-    .flags{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:16px;
-    }
-
-    .flag{
-      font-size:12px;
-      font-weight:800;
-      padding:8px 10px;
-      border-radius:999px;
-      background:rgba(34,197,94,.1);
-      color:#bcffcc;
-      border:1px solid rgba(34,197,94,.22);
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      margin-top:auto;
-      flex-wrap:wrap;
-    }
-
+    .actions{display:flex;gap:10px;margin-top:auto;flex-wrap:wrap}
     .btn{
       flex:1 1 140px;
       display:inline-flex;
@@ -372,41 +268,40 @@
       border:none;
       border-radius:16px;
       padding:13px 14px;
-      font-weight:900;
+      font-weight:950;
       cursor:pointer;
       text-align:center;
+      min-height:48px;
     }
 
-    .btn-primary{
-      background:linear-gradient(180deg,var(--gold),#eab308);
-      color:#151515;
-    }
+    .btn-primary{background:linear-gradient(180deg,var(--gold),#eab308);color:#151515}
+    .btn-secondary{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--line)}
+    .btn-blue{background:rgba(56,189,248,.10);color:#d9f4ff;border:1px solid rgba(56,189,248,.28)}
 
-    .btn-secondary{
-      background:rgba(255,255,255,.07);
-      color:var(--text);
-      border:1px solid var(--line);
-    }
-
-    .btn-blue{
-      background:rgba(56,189,248,.10);
-      color:#d9f4ff;
-      border:1px solid rgba(56,189,248,.28);
-    }
-
-    .empty,.loading,.error{
+    .empty,.loading,.error,.ok{
       border:1px dashed var(--line);
       border-radius:24px;
       padding:26px;
       text-align:center;
       color:var(--muted);
       background:rgba(255,255,255,.03);
+      line-height:1.6;
     }
 
-    .error{
-      color:#ffd7de;
-      border-color:rgba(251,113,133,.28);
-      background:rgba(251,113,133,.08);
+    .error{color:#ffd7de;border-color:rgba(251,113,133,.28);background:rgba(251,113,133,.08)}
+    .ok{color:#dcffe7;border-color:rgba(34,197,94,.24);background:rgba(34,197,94,.08)}
+
+    .pin-cta{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:14px;
+      min-height:46px;
+      padding:12px 16px;
+      border-radius:999px;
+      background:linear-gradient(180deg,var(--gold),#eab308);
+      color:#151515;
+      font-weight:950;
     }
 
     @media (max-width: 980px){
@@ -416,11 +311,13 @@
     }
 
     @media (max-width: 640px){
-      .wrap{padding:14px 12px 70px}
+      .wrap{padding:14px 12px 78px}
       .hero{padding:22px 14px}
       .filters{grid-template-columns:1fr}
       .grid{grid-template-columns:1fr}
       .toolbar{flex-direction:column;align-items:flex-start}
+      .toolbar-actions,.top-links{width:100%}
+      .chip-link,.link-btn{flex:1 1 auto}
       h1{font-size:36px}
     }
   </style>
@@ -430,8 +327,8 @@
     <div class="top-links">
       <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
       <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
-      <a id="missionsWallLink" class="chip-link gold" href="./mur%20des%20missions.html">Vue des missions</a>
-      <a id="pinLink" class="chip-link" href="./pin.html">Code d’accès</a>
+      <a id="missionsWallLink" class="chip-link gold" href="./mur%20des%20missions.html">Missions</a>
+      <a id="pinLink" class="chip-link" href="./pin.html">Code PIN</a>
       <a id="cockpitLink" class="chip-link" href="./cockpit.html">Mon espace</a>
       <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
       <a id="matchLink" class="chip-link blue" href="./match.html">Match</a>
@@ -440,34 +337,32 @@
     <section class="hero">
       <div class="hero-grid">
         <div>
-          <div class="kicker">DIGIY JOBS PRO • terrain • missions • pilotage</div>
-          <h1>Le mur pro des missions actives.</h1>
+          <div class="kicker">DIGIY JOBS PRO • coffre • missions • pilotage</div>
+          <h1>Les missions à suivre maintenant.</h1>
           <p class="lead">
-            Ici, on lit les missions du slug actif, on ouvre la fiche mission,
-            on passe au bureau, au cockpit ou au match. Ce mur sert à piloter,
-            pas à faire de vitrine publique.
+            Ici, tu vois les missions de ton espace, tu ouvres la bonne fiche,
+            tu passes au bureau, puis tu fais le lien avec les bons profils sans détour.
           </p>
 
           <div class="meta-line">
-            <div class="meta-chip">Mode : <strong id="modeChip">mur pro</strong></div>
-            <div class="meta-chip">Repère : <strong id="slugChip">—</strong></div>
-            <div class="meta-chip">Parcours : <strong id="railChip">lecture guidée</strong></div>
-            <div class="meta-chip">Lecture : <strong id="sourceChip">missions en direct</strong></div>
+            <div class="meta-chip">Accès : <strong id="modeChip">vérification…</strong></div>
+            <div class="meta-chip">Session : <strong id="sessionChip">en attente</strong></div>
+            <div class="meta-chip">Parcours : <strong id="railChip">protégé</strong></div>
+            <div class="meta-chip">Lecture : <strong id="sourceChip">missions du coffre</strong></div>
           </div>
         </div>
 
         <div class="hero-box">
-          <h2>Ce que ce mur sert à faire</h2>
+          <h2>À quoi sert ce mur</h2>
           <p>
-            Lire vite les missions du contexte actif, ouvrir la bonne fiche,
-            lancer le tri bureau, puis aller au match sans repasser par une porte publique.
+            Lire vite les missions ouvertes, choisir celle qui demande attention,
+            ouvrir le tri des candidatures et avancer sans repasser par une porte publique.
           </p>
           <div class="pill-row">
-            <span class="pill">Lecture rapide</span>
-            <span class="pill">Fiche mission</span>
-            <span class="pill">Bureau</span>
-            <span class="pill">Cockpit</span>
-            <span class="pill">Match</span>
+            <span class="pill">Voir les missions</span>
+            <span class="pill">Ouvrir la fiche</span>
+            <span class="pill">Trier les profils</span>
+            <span class="pill">Faire le match</span>
           </div>
         </div>
       </div>
@@ -508,314 +403,411 @@
     </section>
 
     <div class="toolbar">
-      <div id="count" class="count">Chargement des missions...</div>
-
+      <div id="count" class="count">Vérification de l’accès...</div>
       <div class="toolbar-actions">
-        <a id="toolbarCockpitLink" class="link-btn" href="./cockpit.html">Ouvrir le cockpit</a>
+        <a id="toolbarCockpitLink" class="link-btn" href="./cockpit.html">Ouvrir mon espace</a>
+        <a id="toolbarBureauLink" class="link-btn" href="./bureau.html">Ouvrir le bureau</a>
         <a id="toolbarMatchLink" class="link-btn blue" href="./match.html">Ouvrir le match</a>
       </div>
     </div>
 
-    <div id="statusBox" class="loading">Chargement en cours...</div>
+    <div id="statusBox" class="loading">Vérification en cours...</div>
     <div id="cards" class="grid" style="display:none"></div>
   </div>
 
   <script>
-    const SUPABASE_URL =
-      window.DIGIY_SUPABASE_URL ||
-      "https://wesqmwjjtsefyjnluosj.supabase.co";
+    (function(){
+      "use strict";
 
-    const SUPABASE_ANON_KEY =
-      window.DIGIY_SUPABASE_ANON ||
-      window.DIGIY_SUPABASE_ANON_KEY ||
-      "";
+      const SUPABASE_URL =
+        window.DIGIY_SUPABASE_URL ||
+        "https://wesqmwjjtsefyjnluosj.supabase.co";
 
-    const sb =
-      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-        : null;
+      const SUPABASE_ANON_KEY =
+        window.DIGIY_SUPABASE_ANON ||
+        window.DIGIY_SUPABASE_ANON_KEY ||
+        "";
 
-    const params = new URLSearchParams(location.search);
-    const $ = (id) => document.getElementById(id);
+      const sb =
+        window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+          : null;
 
-    const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+      const RAW_PARAMS = new URLSearchParams(location.search);
+      const $ = (id) => document.getElementById(id);
 
-    const JOBS_PATHS = {
-      home: "./index.html",
-      missions: "./mur%20des%20missions.html",
-      pin: "./pin.html",
-      cockpit: "./cockpit.html",
-      bureau: "./bureau.html",
-      postuler: "./postuler.html",
-      mission: "./mission.html",
-      match: "./match.html"
-    };
+      const SLUG_STORAGE_KEY = "digiy_jobs_slug";
+      const SENSITIVE_PARAMS = [
+        "slug",
+        "phone",
+        "tel",
+        "owner_phone",
+        "resa_tel",
+        "resa_phone",
+        "whatsapp",
+        "mobile"
+      ];
 
-    const state = {
-      offers: [],
-      filtered: [],
-      slug: resolveSlug()
-    };
-
-    function resolveSlug(){
-      const qs = String(params.get("slug") || "").trim().toLowerCase();
-      if (qs) {
-        try { localStorage.setItem(SLUG_STORAGE_KEY, qs); } catch(_) {}
-        return qs;
-      }
-      try {
-        return String(localStorage.getItem(SLUG_STORAGE_KEY) || "").trim().toLowerCase();
-      } catch(_) {
-        return "";
-      }
-    }
-
-    function escapeHtml(v=''){
-      return String(v)
-        .replaceAll('&','&amp;')
-        .replaceAll('<','&lt;')
-        .replaceAll('>','&gt;')
-        .replaceAll('"','&quot;')
-        .replaceAll("'","&#039;");
-    }
-
-    function labelSector(v=''){
-      const map = {
-        build:'BTP',
-        beauty:'Beauté',
-        shop:'Boutique',
-        food:'Restauration',
-        service:'Services',
-        driver:'Chauffeur',
-        market:'Marché',
-        admin:'Admin'
+      const JOBS_PATHS = {
+        home: "./index.html",
+        missions: "./mur%20des%20missions.html",
+        pin: "./pin.html",
+        cockpit: "./cockpit.html",
+        bureau: "./bureau.html",
+        postuler: "./postuler.html",
+        mission: "./mission.html",
+        match: "./match.html"
       };
-      return map[v] || v || 'Secteur';
-    }
 
-    function labelContract(v=''){
-      const map = {
-        cdi:'CDI',
-        cdd:'CDD',
-        mission:'Mission',
-        stage:'Stage',
-        freelance:'Freelance',
-        extra:'Extra'
+      const state = {
+        offers: [],
+        filtered: [],
+        slug: resolveInitialSlug(),
+        hasAccess: false,
+        guardReady: false,
+        session: null
       };
-      return map[v] || v || 'Contrat';
-    }
 
-    function shortText(v='', max=170){
-      const s = String(v || '').trim();
-      if (s.length <= max) return s;
-      return s.slice(0, max).trim() + '…';
-    }
+      cleanSensitiveUrl();
+      syncLinks();
+      boot();
 
-    function buildOptions(selectEl, values, formatter = (x) => x, firstLabel = 'Tous'){
-      const current = selectEl.value;
-      const unique = [...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'fr'));
-      selectEl.innerHTML =
-        `<option value="">${firstLabel}</option>` +
-        unique.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(formatter(v))}</option>`).join('');
-
-      if ([...selectEl.options].some(opt => opt.value === current)) {
-        selectEl.value = current;
-      }
-    }
-
-    function withSlug(path, slug){
-      const cleanSlug = String(slug || '').trim().toLowerCase();
-      if (!cleanSlug) return path;
-      const joiner = path.includes('?') ? '&' : '?';
-      return `${path}${joiner}slug=${encodeURIComponent(cleanSlug)}`;
-    }
-
-    function missionHref(item){
-      const slug = item.slug || state.slug || '';
-      const url = new URL(JOBS_PATHS.mission, location.href);
-      url.searchParams.set('id', item.id);
-      if (slug) url.searchParams.set('slug', slug);
-      return url.toString();
-    }
-
-    function matchHref(item){
-      const slug = item.slug || state.slug || '';
-      const url = new URL(JOBS_PATHS.match, location.href);
-      if (slug) url.searchParams.set('slug', slug);
-      if (item.id) url.searchParams.set('offer', item.id);
-      return url.toString();
-    }
-
-    function bureauHref(item){
-      const slug = item.slug || state.slug || '';
-      return withSlug(JOBS_PATHS.bureau, slug);
-    }
-
-    function syncLinks(){
-      const slug = state.slug || '';
-
-      $('slugChip').textContent = slug || 'aucun slug';
-      $('modeChip').textContent = slug ? 'mur pro lié au slug' : 'mur pro sans slug';
-      $('railChip').textContent = slug ? 'repère actif' : 'repère requis';
-      $('sourceChip').textContent = 'missions en direct';
-
-      $('homeLink').href = withSlug(JOBS_PATHS.home, slug);
-      $('missionsWallLink').href = withSlug(JOBS_PATHS.missions, slug);
-      $('pinLink').href = withSlug(JOBS_PATHS.pin, slug);
-      $('cockpitLink').href = withSlug(JOBS_PATHS.cockpit, slug);
-      $('bureauLink').href = withSlug(JOBS_PATHS.bureau, slug);
-      $('matchLink').href = withSlug(JOBS_PATHS.match, slug);
-      $('toolbarCockpitLink').href = withSlug(JOBS_PATHS.cockpit, slug);
-      $('toolbarMatchLink').href = withSlug(JOBS_PATHS.match, slug);
-    }
-
-    function renderStatus(type, text){
-      const box = $('statusBox');
-      box.style.display = 'block';
-      box.className = type;
-      box.textContent = text;
-      $('cards').style.display = 'none';
-    }
-
-    function renderCards(list){
-      const cards = $('cards');
-
-      if (!list.length) {
-        renderStatus(
-          'empty',
-          state.slug
-            ? 'Aucune mission active trouvée pour ce slug pour le moment.'
-            : 'Aucun slug actif détecté. Ouvre cette page avec ?slug=jobs-... ou passe par le PIN.'
-        );
-        $('count').textContent = '0 mission trouvée';
-        return;
+      function normalizeSlug(value = "") {
+        return String(value || "")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
       }
 
-      $('statusBox').style.display = 'none';
-      cards.style.display = 'grid';
-      $('count').textContent = `${list.length} mission${list.length > 1 ? 's' : ''} trouvée${list.length > 1 ? 's' : ''}`;
+      function resolveInitialSlug(){
+        const qs = normalizeSlug(RAW_PARAMS.get("slug") || "");
+        if (qs) {
+          try { localStorage.setItem(SLUG_STORAGE_KEY, qs); } catch(_) {}
+          return qs;
+        }
 
-      cards.innerHTML = list.map(item => {
-        const flags = [];
-        const offerSlug = item.slug || state.slug || '';
-
-        if (item.has_housing) flags.push('<span class="flag">Logement possible</span>');
-        if (item.has_family_welcome) flags.push('<span class="flag">Accueil familial possible</span>');
-        if (offerSlug) flags.push(`<span class="flag">Slug : ${escapeHtml(offerSlug)}</span>`);
-
-        return `
-          <article class="card">
-            <div class="badge-row">
-              <span class="badge gold">${escapeHtml(labelSector(item.sector))}</span>
-              <span class="badge">${escapeHtml(labelContract(item.contract_type))}</span>
-              ${item.employer_name ? `<span class="badge green">${escapeHtml(item.employer_name)}</span>` : ''}
-            </div>
-
-            <h3 class="title">${escapeHtml(item.title || 'Mission')}</h3>
-
-            <div class="meta">
-              <span>${escapeHtml(item.city || 'Ville à préciser')}</span>
-              <span>${escapeHtml(item.country || 'Sénégal')}</span>
-              <span>${escapeHtml(item.pay || 'Rémunération à préciser')}</span>
-            </div>
-
-            <p class="desc">${escapeHtml(shortText(item.description || 'Description à venir.'))}</p>
-
-            <div class="flags">${flags.join('')}</div>
-
-            <div class="actions">
-              <a class="btn btn-secondary" href="${missionHref(item)}">Voir la mission</a>
-              <a class="btn btn-blue" href="${bureauHref(item)}">Bureau</a>
-              <a class="btn btn-primary" href="${matchHref(item)}">Match</a>
-            </div>
-          </article>
-        `;
-      }).join('');
-    }
-
-    function applyFilters(){
-      const q = $('searchInput').value.trim().toLowerCase();
-      const sector = $('sectorSelect').value.trim().toLowerCase();
-      const city = $('citySelect').value.trim().toLowerCase();
-      const contract = $('contractSelect').value.trim().toLowerCase();
-
-      state.filtered = state.offers.filter(item => {
-        const hay = [
-          item.title,
-          item.slug,
-          item.sector,
-          item.city,
-          item.country,
-          item.contract_type,
-          item.description,
-          item.requirements,
-          item.employer_name,
-          item.pay
-        ].join(' ').toLowerCase();
-
-        if (q && !hay.includes(q)) return false;
-        if (sector && String(item.sector || '').toLowerCase() !== sector) return false;
-        if (city && String(item.city || '').toLowerCase() !== city) return false;
-        if (contract && String(item.contract_type || '').toLowerCase() !== contract) return false;
-        if (state.slug && String(item.slug || '').toLowerCase() !== state.slug) return false;
-
-        return true;
-      });
-
-      renderCards(state.filtered);
-    }
-
-    async function loadOffers(){
-      if (!sb) {
-        renderStatus('error', 'Supabase non chargé. Vérifie la configuration front.');
-        $('count').textContent = 'Erreur de configuration';
-        return;
+        try {
+          return normalizeSlug(localStorage.getItem(SLUG_STORAGE_KEY) || "");
+        } catch(_) {
+          return "";
+        }
       }
 
-      renderStatus(
-        'loading',
-        state.slug
-          ? 'Chargement des missions du slug...'
-          : 'Aucun slug détecté. Tentative de lecture en attente...'
-      );
+      function cleanSensitiveUrl(){
+        try {
+          const url = new URL(location.href);
+          let changed = false;
 
-      let query = sb
-        .from('digiy_jobs_offers_pro')
-        .select('id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at,created_at')
-        .eq('status', 'active')
-        .order('published_at', { ascending:false })
-        .order('created_at', { ascending:false });
+          SENSITIVE_PARAMS.forEach((key) => {
+            if (url.searchParams.has(key)) {
+              url.searchParams.delete(key);
+              changed = true;
+            }
+          });
 
-      if (state.slug) {
-        query = query.eq('slug', state.slug);
-      } else {
-        query = query.limit(0);
+          if (changed) {
+            const clean = url.pathname + (url.search ? url.search : "") + url.hash;
+            history.replaceState({}, document.title, clean);
+          }
+        } catch(_) {}
       }
 
-      const { data, error } = await query;
-
-      if (error) {
-        console.error(error);
-        renderStatus('error', 'Impossible de charger les missions pour le moment.');
-        $('count').textContent = 'Erreur de chargement';
-        return;
+      function escapeHtml(v=""){
+        return String(v)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
       }
 
-      state.offers = data || [];
+      function labelSector(v=""){
+        const map = {
+          build:"BTP",
+          beauty:"Beauté",
+          shop:"Boutique",
+          food:"Restauration",
+          service:"Services",
+          driver:"Chauffeur",
+          market:"Marché",
+          admin:"Admin"
+        };
+        return map[String(v || "").toLowerCase()] || v || "Secteur";
+      }
 
-      buildOptions($('sectorSelect'), state.offers.map(x => x.sector), labelSector, 'Tous les secteurs');
-      buildOptions($('citySelect'), state.offers.map(x => x.city), (x) => x, 'Toutes les villes');
+      function labelContract(v=""){
+        const map = {
+          cdi:"CDI",
+          cdd:"CDD",
+          mission:"Mission",
+          stage:"Stage",
+          freelance:"Freelance",
+          extra:"Extra"
+        };
+        return map[String(v || "").toLowerCase()] || v || "Contrat";
+      }
 
-      applyFilters();
-    }
+      function shortText(v="", max=170){
+        const s = String(v || "").trim();
+        if (s.length <= max) return s;
+        return s.slice(0, max).trim() + "…";
+      }
 
-    $('searchInput').addEventListener('input', applyFilters);
-    $('sectorSelect').addEventListener('change', applyFilters);
-    $('citySelect').addEventListener('change', applyFilters);
-    $('contractSelect').addEventListener('change', applyFilters);
+      function buildOptions(selectEl, values, formatter = (x) => x, firstLabel = "Tous"){
+        const current = selectEl.value;
+        const unique = [...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),"fr"));
+        selectEl.innerHTML =
+          `<option value="">${firstLabel}</option>` +
+          unique.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(formatter(v))}</option>`).join("");
 
-    syncLinks();
-    loadOffers();
+        if ([...selectEl.options].some(opt => opt.value === current)) {
+          selectEl.value = current;
+        }
+      }
+
+      function setSecurityLabels(){
+        $("modeChip").textContent = state.hasAccess ? "coffre ouvert" : "code demandé";
+        $("sessionChip").textContent = state.hasAccess ? "ouverte 8h" : "à ouvrir";
+        $("railChip").textContent = state.hasAccess ? "navigation interne" : "entrée PIN";
+        $("sourceChip").textContent = state.hasAccess ? "missions du coffre" : "lecture fermée";
+      }
+
+      function syncLinks(){
+        $("homeLink").href = JOBS_PATHS.home;
+        $("missionsWallLink").href = JOBS_PATHS.missions;
+        $("pinLink").href = JOBS_PATHS.pin;
+        $("cockpitLink").href = JOBS_PATHS.cockpit;
+        $("bureauLink").href = JOBS_PATHS.bureau;
+        $("matchLink").href = JOBS_PATHS.match;
+        $("toolbarCockpitLink").href = JOBS_PATHS.cockpit;
+        $("toolbarBureauLink").href = JOBS_PATHS.bureau;
+        $("toolbarMatchLink").href = JOBS_PATHS.match;
+        setSecurityLabels();
+      }
+
+      function renderStatus(type, text, withPin = false){
+        const box = $("statusBox");
+        box.style.display = "block";
+        box.className = type;
+        box.innerHTML = escapeHtml(text);
+        if (withPin) {
+          box.innerHTML += `<br><a class="pin-cta" href="${JOBS_PATHS.pin}">Entrer mon code PIN</a>`;
+        }
+        $("cards").style.display = "none";
+      }
+
+      function missionHref(item){
+        const url = new URL(JOBS_PATHS.mission, location.href);
+        if (item.id) url.searchParams.set("id", item.id);
+        return url.toString();
+      }
+
+      function matchHref(item){
+        const url = new URL(JOBS_PATHS.match, location.href);
+        if (item.id) url.searchParams.set("offer", item.id);
+        return url.toString();
+      }
+
+      function bureauHref(){
+        return JOBS_PATHS.bureau;
+      }
+
+      function renderCards(list){
+        const cards = $("cards");
+
+        if (!state.hasAccess) {
+          renderStatus(
+            "empty",
+            "Ce mur est un espace professionnel. Entre ton code PIN : la session reste ouverte 8h.",
+            true
+          );
+          $("count").textContent = "Accès à ouvrir";
+          return;
+        }
+
+        if (!list.length) {
+          renderStatus(
+            "empty",
+            "Aucune mission active trouvée pour cette session pour le moment."
+          );
+          $("count").textContent = "0 mission trouvée";
+          return;
+        }
+
+        $("statusBox").style.display = "none";
+        cards.style.display = "grid";
+        $("count").textContent = `${list.length} mission${list.length > 1 ? "s" : ""} trouvée${list.length > 1 ? "s" : ""}`;
+
+        cards.innerHTML = list.map(item => {
+          const flags = [];
+
+          if (item.has_housing) flags.push('<span class="flag">Logement possible</span>');
+          if (item.has_family_welcome) flags.push('<span class="flag">Accueil familial possible</span>');
+
+          return `
+            <article class="card">
+              <div class="badge-row">
+                <span class="badge gold">${escapeHtml(labelSector(item.sector))}</span>
+                <span class="badge">${escapeHtml(labelContract(item.contract_type))}</span>
+                ${item.employer_name ? `<span class="badge green">${escapeHtml(item.employer_name)}</span>` : ""}
+              </div>
+
+              <h3 class="title">${escapeHtml(item.title || "Mission")}</h3>
+
+              <div class="meta">
+                <span>${escapeHtml(item.city || "Ville à préciser")}</span>
+                <span>${escapeHtml(item.country || "Sénégal")}</span>
+                <span>${escapeHtml(item.pay || "Rémunération à préciser")}</span>
+              </div>
+
+              <p class="desc">${escapeHtml(shortText(item.description || "Description à venir."))}</p>
+
+              <div class="flags">${flags.join("")}</div>
+
+              <div class="actions">
+                <a class="btn btn-secondary" href="${missionHref(item)}">Voir la mission</a>
+                <a class="btn btn-blue" href="${bureauHref(item)}">Bureau</a>
+                <a class="btn btn-primary" href="${matchHref(item)}">Match</a>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      function applyFilters(){
+        const q = $("searchInput").value.trim().toLowerCase();
+        const sector = $("sectorSelect").value.trim().toLowerCase();
+        const city = $("citySelect").value.trim().toLowerCase();
+        const contract = $("contractSelect").value.trim().toLowerCase();
+
+        state.filtered = state.offers.filter(item => {
+          const hay = [
+            item.title,
+            item.sector,
+            item.city,
+            item.country,
+            item.contract_type,
+            item.description,
+            item.requirements,
+            item.employer_name,
+            item.pay
+          ].join(" ").toLowerCase();
+
+          if (q && !hay.includes(q)) return false;
+          if (sector && String(item.sector || "").toLowerCase() !== sector) return false;
+          if (city && String(item.city || "").toLowerCase() !== city) return false;
+          if (contract && String(item.contract_type || "").toLowerCase() !== contract) return false;
+          return true;
+        });
+
+        renderCards(state.filtered);
+      }
+
+      async function bootGuard(){
+        if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
+          state.hasAccess = false;
+          state.guardReady = false;
+          setSecurityLabels();
+          renderStatus(
+            "error",
+            "Le coffre JOBS n’est pas prêt sur cette page. Repasse par le code PIN pour ouvrir une session propre.",
+            true
+          );
+          $("count").textContent = "Coffre non ouvert";
+          return;
+        }
+
+        try {
+          const session = await window.DIGIY_GUARD.ready();
+          state.session = session || null;
+          state.guardReady = true;
+          state.hasAccess = !!session?.access;
+
+          const sessionSlug = normalizeSlug(session?.slug || "");
+          if (sessionSlug) {
+            state.slug = sessionSlug;
+            try { localStorage.setItem(SLUG_STORAGE_KEY, sessionSlug); } catch(_) {}
+          }
+
+          setSecurityLabels();
+
+          if (!state.hasAccess || !state.slug) {
+            renderStatus(
+              "empty",
+              "Entre ton code PIN pour ouvrir ton espace JOBS. Une fois ouvert, tu circules pendant 8h sans remettre le code à chaque page.",
+              true
+            );
+            $("count").textContent = "Accès à ouvrir";
+            return;
+          }
+
+          await loadOffers();
+        } catch (error) {
+          console.error(error);
+          state.hasAccess = false;
+          setSecurityLabels();
+          renderStatus(
+            "error",
+            "Impossible de vérifier la session JOBS pour le moment. Repasse par le code PIN.",
+            true
+          );
+          $("count").textContent = "Vérification échouée";
+        }
+      }
+
+      async function loadOffers(){
+        if (!sb) {
+          renderStatus("error", "Chargement indisponible pour le moment.");
+          $("count").textContent = "Erreur de configuration";
+          return;
+        }
+
+        if (!state.hasAccess || !state.slug) {
+          renderStatus(
+            "empty",
+            "Entre ton code PIN pour ouvrir ton mur des missions.",
+            true
+          );
+          $("count").textContent = "Accès à ouvrir";
+          return;
+        }
+
+        renderStatus("loading", "Chargement des missions de ton espace...");
+
+        const { data, error } = await sb
+          .from("digiy_jobs_offers_pro")
+          .select("id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at,created_at")
+          .eq("status", "active")
+          .eq("slug", state.slug)
+          .order("published_at", { ascending:false })
+          .order("created_at", { ascending:false });
+
+        if (error) {
+          console.error(error);
+          renderStatus(
+            "error",
+            "Le coffre refuse la lecture des missions pour le moment. Si l’accès PIN est bon, il faut vérifier les droits JOBS côté Supabase."
+          );
+          $("count").textContent = "Erreur de chargement";
+          return;
+        }
+
+        state.offers = Array.isArray(data) ? data : [];
+
+        buildOptions($("sectorSelect"), state.offers.map(x => x.sector), labelSector, "Tous les secteurs");
+        buildOptions($("citySelect"), state.offers.map(x => x.city), (x) => x, "Toutes les villes");
+
+        applyFilters();
+      }
+
+      $("searchInput").addEventListener("input", applyFilters);
+      $("sectorSelect").addEventListener("change", applyFilters);
+      $("citySelect").addEventListener("change", applyFilters);
+      $("contractSelect").addEventListener("change", applyFilters);
+    })();
   </script>
 </body>
 </html>
