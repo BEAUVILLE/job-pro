@@ -1,789 +1,514 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DIGIY JOBS — Bureau protégé</title>
-  <meta
-    name="description"
-    content="DIGIY JOBS — bureau protégé pour trier, suivre et mettre en relation les candidatures."
-  />
-  <meta name="theme-color" content="#0A1128" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>DIGIY JOBS PRO — Alertes</title>
+  <meta name="description" content="DIGIY JOBS PRO — bureau léger pour traiter les candidatures par alertes et actions." />
+  <meta name="theme-color" content="#061b14" />
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
     window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
     window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
     window.DIGIY_MODULE = "JOBS";
+    window.DIGIY_LOGIN_URL = "./pin.html";
   </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./guard.js?v=3"></script>
-  <script src="./claw-tools.js?v=3"></script>
+  <script src="./guard.js"></script>
+  <script src="./claw-tools.js"></script>
 
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --dark:#0A1128;
-      --dark-2:#142041;
-      --blue:#0ea5e9;
-      --blue-2:#38bdf8;
-      --green:#10b981;
-      --gold:#d4a84f;
-      --red:#ef4444;
-      --amber:#f59e0b;
-      --ink:#0f172a;
-      --muted:#475569;
-      --bg:#edf3f8;
-      --sand:#f8f0e3;
-      --line:#e2e8f0;
-      --card:#ffffffd9;
-      --shadow:0 16px 40px rgba(15,23,42,.10);
-      --radius:22px;
-      --radius-sm:16px;
-      --max:1380px;
+      --bg:#061b14;
+      --card:rgba(255,255,255,.06);
+      --line:rgba(255,255,255,.13);
+      --text:#ecfff4;
+      --muted:rgba(236,255,244,.72);
+      --gold:#facc15;
+      --gold2:#fde68a;
+      --green:#22c55e;
+      --blue:#38bdf8;
+      --red:#fb7185;
+      --shadow:0 22px 70px rgba(0,0,0,.34);
+      --max:900px;
     }
 
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
+
+    html,body{
       margin:0;
-      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-      color:var(--ink);
+      padding:0;
+      min-height:100%;
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(14,165,233,.08), transparent 30%),
-        radial-gradient(circle at right 12%, rgba(16,185,129,.06), transparent 24%),
-        linear-gradient(180deg,var(--bg),var(--sand));
+        radial-gradient(circle at top left, rgba(250,204,21,.11), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(56,189,248,.08), transparent 24%),
+        linear-gradient(180deg,var(--bg),#030b08 100%);
+    }
+
+    body{
+      padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(88px + env(safe-area-inset-bottom,0px));
     }
 
     a{text-decoration:none;color:inherit}
-    button,input,select,textarea{font:inherit}
-    .wrap{width:min(calc(100% - 28px), var(--max));margin:0 auto}
+    button{font:inherit;cursor:pointer}
 
-    .topbar{
-      position:sticky;top:0;z-index:40;
-      backdrop-filter:blur(10px);
-      background:rgba(237,243,248,.80);
-      border-bottom:1px solid rgba(226,232,240,.92);
+    .wrap{
+      width:min(100%,var(--max));
+      margin:0 auto;
     }
-    .topbar-inner{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:14px;
     }
-    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.02em}
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
     .brand-mark{
-      width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;
-      background:linear-gradient(135deg,var(--dark),#20305e);box-shadow:var(--shadow);font-size:14px;
+      width:46px;
+      height:46px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      color:#171717;
+      font-weight:1000;
+      box-shadow:0 12px 28px rgba(0,0,0,.24);
+      flex:0 0 auto;
     }
-    .brand small{display:block;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.08em}
-    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .top-actions button,.top-actions a{
-      border:1px solid var(--line);
-      background:#fff;
-      border-radius:14px;
-      padding:10px 12px;
-      font-weight:900;
-      cursor:pointer;
-      min-height:44px;
+
+    .brand-title strong{
+      display:block;
+      font-size:18px;
+      font-weight:1000;
+      line-height:1.05;
+    }
+
+    .brand-title span{
+      display:block;
+      margin-top:3px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .chip{
+      min-height:42px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-    }
-    .top-actions .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
-
-    .status-wrap{padding:14px 0 0}
-    .status-box{
-      display:none;
+      border-radius:999px;
+      padding:10px 13px;
       border:1px solid var(--line);
-      border-radius:18px;
-      background:#fff;
-      box-shadow:var(--shadow);
-      padding:14px 16px;
-      line-height:1.65;
-      font-weight:700;
-    }
-    .status-box.info{display:block;color:#334155}
-    .status-box.warn{
-      display:block;
-      color:#8a4b00;
-      background:rgba(245,158,11,.10);
-      border-color:rgba(245,158,11,.24);
-    }
-    .status-box.error{
-      display:block;
-      color:#991b1b;
-      background:rgba(239,68,68,.10);
-      border-color:rgba(239,68,68,.24);
-    }
-    .status-box.ok{
-      display:block;
-      color:#065f46;
-      background:rgba(16,185,129,.10);
-      border-color:rgba(16,185,129,.24);
+      background:rgba(255,255,255,.06);
+      font-size:13px;
+      font-weight:950;
+      color:var(--text);
     }
 
-    .hero{padding:24px 0 14px}
-    .hero-card,.panel,.stat,.filters,.list-card,.detail-card,.mini,.action-card,.empty-card,.foot{
-      border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
+    .chip.gold{
+      color:#171717;
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      border-color:transparent;
     }
-    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:stretch}
-    .hero-card{
-      padding:26px;position:relative;overflow:hidden;
+
+    .hero{
+      border:1px solid var(--line);
+      border-radius:30px;
       background:
-        radial-gradient(circle at top right, rgba(212,168,79,.16), transparent 30%),
-        linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.90));
-    }
-    .hero-card::after{
-      content:"";position:absolute;right:-45px;bottom:-45px;width:170px;height:170px;border-radius:50%;
-      border:26px solid rgba(10,17,40,.05);
-    }
-    .eyebrow{
-      display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;border:1px solid var(--line);
-      background:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
-    }
-    h1{margin:16px 0 12px;font-size:clamp(34px,4vw,58px);line-height:.98;letter-spacing:-.04em;max-width:12ch}
-    .lead{margin:0;max-width:66ch;color:#334155;line-height:1.7;font-size:16px}
-    .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-    .tag{padding:10px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--muted)}
-
-
-    .quick-actions{
-      padding:0 0 16px;
-    }
-    .quick-panel{
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      background:rgba(255,255,255,.84);
+        radial-gradient(circle at 85% 12%, rgba(250,204,21,.13), transparent 24%),
+        linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));
       box-shadow:var(--shadow);
       padding:16px;
     }
-    .quick-head{
+
+    .kicker{
+      color:var(--gold2);
+      font-size:12px;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+      font-weight:1000;
+    }
+
+    h1{
+      margin:9px 0 8px;
+      font-size:clamp(30px,7vw,54px);
+      line-height:.96;
+      letter-spacing:-.045em;
+    }
+
+    .lead{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:15px;
+      font-weight:750;
+    }
+
+    .status{
+      margin-top:12px;
+      border:1px solid rgba(56,189,248,.22);
+      background:rgba(56,189,248,.08);
+      color:#d8f5ff;
+      border-radius:20px;
+      padding:12px 14px;
+      line-height:1.45;
+      font-size:13px;
+      font-weight:850;
+    }
+
+    .status.ok{
+      border-color:rgba(34,197,94,.25);
+      background:rgba(34,197,94,.10);
+      color:#c9ffd4;
+    }
+
+    .status.warn{
+      border-color:rgba(250,204,21,.26);
+      background:rgba(250,204,21,.10);
+      color:#fff4bd;
+    }
+
+    .status.err{
+      border-color:rgba(251,113,133,.26);
+      background:rgba(251,113,133,.10);
+      color:#ffd9df;
+    }
+
+    .filters{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding:14px 0 4px;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .filter{
+      flex:0 0 auto;
+      min-height:42px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 13px;
+      font-weight:950;
+    }
+
+    .filter.active{
+      background:rgba(250,204,21,.15);
+      border-color:rgba(250,204,21,.30);
+      color:#fff4bd;
+    }
+
+    .search{
+      margin-top:10px;
+    }
+
+    .search input{
+      width:100%;
+      min-height:48px;
+      border:none;
+      outline:none;
+      border-radius:18px;
+      padding:0 14px;
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--line);
+      color:var(--text);
+      font-weight:800;
+    }
+
+    .search input::placeholder{
+      color:rgba(236,255,244,.44);
+    }
+
+    .cards{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:26px;
+      background:var(--card);
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+
+    .card-top{
       display:flex;
       justify-content:space-between;
       gap:12px;
-      flex-wrap:wrap;
       align-items:flex-start;
-      margin-bottom:12px;
     }
-    .quick-head h2{margin:0;font-size:22px;letter-spacing:-.02em}
-    .quick-head p{margin:6px 0 0;color:var(--muted);line-height:1.55;font-weight:650}
-    .quick-grid{
-      display:grid;
-      grid-template-columns:repeat(6,minmax(0,1fr));
-      gap:10px;
+
+    .name{
+      margin:0;
+      font-size:20px;
+      line-height:1.08;
+      font-weight:1000;
+      letter-spacing:-.02em;
     }
-    .quick-action{
+
+    .meta{
+      margin:5px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      font-weight:750;
+    }
+
+    .badge{
+      flex:0 0 auto;
+      border-radius:999px;
       border:1px solid var(--line);
-      border-radius:18px;
-      background:#fff;
-      color:var(--ink);
-      min-height:82px;
-      padding:12px;
-      font-weight:900;
-      cursor:pointer;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:5px;
-      box-shadow:0 10px 22px rgba(15,23,42,.06);
-      text-align:left;
-    }
-    .quick-action strong{font-size:15px;line-height:1.15}
-    .quick-action span{font-size:12px;color:var(--muted);font-weight:750;line-height:1.35}
-    .quick-action:hover{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.10)}
-    .quick-action.primary{background:linear-gradient(135deg,var(--dark),var(--dark-2));color:#fff;border-color:transparent}
-    .quick-action.primary span{color:#dbe6f6}
-
-    .panel{
-      padding:18px;background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));color:#fff;border-color:#27365a;
-      display:flex;flex-direction:column;gap:14px;
-    }
-    .panel h2{margin:0;font-size:20px;letter-spacing:-.02em}
-    .panel p{margin:0;color:#dbe6f6;line-height:1.65}
-    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .mini{padding:14px;border-radius:18px;border-color:#2d3c60;background:rgba(255,255,255,.05);box-shadow:none}
-    .mini strong{display:block;font-size:14px;margin-bottom:6px}
-    .mini span{display:block;color:#cbd5e1;font-size:13px;line-height:1.5}
-    .signal{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:rgba(212,168,79,.13);border:1px solid rgba(212,168,79,.22);color:#ffe7af;font-size:13px;font-weight:800}
-
-    .stats{padding:8px 0 14px}
-    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-    .stat{padding:18px}
-    .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
-    .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
-
-    .filters{padding:16px;margin-bottom:16px}
-    .filters-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
-    .filters-top h2{margin:0;font-size:24px;letter-spacing:-.02em}
-    .filters-top p{margin:6px 0 0;color:var(--muted);line-height:1.6;max-width:70ch}
-    .filter-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:12px}
-    .search-row{margin-bottom:12px}
-    .advanced-filters{
-      margin-top:8px;
-      border:1px dashed var(--line);
-      border-radius:18px;
-      background:rgba(255,255,255,.56);
+      background:rgba(255,255,255,.06);
       padding:8px 10px;
+      font-size:11px;
+      font-weight:1000;
+      color:#fff4bd;
     }
-    .advanced-filters summary{
+
+    .actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .btn{
+      min-height:44px;
+      border:none;
+      border-radius:16px;
+      padding:10px 11px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      font-weight:950;
+    }
+
+    .btn.primary{
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      color:#151515;
+    }
+
+    .btn.green{
+      background:rgba(34,197,94,.14);
+      color:#c9ffd4;
+      border:1px solid rgba(34,197,94,.22);
+    }
+
+    .btn.blue{
+      background:rgba(56,189,248,.14);
+      color:#d8f5ff;
+      border:1px solid rgba(56,189,248,.22);
+    }
+
+    .btn.red{
+      background:rgba(251,113,133,.13);
+      color:#ffd9df;
+      border:1px solid rgba(251,113,133,.22);
+    }
+
+    details{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:20px;
+      background:rgba(255,255,255,.035);
+      margin-top:12px;
+      overflow:hidden;
+    }
+
+    summary{
       cursor:pointer;
       list-style:none;
-      font-weight:900;
-      color:#1e293b;
-      min-height:44px;
+      padding:12px 13px;
+      font-weight:950;
+      color:#fff4bd;
+    }
+
+    summary::-webkit-details-marker{display:none}
+
+    .details-body{
+      padding:0 13px 13px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+      font-weight:750;
+      white-space:pre-line;
+    }
+
+    .empty{
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:24px;
+      padding:20px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:850;
+      line-height:1.45;
+      margin-top:14px;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      left:50%;
+      bottom:calc(10px + env(safe-area-inset-bottom,0px));
+      transform:translateX(-50%);
+      width:min(680px,calc(100% - 18px));
+      z-index:99;
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:24px;
+      background:rgba(6,27,20,.88);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      padding:8px;
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:6px;
+      box-shadow:0 18px 50px rgba(0,0,0,.35);
+    }
+
+    .bottom-nav a{
+      min-height:50px;
+      border-radius:18px;
       display:flex;
+      flex-direction:column;
       align-items:center;
+      justify-content:center;
+      gap:2px;
+      font-size:11px;
+      font-weight:950;
+      color:rgba(236,255,244,.78);
+      text-align:center;
     }
-    .advanced-filters summary::-webkit-details-marker{display:none}
-    .advanced-filters[open]{background:#fff}
-    .advanced-body{padding-top:10px}
-    .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .filter-actions button{
-      border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
+
+    .bottom-nav a.active{
+      background:rgba(250,204,21,.14);
+      color:#fff4bd;
+      border:1px solid rgba(250,204,21,.22);
     }
-    input,select,textarea{
-      width:100%;padding:12px 12px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);outline:none;
+
+    .bottom-nav b{
+      font-size:18px;
+      line-height:1;
     }
-    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
 
-    .workspace{display:grid;grid-template-columns:.92fr 1.08fr;gap:18px;padding-bottom:36px}
-    .left-col,.right-col{display:grid;gap:16px;align-content:start}
-    .list-card,.detail-card{padding:16px}
-    .list-head,.detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
-    .list-head h3,.detail-head h3{margin:0;font-size:22px;letter-spacing:-.02em}
-    .list-head p,.detail-head p{margin:6px 0 0;color:var(--muted);line-height:1.55}
-    .list{
-      display:grid;gap:12px;max-height:920px;overflow:auto;padding-right:2px;
-    }
-    .dossier{
-      border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
-    }
-    .dossier:hover{transform:translateY(-1px)}
-    .dossier.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
-    .dossier-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-    .dossier h4{margin:0;font-size:18px;letter-spacing:-.02em}
-    .sub{margin:4px 0 0;color:#475569;font-weight:700;font-size:14px;line-height:1.55}
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:900;background:#f8fafc}
-    .chip.sector-build{color:#7c5517;background:rgba(212,168,79,.12)}
-    .chip.sector-beauty{color:#7c2d12;background:rgba(251,146,60,.12)}
-    .chip.sector-shop{color:#1d4ed8;background:rgba(59,130,246,.12)}
-    .chip.sector-food{color:#0f766e;background:rgba(16,185,129,.12)}
-    .chip.sector-service{color:#5b21b6;background:rgba(139,92,246,.12)}
-    .chip.sector-driver{color:#075985;background:rgba(14,165,233,.12)}
-    .chip.sector-market{color:#166534;background:rgba(34,197,94,.12)}
-    .chip.sector-admin{color:#374151;background:rgba(148,163,184,.18)}
-    .chip.sector-other{color:#334155;background:#eef2f7}
-
-    .chip.status-new{color:#2563eb;background:rgba(59,130,246,.10)}
-    .chip.status-review{color:#b45309;background:rgba(245,158,11,.12)}
-    .chip.status-shortlist{color:#7c3aed;background:rgba(139,92,246,.12)}
-    .chip.status-call{color:#0f766e;background:rgba(16,185,129,.12)}
-    .chip.status-accepted{color:#047857;background:rgba(16,185,129,.18)}
-    .chip.status-rejected{color:#991b1b;background:rgba(239,68,68,.10)}
-
-    .dossier-note{margin-top:12px;color:var(--muted);font-size:13px;line-height:1.6}
-
-    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .field{padding:13px;border-radius:16px;background:#fff;border:1px solid var(--line)}
-    .field small{display:block;color:#64748b;font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
-    .field strong{display:block;font-size:14px;line-height:1.55;word-break:break-word}
-    .full{grid-column:1 / -1}
-
-    .status-row{display:flex;gap:10px;flex-wrap:wrap}
-    .status-row button{
-      border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
-    }
-    .status-row button.active{background:var(--dark);color:#fff;border-color:var(--dark)}
-
-    .notes-wrap{display:grid;gap:12px}
-    textarea{min-height:120px;resize:vertical}
-    .button-row{display:flex;gap:10px;flex-wrap:wrap}
-    .button-row button,.button-row a{
-      border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer;
-      display:inline-flex;align-items:center;gap:10px;
-    }
-    .button-row .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
-    .button-row .green{background:var(--green);color:#fff;border-color:transparent}
-
-    .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .action-card{padding:16px}
-    .action-card h4{margin:0 0 8px;font-size:18px;letter-spacing:-.02em}
-    .action-card p{margin:0 0 12px;color:var(--muted);line-height:1.6;font-size:14px}
-    .action-card .button-row{margin-top:auto}
-
-    .empty-card{padding:22px;text-align:center;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
-    .empty-card h4{margin:0 0 8px;font-size:22px}
-    .empty-card p{margin:0;color:var(--muted);line-height:1.65;max-width:52ch;margin-inline:auto}
-
-    footer{padding:0 0 30px}
-    .foot{padding:18px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
-    .foot p{margin:0;color:var(--muted);line-height:1.6}
-    .foot-links{display:flex;gap:10px;flex-wrap:wrap}
-    .foot-links a,.foot-links button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
-
-
-
-    @media (max-width:640px){
-      .wrap{width:min(calc(100% - 20px), var(--max))}
-      .topbar-inner{align-items:flex-start;flex-direction:column;padding:10px 0}
-      .top-actions{width:100%;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
-      .top-actions button,.top-actions a{white-space:nowrap;min-width:max-content;padding:9px 11px;font-size:13px}
-      .brand-mark{width:40px;height:40px;border-radius:13px}
-      .hero{padding-top:14px}
-      .hero-card,.panel,.filters,.list-card,.detail-card,.action-card,.empty-card,.foot{border-radius:18px}
-      .hero-card{padding:20px}
-      h1{font-size:34px;line-height:1.02}
+    @media (max-width:520px){
+      .hero,.card{border-radius:24px}
+      h1{font-size:34px}
       .lead{font-size:14px}
-      .hero-tags{gap:8px}
-      .tag{font-size:12px;padding:8px 10px}
-      .stats-grid{grid-template-columns:1fr 1fr}
-      .quick-grid{grid-template-columns:1fr 1fr}
-      .quick-action{min-height:76px}
-      .stat{padding:14px}
-      .stat strong{font-size:25px}
-      .list{max-height:none;overflow:visible}
-      .button-row button,.button-row a{width:100%;justify-content:center}
-    }
-
-    @media (max-width:1200px){
-      .hero-grid,.workspace,.stats-grid,.filter-grid,.action-grid,.quick-grid{grid-template-columns:1fr 1fr}
-      .filter-grid > *:first-child{grid-column:1 / -1}
-    }
-    @media (max-width:860px){
-      .hero-grid,.workspace,.stats-grid,.filter-grid,.detail-grid,.action-grid,.mini-grid,.quick-grid{grid-template-columns:1fr}
-      h1{max-width:none}
+      .actions{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="wrap topbar-inner">
-      <a class="brand" href="#top" aria-label="Retour en haut">
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="./index.html">
         <span class="brand-mark">JP</span>
-        <span>
-          DIGIY JOBS
-          <small>Je trie les candidatures</small>
+        <span class="brand-title">
+          <strong>DIGIY JOBS</strong>
+          <span>Bureau d’alertes</span>
         </span>
       </a>
 
-      <div class="top-actions">
-        <button id="btnRefresh" type="button">↻ Rafraîchir</button>
-        <button id="btnImportPublic" type="button">📥 Importer dossier</button>
-        <a id="linkWall" href="./mur%20des%20missions.html">Missions</a>
-        <a id="linkCockpit" href="./cockpit.html">Mon espace</a>
-        <a id="linkMatch" href="./match.html">Rapprocher</a>
-        <a id="linkPublic" class="primary" href="./publier-mission.html">➕ Mission rapide</a>
-      </div>
-    </div>
-  </header>
+      <a class="chip gold" href="./pin.html">Code</a>
+    </header>
 
-  <div class="wrap status-wrap">
-    <div id="statusBox" class="status-box"></div>
+    <main>
+      <section class="hero">
+        <div class="kicker">Alertes · candidats · actions</div>
+        <h1>Traiter sans se disperser.</h1>
+        <p class="lead">
+          DIGIY remonte les dossiers. Le pro clique : appeler, sélectionner, retenir, classer.
+        </p>
+
+        <div id="statusBox" class="status">Ouverture du bureau JOBS…</div>
+      </section>
+
+      <div class="filters" aria-label="Filtres rapides">
+        <button class="filter active" data-filter="all" type="button">Tous</button>
+        <button class="filter" data-filter="new" type="button">🆕 Nouveaux</button>
+        <button class="filter" data-filter="call" type="button">📞 À appeler</button>
+        <button class="filter" data-filter="shortlist" type="button">⭐ Sélection</button>
+        <button class="filter" data-filter="accepted" type="button">✅ Retenus</button>
+      </div>
+
+      <div class="search">
+        <input id="searchInput" type="search" placeholder="Chercher nom, ville, métier…" />
+      </div>
+
+      <section id="cards" class="cards" aria-label="Candidatures"></section>
+    </main>
   </div>
 
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <article class="hero-card">
-          <span class="eyebrow">Bureau terrain · moins écrire, plus cliquer</span>
-          <h1>Voir vite. Décider vite. Relancer vite.</h1>
-          <p class="lead">
-            Ici le pro ouvre une candidature, choisit l’action utile et avance sans se perdre :
-            WhatsApp, à revoir, à appeler, retenir, refuser ou rapprocher d’une mission.
-          </p>
-          <div class="hero-tags">
-            <span class="tag">💬 WhatsApp prêt</span>
-            <span class="tag">📞 À appeler</span>
-            <span class="tag">✅ Retenir</span>
-            <span class="tag">❌ Refuser</span>
-          </div>
-        </article>
-
-        <aside class="panel">
-          <span class="signal" id="signalPill">Coffre protégé — détection…</span>
-          <h2>Ton bureau d’action</h2>
-          <p>
-            Le bureau garde les candidatures dans le coffre JOBS, relie chaque personne à une mission,
-            et te donne les gestes prêts pour décider sans écrire un roman.
-          </p>
-          <div class="mini-grid">
-            <div class="mini"><strong>Candidatures</strong><span id="miniCandidates">Chargement…</span></div>
-            <div class="mini"><strong>Missions</strong><span id="miniOffers">Chargement…</span></div>
-            <div class="mini"><strong>Mode</strong><span id="miniMode">détection…</span></div>
-            <div class="mini"><strong>Accès</strong><span id="miniSlug">Session protégée</span></div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="stats">
-      <div class="wrap stats-grid">
-        <article class="stat"><strong id="statTotal">0</strong><span>candidatures visibles</span></article>
-        <article class="stat"><strong id="statNew">0</strong><span>nouvelles</span></article>
-        <article class="stat"><strong id="statShortlist">0</strong><span>sélectionnés / à contacter</span></article>
-        <article class="stat"><strong id="statAccepted">0</strong><span>acceptées</span></article>
-      </div>
-    </section>
-
-
-    <section class="quick-actions">
-      <div class="wrap quick-panel">
-        <div class="quick-head">
-          <div>
-            <h2>Actions rapides du bureau</h2>
-            <p>Un clic pour voir ce qui compte maintenant. Le terrain n’attend pas un long formulaire.</p>
-          </div>
-        </div>
-        <div class="quick-grid">
-          <button class="quick-action primary" id="quickNew" type="button"><strong>🆕 Nouvelles</strong><span>Voir les dossiers arrivés.</span></button>
-          <button class="quick-action" id="quickCall" type="button"><strong>📞 À appeler</strong><span>Priorité contact.</span></button>
-          <button class="quick-action" id="quickShortlist" type="button"><strong>⭐ Sélectionnés</strong><span>Profils intéressants.</span></button>
-          <button class="quick-action" id="quickAccepted" type="button"><strong>✅ Retenus</strong><span>Profils validés.</span></button>
-          <a class="quick-action" href="./publier-mission.html"><strong>➕ Mission rapide</strong><span>Créer une demande.</span></a>
-          <a class="quick-action" href="./mur%20des%20missions.html"><strong>🌍 Mur public</strong><span>Voir les annonces.</span></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="wrap">
-      <div class="filters">
-        <div class="filters-top">
-          <div>
-            <h2>Retrouver vite une personne</h2>
-            <p>
-              Tape un nom, un métier ou une ville. Les filtres avancés restent rangés pour garder l’écran léger.
-            </p>
-          </div>
-        </div>
-
-        <div class="search-row">
-          <input id="searchInput" type="search" placeholder="Rechercher nom, métier, ville, message..." />
-        </div>
-
-        <details class="advanced-filters">
-          <summary>Filtres avancés</summary>
-          <div class="advanced-body">
-            <div class="filter-grid">
-              <select id="filterSector">
-                <option value="all">Tous secteurs</option>
-                <option value="build">BTP</option>
-                <option value="beauty">Beauté</option>
-                <option value="shop">Boutique</option>
-                <option value="food">Restauration</option>
-                <option value="service">Services</option>
-                <option value="driver">Chauffeur</option>
-                <option value="market">Marché</option>
-                <option value="admin">Admin</option>
-                <option value="unknown">Sans mission liée</option>
-              </select>
-
-              <select id="filterOffer">
-                <option value="all">Toutes missions</option>
-              </select>
-
-              <select id="filterStatus">
-                <option value="all">Tous statuts</option>
-                <option value="new">Nouveau</option>
-                <option value="review">En lecture</option>
-                <option value="shortlist">Sélectionné</option>
-                <option value="call">À contacter</option>
-                <option value="accepted">Retenu</option>
-                <option value="rejected">Non retenu</option>
-              </select>
-
-              <select id="filterAvailability">
-                <option value="all">Toutes dispos</option>
-                <option value="immediate">Immédiate</option>
-                <option value="this_week">Cette semaine</option>
-                <option value="this_month">Ce mois-ci</option>
-                <option value="to_discuss">À discuter</option>
-              </select>
-            </div>
-
-            <div class="filter-actions">
-              <button id="btnClearFilters" type="button">Effacer les filtres</button>
-              <button id="btnAddManual" type="button">Ajouter une candidature</button>
-            </div>
-          </div>
-        </details>
-      </div>
-    </section>
-
-    <section class="wrap workspace">
-      <div class="left-col">
-        <article class="list-card">
-          <div class="list-head">
-            <div>
-              <h3>Candidatures à traiter</h3>
-              <p>Un clic suffit pour ouvrir la fiche, appeler, noter ou changer le statut.</p>
-            </div>
-          </div>
-          <div class="list" id="list"></div>
-        </article>
-      </div>
-
-      <div class="right-col">
-        <article class="detail-card">
-          <div class="empty-card" id="emptyState">
-            <h4>Choisis une candidature</h4>
-            <p>
-              Le bureau est prêt. Sélectionne une fiche à gauche pour afficher les détails,
-              changer le statut, noter les infos utiles et lancer la mise en relation.
-            </p>
-          </div>
-
-          <div id="detailContent" hidden>
-            <div class="detail-head">
-              <div>
-                <h3 id="detailName">—</h3>
-                <p id="detailSubtitle">—</p>
-              </div>
-              <div class="chips" id="detailChips"></div>
-            </div>
-
-            <div class="detail-grid" id="detailGrid"></div>
-
-            <div class="action-card" style="margin-top:16px">
-              <h4>Choisir le prochain geste</h4>
-              <p>Un clic suffit : à revoir, sélectionner, appeler, retenir ou refuser.</p>
-              <div class="status-row" id="statusRow"></div>
-            </div>
-
-            <div class="action-grid" style="margin-top:16px">
-              <article class="action-card">
-                <h4>Note courte</h4>
-                <p>Écris seulement l’essentiel : sérieux, disponibilité, suite à donner.</p>
-                <div class="notes-wrap">
-                  <textarea id="bureauNotes" placeholder="Ex. Profil propre. Répond vite. À rappeler demain matin."></textarea>
-                  <div class="button-row">
-                    <button class="primary" id="btnSaveNotes" type="button">💾 Garder la note</button>
-                  </div>
-                </div>
-              </article>
-
-              <article class="action-card">
-                <h4>Passer à l’action</h4>
-                <p>Les gestes utiles sont prêts. Tu cliques, le bureau garde la trace.</p>
-                <div class="button-row">
-                  <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
-                  <button id="btnMarkReview" type="button">👀 À revoir</button>
-                  <button id="btnMarkShortlist" type="button">⭐ Sélectionner</button>
-                  <button id="btnMarkCall" type="button">📞 À appeler</button>
-                  <button id="btnMarkAccepted" type="button">✅ Retenir</button>
-                  <button id="btnMarkRejected" type="button">❌ Refuser</button>
-                  <button id="btnCopySheet" type="button">📋 Copier fiche</button>
-                  <button id="btnCopyMissionLink" type="button">🧷 Copier mission</button>
-                  <a id="btnOpenMatch" href="./match.html" target="_blank" rel="noopener">🎯 Rapprocher</a>
-                </div>
-              </article>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap">
-      <div class="foot">
-        <p>
-          DIGIY JOBS · coffre protégé · actions rapides · terrain d’abord.
-        </p>
-        <div class="foot-links">
-          <button id="btnExportJson" type="button">Exporter JSON</button>
-          <button id="btnClearLocalNotes" type="button">Vider notes locales</button>
-          <a id="linkPin" href="./pin.html">Entrée code</a>
-          <a id="footerWall" href="./mur%20des%20missions.html">Missions</a>
-          <a href="#top">Retour haut</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <nav class="bottom-nav" aria-label="Navigation basse">
+    <a href="./index.html"><b>◎</b>Actions</a>
+    <a href="./publier-mission.html"><b>＋</b>Annonce</a>
+    <a href="./cockpit.html"><b>🔔</b>Veille</a>
+    <a class="active" href="./bureau.html"><b>📥</b>Bureau</a>
+    <a href="./pin.html"><b>🔒</b>Code</a>
+  </nav>
 
   <script>
-    (function(){
+    (() => {
       "use strict";
 
-      const SUPABASE_URL =
-        window.DIGIY_SUPABASE_URL ||
-        "https://wesqmwjjtsefyjnluosj.supabase.co";
+      const SENSITIVE_KEYS = [
+        "slug",
+        "phone",
+        "tel",
+        "jobs_tel",
+        "owner_phone",
+        "contact_phone",
+        "module",
+        "return",
+        "from"
+      ];
 
-      const SUPABASE_ANON_KEY =
-        window.DIGIY_SUPABASE_ANON ||
-        window.DIGIY_SUPABASE_ANON_KEY ||
-        "";
-
-      const sb =
-        window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-          : null;
-
-      const params = new URLSearchParams(location.search);
-      const slugQ = String(params.get("slug") || "").trim().toLowerCase();
-
-      const PUBLIC_KEY = "DIGIY_JOBS_DOSSIER_INTELLIGENT_V1";
-      const NOTES_PREFIX = "DIGIY_JOBS_BUREAU_NOTES_V2::";
-
-      const JOBS_PATHS = {
-        home: "./index.html",
-        wall: "./mur%20des%20missions.html",
-        pin: "./pin.html",
-        cockpit: "./cockpit.html",
-        match: "./match.html",
-        mission: "./mission.html",
-        publish: "./publier-mission.html"
+      const STORAGE = {
+        SLUG: "digiy_jobs_slug",
+        LAST_SLUG: "digiy_jobs_last_slug",
+        PHONE: "digiy_jobs_phone"
       };
-
-      const STATUS_LABELS = {
-        new: "Nouveau",
-        review: "À revoir",
-        shortlist: "Sélectionné",
-        call: "À appeler",
-        accepted: "Retenu",
-        rejected: "Non retenu"
-      };
-
-      const STATUS_ACTION_ICONS = {
-        new: "🆕",
-        review: "👀",
-        shortlist: "⭐",
-        call: "📞",
-        accepted: "✅",
-        rejected: "❌"
-      };
-
-      const STATUS_CLASS = {
-        new: "status-new",
-        review: "status-review",
-        shortlist: "status-shortlist",
-        call: "status-call",
-        accepted: "status-accepted",
-        rejected: "status-rejected"
-      };
-
-      const AVAILABILITY_LABELS = {
-        immediate: "Immédiate",
-        this_week: "Cette semaine",
-        this_month: "Ce mois-ci",
-        to_discuss: "À discuter"
-      };
-
-      const SECTOR_LABELS = {
-        build: "BTP",
-        beauty: "Beauté",
-        shop: "Boutique",
-        food: "Restauration",
-        service: "Services",
-        driver: "Chauffeur",
-        market: "Marché",
-        admin: "Admin",
-        unknown: "Sans mission liée"
-      };
-
-      const SECTOR_KEYWORDS = {
-        build:["maçon","macon","btp","chantier","construction","électricien","electricien","plombier","soudeur","menuisier","peintre","carreleur","manoeuvre","manoeuvres","mecanicien","mécanicien"],
-        beauty:["coiffeuse","coiffeur","esthetique","esthétique","beaute","beauté","maquillage","ongles","spa"],
-        shop:["vente","vendeur","vendeuse","boutique","caisse","rayon","stock"],
-        food:["serveur","serveuse","cuisinier","cuisine","restaurant","restauration","bar","snack","chef","plonge"],
-        service:["ménage","menage","agent","entretien","gardien","polyvalent","assistant"],
-        driver:["chauffeur","driver","transport","livraison","permis","conduite"],
-        market:["marche","marché","commerce","achat","vente","vendeur","vendeuse"],
-        admin:["secretaire","secrétaire","bureau","admin","gestion","assistant","comptable"]
-      };
-
-      const statTotal = document.getElementById("statTotal");
-      const statNew = document.getElementById("statNew");
-      const statShortlist = document.getElementById("statShortlist");
-      const statAccepted = document.getElementById("statAccepted");
-
-      const searchInput = document.getElementById("searchInput");
-      const filterSector = document.getElementById("filterSector");
-      const filterOffer = document.getElementById("filterOffer");
-      const filterStatus = document.getElementById("filterStatus");
-      const filterAvailability = document.getElementById("filterAvailability");
-
-      const listEl = document.getElementById("list");
-      const emptyState = document.getElementById("emptyState");
-      const detailContent = document.getElementById("detailContent");
-      const detailName = document.getElementById("detailName");
-      const detailSubtitle = document.getElementById("detailSubtitle");
-      const detailChips = document.getElementById("detailChips");
-      const detailGrid = document.getElementById("detailGrid");
-      const statusRow = document.getElementById("statusRow");
-      const bureauNotes = document.getElementById("bureauNotes");
-      const btnOpenWA = document.getElementById("btnOpenWA");
-      const btnOpenMatch = document.getElementById("btnOpenMatch");
-
-      const btnRefresh = document.getElementById("btnRefresh");
-      const btnImportPublic = document.getElementById("btnImportPublic");
-      const btnClearFilters = document.getElementById("btnClearFilters");
-      const btnAddManual = document.getElementById("btnAddManual");
-      const btnSaveNotes = document.getElementById("btnSaveNotes");
-      const btnCopySheet = document.getElementById("btnCopySheet");
-      const btnCopyMissionLink = document.getElementById("btnCopyMissionLink");
-      const btnMarkReview = document.getElementById("btnMarkReview");
-      const btnMarkShortlist = document.getElementById("btnMarkShortlist");
-      const btnMarkCall = document.getElementById("btnMarkCall");
-      const btnMarkAccepted = document.getElementById("btnMarkAccepted");
-      const btnMarkRejected = document.getElementById("btnMarkRejected");
-      const quickNew = document.getElementById("quickNew");
-      const quickCall = document.getElementById("quickCall");
-      const quickShortlist = document.getElementById("quickShortlist");
-      const quickAccepted = document.getElementById("quickAccepted");
-      const btnExportJson = document.getElementById("btnExportJson");
-      const btnClearLocalNotes = document.getElementById("btnClearLocalNotes");
-
-      const statusBox = document.getElementById("statusBox");
-      const signalPill = document.getElementById("signalPill");
-      const miniCandidates = document.getElementById("miniCandidates");
-      const miniOffers = document.getElementById("miniOffers");
-      const miniMode = document.getElementById("miniMode");
-      const miniSlug = document.getElementById("miniSlug");
-
-      const linkCockpit = document.getElementById("linkCockpit");
-      const linkPublic = document.getElementById("linkPublic");
-      const linkPin = document.getElementById("linkPin");
-      const linkWall = document.getElementById("linkWall");
-      const linkMatch = document.getElementById("linkMatch");
-      const footerWall = document.getElementById("footerWall");
 
       const state = {
-        slug: slugQ,
-        preview: true,
-        session: null,
         offers: [],
-        offerMap: new Map(),
         candidates: [],
-        selectedId: null,
-        localNotes: {}
+        filter: "all",
+        q: ""
       };
 
-      function setStatus(text, tone = "info") {
-        if (!text) {
-          statusBox.className = "status-box";
-          statusBox.textContent = "";
-          statusBox.style.display = "none";
-          return;
-        }
-        statusBox.className = `status-box ${tone}`;
-        statusBox.textContent = text;
-        statusBox.style.display = "block";
-      }
+      const el = {
+        statusBox: document.getElementById("statusBox"),
+        cards: document.getElementById("cards"),
+        searchInput: document.getElementById("searchInput")
+      };
 
-
-      function cleanVisibleUrl() {
-        try {
-          const url = new URL(location.href);
-          ["slug", "phone", "tel", "resa_tel", "owner_phone"].forEach((key) => url.searchParams.delete(key));
-          const cleaned = url.pathname + (url.search ? url.search : "") + (url.hash || "");
-          if (cleaned !== location.pathname + location.search + location.hash) {
-            history.replaceState({}, document.title, cleaned);
-          }
-        } catch (_) {}
-      }
-
-      function normalizeSlug(value = "") {
+      function normSlug(value) {
         return String(value || "")
           .trim()
           .toLowerCase()
@@ -793,884 +518,307 @@
           .replace(/^-|-$/g, "");
       }
 
-      function normalizePhone(value = "") {
-        return String(value || "").trim().replace(/[^\d+]/g, "");
+      function normPhone(value) {
+        const raw = String(value || "").trim();
+        const cleaned = raw.replace(/[^\d+]/g, "");
+        const digits = cleaned.replace(/[^\d]/g, "");
+        if (!digits) return "";
+        return cleaned.startsWith("+") ? `+${digits}` : digits;
       }
 
-      function normalizeText(value = "") {
-        return String(value || "")
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/\s+/g, " ")
-          .trim();
-      }
-
-      function safe(value, fallback = "—") {
-        return value == null || value === "" ? fallback : String(value);
-      }
-
-      function escapeHtml(str = "") {
-        return String(str)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function formatDate(value) {
-        if (!value) return "—";
+      function saveContext(slug, phone) {
         try {
-          return new Intl.DateTimeFormat("fr-FR", {
-            dateStyle: "medium",
-            timeStyle: "short"
-          }).format(new Date(value));
-        } catch {
-          return String(value);
-        }
-      }
+          if (slug) {
+            localStorage.setItem(STORAGE.SLUG, slug);
+            localStorage.setItem(STORAGE.LAST_SLUG, slug);
+            sessionStorage.setItem(STORAGE.SLUG, slug);
+            sessionStorage.setItem(STORAGE.LAST_SLUG, slug);
+          }
 
-      function sectorLabel(value = "") {
-        return SECTOR_LABELS[String(value || "").toLowerCase()] || safe(value, "Secteur");
-      }
-
-      function sectorClass(value = "") {
-        const s = String(value || "").toLowerCase();
-        if (s === "build") return "sector-build";
-        if (s === "beauty") return "sector-beauty";
-        if (s === "shop") return "sector-shop";
-        if (s === "food") return "sector-food";
-        if (s === "service") return "sector-service";
-        if (s === "driver") return "sector-driver";
-        if (s === "market") return "sector-market";
-        if (s === "admin") return "sector-admin";
-        return "sector-other";
-      }
-
-      function statusLabel(value = "") {
-        return STATUS_LABELS[String(value || "").toLowerCase()] || safe(value, "Statut");
-      }
-
-      function availabilityCode(value = "") {
-        const v = normalizeText(value);
-        if (!v) return "";
-        if (v === "immediate" || v.includes("immediat")) return "immediate";
-        if (v === "this_week" || v.includes("semaine") || v.includes("48h")) return "this_week";
-        if (v === "this_month" || v.includes("mois")) return "this_month";
-        if (v === "to_discuss" || v.includes("discut")) return "to_discuss";
-        return String(value || "").toLowerCase();
-      }
-
-      function availabilityLabel(value = "") {
-        return AVAILABILITY_LABELS[availabilityCode(value)] || safe(value, "À discuter");
-      }
-
-      function readJson(key) {
-        try {
-          return JSON.parse(localStorage.getItem(key) || "null");
-        } catch {
-          return null;
-        }
-      }
-
-      function notesKey() {
-        return `${NOTES_PREFIX}${state.slug || "jobs"}`;
-      }
-
-      function loadLocalNotes() {
-        state.localNotes = readJson(notesKey()) || {};
-      }
-
-      function saveLocalNotes() {
-        try {
-          localStorage.setItem(notesKey(), JSON.stringify(state.localNotes));
+          if (phone) {
+            localStorage.setItem(STORAGE.PHONE, phone);
+            sessionStorage.setItem(STORAGE.PHONE, phone);
+          }
         } catch (_) {}
       }
 
-      function getCandidateLocal(id) {
-        return state.localNotes[id] || { notes: "", last_contact: "" };
-      }
+      function cleanVisibleUrl() {
+        try {
+          const url = new URL(window.location.href);
 
-      function setCandidateLocal(id, patch) {
-        state.localNotes[id] = { ...(state.localNotes[id] || {}), ...patch };
-        saveLocalNotes();
-      }
-
-      function inferSector(candidate) {
-        const linked = state.offerMap.get(candidate.offer_id);
-        if (linked?.sector) return String(linked.sector).toLowerCase();
-
-        const text = normalizeText([
-          candidate.trade,
-          candidate.message,
-          candidate.years_experience
-        ].join(" "));
-
-        for (const [sector, words] of Object.entries(SECTOR_KEYWORDS)) {
-          if (words.some((word) => text.includes(normalizeText(word)))) {
-            return sector;
-          }
-        }
-
-        return "unknown";
-      }
-
-      function syncLinks() {
-        linkCockpit.href = JOBS_PATHS.cockpit;
-        linkPublic.href = JOBS_PATHS.publish;
-        linkPin.href = JOBS_PATHS.pin;
-        linkWall.href = JOBS_PATHS.wall;
-        linkMatch.href = JOBS_PATHS.match;
-        footerWall.href = JOBS_PATHS.wall;
-
-        miniSlug.textContent = state.preview ? "Code PIN demandé" : "Session ouverte";
-        signalPill.textContent = state.preview ? "Coffre protégé — accès à ouvrir" : "Coffre protégé — session ouverte";
-      }
-
-      async function bootGuard() {
-        if (state.slug) {
-          state.slug = normalizeSlug(state.slug);
-        }
-
-        if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-          state.preview = true;
-          miniMode.textContent = "guard manquant";
-          syncLinks();
-          setStatus("Coffre protégé indisponible : le bureau s’ouvre en aperçu guidé.", "warn");
-          return;
-        }
-
-        const session = await window.DIGIY_GUARD.ready();
-        state.session = session || null;
-
-        const sessionSlug = normalizeSlug(session?.slug || "");
-        if (!state.slug && sessionSlug) {
-          state.slug = sessionSlug;
-        }
-
-        cleanVisibleUrl();
-        state.preview = !session?.access;
-        miniMode.textContent = state.preview ? "accès à ouvrir" : "lecture active";
-        syncLinks();
-
-        if (state.preview) {
-          setStatus("Session à ouvrir : entre ton code PIN pour lire les candidatures réelles.", "warn");
-        }
-      }
-
-      async function loadOffers() {
-        if (!sb) throw new Error("Supabase non chargé");
-        if (!state.slug) {
-          state.offers = [];
-          state.offerMap = new Map();
-          fillOfferFilter();
-          return;
-        }
-
-        const { data, error } = await sb.rpc("digiy_jobs_pro_offers_by_slug", {
-          p_slug: state.slug
-        });
-
-        if (error) throw error;
-
-        state.offers = (Array.isArray(data) ? data : [])
-          .filter((offer) => String(offer.status || "active").toLowerCase() === "active")
-          .sort((a, b) => {
-            const aa = new Date(a.published_at || a.created_at || 0).getTime();
-            const bb = new Date(b.published_at || b.created_at || 0).getTime();
-            return bb - aa;
-          });
-        state.offerMap = new Map(state.offers.map((offer) => [offer.id, offer]));
-        fillOfferFilter();
-      }
-
-      function fillOfferFilter() {
-        const options = ['<option value="all">Toutes missions</option>']
-          .concat(
-            state.offers.map((offer) => {
-              const label = `${safe(offer.title, "Mission")} • ${safe(offer.city, "Ville")}`;
-              return `<option value="${escapeHtml(offer.id)}">${escapeHtml(label)}</option>`;
-            })
+          const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+          const incomingPhone = normPhone(
+            url.searchParams.get("phone") ||
+            url.searchParams.get("tel") ||
+            url.searchParams.get("jobs_tel") ||
+            ""
           );
-        filterOffer.innerHTML = options.join("");
-        if (miniOffers) {
-          const count = state.offers.length;
-          miniOffers.textContent = count ? `${count} mission${count > 1 ? "s" : ""} active${count > 1 ? "s" : ""}` : "Aucune mission active";
-        }
-      }
 
-      async function loadCandidates() {
-        if (!sb) throw new Error("Supabase non chargé");
+          saveContext(incomingSlug, incomingPhone);
 
-        if (state.preview) {
-          state.candidates = [];
-          return;
-        }
+          let changed = false;
 
-        if (!state.slug) {
-          state.candidates = [];
-          return;
-        }
+          SENSITIVE_KEYS.forEach((key) => {
+            if (url.searchParams.has(key)) {
+              url.searchParams.delete(key);
+              changed = true;
+            }
+          });
 
-        const { data, error } = await sb.rpc("digiy_jobs_pro_candidates_by_slug", {
-          p_slug: state.slug
-        });
-
-        if (error) throw error;
-
-        const seen = new Set();
-        const rows = [];
-        (Array.isArray(data) ? data : []).forEach((row) => {
-          if (row && row.id && !seen.has(row.id)) {
-            seen.add(row.id);
-            rows.push(row);
+          if (changed) {
+            history.replaceState({}, document.title, url.pathname + url.search + url.hash);
           }
-        });
+        } catch (_) {}
+      }
 
-        state.candidates = rows.sort((a, b) => {
-          const aa = new Date(a.created_at || 0).getTime();
-          const bb = new Date(b.created_at || 0).getTime();
-          return bb - aa;
+      function keepLinksClean() {
+        document.querySelectorAll("a[href]").forEach((link) => {
+          try {
+            const href = link.getAttribute("href") || "";
+            if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("https://wa.me/")) return;
+
+            const url = new URL(href, window.location.href);
+            if (url.origin !== window.location.origin) return;
+
+            SENSITIVE_KEYS.forEach((key) => url.searchParams.delete(key));
+
+            const file = url.pathname.split("/").pop() || "index.html";
+            link.setAttribute("href", `./${file}${url.search || ""}${url.hash || ""}`);
+          } catch (_) {}
         });
       }
 
-      function getVisible() {
-        const query = normalizeText(searchInput.value || "");
-        const sectorFilter = filterSector.value;
-        const offerFilterValue = filterOffer.value;
-        const statusFilterValue = filterStatus.value;
-        const availabilityFilterValue = filterAvailability.value;
+      function setStatus(text, type) {
+        el.statusBox.textContent = text;
+        el.statusBox.className = "status" + (type ? " " + type : "");
+      }
+
+      function esc(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function statusLabel(status) {
+        const s = String(status || "new").toLowerCase();
+
+        return {
+          new: "Nouveau",
+          review: "En lecture",
+          shortlist: "Sélection",
+          call: "À appeler",
+          accepted: "Retenu",
+          rejected: "Classé"
+        }[s] || "Nouveau";
+      }
+
+      function offerTitle(candidate) {
+        const offer = state.offers.find((item) => String(item.id) === String(candidate.offer_id));
+        return offer?.title || candidate.job_title || candidate.trade || "Mission";
+      }
+
+      function waLink(candidate) {
+        const phone = normPhone(candidate.phone || "");
+        const title = offerTitle(candidate);
+
+        const msg = [
+          "Bonjour " + (candidate.full_name || ""),
+          "je vous contacte pour votre candidature DIGIY JOBS.",
+          "Mission : " + title + "."
+        ].join(" ");
+
+        if (!phone) return "#";
+
+        return "https://wa.me/" + phone.replace(/^\+/, "") + "?text=" + encodeURIComponent(msg);
+      }
+
+      function filteredCandidates() {
+        const q = String(state.q || "").trim().toLowerCase();
 
         return state.candidates.filter((candidate) => {
-          const linkedOffer = state.offerMap.get(candidate.offer_id) || null;
-          const sector = inferSector(candidate);
+          const status = String(candidate.status || "new").toLowerCase();
 
-          if (sectorFilter !== "all" && sector !== sectorFilter) return false;
-          if (offerFilterValue !== "all" && String(candidate.offer_id || "") !== offerFilterValue) return false;
-          if (statusFilterValue !== "all" && String(candidate.status || "new").toLowerCase() !== statusFilterValue) return false;
-          if (availabilityFilterValue !== "all" && availabilityCode(candidate.availability) !== availabilityFilterValue) return false;
+          if (state.filter !== "all" && status !== state.filter) return false;
 
-          if (!query) return true;
+          if (q) {
+            const hay = [
+              candidate.full_name,
+              candidate.phone,
+              candidate.city,
+              candidate.country,
+              candidate.trade,
+              candidate.job_title,
+              candidate.availability,
+              candidate.message,
+              offerTitle(candidate)
+            ].join(" ").toLowerCase();
 
-          const local = getCandidateLocal(candidate.id);
-          const hay = normalizeText([
-            candidate.full_name,
-            candidate.trade,
-            candidate.city,
-            candidate.country,
-            candidate.message,
-            candidate.years_experience,
-            candidate.source,
-            linkedOffer?.title,
-            linkedOffer?.description,
-            local.notes,
-            local.last_contact
-          ].join(" "));
-
-          return hay.includes(query);
-        });
-      }
-
-      function renderStats(visible) {
-        statTotal.textContent = String(visible.length);
-        statNew.textContent = String(visible.filter((c) => String(c.status || "new") === "new").length);
-        statShortlist.textContent = String(
-          visible.filter((c) => {
-            const s = String(c.status || "new");
-            return s === "shortlist" || s === "call";
-          }).length
-        );
-        statAccepted.textContent = String(visible.filter((c) => String(c.status || "new") === "accepted").length);
-
-        if (miniCandidates) {
-          miniCandidates.textContent = visible.length
-            ? `${visible.length} candidature${visible.length > 1 ? "s" : ""} visible${visible.length > 1 ? "s" : ""}`
-            : (state.preview ? "Coffre à ouvrir" : "Aucune candidature visible");
-        }
-      }
-
-      function subtitle(candidate) {
-        const linkedOffer = state.offerMap.get(candidate.offer_id);
-        const offerText = linkedOffer?.title ? ` • ${linkedOffer.title}` : "";
-        return [
-          safe(candidate.trade),
-          safe(candidate.city),
-          availabilityLabel(candidate.availability)
-        ].join(" • ") + offerText;
-      }
-
-      function missionUrl(candidate) {
-        const offer = state.offerMap.get(candidate.offer_id);
-        if (!offer?.id) return "";
-        const url = new URL(JOBS_PATHS.mission, location.href);
-        url.searchParams.set("id", offer.id);
-        return url.toString();
-      }
-
-      function matchUrl(candidate) {
-        const url = new URL(JOBS_PATHS.match, location.href);
-        if (candidate?.offer_id) url.searchParams.set("offer", candidate.offer_id);
-        return url.toString();
-      }
-
-      function renderList() {
-        const visible = getVisible();
-        renderStats(visible);
-        listEl.innerHTML = "";
-
-        if (state.preview) {
-          listEl.innerHTML = `
-            <div class="empty-card">
-              <h4>Mode aperçu</h4>
-              <p>Ouvre ta session JOBS pour lire les candidatures réelles et piloter le bureau.</p>
-            </div>
-          `;
-          state.selectedId = null;
-          renderDetail(null);
-          return;
-        }
-
-        if (!visible.length) {
-          listEl.innerHTML = `
-            <div class="empty-card">
-              <h4>Aucune candidature visible</h4>
-              <p>Change les filtres, attends de nouvelles candidatures, ou ajoute une entrée manuelle.</p>
-            </div>
-          `;
-          state.selectedId = null;
-          renderDetail(null);
-          return;
-        }
-
-        if (!visible.some((candidate) => candidate.id === state.selectedId)) {
-          state.selectedId = visible[0].id;
-        }
-
-        visible.forEach((candidate) => {
-          const local = getCandidateLocal(candidate.id);
-          const sector = inferSector(candidate);
-          const linkedOffer = state.offerMap.get(candidate.offer_id);
-
-          const article = document.createElement("article");
-          article.className = "dossier" + (candidate.id === state.selectedId ? " active" : "");
-          article.innerHTML = `
-            <div class="dossier-top">
-              <div>
-                <h4>${escapeHtml(candidate.full_name || "Sans nom")}</h4>
-                <p class="sub">${escapeHtml(subtitle(candidate))}</p>
-              </div>
-            </div>
-
-            <div class="chips">
-              <span class="chip ${sectorClass(sector)}">${escapeHtml(sectorLabel(sector))}</span>
-              <span class="chip ${STATUS_CLASS[String(candidate.status || "new")] || "status-new"}">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
-              <span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>
-              ${linkedOffer ? `<span class="chip">${escapeHtml(linkedOffer.title || "Mission")}</span>` : `<span class="chip">Spontanée</span>`}
-            </div>
-
-            <div class="dossier-note">
-              ${escapeHtml((local.notes || candidate.message || candidate.years_experience || "Pas encore de note.").slice(0, 170))}
-            </div>
-          `;
-
-          article.addEventListener("click", function() {
-            state.selectedId = candidate.id;
-            renderList();
-          });
-
-          listEl.appendChild(article);
-        });
-
-        const current = visible.find((candidate) => candidate.id === state.selectedId) || null;
-        renderDetail(current);
-      }
-
-      function fieldHtml(label, value, full = false) {
-        return `<div class="field${full ? " full" : ""}"><small>${escapeHtml(label)}</small><strong>${escapeHtml(safe(value))}</strong></div>`;
-      }
-
-      function buildWhatsAppUrl(candidate) {
-        const linkedOffer = state.offerMap.get(candidate.offer_id);
-        const lines = [
-          "Bonjour,",
-          "",
-          "je vous contacte depuis DIGIY JOBS concernant votre candidature.",
-          linkedOffer?.title ? `Mission : ${linkedOffer.title}` : null,
-          linkedOffer?.city ? `Ville : ${linkedOffer.city}` : null,
-          linkedOffer?.pay ? `Rémunération : ${linkedOffer.pay}` : null,
-          `Statut actuel : ${statusLabel(candidate.status || "new")}`,
-          missionUrl(candidate) ? `Lien mission : ${missionUrl(candidate)}` : null,
-          "",
-          "Nous pouvons avancer si vous êtes toujours disponible."
-        ].filter(Boolean).join("\n");
-
-        const phone = String(candidate.phone || "").replace(/[^\d]/g, "");
-        const url = new URL(`https://wa.me/${phone}`);
-        url.searchParams.set("text", lines);
-        return url.toString();
-      }
-
-      function buildCandidateSheet(candidate) {
-        const linkedOffer = state.offerMap.get(candidate.offer_id);
-        const local = getCandidateLocal(candidate.id);
-        return [
-          `Nom : ${safe(candidate.full_name)}`,
-          `WhatsApp : ${safe(candidate.phone)}`,
-          `Ville : ${safe(candidate.city)}`,
-          `Pays : ${safe(candidate.country || "Sénégal")}`,
-          `Métier : ${safe(candidate.trade)}`,
-          `Expérience : ${safe(candidate.years_experience)}`,
-          `Disponibilité : ${availabilityLabel(candidate.availability)}`,
-          `Statut : ${statusLabel(candidate.status || "new")}`,
-          linkedOffer?.title ? `Mission liée : ${linkedOffer.title}` : "Mission liée : Candidature spontanée",
-          `Source : ${safe(candidate.source)}`,
-          `Message : ${safe(candidate.message)}`,
-          `Notes bureau : ${safe(local.notes)}`
-        ].join("\n");
-      }
-
-      function renderStatusButtons(candidate) {
-        statusRow.innerHTML = "";
-        Object.entries(STATUS_LABELS).forEach(([key, label]) => {
-          const button = document.createElement("button");
-          button.textContent = `${STATUS_ACTION_ICONS[key] || "•"} ${label}`;
-          if (String(candidate.status || "new") === key) {
-            button.classList.add("active");
+            if (!hay.includes(q)) return false;
           }
-          button.addEventListener("click", async function() {
-            await updateCandidateStatus(candidate.id, key);
-          });
-          statusRow.appendChild(button);
-        });
-      }
 
-      async function updateCandidateStatus(id, status) {
-        if (state.preview) {
-          setStatus("Session à ouvrir : entre ton code PIN pour modifier les statuts.", "warn");
-          return;
-        }
-
-        if (!sb) {
-          setStatus("Chargement indisponible pour le moment.", "error");
-          return;
-        }
-
-        setStatus(`Mise à jour du statut vers "${statusLabel(status)}"...`, "info");
-
-        const { error } = await sb.rpc("digiy_jobs_pro_update_candidate_status", {
-          p_slug: state.slug,
-          p_candidate_id: id,
-          p_status: status
-        });
-
-        if (error) {
-          console.error(error);
-          setStatus("Impossible de mettre à jour ce statut pour le moment.", "error");
-          return;
-        }
-
-        const candidate = state.candidates.find((item) => item.id === id);
-        if (candidate) {
-          candidate.status = status;
-          candidate.updated_at = new Date().toISOString();
-        }
-
-        renderList();
-        setStatus(`Statut mis à jour : ${statusLabel(status)}.`, "ok");
-      }
-
-      function renderDetail(candidate) {
-        if (!candidate) {
-          emptyState.hidden = false;
-          detailContent.hidden = true;
-          return;
-        }
-
-        const linkedOffer = state.offerMap.get(candidate.offer_id) || null;
-        const local = getCandidateLocal(candidate.id);
-        const sector = inferSector(candidate);
-
-        emptyState.hidden = true;
-        detailContent.hidden = false;
-
-        detailName.textContent = candidate.full_name || "Sans nom";
-        detailSubtitle.textContent = subtitle(candidate);
-        bureauNotes.value = local.notes || "";
-        btnOpenWA.href = buildWhatsAppUrl(candidate);
-        btnOpenMatch.href = matchUrl(candidate);
-
-        detailChips.innerHTML = `
-          <span class="chip ${sectorClass(sector)}">${escapeHtml(sectorLabel(sector))}</span>
-          <span class="chip ${STATUS_CLASS[String(candidate.status || "new")] || "status-new"}">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
-          ${linkedOffer ? `<span class="chip">${escapeHtml(linkedOffer.title || "Mission")}</span>` : `<span class="chip">Spontanée</span>`}
-        `;
-
-        const fields = [
-          fieldHtml("Nom complet", candidate.full_name),
-          fieldHtml("Téléphone WhatsApp", candidate.phone),
-          fieldHtml("Ville", candidate.city),
-          fieldHtml("Pays", candidate.country || "Sénégal"),
-          fieldHtml("Métier / profil", candidate.trade),
-          fieldHtml("Expérience", candidate.years_experience),
-          fieldHtml("Disponibilité", availabilityLabel(candidate.availability)),
-          fieldHtml("Statut", statusLabel(candidate.status || "new")),
-          fieldHtml("Source", candidate.source || "public_form"),
-          fieldHtml("Reçu le", formatDate(candidate.created_at)),
-          fieldHtml("Mis à jour le", formatDate(candidate.updated_at || candidate.created_at)),
-          fieldHtml("Dernier contact local", local.last_contact || "Pas encore noté"),
-          fieldHtml("Mission liée", linkedOffer?.title || "Candidature spontanée", true),
-          fieldHtml("Structure", linkedOffer?.employer_name || "—"),
-          fieldHtml("Ville mission", linkedOffer?.city || "—"),
-          fieldHtml("Rémunération mission", linkedOffer?.pay || "—"),
-          fieldHtml("Message candidat", candidate.message || "—", true),
-          fieldHtml("Notes bureau locales", local.notes || "—", true)
-        ];
-
-        detailGrid.innerHTML = fields.join("");
-        renderStatusButtons(candidate);
-      }
-
-      async function importPublicDossier() {
-        if (state.preview) {
-          setStatus("Session à ouvrir : entre ton code PIN pour récupérer un dossier.", "warn");
-          return;
-        }
-
-        if (!sb) {
-          setStatus("Chargement indisponible pour le moment.", "error");
-          return;
-        }
-
-        if (!state.slug) {
-          setStatus("Session non reconnue. Entre ton code PIN pour ouvrir ton bureau JOBS.", "warn");
-          return;
-        }
-
-        const raw = readJson(PUBLIC_KEY);
-        if (!raw || !raw.phone) {
-          setStatus("Aucun dossier public intelligent trouvé dans ce navigateur.", "warn");
-          return;
-        }
-
-        const phone = normalizePhone(raw.phone);
-        const exists = state.candidates.some((candidate) => normalizePhone(candidate.phone) === phone);
-        if (exists) {
-          setStatus("Ce dossier public semble déjà présent dans le bureau.", "info");
-          return;
-        }
-
-        const selectedOfferId = filterOffer.value !== "all" ? filterOffer.value : (state.offers[0]?.id || null);
-
-        const payload = {
-          offer_id: selectedOfferId,
-          slug: state.slug,
-          full_name: String(raw.nom || raw.full_name || "Dossier public").trim(),
-          phone: phone,
-          city: String(raw.zone || raw.city || "").trim() || null,
-          country: String(raw.country || "Sénégal").trim(),
-          trade: String(raw.metier || raw.buildMetier || raw.hotelMetier || "").trim() || null,
-          years_experience: String(raw.niveau || raw.years_experience || "").trim() || null,
-          availability: availabilityCode(raw.dispo || raw.availability || "") || "to_discuss",
-          message: [
-            raw.note || null,
-            raw.link ? `Lien dossier: ${raw.link}` : null
-          ].filter(Boolean).join(" | ") || null,
-          status: "new",
-          source: "import_public_dossier"
-        };
-
-        if (!payload.full_name || !payload.phone) {
-          setStatus("Le dossier public trouvé est incomplet : nom ou téléphone manquant.", "warn");
-          return;
-        }
-
-        const { error } = await sb.rpc("digiy_jobs_pro_insert_candidate", {
-          p_slug: state.slug,
-          p_payload: payload
-        });
-
-        if (error) {
-          console.error(error);
-          setStatus("Impossible d’importer le dossier public pour le moment.", "error");
-          return;
-        }
-
-        await loadCandidates();
-        renderList();
-        setStatus("Dernier dossier récupéré dans le bureau JOBS.", "ok");
-      }
-
-      async function addManualCandidate() {
-        if (state.preview) {
-          setStatus("Session à ouvrir : entre ton code PIN pour ajouter une candidature.", "warn");
-          return;
-        }
-
-        if (!sb) {
-          setStatus("Chargement indisponible pour le moment.", "error");
-          return;
-        }
-
-        if (!state.slug) {
-          setStatus("Session non reconnue pour ajouter une candidature.", "warn");
-          return;
-        }
-
-        const full_name = prompt("Nom complet du candidat ?", "");
-        if (!full_name) return;
-
-        const whatsapp_phone = prompt("Téléphone WhatsApp ?", "+22177");
-        if (!whatsapp_phone) return;
-
-        const trade = prompt("Métier / profil ?", "Profil à préciser") || null;
-        const city = prompt("Ville ?", "Saly") || null;
-        const availability = prompt("Disponibilité ? immediate / this_week / this_month / to_discuss", "to_discuss") || "to_discuss";
-        const years_experience = prompt("Expérience ?", "") || null;
-
-        const selectedOfferId = filterOffer.value !== "all" ? filterOffer.value : (state.offers[0]?.id || null);
-
-        const payload = {
-          offer_id: selectedOfferId,
-          slug: state.slug,
-          full_name: String(full_name).trim(),
-          phone: normalizePhone(whatsapp_phone),
-          city: city ? String(city).trim() : null,
-          country: "Sénégal",
-          trade: trade ? String(trade).trim() : null,
-          years_experience: years_experience ? String(years_experience).trim() : null,
-          availability: availabilityCode(availability) || "to_discuss",
-          message: "Entrée manuelle bureau.",
-          status: "new",
-          source: "manual_bureau_entry"
-        };
-
-        if (!payload.full_name || !payload.phone) {
-          setStatus("Nom et téléphone sont obligatoires pour créer une candidature manuelle.", "warn");
-          return;
-        }
-
-        const { error } = await sb.rpc("digiy_jobs_pro_insert_candidate", {
-          p_slug: state.slug,
-          p_payload: payload
-        });
-
-        if (error) {
-          console.error(error);
-          setStatus("Impossible d’ajouter cette candidature manuelle pour le moment.", "error");
-          return;
-        }
-
-        await loadCandidates();
-        renderList();
-        setStatus("Candidature ajoutée dans le bureau JOBS.", "ok");
-      }
-
-      async function copyText(text) {
-        try {
-          await navigator.clipboard.writeText(text);
           return true;
-        } catch {
-          return false;
-        }
-      }
-
-      function selectStatusFilter(status){
-        filterStatus.value = status || "all";
-        renderList();
-        if (listEl) listEl.scrollIntoView({ behavior:"smooth", block:"start" });
-      }
-
-      function selectedCandidate(){
-        return state.candidates.find((item) => item.id === state.selectedId) || null;
-      }
-
-      btnRefresh.addEventListener("click", async function() {
-        try {
-          await loadOffers();
-          await loadCandidates();
-          renderList();
-          setStatus("Bureau JOBS rafraîchi.", "ok");
-        } catch (error) {
-          console.error(error);
-          setStatus("Impossible de rafraîchir le bureau pour le moment.", "error");
-        }
-      });
-
-      btnImportPublic.addEventListener("click", importPublicDossier);
-      btnAddManual.addEventListener("click", addManualCandidate);
-
-      btnClearFilters.addEventListener("click", function() {
-        searchInput.value = "";
-        filterSector.value = "all";
-        filterOffer.value = "all";
-        filterStatus.value = "all";
-        filterAvailability.value = "all";
-        renderList();
-      });
-
-      btnSaveNotes.addEventListener("click", function() {
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        setCandidateLocal(candidate.id, {
-          notes: bureauNotes.value.trim(),
-          last_contact: "Notes mises à jour"
         });
-        renderList();
-        setStatus("Notes bureau locales enregistrées.", "ok");
-      });
+      }
 
-      btnCopySheet.addEventListener("click", async function() {
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        const text = buildCandidateSheet(candidate);
-        const ok = await copyText(text);
-        if (ok) {
-          setCandidateLocal(candidate.id, { last_contact: "Fiche copiée" });
-          renderList();
-          setStatus("Fiche candidat copiée.", "ok");
-        } else {
-          prompt("Copie la fiche candidat :", text);
-        }
-      });
+      function render() {
+        const rows = filteredCandidates();
 
-      btnCopyMissionLink.addEventListener("click", async function() {
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
-        if (!candidate) return;
-        const url = missionUrl(candidate);
-        if (!url) {
-          setStatus("Cette candidature n’a pas de mission liée à copier.", "warn");
+        if (!rows.length) {
+          el.cards.innerHTML = `
+            <div class="empty">
+              Aucun dossier dans cette vue.<br>
+              Le terrain est propre ou le filtre est trop serré.
+            </div>
+          `;
           return;
         }
-        const ok = await copyText(url);
-        if (ok) {
-          setCandidateLocal(candidate.id, { last_contact: "Lien mission copié" });
-          renderList();
-          setStatus("Lien mission copié.", "ok");
-        } else {
-          prompt("Copie le lien mission :", url);
-        }
-      });
 
-      quickNew?.addEventListener("click", function(){ selectStatusFilter("new"); });
-      quickCall?.addEventListener("click", function(){ selectStatusFilter("call"); });
-      quickShortlist?.addEventListener("click", function(){ selectStatusFilter("shortlist"); });
-      quickAccepted?.addEventListener("click", function(){ selectStatusFilter("accepted"); });
+        el.cards.innerHTML = rows.map((candidate) => {
+          const name = candidate.full_name || "Candidat";
+          const city = candidate.city || candidate.country || "Lieu à préciser";
+          const title = offerTitle(candidate);
+          const status = String(candidate.status || "new").toLowerCase();
+          const phone = normPhone(candidate.phone || "");
+          const message = candidate.message || "Aucun message détaillé.";
+          const availability = candidate.availability || "Disponibilité à préciser";
+          const experience = candidate.years_experience || "Expérience à préciser";
 
-      btnMarkReview?.addEventListener("click", async function() {
-        const candidate = selectedCandidate();
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "review");
-        setCandidateLocal(candidate.id, { last_contact: "Mis à revoir" });
-        renderList();
-      });
+          return `
+            <article class="card" data-id="${esc(candidate.id)}">
+              <div class="card-top">
+                <div>
+                  <h2 class="name">${esc(name)}</h2>
+                  <div class="meta">${esc(title)} · ${esc(city)}</div>
+                </div>
+                <span class="badge">${esc(statusLabel(status))}</span>
+              </div>
 
-      btnMarkShortlist?.addEventListener("click", async function() {
-        const candidate = selectedCandidate();
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "shortlist");
-        setCandidateLocal(candidate.id, { last_contact: "Sélectionné" });
-        renderList();
-      });
+              <div class="actions">
+                <a class="btn primary" href="${esc(waLink(candidate))}" target="_blank" rel="noopener">💬 WhatsApp</a>
+                <button class="btn blue" type="button" data-action="call" data-id="${esc(candidate.id)}">📞 À appeler</button>
+                <button class="btn" type="button" data-action="shortlist" data-id="${esc(candidate.id)}">⭐ Sélection</button>
+                <button class="btn green" type="button" data-action="accepted" data-id="${esc(candidate.id)}">✅ Retenir</button>
+                <button class="btn red" type="button" data-action="rejected" data-id="${esc(candidate.id)}">Classer</button>
+                <button class="btn" type="button" data-action="review" data-id="${esc(candidate.id)}">👁️ En lecture</button>
+              </div>
 
-      btnMarkCall?.addEventListener("click", async function() {
-        const candidate = selectedCandidate();
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "call");
-        setCandidateLocal(candidate.id, { last_contact: "Marqué à appeler" });
-        renderList();
-      });
+              <details>
+                <summary>Voir détails</summary>
+                <div class="details-body">Téléphone : ${phone ? esc(phone) : "non renseigné"}
+Disponibilité : ${esc(availability)}
+Expérience : ${esc(experience)}
 
-      btnMarkAccepted?.addEventListener("click", async function() {
-        const candidate = selectedCandidate();
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "accepted");
-        setCandidateLocal(candidate.id, { last_contact: "Retenu" });
-        renderList();
-      });
+Message :
+${esc(message)}</div>
+              </details>
+            </article>
+          `;
+        }).join("");
 
-      btnMarkRejected?.addEventListener("click", async function() {
-        const candidate = selectedCandidate();
-        if (!candidate) return;
-        await updateCandidateStatus(candidate.id, "rejected");
-        setCandidateLocal(candidate.id, { last_contact: "Non retenu" });
-        renderList();
-      });
+        keepLinksClean();
+      }
 
-      btnExportJson.addEventListener("click", function() {
-        const visible = getVisible().map((candidate) => {
-          const linkedOffer = state.offerMap.get(candidate.offer_id) || null;
-          const local = getCandidateLocal(candidate.id);
-          return {
-            id: candidate.id,
-            offer_id: candidate.offer_id,
-            offer_title: linkedOffer?.title || null,
-            sector: inferSector(candidate),
-            full_name: candidate.full_name,
-            phone: candidate.phone,
-            city: candidate.city,
-            country: candidate.country,
-            trade: candidate.trade,
-            years_experience: candidate.years_experience,
-            availability: candidate.availability,
-            status: candidate.status,
-            source: candidate.source,
-            created_at: candidate.created_at,
-            updated_at: candidate.updated_at,
-            message: candidate.message,
-            bureau_notes_local: local.notes || "",
-            last_contact_local: local.last_contact || ""
-          };
-        });
+      async function setCandidateStatus(id, status) {
+        if (!id || !status) return;
 
-        const blob = new Blob([JSON.stringify(visible, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "digiy-jobs-bureau.json";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-      });
-
-      btnClearLocalNotes.addEventListener("click", function() {
-        if (!confirm("Vider uniquement les notes locales de ce slug ?")) return;
-        state.localNotes = {};
-        saveLocalNotes();
-        renderList();
-        setStatus("Notes locales vidées. Les vraies candidatures en base sont intactes.", "ok");
-      });
-
-      searchInput.addEventListener("input", renderList);
-      filterSector.addEventListener("change", renderList);
-      filterOffer.addEventListener("change", renderList);
-      filterStatus.addEventListener("change", renderList);
-      filterAvailability.addEventListener("change", renderList);
-
-      (async function init() {
         try {
-          if (!sb) {
-            setStatus("Chargement indisponible pour le moment.", "error");
+          setStatus("Mise à jour du dossier…");
+
+          if (!window.DIGIY_CLAW_JOBS || typeof window.DIGIY_CLAW_JOBS.setCandidateStatus !== "function") {
+            setStatus("Outil JOBS indisponible. Recharge la page.", "warn");
             return;
           }
 
-          await bootGuard();
-          loadLocalNotes();
-          await loadOffers();
-          await loadCandidates();
-          renderList();
+          const res = await window.DIGIY_CLAW_JOBS.setCandidateStatus(id, status);
 
-          if (!state.slug) {
-            setStatus("Session non reconnue. Entre ton code PIN pour ouvrir ton bureau JOBS.", "warn");
-          } else if (!state.preview) {
-            setStatus("Candidatures chargées. Tu peux trier et agir.", "ok");
+          if (!res || !res.ok) {
+            setStatus(res?.error || "Impossible de modifier le statut.", "err");
+            return;
           }
-        } catch (error) {
-          console.error(error);
-          setStatus("Erreur de chargement des candidatures. Vérifie l'accès et réessaie.", "error");
+
+          state.candidates = state.candidates.map((candidate) => {
+            if (String(candidate.id) !== String(id)) return candidate;
+            return { ...candidate, status };
+          });
+
+          render();
+          setStatus("Dossier mis à jour. Le terrain reste propre.", "ok");
+        } catch (err) {
+          console.error(err);
+          setStatus("Erreur pendant la mise à jour.", "err");
         }
-      })();
+      }
+
+      function bind() {
+        document.querySelectorAll(".filter").forEach((button) => {
+          button.addEventListener("click", () => {
+            document.querySelectorAll(".filter").forEach((b) => b.classList.remove("active"));
+            button.classList.add("active");
+            state.filter = button.dataset.filter || "all";
+            render();
+          });
+        });
+
+        el.searchInput.addEventListener("input", () => {
+          state.q = el.searchInput.value || "";
+          render();
+        });
+
+        el.cards.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-action][data-id]");
+          if (!button) return;
+
+          setCandidateStatus(button.dataset.id, button.dataset.action);
+        });
+      }
+
+      async function boot() {
+        cleanVisibleUrl();
+        keepLinksClean();
+        bind();
+
+        try {
+          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.ready === "function") {
+            const session = await window.DIGIY_GUARD.ready();
+
+            if (!session || !session.access_ok) {
+              setStatus("Code demandé. Ouvre ton accès JOBS pour traiter les dossiers.", "warn");
+              return;
+            }
+          }
+
+          if (!window.DIGIY_CLAW_JOBS || typeof window.DIGIY_CLAW_JOBS.fetchAll !== "function") {
+            setStatus("Outil JOBS indisponible. Vérifie claw-tools.js.", "warn");
+            return;
+          }
+
+          const data = await window.DIGIY_CLAW_JOBS.fetchAll();
+
+          if (!data || !data.ok) {
+            setStatus(data?.error || "Aucune donnée chargée.", "warn");
+            return;
+          }
+
+          state.offers = Array.isArray(data.offers) ? data.offers : [];
+          state.candidates = Array.isArray(data.candidates) ? data.candidates : [];
+
+          render();
+
+          setStatus(
+            state.candidates.length
+              ? `${state.candidates.length} dossier(s) à traiter.`
+              : "Aucun dossier à traiter pour l’instant.",
+            "ok"
+          );
+        } catch (err) {
+          console.error(err);
+          setStatus("Bureau léger ouvert. Recharge ou entre ton code si besoin.", "warn");
+        }
+      }
+
+      boot();
     })();
   </script>
 </body>
