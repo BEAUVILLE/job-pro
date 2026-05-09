@@ -146,6 +146,54 @@
     .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
     .tag{padding:10px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--muted)}
 
+
+    .quick-actions{
+      padding:0 0 16px;
+    }
+    .quick-panel{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:rgba(255,255,255,.84);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .quick-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+    .quick-head h2{margin:0;font-size:22px;letter-spacing:-.02em}
+    .quick-head p{margin:6px 0 0;color:var(--muted);line-height:1.55;font-weight:650}
+    .quick-grid{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:10px;
+    }
+    .quick-action{
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fff;
+      color:var(--ink);
+      min-height:82px;
+      padding:12px;
+      font-weight:900;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:5px;
+      box-shadow:0 10px 22px rgba(15,23,42,.06);
+      text-align:left;
+    }
+    .quick-action strong{font-size:15px;line-height:1.15}
+    .quick-action span{font-size:12px;color:var(--muted);font-weight:750;line-height:1.35}
+    .quick-action:hover{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.10)}
+    .quick-action.primary{background:linear-gradient(135deg,var(--dark),var(--dark-2));color:#fff;border-color:transparent}
+    .quick-action.primary span{color:#dbe6f6}
+
     .panel{
       padding:18px;background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));color:#fff;border-color:#27365a;
       display:flex;flex-direction:column;gap:14px;
@@ -290,6 +338,8 @@
       .hero-tags{gap:8px}
       .tag{font-size:12px;padding:8px 10px}
       .stats-grid{grid-template-columns:1fr 1fr}
+      .quick-grid{grid-template-columns:1fr 1fr}
+      .quick-action{min-height:76px}
       .stat{padding:14px}
       .stat strong{font-size:25px}
       .list{max-height:none;overflow:visible}
@@ -297,11 +347,11 @@
     }
 
     @media (max-width:1200px){
-      .hero-grid,.workspace,.stats-grid,.filter-grid,.action-grid{grid-template-columns:1fr 1fr}
+      .hero-grid,.workspace,.stats-grid,.filter-grid,.action-grid,.quick-grid{grid-template-columns:1fr 1fr}
       .filter-grid > *:first-child{grid-column:1 / -1}
     }
     @media (max-width:860px){
-      .hero-grid,.workspace,.stats-grid,.filter-grid,.detail-grid,.action-grid,.mini-grid{grid-template-columns:1fr}
+      .hero-grid,.workspace,.stats-grid,.filter-grid,.detail-grid,.action-grid,.mini-grid,.quick-grid{grid-template-columns:1fr}
       h1{max-width:none}
     }
   </style>
@@ -318,12 +368,12 @@
       </a>
 
       <div class="top-actions">
-        <button id="btnRefresh" type="button">Rafraîchir</button>
-        <button id="btnImportPublic" type="button">Récupérer le dernier dossier</button>
+        <button id="btnRefresh" type="button">↻ Rafraîchir</button>
+        <button id="btnImportPublic" type="button">📥 Importer dossier</button>
         <a id="linkWall" href="./mur%20des%20missions.html">Missions</a>
         <a id="linkCockpit" href="./cockpit.html">Mon espace</a>
         <a id="linkMatch" href="./match.html">Rapprocher</a>
-        <a id="linkPublic" class="primary" href="./index.html">Voir l’accueil</a>
+        <a id="linkPublic" class="primary" href="./publier-mission.html">➕ Mission rapide</a>
       </div>
     </div>
   </header>
@@ -336,26 +386,26 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <article class="hero-card">
-          <span class="eyebrow">Je trie les candidatures</span>
-          <h1>Voir vite. Choisir vite. Relancer vite.</h1>
+          <span class="eyebrow">Bureau terrain · moins écrire, plus cliquer</span>
+          <h1>Voir vite. Décider vite. Relancer vite.</h1>
           <p class="lead">
-            Ici tu ouvres les vraies candidatures, tu poses un état clair,
-            tu notes l'essentiel et tu passes à l'action sans te perdre.
+            Ici le pro ouvre une candidature, choisit l’action utile et avance sans se perdre :
+            WhatsApp, à revoir, à appeler, retenir, refuser ou rapprocher d’une mission.
           </p>
           <div class="hero-tags">
-            <span class="tag">Lecture rapide</span>
-            <span class="tag">Statut clair</span>
-            <span class="tag">Mission liée</span>
-            <span class="tag">Contact prêt</span>
+            <span class="tag">💬 WhatsApp prêt</span>
+            <span class="tag">📞 À appeler</span>
+            <span class="tag">✅ Retenir</span>
+            <span class="tag">❌ Refuser</span>
           </div>
         </article>
 
         <aside class="panel">
           <span class="signal" id="signalPill">Coffre protégé — détection…</span>
-          <h2>Ton bureau de tri</h2>
+          <h2>Ton bureau d’action</h2>
           <p>
-            Elle garde les candidatures dans le coffre JOBS, relie chaque personne à une mission,
-            mémorise tes notes utiles et prépare la mise en relation sans détour.
+            Le bureau garde les candidatures dans le coffre JOBS, relie chaque personne à une mission,
+            et te donne les gestes prêts pour décider sans écrire un roman.
           </p>
           <div class="mini-grid">
             <div class="mini"><strong>Candidatures</strong><span id="miniCandidates">Chargement…</span></div>
@@ -376,13 +426,33 @@
       </div>
     </section>
 
+
+    <section class="quick-actions">
+      <div class="wrap quick-panel">
+        <div class="quick-head">
+          <div>
+            <h2>Actions rapides du bureau</h2>
+            <p>Un clic pour voir ce qui compte maintenant. Le terrain n’attend pas un long formulaire.</p>
+          </div>
+        </div>
+        <div class="quick-grid">
+          <button class="quick-action primary" id="quickNew" type="button"><strong>🆕 Nouvelles</strong><span>Voir les dossiers arrivés.</span></button>
+          <button class="quick-action" id="quickCall" type="button"><strong>📞 À appeler</strong><span>Priorité contact.</span></button>
+          <button class="quick-action" id="quickShortlist" type="button"><strong>⭐ Sélectionnés</strong><span>Profils intéressants.</span></button>
+          <button class="quick-action" id="quickAccepted" type="button"><strong>✅ Retenus</strong><span>Profils validés.</span></button>
+          <a class="quick-action" href="./publier-mission.html"><strong>➕ Mission rapide</strong><span>Créer une demande.</span></a>
+          <a class="quick-action" href="./mur%20des%20missions.html"><strong>🌍 Mur public</strong><span>Voir les annonces.</span></a>
+        </div>
+      </div>
+    </section>
+
     <section class="wrap">
       <div class="filters">
         <div class="filters-top">
           <div>
-            <h2>Recherche rapide</h2>
+            <h2>Retrouver vite une personne</h2>
             <p>
-              Commence par le nom, le métier ou la ville. Les grands filtres restent rangés pour ne pas charger l’écran.
+              Tape un nom, un métier ou une ville. Les filtres avancés restent rangés pour garder l’écran léger.
             </p>
           </div>
         </div>
@@ -475,32 +545,36 @@
             <div class="detail-grid" id="detailGrid"></div>
 
             <div class="action-card" style="margin-top:16px">
-              <h4>Où en est cette personne ?</h4>
-              <p>Un état simple pour savoir quoi faire ensuite : lire, appeler, retenir ou refuser.</p>
+              <h4>Choisir le prochain geste</h4>
+              <p>Un clic suffit : à revoir, sélectionner, appeler, retenir ou refuser.</p>
               <div class="status-row" id="statusRow"></div>
             </div>
 
             <div class="action-grid" style="margin-top:16px">
               <article class="action-card">
-                <h4>Notes utiles</h4>
-                <p>Écris ce qui aide vraiment : sérieux, disponibilité, qualité du contact, suite à donner.</p>
+                <h4>Note courte</h4>
+                <p>Écris seulement l’essentiel : sérieux, disponibilité, suite à donner.</p>
                 <div class="notes-wrap">
                   <textarea id="bureauNotes" placeholder="Ex. Profil propre. Répond vite. À rappeler demain matin."></textarea>
                   <div class="button-row">
-                    <button class="primary" id="btnSaveNotes" type="button">Enregistrer les notes</button>
+                    <button class="primary" id="btnSaveNotes" type="button">💾 Garder la note</button>
                   </div>
                 </div>
               </article>
 
               <article class="action-card">
                 <h4>Passer à l’action</h4>
-                <p>Appelle, écris sur WhatsApp, copie la fiche ou rapproche la candidature d’une mission.</p>
+                <p>Les gestes utiles sont prêts. Tu cliques, le bureau garde la trace.</p>
                 <div class="button-row">
                   <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
-                  <button id="btnCopySheet" type="button">📋 Copier la fiche</button>
-                  <button id="btnCopyMissionLink" type="button">🧷 Copier la mission</button>
+                  <button id="btnMarkReview" type="button">👀 À revoir</button>
+                  <button id="btnMarkShortlist" type="button">⭐ Sélectionner</button>
+                  <button id="btnMarkCall" type="button">📞 À appeler</button>
+                  <button id="btnMarkAccepted" type="button">✅ Retenir</button>
+                  <button id="btnMarkRejected" type="button">❌ Refuser</button>
+                  <button id="btnCopySheet" type="button">📋 Copier fiche</button>
+                  <button id="btnCopyMissionLink" type="button">🧷 Copier mission</button>
                   <a id="btnOpenMatch" href="./match.html" target="_blank" rel="noopener">🎯 Rapprocher</a>
-                  <button id="btnMarkCall" type="button">📞 Marquer "à appeler"</button>
                 </div>
               </article>
             </div>
@@ -514,7 +588,7 @@
     <div class="wrap">
       <div class="foot">
         <p>
-          DIGIY JOBS · coffre protégé · tri clair · mise en relation propre.
+          DIGIY JOBS · coffre protégé · actions rapides · terrain d’abord.
         </p>
         <div class="foot-links">
           <button id="btnExportJson" type="button">Exporter JSON</button>
@@ -557,16 +631,26 @@
         pin: "./pin.html",
         cockpit: "./cockpit.html",
         match: "./match.html",
-        mission: "./mission.html"
+        mission: "./mission.html",
+        publish: "./publier-mission.html"
       };
 
       const STATUS_LABELS = {
         new: "Nouveau",
-        review: "En lecture",
+        review: "À revoir",
         shortlist: "Sélectionné",
-        call: "À contacter",
+        call: "À appeler",
         accepted: "Retenu",
         rejected: "Non retenu"
+      };
+
+      const STATUS_ACTION_ICONS = {
+        new: "🆕",
+        review: "👀",
+        shortlist: "⭐",
+        call: "📞",
+        accepted: "✅",
+        rejected: "❌"
       };
 
       const STATUS_CLASS = {
@@ -638,7 +722,15 @@
       const btnSaveNotes = document.getElementById("btnSaveNotes");
       const btnCopySheet = document.getElementById("btnCopySheet");
       const btnCopyMissionLink = document.getElementById("btnCopyMissionLink");
+      const btnMarkReview = document.getElementById("btnMarkReview");
+      const btnMarkShortlist = document.getElementById("btnMarkShortlist");
       const btnMarkCall = document.getElementById("btnMarkCall");
+      const btnMarkAccepted = document.getElementById("btnMarkAccepted");
+      const btnMarkRejected = document.getElementById("btnMarkRejected");
+      const quickNew = document.getElementById("quickNew");
+      const quickCall = document.getElementById("quickCall");
+      const quickShortlist = document.getElementById("quickShortlist");
+      const quickAccepted = document.getElementById("quickAccepted");
       const btnExportJson = document.getElementById("btnExportJson");
       const btnClearLocalNotes = document.getElementById("btnClearLocalNotes");
 
@@ -826,7 +918,7 @@
 
       function syncLinks() {
         linkCockpit.href = JOBS_PATHS.cockpit;
-        linkPublic.href = JOBS_PATHS.home;
+        linkPublic.href = JOBS_PATHS.publish;
         linkPin.href = JOBS_PATHS.pin;
         linkWall.href = JOBS_PATHS.wall;
         linkMatch.href = JOBS_PATHS.match;
@@ -1142,7 +1234,7 @@
         statusRow.innerHTML = "";
         Object.entries(STATUS_LABELS).forEach(([key, label]) => {
           const button = document.createElement("button");
-          button.textContent = label;
+          button.textContent = `${STATUS_ACTION_ICONS[key] || "•"} ${label}`;
           if (String(candidate.status || "new") === key) {
             button.classList.add("active");
           }
@@ -1383,6 +1475,16 @@
         }
       }
 
+      function selectStatusFilter(status){
+        filterStatus.value = status || "all";
+        renderList();
+        if (listEl) listEl.scrollIntoView({ behavior:"smooth", block:"start" });
+      }
+
+      function selectedCandidate(){
+        return state.candidates.find((item) => item.id === state.selectedId) || null;
+      }
+
       btnRefresh.addEventListener("click", async function() {
         try {
           await loadOffers();
@@ -1450,11 +1552,48 @@
         }
       });
 
-      btnMarkCall.addEventListener("click", async function() {
-        const candidate = state.candidates.find((item) => item.id === state.selectedId);
+      quickNew?.addEventListener("click", function(){ selectStatusFilter("new"); });
+      quickCall?.addEventListener("click", function(){ selectStatusFilter("call"); });
+      quickShortlist?.addEventListener("click", function(){ selectStatusFilter("shortlist"); });
+      quickAccepted?.addEventListener("click", function(){ selectStatusFilter("accepted"); });
+
+      btnMarkReview?.addEventListener("click", async function() {
+        const candidate = selectedCandidate();
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "review");
+        setCandidateLocal(candidate.id, { last_contact: "Mis à revoir" });
+        renderList();
+      });
+
+      btnMarkShortlist?.addEventListener("click", async function() {
+        const candidate = selectedCandidate();
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "shortlist");
+        setCandidateLocal(candidate.id, { last_contact: "Sélectionné" });
+        renderList();
+      });
+
+      btnMarkCall?.addEventListener("click", async function() {
+        const candidate = selectedCandidate();
         if (!candidate) return;
         await updateCandidateStatus(candidate.id, "call");
         setCandidateLocal(candidate.id, { last_contact: "Marqué à appeler" });
+        renderList();
+      });
+
+      btnMarkAccepted?.addEventListener("click", async function() {
+        const candidate = selectedCandidate();
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "accepted");
+        setCandidateLocal(candidate.id, { last_contact: "Retenu" });
+        renderList();
+      });
+
+      btnMarkRejected?.addEventListener("click", async function() {
+        const candidate = selectedCandidate();
+        if (!candidate) return;
+        await updateCandidateStatus(candidate.id, "rejected");
+        setCandidateLocal(candidate.id, { last_contact: "Non retenu" });
         renderList();
       });
 
