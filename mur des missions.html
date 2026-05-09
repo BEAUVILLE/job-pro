@@ -506,8 +506,49 @@
       };
 
       cleanSensitiveUrl();
-      syncLinks();
-      boot();
+syncLinks();
+bootMurMissions();
+
+async function bootMurMissions(){
+  try {
+    setSecurityLabels();
+
+    if (typeof bootGuard === "function") {
+      await bootGuard();
+    }
+
+    if (!state.hasAccess) {
+      return;
+    }
+
+    if (typeof loadOffers === "function") {
+      await loadOffers();
+    } else if (typeof loadMissions === "function") {
+      await loadMissions();
+    } else {
+      renderStatus(
+        "error",
+        "Le chargeur des missions est introuvable dans cette page."
+      );
+      return;
+    }
+
+    if (typeof bindEvents === "function") {
+      bindEvents();
+    }
+
+    if (typeof applyFilters === "function") {
+      applyFilters();
+    }
+  } catch (err) {
+    console.error("[DIGIY JOBS mur] démarrage impossible", err);
+    renderStatus(
+      "error",
+      "Le mur des missions n’a pas pu démarrer. Recharge ou repasse par le code PIN.",
+      true
+    );
+  }
+}
 
       function normalizeSlug(value = "") {
         return String(value || "")
