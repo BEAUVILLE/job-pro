@@ -655,46 +655,16 @@
           <div class="section-head">
             <div>
               <h2>À faire maintenant</h2>
-              <p>Seulement les gestes utiles. Pas de dispersion.</p>
+              <p>Le chef de passe montre seulement ce qui mérite une action.</p>
             </div>
           </div>
 
-          <div class="alerts">
-            <article class="alert">
-              <div class="alert-top">
-                <div>
-                  <strong>➕ Créer une annonce prête</strong>
-                  <p>Choisis serveur, livreur, aide ménage, ouvrier, vendeur… DIGIY prépare.</p>
-                </div>
-              </div>
-              <a class="primary" href="./publier-mission.html">Ouvrir</a>
-            </article>
-
-            <article class="alert">
-              <div class="alert-top">
-                <div>
-                  <strong>📥 Traiter les candidatures</strong>
-                  <p>Voir, appeler, sélectionner, retenir ou classer.</p>
-                </div>
-              </div>
-              <a href="./bureau.html">Voir</a>
-            </article>
-
-            <article class="alert">
-              <div class="alert-top">
-                <div>
-                  <strong>📎 Faire circuler</strong>
-                  <p>Partage le QR ou le mur public quand il faut relancer le terrain.</p>
-                </div>
-              </div>
-              <a href="./qr.html">Partager</a>
-            </article>
-          </div>
+          <div id="jobsAlerts" data-digiy-jobs-alerts></div>
 
           <details>
             <summary>Conseil DIGIY</summary>
             <div class="details-body">
-              La fiche et les annonces restent simples. Ensuite DIGIY fait remonter des alertes : nouveau candidat, mission sans réponse, profil à rappeler, dossier à décider.
+              Le logiciel lit derrière. Le pro voit devant seulement les alertes utiles.
             </div>
           </details>
         </aside>
@@ -817,5 +787,10 @@
       keepLinksClean();
     })();
   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js"></script>
+  <script src="./claw-tools.js"></script>
+  <script src="./jobs-alerts.js"></script>
 </body>
 </html>
