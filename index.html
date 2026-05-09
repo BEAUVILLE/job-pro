@@ -1,15 +1,12 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 
   <title>DIGIY JOBS PRO — Actions</title>
-  <meta
-    name="description"
-    content="DIGIY JOBS PRO — écran d’action léger : fiche, mission rapide, candidatures, alertes, partage."
-  />
-  <meta name="theme-color" content="#061b14" />
+  <meta name="description" content="DIGIY JOBS PRO — écran d’action léger : fiche, mission rapide, candidatures, alertes, partage.">
+  <meta name="theme-color" content="#061b14">
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -50,8 +47,8 @@
       font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(250,204,21,.11), transparent 28%),
-        radial-gradient(circle at 82% 18%, rgba(56,189,248,.08), transparent 24%),
+        radial-gradient(circle at top left,rgba(250,204,21,.11),transparent 28%),
+        radial-gradient(circle at 82% 18%,rgba(56,189,248,.08),transparent 24%),
         linear-gradient(180deg,var(--bg),#030b08 100%);
     }
 
@@ -60,7 +57,7 @@
     }
 
     a{text-decoration:none;color:inherit}
-    button{font:inherit}
+    button{font:inherit;cursor:pointer}
 
     .wrap{
       width:min(100%,var(--max));
@@ -99,9 +96,7 @@
       object-fit:cover;
     }
 
-    .brand-title{
-      min-width:0;
-    }
+    .brand-title{min-width:0}
 
     .brand-title strong{
       display:block;
@@ -151,7 +146,7 @@
       border:1px solid var(--line);
       border-radius:32px;
       background:
-        radial-gradient(circle at 85% 12%, rgba(250,204,21,.13), transparent 24%),
+        radial-gradient(circle at 85% 12%,rgba(250,204,21,.13),transparent 24%),
         linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));
       box-shadow:var(--shadow);
       padding:18px;
@@ -197,6 +192,37 @@
       line-height:1.42;
     }
 
+    .audio-inline{
+      margin-top:14px;
+      border:1px solid rgba(56,189,248,.22);
+      border-radius:20px;
+      padding:12px 14px;
+      background:rgba(56,189,248,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .audio-inline p{
+      margin:0;
+      color:#d8f5ff;
+      font-size:13px;
+      line-height:1.45;
+      font-weight:800;
+    }
+
+    .audio-inline button{
+      min-height:42px;
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      color:#171717;
+      font-weight:1000;
+    }
+
     .screen{
       display:grid;
       grid-template-columns:1fr .92fr;
@@ -205,8 +231,7 @@
       margin-top:16px;
     }
 
-    .pie-card,
-    .alerts-card{
+    .pie-card,.alerts-card{
       border:1px solid var(--line);
       border-radius:30px;
       background:rgba(255,255,255,.045);
@@ -245,7 +270,7 @@
       margin:8px auto 2px;
       border-radius:50%;
       background:
-        radial-gradient(circle at center, rgba(250,204,21,.16) 0 23%, transparent 24%),
+        radial-gradient(circle at center,rgba(250,204,21,.16) 0 23%,transparent 24%),
         conic-gradient(
           from -90deg,
           rgba(250,204,21,.18),
@@ -300,7 +325,7 @@
       gap:3px;
       padding:10px;
       box-shadow:0 14px 30px rgba(0,0,0,.25);
-      transition:transform .16s ease, border-color .16s ease, background .16s ease;
+      transition:transform .16s ease,border-color .16s ease,background .16s ease;
     }
 
     .slice:hover{
@@ -326,60 +351,6 @@
       font-size:11px;
       line-height:1.22;
       font-weight:750;
-    }
-
-    .alerts{
-      display:grid;
-      gap:10px;
-    }
-
-    .alert{
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:13px;
-      background:rgba(255,255,255,.055);
-      display:grid;
-      gap:8px;
-    }
-
-    .alert-top{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      justify-content:space-between;
-    }
-
-    .alert strong{
-      font-size:15px;
-      line-height:1.15;
-    }
-
-    .alert p{
-      margin:4px 0 0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.42;
-      font-weight:750;
-    }
-
-    .alert a,
-    .alert button{
-      border:none;
-      border-radius:15px;
-      min-height:42px;
-      padding:10px 12px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      font-weight:950;
-      cursor:pointer;
-    }
-
-    .alert a.primary{
-      background:linear-gradient(135deg,var(--gold),#eab308);
-      color:#151515;
     }
 
     details{
@@ -454,51 +425,48 @@
 
     .hidden{display:none!important}
 
-    @media (max-width:880px){
-      .screen{
-        grid-template-columns:1fr;
-      }
+    #digiyProAudioBtn{
+      position:fixed;
+      left:14px;
+      bottom:calc(92px + env(safe-area-inset-bottom,0px));
+      z-index:120;
+      min-height:50px;
+      border:none;
+      border-radius:999px;
+      padding:12px 16px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      background:linear-gradient(135deg,#facc15,#eab308);
+      color:#171717;
+      font-weight:1000;
+      box-shadow:0 18px 38px rgba(0,0,0,.24);
+    }
 
-      .pie{
-        width:min(420px,100%);
-      }
+    #digiyProAudioBtn span{
+      font-size:18px;
+      line-height:1;
+    }
+
+    #digiyProAudioBtn[aria-pressed="true"]{
+      background:linear-gradient(135deg,#0f172a,#233548);
+      color:#fff;
+    }
+
+    @media (max-width:880px){
+      .screen{grid-template-columns:1fr}
+      .pie{width:min(420px,100%)}
     }
 
     @media (max-width:560px){
-      body{
-        padding-left:10px;
-        padding-right:10px;
-      }
-
-      .top-actions .hide-mobile{
-        display:none;
-      }
-
-      .hero{
-        padding:16px;
-        border-radius:28px;
-      }
-
-      h1{
-        max-width:none;
-        font-size:34px;
-      }
-
-      .lead{
-        font-size:14px;
-      }
-
-      .pie-card,
-      .alerts-card{
-        border-radius:26px;
-        padding:14px;
-      }
-
-      .pie{
-        width:100%;
-        max-width:360px;
-      }
-
+      body{padding-left:10px;padding-right:10px}
+      .top-actions .hide-mobile{display:none}
+      .hero{padding:16px;border-radius:28px}
+      h1{max-width:none;font-size:34px}
+      .lead{font-size:14px}
+      .pie-card,.alerts-card{border-radius:26px;padding:14px}
+      .pie{width:100%;max-width:360px}
       .slice{
         width:98px;
         min-height:58px;
@@ -510,7 +478,6 @@
           rotate(calc(-1 * var(--a)))
           translate(-50%,-50%);
       }
-
       .slice:hover{
         transform:
           rotate(var(--a))
@@ -518,19 +485,13 @@
           rotate(calc(-1 * var(--a)))
           translate(-50%,-50%);
       }
-
-      .slice strong{
-        font-size:12px;
-      }
-
-      .slice span{
-        font-size:10px;
-      }
-
-      .center{
-        width:32%;
-        height:32%;
-        font-size:13px;
+      .slice strong{font-size:12px}
+      .slice span{font-size:10px}
+      .center{width:32%;height:32%;font-size:13px}
+      #digiyProAudioBtn{
+        left:10px;
+        bottom:calc(86px + env(safe-area-inset-bottom,0px));
+        padding:12px 14px;
       }
     }
 
@@ -544,7 +505,6 @@
           rotate(calc(-1 * var(--a)))
           translate(-50%,-50%);
       }
-
       .slice:hover{
         transform:
           rotate(var(--a))
@@ -552,10 +512,7 @@
           rotate(calc(-1 * var(--a)))
           translate(-50%,-50%);
       }
-
-      .center{
-        font-size:12px;
-      }
+      .center{font-size:12px}
     }
   </style>
 </head>
@@ -592,6 +549,13 @@
         <div class="doctrine">
           Le pro clique plus qu’il n’écrit.<br>
           DIGIY formule pour lui, le terrain valide avec sa vérité.
+        </div>
+
+        <div class="audio-inline">
+          <p>
+            🎧 Accueil vocal · une voix explique au professionnel comment utiliser cette porte sans se fatiguer.
+          </p>
+          <button type="button" id="digiyProAudioInline">Écouter</button>
         </div>
       </section>
 
@@ -679,6 +643,11 @@
     <a href="./qr.html"><b>▣</b>Partager</a>
     <a href="./pin.html"><b>🔒</b>Code</a>
   </nav>
+
+  <button id="digiyProAudioBtn" type="button" aria-label="Écouter DIGIY PRO" aria-pressed="false">
+    <span>🎧</span>
+    <strong>Écouter DIGIY</strong>
+  </button>
 
   <script>
     (() => {
@@ -785,6 +754,131 @@
 
       cleanVisibleUrl();
       keepLinksClean();
+    })();
+  </script>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const AUDIO_TEXT =
+        "Bienvenue dans DIGIY JOBS PRO. Ici, le professionnel ne doit pas se perdre dans un tableau lourd. Il choisit une action et DIGIY garde le reste derrière. Si tu veux régler ton activité, ouvre Ma fiche. Si tu veux publier un besoin, clique sur Annonce. Si des candidatures arrivent ou si une mission attend une décision, regarde Alertes ou Candidats. Si tu veux rapprocher un profil avec une mission, ouvre Rapprocher. Si tu veux faire circuler le travail sur le terrain, utilise Partager et le QR. Le chef de passe lit derrière et te montre seulement ce qui mérite ton action. Le pro clique plus qu’il n’écrit. DIGIY formule pour lui, et le terrain valide avec sa vérité.";
+
+      const CFG = {
+        rate: 0.86,
+        pitch: 1.04,
+        volume: 1
+      };
+
+      const btn = document.getElementById("digiyProAudioBtn");
+      const inlineBtn = document.getElementById("digiyProAudioInline");
+
+      function canSpeak(){
+        return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+      }
+
+      function updateButton(isPlaying){
+        if (!btn) return;
+
+        btn.setAttribute("aria-pressed", isPlaying ? "true" : "false");
+        btn.innerHTML = isPlaying
+          ? "<span>⏹</span><strong>Stop</strong>"
+          : "<span>🎧</span><strong>Écouter DIGIY</strong>";
+
+        if (inlineBtn) {
+          inlineBtn.textContent = isPlaying ? "Stop" : "Écouter";
+        }
+      }
+
+      function getFrenchVoice(){
+        const voices = window.speechSynthesis.getVoices() || [];
+
+        return (
+          voices.find((v) => /fr[-_]?fr/i.test(v.lang || "")) ||
+          voices.find((v) => /^fr/i.test(v.lang || "")) ||
+          voices[0] ||
+          null
+        );
+      }
+
+      function loadVoices(){
+        return new Promise((resolve) => {
+          if (!canSpeak()) {
+            resolve([]);
+            return;
+          }
+
+          const ready = window.speechSynthesis.getVoices();
+
+          if (ready && ready.length) {
+            resolve(ready);
+            return;
+          }
+
+          let done = false;
+
+          const finish = () => {
+            if (done) return;
+            done = true;
+            resolve(window.speechSynthesis.getVoices() || []);
+          };
+
+          window.speechSynthesis.onvoiceschanged = finish;
+          setTimeout(finish, 700);
+        });
+      }
+
+      function stop(){
+        if (!canSpeak()) return;
+        window.speechSynthesis.cancel();
+        updateButton(false);
+      }
+
+      async function speak(){
+        if (!canSpeak()) {
+          alert("La lecture vocale n’est pas disponible sur ce navigateur.");
+          return;
+        }
+
+        await loadVoices();
+
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(AUDIO_TEXT);
+        const voice = getFrenchVoice();
+
+        if (voice) utterance.voice = voice;
+
+        utterance.lang = voice?.lang || "fr-FR";
+        utterance.rate = CFG.rate;
+        utterance.pitch = CFG.pitch;
+        utterance.volume = CFG.volume;
+
+        utterance.onstart = () => updateButton(true);
+        utterance.onend = () => updateButton(false);
+        utterance.onerror = () => updateButton(false);
+
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function toggle(){
+        if (canSpeak() && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+          stop();
+          return;
+        }
+
+        speak();
+      }
+
+      btn?.addEventListener("click", toggle);
+      inlineBtn?.addEventListener("click", toggle);
+      window.addEventListener("pagehide", stop);
+
+      window.DIGIY_PRO_AUDIO = {
+        speak,
+        stop,
+        text: AUDIO_TEXT
+      };
     })();
   </script>
 
