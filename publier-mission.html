@@ -234,6 +234,130 @@
       border-color:rgba(56,189,248,.22);
     }
 
+
+
+    .quick-card{
+      margin-top:18px;
+      border:1px solid rgba(250,204,21,.20);
+      border-radius:30px;
+      padding:18px;
+      background:
+        radial-gradient(circle at top right, rgba(250,204,21,.10), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+      box-shadow:var(--shadow);
+    }
+
+    .quick-head{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+
+    .quick-head h2{
+      margin:0 0 6px;
+      font-size:24px;
+      letter-spacing:-.02em;
+    }
+
+    .quick-head p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      max-width:720px;
+      font-size:14px;
+    }
+
+    .preset-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .preset-btn{
+      width:100%;
+      min-height:94px;
+      border-radius:20px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.055);
+      color:var(--text);
+      padding:13px;
+      text-align:left;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:8px;
+      transition:transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .preset-btn:hover{
+      transform:translateY(-1px);
+      border-color:rgba(250,204,21,.38);
+      background:rgba(250,204,21,.09);
+    }
+
+    .preset-btn.active{
+      border-color:rgba(250,204,21,.70);
+      background:linear-gradient(180deg, rgba(250,204,21,.16), rgba(255,255,255,.06));
+      box-shadow:0 0 0 3px rgba(250,204,21,.08);
+    }
+
+    .preset-title{
+      font-size:15px;
+      font-weight:1000;
+      line-height:1.2;
+    }
+
+    .preset-sub{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+      font-weight:750;
+    }
+
+    .quick-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .quick-chip{
+      min-height:40px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:900;
+    }
+
+    .quick-chip:hover{
+      border-color:rgba(56,189,248,.36);
+      background:rgba(56,189,248,.10);
+    }
+
+    .draft-preview{
+      margin-top:14px;
+      border:1px dashed rgba(56,189,248,.30);
+      border-radius:22px;
+      padding:14px;
+      background:rgba(56,189,248,.07);
+      color:#d8f5ff;
+      line-height:1.6;
+      font-size:14px;
+      display:none;
+    }
+
+    .draft-preview strong{
+      display:block;
+      color:#fff;
+      margin-bottom:6px;
+    }
+
     .form-card{
       margin-top:18px;
       border:1px solid var(--line);
@@ -481,6 +605,10 @@
       line-height:1;
     }
 
+    @media (max-width: 920px){
+      .preset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
     @media (max-width: 820px){
       .hero-grid{grid-template-columns:1fr}
       h1{max-width:none}
@@ -489,8 +617,132 @@
     @media (max-width: 680px){
       .wrap{width:min(calc(100% - 18px),var(--max));padding-top:12px}
       .hero{padding:22px 14px;border-radius:28px}
-      .form-card{padding:18px 14px;border-radius:28px}
-      .grid,.toggle-row,.mini-grid{grid-template-columns:1fr}
+  
+
+    .quick-card{
+      margin-top:18px;
+      border:1px solid rgba(250,204,21,.20);
+      border-radius:30px;
+      padding:18px;
+      background:
+        radial-gradient(circle at top right, rgba(250,204,21,.10), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+      box-shadow:var(--shadow);
+    }
+
+    .quick-head{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+
+    .quick-head h2{
+      margin:0 0 6px;
+      font-size:24px;
+      letter-spacing:-.02em;
+    }
+
+    .quick-head p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      max-width:720px;
+      font-size:14px;
+    }
+
+    .preset-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .preset-btn{
+      width:100%;
+      min-height:94px;
+      border-radius:20px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.055);
+      color:var(--text);
+      padding:13px;
+      text-align:left;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:8px;
+      transition:transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .preset-btn:hover{
+      transform:translateY(-1px);
+      border-color:rgba(250,204,21,.38);
+      background:rgba(250,204,21,.09);
+    }
+
+    .preset-btn.active{
+      border-color:rgba(250,204,21,.70);
+      background:linear-gradient(180deg, rgba(250,204,21,.16), rgba(255,255,255,.06));
+      box-shadow:0 0 0 3px rgba(250,204,21,.08);
+    }
+
+    .preset-title{
+      font-size:15px;
+      font-weight:1000;
+      line-height:1.2;
+    }
+
+    .preset-sub{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+      font-weight:750;
+    }
+
+    .quick-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .quick-chip{
+      min-height:40px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:900;
+    }
+
+    .quick-chip:hover{
+      border-color:rgba(56,189,248,.36);
+      background:rgba(56,189,248,.10);
+    }
+
+    .draft-preview{
+      margin-top:14px;
+      border:1px dashed rgba(56,189,248,.30);
+      border-radius:22px;
+      padding:14px;
+      background:rgba(56,189,248,.07);
+      color:#d8f5ff;
+      line-height:1.6;
+      font-size:14px;
+      display:none;
+    }
+
+    .draft-preview strong{
+      display:block;
+      color:#fff;
+      margin-bottom:6px;
+    }
+
+    .form-card{padding:18px 14px;border-radius:28px}
+      .grid,.toggle-row,.mini-grid,.preset-grid{grid-template-columns:1fr}
       h1{font-size:35px}
       .btn{width:100%}
       .topbar .chip-link:nth-child(n+5){display:none}
@@ -513,18 +765,18 @@
       <div class="hero-grid">
         <div>
           <div class="kicker">JOBS PRO • coffre • mission</div>
-          <h1>Proposer un poste.</h1>
+          <h1>Choisir un besoin.</h1>
           <p class="lead">
-            Décris le besoin clairement : métier, ville, contrat, rémunération, conditions.
-            DIGIY prépare la mission pour que les bons candidats puissent la lire et postuler.
+            Clique sur un geste métier : serveur, livreur, aide ménage, ouvrier, vendeur…
+            DIGIY prépare la mission. Tu ajustes seulement la ville, le prix et les détails utiles.
           </p>
         </div>
 
         <aside class="hero-box">
-          <h2>Le bon geste</h2>
+          <h2>Moins écrire, plus cliquer</h2>
           <p>
-            Ici, le pro ne cherche pas un candidat au hasard. Il pose d’abord un poste propre.
-            Ensuite le bureau reçoit les candidatures et le match rapproche les bons profils.
+            Ici, le pro ne part plus d’une page blanche. Il choisit un besoin prêt, DIGIY remplit la base,
+            puis la mission part au mur public et au bureau de tri.
           </p>
 
           <div class="mini-grid">
@@ -555,14 +807,76 @@
     <section id="formCard" class="form-card" hidden>
       <div class="form-head">
         <div>
-          <h2>Nouvelle mission</h2>
+          <h2>Mission prête à publier</h2>
           <p>
-            Les mots doivent parler au terrain. Une mission claire donne plus de chances
-            de recevoir une candidature utile.
+            La base est préparée par DIGIY. Ajuste seulement les détails utiles avant publication.
           </p>
         </div>
         <button id="btnReset" class="ghost-btn" type="button">Vider le formulaire</button>
       </div>
+
+
+
+      <section class="quick-card" aria-label="Missions rapides DIGIY">
+        <div class="quick-head">
+          <div>
+            <h2>Choisis un besoin rapide</h2>
+            <p>
+              Le pro clique, DIGIY prépare. Ensuite tu ajustes seulement ce qui change : ville, rémunération,
+              horaires ou précision terrain.
+            </p>
+          </div>
+          <button id="btnCleanDraft" class="ghost-btn gold" type="button">Repartir propre</button>
+        </div>
+
+        <div class="preset-grid" id="presetGrid">
+          <button class="preset-btn" type="button" data-preset="serveur">
+            <span class="preset-title">🍽️ Serveur / serveuse</span>
+            <span class="preset-sub">Restaurant, service, extra, horaires à préciser.</span>
+          </button>
+          <button class="preset-btn" type="button" data-preset="livreur">
+            <span class="preset-title">🚚 Livreur</span>
+            <span class="preset-sub">Livraison locale, sérieux, téléphone, zone.</span>
+          </button>
+          <button class="preset-btn" type="button" data-preset="menage">
+            <span class="preset-title">🧹 Aide ménage</span>
+            <span class="preset-sub">Maison, villa, hôtel, nettoyage propre.</span>
+          </button>
+          <button class="preset-btn" type="button" data-preset="ouvrier">
+            <span class="preset-title">🧱 Ouvrier / artisan</span>
+            <span class="preset-sub">Chantier, travaux, disponibilité terrain.</span>
+          </button>
+          <button class="preset-btn" type="button" data-preset="vendeur">
+            <span class="preset-title">🛍️ Vendeur boutique</span>
+            <span class="preset-sub">Accueil client, vente, rangement, caisse simple.</span>
+          </button>
+          <button class="preset-btn" type="button" data-preset="chauffeur">
+            <span class="preset-title">🚗 Chauffeur</span>
+            <span class="preset-sub">Courses, transferts, ponctualité, conduite propre.</span>
+          </button>
+          <button class="preset-btn" type="button" data-preset="hotel">
+            <span class="preset-title">🏨 Hôtel / villa</span>
+            <span class="preset-sub">Accueil, chambre, piscine, entretien, polyvalence.</span>
+          </button>
+          <button class="preset-btn" type="button" data-preset="manutention">
+            <span class="preset-title">📦 Manutention</span>
+            <span class="preset-sub">Stock, déchargement, rangement, marché.</span>
+          </button>
+        </div>
+
+        <div class="quick-row" aria-label="Villes rapides">
+          <button class="quick-chip" type="button" data-city="Saly">📍 Saly</button>
+          <button class="quick-chip" type="button" data-city="Mbour">📍 Mbour</button>
+          <button class="quick-chip" type="button" data-city="Dakar">📍 Dakar</button>
+          <button class="quick-chip" type="button" data-city="Touba">📍 Touba</button>
+          <button class="quick-chip" type="button" data-pay="À discuter">💰 À discuter</button>
+          <button class="quick-chip" type="button" data-pay="Paiement journalier à confirmer">💰 Journalier</button>
+          <button class="quick-chip" type="button" data-contract="extra">⚡ Extra</button>
+          <button class="quick-chip" type="button" data-contract="mission">🕒 Mission</button>
+        </div>
+
+        <div id="draftPreview" class="draft-preview"></div>
+      </section>
 
       <form id="missionForm">
         <div class="grid">
@@ -754,6 +1068,82 @@
         return String(value || "").trim();
       }
 
+      const JOB_PRESETS = {
+        serveur: {
+          title: "Serveur / serveuse pour service à préciser",
+          sector: "food",
+          contract_type: "extra",
+          pay: "À discuter selon horaires",
+          employer_name: "Restaurant / service local",
+          description: "Nous cherchons une personne sérieuse pour aider au service : accueil des clients, prise simple des commandes, service à table, rangement et aide pendant les heures d’activité.",
+          requirements: "Être ponctuel, propre, respectueux avec les clients, disponible aux horaires demandés. Expérience appréciée, mais sérieux obligatoire."
+        },
+        livreur: {
+          title: "Livreur pour courses locales",
+          sector: "service",
+          contract_type: "mission",
+          pay: "À discuter selon zone et volume",
+          employer_name: "Livraison locale",
+          description: "Nous cherchons un livreur disponible pour effectuer des livraisons locales, récupérer ou déposer des articles, prévenir le client et confirmer les courses proprement.",
+          requirements: "Connaître la zone, être joignable, ponctuel, prudent et correct avec les clients. Moyen de déplacement à préciser."
+        },
+        menage: {
+          title: "Aide ménage pour maison, villa ou location",
+          sector: "service",
+          contract_type: "mission",
+          pay: "À discuter selon durée et tâches",
+          employer_name: "Maison / villa / location",
+          description: "Nous cherchons une personne pour aider au ménage : nettoyage des pièces, rangement, préparation simple, entretien du linge ou remise en état après passage client.",
+          requirements: "Personne sérieuse, discrète, ponctuelle, soigneuse et disponible. Expérience maison, villa, hôtel ou location appréciée."
+        },
+        ouvrier: {
+          title: "Ouvrier / artisan pour travaux à préciser",
+          sector: "build",
+          contract_type: "mission",
+          pay: "À discuter selon chantier",
+          employer_name: "Chantier local",
+          description: "Nous cherchons une personne disponible pour un chantier ou des travaux : aide chantier, maçonnerie, peinture, manutention, réparation ou finition selon besoin.",
+          requirements: "Être ponctuel, savoir travailler proprement, respecter les consignes, avoir une expérience terrain. Matériel et durée à préciser."
+        },
+        vendeur: {
+          title: "Vendeur / vendeuse boutique",
+          sector: "shop",
+          contract_type: "mission",
+          pay: "À discuter selon horaires",
+          employer_name: "Boutique locale",
+          description: "Nous cherchons une personne pour aider en boutique : accueillir les clients, présenter les produits, ranger, suivre les demandes et aider aux ventes simples.",
+          requirements: "Bonne présentation, sérieux, ponctualité, respect du client, capacité à parler clairement des produits. Expérience vente appréciée."
+        },
+        chauffeur: {
+          title: "Chauffeur disponible pour courses ou transferts",
+          sector: "driver",
+          contract_type: "mission",
+          pay: "À discuter selon trajet",
+          employer_name: "Transport local",
+          description: "Nous cherchons un chauffeur sérieux pour des courses, transferts ou déplacements à organiser selon les besoins et les horaires.",
+          requirements: "Conduite prudente, ponctualité, téléphone joignable, bonne connaissance de la zone. Permis et véhicule à préciser selon mission."
+        },
+        hotel: {
+          title: "Personnel polyvalent hôtel / villa",
+          sector: "service",
+          contract_type: "mission",
+          pay: "À discuter selon durée",
+          employer_name: "Hôtel / villa / maison d’hôtes",
+          description: "Nous cherchons une personne polyvalente pour aider dans un hôtel, une villa ou une maison d’hôtes : accueil simple, entretien, préparation, linge, rangement ou aide selon besoin.",
+          requirements: "Être sérieux, discret, ponctuel, propre dans le travail et disponible. Expérience hôtellerie, villa ou location appréciée."
+        },
+        manutention: {
+          title: "Aide manutention / rangement stock",
+          sector: "market",
+          contract_type: "mission",
+          pay: "À discuter selon volume",
+          employer_name: "Commerce / marché local",
+          description: "Nous cherchons une personne pour aider à porter, décharger, ranger, organiser un stock ou préparer des produits selon les besoins du commerce.",
+          requirements: "Personne sérieuse, disponible, capable de porter et de travailler proprement. Ponctualité obligatoire."
+        }
+      };
+
+
       function showStatus(type, text){
         const box = $("statusBox");
         if (!box) return;
@@ -847,6 +1237,99 @@
         );
       }
 
+
+
+      function setValue(id, value){
+        const el = $(id);
+        if (!el) return;
+        el.value = value || "";
+        el.dispatchEvent(new Event("input", { bubbles:true }));
+        el.dispatchEvent(new Event("change", { bubbles:true }));
+      }
+
+      function previewDraft(){
+        const box = $("draftPreview");
+        if (!box) return;
+        const title = cleanText($("title")?.value || "");
+        const city = cleanText($("city")?.value || "");
+        const pay = cleanText($("pay")?.value || "");
+        const desc = cleanText($("description")?.value || "");
+        if (!title && !desc) {
+          box.style.display = "none";
+          box.innerHTML = "";
+          return;
+        }
+        box.style.display = "block";
+        box.innerHTML = "<strong>Prévisualisation terrain</strong>" +
+          [title, city ? "📍 " + city : "", pay ? "💰 " + pay : "", desc].filter(Boolean).join("<br>");
+      }
+
+      function applyPreset(key){
+        const preset = JOB_PRESETS[key];
+        if (!preset) return;
+        setValue("title", preset.title);
+        setValue("sector", preset.sector);
+        setValue("contract_type", preset.contract_type);
+        setValue("pay", preset.pay);
+        setValue("employer_name", preset.employer_name);
+        setValue("description", preset.description);
+        setValue("requirements", preset.requirements);
+        if (!cleanText($("country").value)) setValue("country", "Sénégal");
+        document.querySelectorAll("[data-preset]").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.preset === key);
+        });
+        previewDraft();
+        showStatus("ok", "Base préparée. Ajuste la ville, la rémunération et publie quand c’est bon.");
+        $("title")?.scrollIntoView({ behavior:"smooth", block:"center" });
+      }
+
+      function setupQuickActions(){
+        document.querySelectorAll("[data-preset]").forEach((btn) => {
+          btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
+        });
+
+        document.querySelectorAll("[data-city]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            setValue("city", btn.dataset.city || "");
+            previewDraft();
+            showStatus("ok", "Ville ajoutée : " + (btn.dataset.city || ""));
+          });
+        });
+
+        document.querySelectorAll("[data-pay]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            setValue("pay", btn.dataset.pay || "");
+            previewDraft();
+            showStatus("ok", "Rémunération préparée.");
+          });
+        });
+
+        document.querySelectorAll("[data-contract]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            setValue("contract_type", btn.dataset.contract || "mission");
+            previewDraft();
+            showStatus("ok", "Type de mission ajusté.");
+          });
+        });
+
+        ["title","sector","contract_type","city","country","pay","employer_name","description","requirements"].forEach((id) => {
+          const el = $(id);
+          if (el) {
+            el.addEventListener("input", previewDraft);
+            el.addEventListener("change", previewDraft);
+          }
+        });
+
+        $("btnCleanDraft")?.addEventListener("click", () => {
+          $("missionForm").reset();
+          $("country").value = "Sénégal";
+          $("resultLinks").style.display = "none";
+          document.querySelectorAll("[data-preset]").forEach((btn) => btn.classList.remove("active"));
+          previewDraft();
+          showStatus("info", "Base vidée. Choisis un besoin rapide pour repartir propre.");
+        });
+      }
+
       function buildPayload(){
         const payload = {
           slug: state.slug,
@@ -937,6 +1420,8 @@
 
         $("missionForm").reset();
         $("country").value = "Sénégal";
+        document.querySelectorAll("[data-preset]").forEach((btn) => btn.classList.remove("active"));
+        previewDraft();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
@@ -947,9 +1432,12 @@
         $("missionForm").reset();
         $("country").value = "Sénégal";
         $("resultLinks").style.display = "none";
+        document.querySelectorAll("[data-preset]").forEach((btn) => btn.classList.remove("active"));
+        previewDraft();
         showStatus("info", "Formulaire vidé.");
       });
 
+      setupQuickActions();
       bootGuard();
     })();
   </script>
