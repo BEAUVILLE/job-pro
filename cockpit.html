@@ -4,11 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#061b14"/>
-  <meta
-    name="description"
-    content="DIGIY JOBS — espace recruteur sécurisé pour suivre missions, candidatures et pipeline réel."
-  />
-  <title>DIGIY JOBS — Mon espace</title>
+  <title>DIGIY JOBS PRO — Veille</title>
+  <meta name="description" content="DIGIY JOBS PRO — veille légère : alertes, actions, fiche et annonces prêtes." />
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -18,31 +15,31 @@
     window.DIGIY_LOGIN_URL = "./pin.html";
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./guard.js"></script>
   <script src="./claw-tools.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --bg:#061b14;
       --bg2:#0a2b1f;
-      --card:#0d241b;
-      --card2:#113024;
-      --line:rgba(255,255,255,.12);
-      --text:#eafff1;
-      --muted:rgba(234,255,241,.72);
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.09);
+      --line:rgba(255,255,255,.13);
+      --text:#ecfff4;
+      --muted:rgba(236,255,244,.72);
       --gold:#facc15;
       --gold2:#fde68a;
       --green:#22c55e;
       --blue:#38bdf8;
-      --danger:#fb7185;
-      --orange:#fb923c;
-      --shadow:0 20px 70px rgba(0,0,0,.28);
-      --max:1280px;
+      --red:#fb7185;
+      --shadow:0 22px 70px rgba(0,0,0,.34);
+      --radius:28px;
+      --max:980px;
     }
 
     *{box-sizing:border-box}
@@ -50,1835 +47,791 @@
     html,body{
       margin:0;
       padding:0;
+      min-height:100%;
+      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
       background:
-        radial-gradient(circle at top, rgba(250,204,21,.08), transparent 26%),
-        linear-gradient(180deg,var(--bg),#04110c 100%);
-      color:var(--text);
-      font-family:Outfit,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+        radial-gradient(circle at top left, rgba(250,204,21,.11), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(56,189,248,.08), transparent 24%),
+        linear-gradient(180deg,var(--bg),#030b08 100%);
     }
 
-    a{color:inherit;text-decoration:none}
-    button,input,select,textarea{font:inherit}
-
-    .site-back-float{
-      position:fixed;
-      top:calc(env(safe-area-inset-top, 0px) + 12px);
-      left:calc(env(safe-area-inset-left, 0px) + 12px);
-      z-index:9999;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      min-height:46px;
-      padding:11px 15px;
-      border-radius:999px;
-      text-decoration:none;
-      font-size:14px;
-      font-weight:950;
-      color:var(--text);
-      background:rgba(6,27,20,.82);
-      border:1px solid rgba(255,255,255,.18);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:0 14px 30px rgba(0,0,0,.28);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease;
-      touch-action:manipulation;
+    body{
+      padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(88px + env(safe-area-inset-bottom,0px));
     }
 
-    .site-back-float:hover{
-      transform:translateY(-1px);
-      background:rgba(250,204,21,.10);
-      border-color:rgba(250,204,21,.42);
-      color:#fff2ae;
+    a{text-decoration:none;color:inherit}
+    button{font:inherit;cursor:pointer}
+
+    .wrap{
+      width:min(100%,var(--max));
+      margin:0 auto;
     }
 
-    .site-back-float:active{transform:scale(.97)}
-
-    .top-links{
-      position:fixed;
-      top:calc(env(safe-area-inset-top, 0px) + 12px);
-      right:calc(env(safe-area-inset-right, 0px) + 12px);
-      z-index:9998;
+    .top{
       display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-      max-width:min(1040px, calc(100vw - 130px));
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:14px;
     }
 
-    .chip-link{
-      min-height:46px;
-      padding:11px 14px;
-      border-radius:999px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
+    .brand-mark{
+      width:46px;
+      height:46px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      color:#171717;
+      font-weight:1000;
+      box-shadow:0 12px 28px rgba(0,0,0,.24);
+      flex:0 0 auto;
+    }
+
+    .brand-title strong{
+      display:block;
+      font-size:18px;
+      font-weight:1000;
+      line-height:1.05;
+    }
+
+    .brand-title span{
+      display:block;
+      margin-top:3px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .chip{
+      min-height:42px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:8px;
+      border-radius:999px;
+      padding:10px 13px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.06);
       font-size:13px;
       font-weight:950;
       color:var(--text);
-      background:rgba(6,27,20,.82);
-      border:1px solid rgba(255,255,255,.16);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:0 14px 30px rgba(0,0,0,.22);
-      transition:transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
-      white-space:nowrap;
     }
 
-    .chip-link:hover{
-      transform:translateY(-1px);
-      background:rgba(255,255,255,.10);
-      border-color:rgba(255,255,255,.24);
-    }
-
-    .chip-link.gold{
-      background:rgba(250,204,21,.12);
-      border-color:rgba(250,204,21,.32);
-      color:#fff2ae;
-    }
-
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:88px 16px 96px;
+    .chip.gold{
+      color:#171717;
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      border-color:transparent;
     }
 
     .hero{
       border:1px solid var(--line);
       border-radius:32px;
-      padding:24px 20px;
       background:
-        radial-gradient(circle at 85% 18%, rgba(250,204,21,.13), transparent 20%),
-        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
-        var(--bg2);
+        radial-gradient(circle at 85% 12%, rgba(250,204,21,.13), transparent 24%),
+        linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));
       box-shadow:var(--shadow);
-    }
-
-    .hero-top{
-      display:flex;
-      justify-content:space-between;
-      gap:14px;
-      align-items:flex-start;
-      flex-wrap:wrap;
+      padding:18px;
+      overflow:hidden;
     }
 
     .kicker{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      font-size:12px;
-      letter-spacing:.15em;
-      text-transform:uppercase;
       color:var(--gold2);
-      font-weight:900;
-      margin-bottom:10px;
+      font-size:12px;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+      font-weight:1000;
     }
 
     h1{
-      margin:0 0 10px;
-      font-size:clamp(30px,5vw,54px);
-      line-height:1;
-      letter-spacing:-.03em;
+      margin:10px 0 8px;
+      font-size:clamp(30px,7vw,56px);
+      line-height:.96;
+      letter-spacing:-.045em;
     }
 
     .lead{
       margin:0;
       color:var(--muted);
-      line-height:1.65;
-      max-width:820px;
+      line-height:1.5;
       font-size:15px;
-      font-weight:650;
+      font-weight:750;
+      max-width:64ch;
     }
 
-    .hero-actions,
-    .hero-links,
-    .assist-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .hero-links{margin-top:14px}
-    .assist-actions{margin-top:14px}
-
-    .ghost-btn,.gold-btn,.nav-btn{
-      min-height:46px;
-      padding:12px 16px;
-      border-radius:999px;
-      font-weight:900;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border:none;
-      cursor:pointer;
-    }
-
-    .ghost-btn,.nav-btn{
-      background:rgba(255,255,255,.07);
-      color:var(--text);
-      border:1px solid var(--line);
-    }
-
-    .gold-btn{
-      background:linear-gradient(180deg,var(--gold),#eab308);
-      color:#171717;
-    }
-
-    .nav-btn.gold{
-      background:rgba(250,204,21,.12);
-      border-color:rgba(250,204,21,.28);
-      color:#fff2ae;
-    }
-
-    .nav-btn.blue{
-      background:rgba(56,189,248,.12);
-      border-color:rgba(56,189,248,.28);
-      color:#d8f5ff;
-    }
-
-    .meta-line{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:16px;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .meta-chip{
-      padding:9px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.05);
-      border:1px solid var(--line);
-    }
-
-    .assist-card{
-      margin-top:16px;
-      border:1px solid rgba(56,189,248,.22);
-      border-radius:24px;
-      padding:18px;
-      background:linear-gradient(180deg, rgba(56,189,248,.08), rgba(255,255,255,.03));
-    }
-
-    .assist-kicker{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(56,189,248,.22);
-      color:#d8f5ff;
-      font-size:12px;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-
-    .assist-card h2{
-      margin:12px 0 8px;
-      font-size:24px;
-      line-height:1.1;
-      letter-spacing:-.02em;
-    }
-
-    .assist-card p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.65;
-      max-width:880px;
-    }
-
-    .assist-list{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
+    .status{
       margin-top:14px;
-    }
-
-    .assist-item{
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
-      background:rgba(255,255,255,.04);
-    }
-
-    .assist-item strong{
-      display:block;
-      margin-bottom:6px;
-      font-size:14px;
-      color:#fff;
-    }
-
-    .assist-item span{
-      display:block;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.55;
-    }
-
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(7,minmax(0,1fr));
-      gap:12px;
-      margin-top:18px;
-    }
-
-    .stat{
-      border:1px solid var(--line);
+      border:1px solid rgba(56,189,248,.22);
+      background:rgba(56,189,248,.08);
+      color:#d8f5ff;
       border-radius:20px;
-      padding:16px;
-      background:rgba(255,255,255,.04);
-      min-height:104px;
-    }
-
-    .stat-label{
-      color:var(--muted);
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      font-weight:900;
-      margin-bottom:10px;
-    }
-
-    .stat-value{
-      font-size:30px;
-      font-weight:1000;
-      line-height:1;
-      letter-spacing:-.03em;
-    }
-
-    .tabs{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:20px 0 14px;
-    }
-
-    .tab{
-      min-height:46px;
-      padding:12px 16px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      font-weight:900;
-      cursor:pointer;
-    }
-
-    .tab.active{
-      background:rgba(250,204,21,.1);
-      border-color:rgba(250,204,21,.32);
-      color:#fff2ae;
-    }
-
-    .panel{
-      border:1px solid var(--line);
-      border-radius:28px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
-        var(--card);
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-
-    .toolbar{
-      display:grid;
-      grid-template-columns:1.2fr .8fr .8fr auto;
-      gap:12px;
-      margin-bottom:16px;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .field label{
-      color:#d9fbe7;
-      font-size:12px;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-      font-weight:900;
-    }
-
-    .field input,.field select{
-      width:100%;
-      border:none;
-      outline:none;
-      min-height:48px;
       padding:12px 14px;
-      border-radius:16px;
-      color:var(--text);
-      background:rgba(255,255,255,.08);
-      border:1px solid transparent;
+      line-height:1.45;
+      font-size:13px;
+      font-weight:850;
     }
 
-    .field input:focus,.field select:focus{
-      border-color:rgba(250,204,21,.4);
-      box-shadow:0 0 0 4px rgba(250,204,21,.08);
+    .status.ok{
+      border-color:rgba(34,197,94,.25);
+      background:rgba(34,197,94,.10);
+      color:#c9ffd4;
     }
 
-    .cards{
+    .status.warn{
+      border-color:rgba(250,204,21,.26);
+      background:rgba(250,204,21,.10);
+      color:#fff4bd;
+    }
+
+    .status.err{
+      border-color:rgba(251,113,133,.26);
+      background:rgba(251,113,133,.10);
+      color:#ffd9df;
+    }
+
+    .grid{
       display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
+      grid-template-columns:.9fr 1.1fr;
+      gap:16px;
+      margin-top:16px;
     }
 
     .card{
       border:1px solid var(--line);
-      border-radius:24px;
+      border-radius:30px;
+      background:var(--card);
+      box-shadow:var(--shadow);
       padding:16px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)),
-        var(--card2);
+      min-height:100%;
     }
 
-    .card-top{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:10px;
-    }
-
-    .title{
+    .card h2{
       margin:0;
-      font-size:22px;
+      font-size:21px;
       line-height:1.1;
       letter-spacing:-.02em;
-      font-weight:1000;
     }
 
-    .meta{
+    .card p{
+      margin:5px 0 0;
       color:var(--muted);
-      font-size:14px;
-      line-height:1.6;
-      margin-top:6px;
-    }
-
-    .badge-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:10px;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:900;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.05);
-    }
-
-    .badge.gold{
-      border-color:rgba(250,204,21,.32);
-      background:rgba(250,204,21,.08);
-      color:#fff2ae;
-    }
-
-    .badge.green{
-      border-color:rgba(34,197,94,.28);
-      background:rgba(34,197,94,.1);
-      color:#c9ffd4;
-    }
-
-    .badge.blue{
-      border-color:rgba(56,189,248,.28);
-      background:rgba(56,189,248,.1);
-      color:#d8f4ff;
-    }
-
-    .badge.orange{
-      border-color:rgba(251,146,60,.28);
-      background:rgba(251,146,60,.1);
-      color:#ffe3c5;
-    }
-
-    .badge.red{
-      border-color:rgba(251,113,133,.28);
-      background:rgba(251,113,133,.1);
-      color:#ffdbe2;
-    }
-
-    .body{
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.65;
-      white-space:pre-line;
-    }
-
-    .mini-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .mini{
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:12px;
-      background:rgba(255,255,255,.03);
-    }
-
-    .mini-label{
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      color:var(--muted);
-      font-weight:900;
-      margin-bottom:6px;
-    }
-
-    .mini-value{
-      font-size:14px;
-      font-weight:800;
+      font-size:13px;
       line-height:1.45;
+      font-weight:750;
     }
 
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
+    .metrics{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
       margin-top:14px;
     }
 
-    .small-btn{
-      min-height:40px;
-      padding:10px 12px;
-      border-radius:14px;
-      border:none;
-      font-weight:900;
-      cursor:pointer;
-      background:rgba(255,255,255,.07);
-      color:var(--text);
+    .metric{
       border:1px solid var(--line);
+      border-radius:22px;
+      background:rgba(255,255,255,.055);
+      padding:13px;
+      min-height:88px;
+    }
+
+    .metric strong{
+      display:block;
+      font-size:30px;
+      line-height:1;
+      font-weight:1000;
+      letter-spacing:-.04em;
+    }
+
+    .metric span{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.3;
+      font-weight:850;
+    }
+
+    .actions{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .action{
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:13px;
+      background:rgba(255,255,255,.055);
+      display:grid;
+      gap:10px;
+    }
+
+    .action-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .action strong{
+      display:block;
+      font-size:15px;
+      line-height:1.16;
+    }
+
+    .action small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+      font-weight:750;
+    }
+
+    .btn-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      min-height:42px;
+      border:none;
+      border-radius:15px;
+      padding:10px 12px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      font-weight:950;
     }
 
-    .small-btn.gold{
-      background:rgba(250,204,21,.12);
-      color:#fff2ae;
-      border-color:rgba(250,204,21,.28);
+    .btn.primary{
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      color:#151515;
     }
 
-    .small-btn.green{
-      background:rgba(34,197,94,.12);
-      color:#c8ffd3;
-      border-color:rgba(34,197,94,.26);
-    }
-
-    .small-btn.red{
-      background:rgba(251,113,133,.12);
-      color:#ffd8df;
-      border-color:rgba(251,113,133,.26);
-    }
-
-    .small-btn.blue{
-      background:rgba(56,189,248,.12);
+    .btn.blue{
+      background:rgba(56,189,248,.14);
       color:#d8f5ff;
-      border-color:rgba(56,189,248,.26);
+      border:1px solid rgba(56,189,248,.22);
     }
 
-    .small-btn.orange{
-      background:rgba(251,146,60,.12);
-      color:#ffe2c5;
-      border-color:rgba(251,146,60,.26);
+    .btn.green{
+      background:rgba(34,197,94,.14);
+      color:#c9ffd4;
+      border:1px solid rgba(34,197,94,.22);
     }
 
-    .pipeline{
-      display:grid;
-      grid-template-columns:repeat(6,minmax(0,1fr));
-      gap:12px;
+    details{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:20px;
+      background:rgba(255,255,255,.035);
+      margin-top:12px;
+      overflow:hidden;
     }
 
-    .pipe{
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:14px;
-      background:rgba(255,255,255,.04);
-      min-height:180px;
+    summary{
+      cursor:pointer;
+      list-style:none;
+      padding:13px 14px;
+      font-weight:950;
+      color:#fff4bd;
     }
 
-    .pipe h3{
-      margin:0 0 10px;
-      font-size:16px;
-      line-height:1.2;
-      text-transform:uppercase;
-    }
+    summary::-webkit-details-marker{display:none}
 
-    .pipe-count{
-      font-size:30px;
-      font-weight:1000;
-      letter-spacing:-.03em;
-      margin-bottom:10px;
-    }
-
-    .pipe-list{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .pipe-item{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px;
-      background:rgba(255,255,255,.03);
+    .details-body{
+      padding:0 14px 14px;
+      color:var(--muted);
       font-size:13px;
-      line-height:1.45;
-      color:var(--muted);
+      line-height:1.5;
+      font-weight:750;
     }
 
-    .empty,.error,.loading{
-      border:1px dashed var(--line);
+    .empty{
+      border:1px dashed rgba(255,255,255,.18);
       border-radius:22px;
-      padding:24px;
+      padding:16px;
       text-align:center;
       color:var(--muted);
-      background:rgba(255,255,255,.03);
-    }
-
-    .error{
-      color:#ffd9df;
-      border-color:rgba(251,113,133,.28);
-      background:rgba(251,113,133,.08);
-    }
-
-    .hidden{display:none !important}
-
-    .preview-banner{
-      margin:16px 0 0;
-      border:1px solid rgba(250,204,21,.28);
-      background:rgba(250,204,21,.08);
-      color:#fff2ae;
-      border-radius:18px;
-      padding:14px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .preview-banner strong{color:#fff8cf}
-
-    .preview-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .preview-lock{
-      position:relative;
-    }
-
-    .preview-lock::after{
-      content:"Aperçu cockpit — activation requise pour ouvrir le bureau réel";
-      position:absolute;
-      inset:0;
-      display:grid;
-      place-items:center;
-      text-align:center;
-      padding:20px;
-      border-radius:24px;
-      background:rgba(6,27,20,.55);
-      backdrop-filter:blur(6px);
-      -webkit-backdrop-filter:blur(6px);
-      color:#fff2ae;
-      font-weight:900;
-      letter-spacing:.01em;
-    }
-
-    .is-preview .tab[data-lockable="true"],
-    .is-preview [data-lockable="true"]{
-      opacity:.52;
-      pointer-events:none;
-    }
-
-    .is-preview .small-btn[data-action="set-status"]{
-      opacity:.45;
-      pointer-events:none;
+      font-weight:800;
+      line-height:1.45;
+      margin-top:14px;
     }
 
     .bottom-nav{
       position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
-      z-index:9997;
-      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
-      background:rgba(6,27,20,.94);
-      border-top:1px solid rgba(255,255,255,.12);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-    }
-
-    .bottom-nav-inner{
-      width:min(760px,100%);
-      margin:0 auto;
+      left:50%;
+      bottom:calc(10px + env(safe-area-inset-bottom,0px));
+      transform:translateX(-50%);
+      width:min(680px,calc(100% - 18px));
+      z-index:99;
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:24px;
+      background:rgba(6,27,20,.88);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      padding:8px;
       display:grid;
       grid-template-columns:repeat(5,1fr);
       gap:6px;
+      box-shadow:0 18px 50px rgba(0,0,0,.35);
     }
 
     .bottom-nav a{
-      min-height:54px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      align-content:center;
+      min-height:50px;
+      border-radius:18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
       gap:2px;
-      color:rgba(234,255,241,.78);
       font-size:11px;
-      font-weight:1000;
+      font-weight:950;
+      color:rgba(236,255,244,.78);
       text-align:center;
-      border:1px solid transparent;
-      text-decoration:none;
-      background:transparent;
-      padding:0 4px;
     }
 
-    .bottom-nav .ico{
+    .bottom-nav a.active{
+      background:rgba(250,204,21,.14);
+      color:#fff4bd;
+      border:1px solid rgba(250,204,21,.22);
+    }
+
+    .bottom-nav b{
       font-size:18px;
       line-height:1;
     }
 
-    .bottom-nav a.active{
-      background:linear-gradient(135deg,var(--gold),var(--blue));
-      color:#081018;
+    @media (max-width:860px){
+      .grid{
+        grid-template-columns:1fr;
+      }
     }
 
-    @media (max-width:1120px){
-      .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
-      .pipeline{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .assist-list{grid-template-columns:1fr}
-    }
-
-    @media (max-width:920px){
-      .toolbar{grid-template-columns:1fr 1fr}
-      .cards{grid-template-columns:1fr}
-    }
-
-    @media (max-width:700px){
-      .wrap{padding:96px 12px 96px}
-      .hero{padding:20px 14px}
-      .panel{padding:14px}
-      .toolbar{grid-template-columns:1fr}
-      .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .pipeline{grid-template-columns:1fr}
-      .mini-grid{grid-template-columns:1fr}
-      h1{font-size:34px}
-
-      .site-back-float{
-        top:calc(env(safe-area-inset-top, 0px) + 10px);
-        left:calc(env(safe-area-inset-left, 0px) + 10px);
-        min-height:42px;
-        padding:10px 13px;
-        font-size:13px;
+    @media (max-width:560px){
+      .hero,.card{
+        border-radius:26px;
+        padding:14px;
       }
 
-      .top-links{
-        top:calc(env(safe-area-inset-top, 0px) + 58px);
-        right:calc(env(safe-area-inset-right, 0px) + 10px);
-        max-width:calc(100vw - 20px);
+      h1{
+        font-size:34px;
       }
 
-      .chip-link{
-        min-height:40px;
-        padding:9px 12px;
-        font-size:12px;
+      .lead{
+        font-size:14px;
+      }
+
+      .metrics{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .metric{
+        min-height:82px;
+      }
+
+      .metric strong{
+        font-size:26px;
+      }
+
+      .btn-row .btn{
+        flex:1 1 auto;
       }
     }
   </style>
 </head>
 
 <body>
-  <a id="siteHomeLink" class="site-back-float" href="./index.html">← Accueil JOBS</a>
-
-  <div class="top-links">
-    <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
-    <a id="publishLink" class="chip-link gold" href="./publier-mission.html">➕ Mission rapide</a>
-    <a id="wallLink" class="chip-link" href="./mur%20des%20missions.html">Mur des missions</a>
-    <a id="cockpitLink" class="chip-link" href="./cockpit.html">Vue d'ensemble</a>
-    <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
-    <a id="matchLink" class="chip-link" href="./match.html">Match</a>
-    <a id="qrLink" class="chip-link" href="./qr.html">Mon partage</a>
-    <a id="clawLink" class="chip-link" href="#clawSection">Aide guidée</a>
-    <a id="pinLink" class="chip-link hidden" href="./pin.html">Entrée PIN</a>
-  </div>
-
   <div class="wrap">
-    <section class="hero">
-      <div class="hero-top">
-        <div>
-          <div class="kicker">DIGIY JOBS PRO • moins écrire • plus cliquer</div>
-          <h1>Le terrain choisit. DIGIY prépare.</h1>
-          <p class="lead">
-            Ici le pro part d’actions simples : publier une mission rapide, voir les candidatures, appeler, retenir, partager.
-            Les informations sensibles restent dans l’espace sécurisé.
-          </p>
+    <header class="top">
+      <a class="brand" href="./index.html" aria-label="Retour actions JOBS">
+        <span class="brand-mark">JP</span>
+        <span class="brand-title">
+          <strong>DIGIY JOBS</strong>
+          <span>Veille · alertes · actions</span>
+        </span>
+      </a>
 
-          <div class="hero-links">
-            <a id="publishBtn" class="nav-btn gold" href="./publier-mission.html" rel="noopener">➕ Publier une mission rapide</a>
-            <a id="bureauBtn" class="nav-btn" href="./bureau.html" rel="noopener">📥 Voir candidatures</a>
-            <a id="matchBtn" class="nav-btn" href="./match.html" rel="noopener">🎯 Rapprocher</a>
-            <a id="publicWallBtn" class="nav-btn" href="./mur%20des%20missions.html" rel="noopener">🌍 Mur public</a>
-            <a id="qrBtn" class="nav-btn" href="./qr.html" rel="noopener">📎 Partager</a>
-            <button id="pinFallbackBtn" class="nav-btn hidden" type="button">Entrée PIN</button>
-          </div>
-        </div>
+      <a class="chip gold" href="./pin.html">Code</a>
+    </header>
 
-        <div class="hero-actions">
-          <button id="refreshBtn" class="ghost-btn" type="button">Rafraîchir</button>
-        </div>
-      </div>
-
-      <div class="meta-line">
-        <div class="meta-chip">Contexte : <strong id="slugChip">coffre local</strong></div>
-        <div class="meta-chip">Mode : <strong id="modeChip">détection…</strong></div>
-        <div class="meta-chip">Lecture : <strong id="sourceChip">détection…</strong></div>
-      </div>
-
-      <section id="clawSection" class="assist-card">
-        <span class="assist-kicker">Actions prêtes</span>
-        <h2>Le pro n’a pas besoin d’écrire un dossier</h2>
-        <p>
-          Il clique sur le bon geste : chercher quelqu’un, lire les candidatures, appeler les bons profils,
-          partager la mission. DIGIY range l’information derrière.
+    <main>
+      <section class="hero">
+        <span class="kicker">Poste de veille</span>
+        <h1>DIGIY surveille derrière.</h1>
+        <p class="lead">
+          Le pro ne reçoit pas une administration lourde. Il reçoit ce qui demande une action.
         </p>
 
-        <div class="assist-list">
-          <div class="assist-item">
-            <strong>Publier</strong>
-            <span>Ouvre la mission rapide : serveur, livreur, aide ménage, ouvrier, vendeur…</span>
-          </div>
-          <div class="assist-item">
-            <strong>Appeler</strong>
-            <span>Va au bureau pour voir les candidatures, appeler et changer le statut en un clic.</span>
-          </div>
-          <div class="assist-item">
-            <strong>Partager</strong>
-            <span>Ouvre le QR ou le mur public pour faire circuler les missions propres.</span>
-          </div>
-        </div>
-
-        <div class="assist-actions">
-          <a id="assistPublishBtn" class="gold-btn" href="./publier-mission.html">➕ Mission rapide</a>
-          <a id="assistBureauBtn" class="nav-btn" href="./bureau.html">📥 Candidatures</a>
-          <a id="assistMatchBtn" class="nav-btn" href="./match.html">🎯 Rapprocher</a>
-          <a id="assistQrBtn" class="nav-btn" href="./qr.html">📎 Partager</a>
+        <div id="statusBox" class="status">
+          Ouverture du coffre JOBS…
         </div>
       </section>
 
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-label">Missions actives</div>
-          <div class="stat-value" id="statOffers">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Candidatures</div>
-          <div class="stat-value" id="statCandidates">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Nouvelles</div>
-          <div class="stat-value" id="statNew">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">En revue</div>
-          <div class="stat-value" id="statReview">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Shortlist</div>
-          <div class="stat-value" id="statShortlist">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">À appeler</div>
-          <div class="stat-value" id="statCall">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Acceptés</div>
-          <div class="stat-value" id="statAccepted">0</div>
-        </div>
-      </div>
-    </section>
+      <section class="grid">
+        <article class="card">
+          <h2>État rapide</h2>
+          <p>Lecture simple du terrain. Le détail reste rangé.</p>
 
-    <div class="tabs">
-      <button class="tab active" data-tab="candidates" data-lockable="true" type="button">Candidatures</button>
-      <button class="tab" data-tab="offers" type="button">Missions</button>
-      <button class="tab" data-tab="pipeline" data-lockable="true" type="button">Pipeline</button>
-    </div>
+          <div class="metrics">
+            <div class="metric">
+              <strong id="statOffers">0</strong>
+              <span>missions actives</span>
+            </div>
 
-    <section class="panel">
-      <div id="statusBox" class="loading">Chargement du cockpit...</div>
+            <div class="metric">
+              <strong id="statCandidates">0</strong>
+              <span>candidatures</span>
+            </div>
 
-      <div id="tab-candidates">
-        <div class="toolbar" data-lockable="true">
-          <div class="field">
-            <label for="searchInput">Recherche</label>
-            <input id="searchInput" type="text" placeholder="Nom, contact, métier, ville, message..." />
+            <div class="metric">
+              <strong id="statNew">0</strong>
+              <span>nouvelles</span>
+            </div>
+
+            <div class="metric">
+              <strong id="statCall">0</strong>
+              <span>à appeler</span>
+            </div>
           </div>
 
-          <div class="field">
-            <label for="statusFilter">Statut</label>
-            <select id="statusFilter">
-              <option value="">Tous les statuts</option>
-              <option value="new">Nouveau</option>
-              <option value="review">En lecture</option>
-              <option value="shortlist">Sélectionné</option>
-              <option value="call">À contacter</option>
-              <option value="accepted">Retenu</option>
-              <option value="rejected">Non retenu</option>
-            </select>
+          <details>
+            <summary>Voir la règle</summary>
+            <div class="details-body">
+              Fiche à remplir, annonces prêtes, alertes à traiter. Le reste reste derrière pour ne pas fatiguer le pro.
+            </div>
+          </details>
+        </article>
+
+        <article class="card">
+          <h2>Alertes d’action</h2>
+          <p>Ce qui compte maintenant, sans bruit.</p>
+
+          <div id="actionList" class="actions">
+            <div class="action">
+              <div class="action-top">
+                <div>
+                  <strong>➕ Publier une mission prête</strong>
+                  <small>Choisir un besoin, DIGIY prépare le texte.</small>
+                </div>
+              </div>
+              <div class="btn-row">
+                <a class="btn primary" href="./publier-mission.html">Créer</a>
+              </div>
+            </div>
+
+            <div class="action">
+              <div class="action-top">
+                <div>
+                  <strong>📥 Voir les candidatures</strong>
+                  <small>Appeler, sélectionner, retenir ou classer.</small>
+                </div>
+              </div>
+              <div class="btn-row">
+                <a class="btn" href="./bureau.html">Ouvrir</a>
+              </div>
+            </div>
+
+            <div class="action">
+              <div class="action-top">
+                <div>
+                  <strong>📎 Faire circuler</strong>
+                  <small>Partager le QR ou le mur public quand le terrain doit répondre.</small>
+                </div>
+              </div>
+              <div class="btn-row">
+                <a class="btn blue" href="./qr.html">QR</a>
+                <a class="btn" href="./mur%20des%20missions.html">Mur public</a>
+              </div>
+            </div>
           </div>
 
-          <div class="field">
-            <label for="offerFilter">Mission</label>
-            <select id="offerFilter">
-              <option value="">Toutes les missions</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label>&nbsp;</label>
-            <button id="clearFiltersBtn" class="ghost-btn" type="button">Effacer</button>
-          </div>
-        </div>
-
-        <div id="candidateCards" class="cards hidden"></div>
-      </div>
-
-      <div id="tab-offers" class="hidden">
-        <div id="offerCards" class="cards hidden"></div>
-      </div>
-
-      <div id="tab-pipeline" class="hidden">
-        <div id="pipelineGrid" class="pipeline hidden"></div>
-      </div>
-    </section>
+          <details>
+            <summary>Conseil caché</summary>
+            <div class="details-body">
+              Une alerte doit toujours conduire à un geste : ouvrir, appeler, sélectionner, relancer, partager, décider.
+            </div>
+          </details>
+        </article>
+      </section>
+    </main>
   </div>
 
-  <nav class="bottom-nav" aria-label="Navigation rapide DIGIY JOBS">
-    <div class="bottom-nav-inner">
-      <a href="./index.html"><span class="ico">🏠</span><span>Accueil</span></a>
-      <a href="./publier-mission.html"><span class="ico">➕</span><span>Mission</span></a>
-      <a class="active" href="./cockpit.html"><span class="ico">🧭</span><span>Espace</span></a>
-      <a href="./bureau.html"><span class="ico">📥</span><span>Candidats</span></a>
-      <a href="./qr.html"><span class="ico">📎</span><span>Partager</span></a>
-    </div>
+  <nav class="bottom-nav" aria-label="Navigation basse">
+    <a href="./index.html"><b>◎</b>Actions</a>
+    <a href="./publier-mission.html"><b>＋</b>Annonce</a>
+    <a class="active" href="./cockpit.html"><b>🔔</b>Veille</a>
+    <a href="./bureau.html"><b>📥</b>Bureau</a>
+    <a href="./pin.html"><b>🔒</b>Code</a>
   </nav>
 
   <script>
-    const SUPABASE_URL =
-      window.DIGIY_SUPABASE_URL ||
-      "https://wesqmwjjtsefyjnluosj.supabase.co";
+    (() => {
+      "use strict";
 
-    const SUPABASE_ANON_KEY =
-      window.DIGIY_SUPABASE_ANON ||
-      window.DIGIY_SUPABASE_ANON_KEY ||
-      "";
+      const SENSITIVE_KEYS = [
+        "slug",
+        "phone",
+        "tel",
+        "jobs_tel",
+        "owner_phone",
+        "contact_phone",
+        "module",
+        "return",
+        "from"
+      ];
 
-    const sb =
-      window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth:{persistSession:false,autoRefreshToken:false}
-          })
-        : null;
-
-    const $ = (id) => document.getElementById(id);
-
-    const SLUG_STORAGE_KEY = "digiy_jobs_slug";
-    const LAST_SLUG_STORAGE_KEY = "digiy_jobs_last_slug";
-    const DB_SLUG_COLUMN = "slug";
-
-    const CLEAN_QUERY_KEYS = [
-      "slug",
-      "phone",
-      "tel",
-      "jobs_tel",
-      "owner_phone",
-      "contact_phone",
-      "module",
-      "return",
-      "from"
-    ];
-
-    const JOBS_PATHS = {
-      home: "./index.html",
-      wall: "./mur%20des%20missions.html",
-      publish: "./publier-mission.html",
-      pin: "./pin.html",
-      cockpit: "./cockpit.html",
-      bureau: "./bureau.html",
-      match: "./match.html",
-      mission: "./mission.html",
-      qr: "./qr.html"
-    };
-
-    const state = {
-      slug: "",
-      offers: [],
-      candidates: [],
-      filteredCandidates: [],
-      activeTab: "candidates",
-      session: null
-    };
-
-    let PREVIEW_MODE = false;
-
-    function fixBrokenSearch() {
-      const href = window.location.href;
-      if (href.includes("? slug=") || href.includes("& slug=")) {
-        window.location.replace(
-          href.replace("? slug=", "?slug=").replace("& slug=", "&slug=")
-        );
-        return true;
-      }
-      return false;
-    }
-
-    function normalizeSlug(v = "") {
-      return String(v || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-    }
-
-    function normalizePhone(v = "") {
-      return String(v).replace(/[^\d+]/g, "");
-    }
-
-    function cleanVisibleUrl() {
-      try {
-        const url = new URL(location.href);
-
-        const incomingSlug = normalizeSlug(url.searchParams.get("slug") || "");
-        if (incomingSlug) saveSlug(incomingSlug);
-
-        let changed = false;
-        CLEAN_QUERY_KEYS.forEach((key) => {
-          if (url.searchParams.has(key)) {
-            url.searchParams.delete(key);
-            changed = true;
-          }
-        });
-
-        if (changed) {
-          history.replaceState({}, document.title, url.pathname + url.search + url.hash);
-        }
-      } catch (_) {}
-    }
-
-    function escapeHtml(v = "") {
-      return String(v)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function formatDate(v) {
-      if (!v) return "—";
-      try {
-        return new Intl.DateTimeFormat("fr-FR", {
-          dateStyle: "medium",
-          timeStyle: "short"
-        }).format(new Date(v));
-      } catch {
-        return v;
-      }
-    }
-
-    function labelSector(v = "") {
-      const map = {
-        build: "BTP",
-        beauty: "Beauté",
-        shop: "Boutique",
-        food: "Restauration",
-        service: "Services",
-        driver: "Chauffeur",
-        market: "Marché",
-        admin: "Admin"
+      const STORAGE = {
+        SLUG: "digiy_jobs_slug",
+        LAST_SLUG: "digiy_jobs_last_slug",
+        PHONE: "digiy_jobs_phone"
       };
-      return map[v] || v || "Secteur";
-    }
 
-    function labelContract(v = "") {
-      const map = {
-        cdi: "CDI",
-        cdd: "CDD",
-        mission: "Mission",
-        stage: "Stage",
-        freelance: "Freelance",
-        extra: "Extra"
+      const el = {
+        statusBox: document.getElementById("statusBox"),
+        statOffers: document.getElementById("statOffers"),
+        statCandidates: document.getElementById("statCandidates"),
+        statNew: document.getElementById("statNew"),
+        statCall: document.getElementById("statCall"),
+        actionList: document.getElementById("actionList")
       };
-      return map[v] || v || "Contrat";
-    }
 
-    function labelStatus(status = "new") {
-      const map = {
-        new: "Nouveau",
-        review: "En lecture",
-        shortlist: "Sélectionné",
-        call: "À contacter",
-        accepted: "Retenu",
-        rejected: "Non retenu"
-      };
-      return map[String(status || "new").toLowerCase()] || status || "Statut";
-    }
-
-    function setHref(id, href) {
-      const el = $(id);
-      if (el) el.href = cleanPath(href);
-    }
-
-    function cleanPath(path) {
-      try {
-        const url = new URL(path, location.href);
-        CLEAN_QUERY_KEYS.forEach((key) => url.searchParams.delete(key));
-
-        if (url.origin === location.origin) {
-          const file = url.pathname.split("/").pop() || "index.html";
-          return `./${file}${url.search || ""}${url.hash || ""}`;
-        }
-
-        return url.toString();
-      } catch (_) {
-        return path;
-      }
-    }
-
-    function saveSlug(slug) {
-      const clean = normalizeSlug(slug);
-      if (!clean) return;
-
-      try {
-        localStorage.setItem(SLUG_STORAGE_KEY, clean);
-        localStorage.setItem(LAST_SLUG_STORAGE_KEY, clean);
-        sessionStorage.setItem(SLUG_STORAGE_KEY, clean);
-        sessionStorage.setItem(LAST_SLUG_STORAGE_KEY, clean);
-      } catch (_) {}
-    }
-
-    function readSavedSlug() {
-      try {
-        return normalizeSlug(
-          sessionStorage.getItem(SLUG_STORAGE_KEY) ||
-          sessionStorage.getItem(LAST_SLUG_STORAGE_KEY) ||
-          localStorage.getItem(SLUG_STORAGE_KEY) ||
-          localStorage.getItem(LAST_SLUG_STORAGE_KEY) ||
-          ""
-        );
-      } catch (_) {
-        return "";
-      }
-    }
-
-    function badgeStatus(status = "new") {
-      const s = String(status || "new").toLowerCase();
-      const cls =
-        s === "accepted" ? "green" :
-        s === "rejected" ? "red" :
-        s === "call" ? "blue" :
-        s === "shortlist" ? "orange" :
-        s === "review" ? "gold" :
-        "";
-      return `<span class="badge ${cls}">${escapeHtml(labelStatus(s))}</span>`;
-    }
-
-    function setStatusBox(type, text) {
-      const box = $("statusBox");
-      if (!box) return;
-      box.className = type;
-      box.textContent = text;
-      box.classList.remove("hidden");
-    }
-
-    function hideStatusBox() {
-      const box = $("statusBox");
-      if (box) box.classList.add("hidden");
-    }
-
-    function setSourceChip(text) {
-      const chip = $("sourceChip");
-      if (chip) chip.textContent = text || "—";
-    }
-
-    function syncModeChip() {
-      const modeChip = $("modeChip");
-      if (!modeChip) return;
-      modeChip.textContent = PREVIEW_MODE ? "aperçu guidé" : "lecture active";
-    }
-
-    function syncPinFallbackVisibility() {
-      const hasAccess = !!state.session?.access && !PREVIEW_MODE;
-      $("pinFallbackBtn")?.classList.toggle("hidden", hasAccess);
-      $("pinLink")?.classList.toggle("hidden", hasAccess);
-    }
-
-    function updateSlugUI() {
-      const slugChip = $("slugChip");
-      if (slugChip) slugChip.textContent = state.slug ? "coffre actif" : "coffre non ouvert";
-
-      syncModeChip();
-      syncPinFallbackVisibility();
-
-      setHref("siteHomeLink", JOBS_PATHS.home);
-      setHref("homeLink", JOBS_PATHS.home);
-      setHref("publishLink", JOBS_PATHS.publish);
-      setHref("wallLink", JOBS_PATHS.wall);
-      setHref("pinLink", JOBS_PATHS.pin);
-      setHref("cockpitLink", JOBS_PATHS.cockpit);
-      setHref("bureauLink", JOBS_PATHS.bureau);
-      setHref("matchLink", JOBS_PATHS.match);
-      setHref("qrLink", JOBS_PATHS.qr);
-
-      setHref("publishBtn", JOBS_PATHS.publish);
-      setHref("publicWallBtn", JOBS_PATHS.wall);
-      setHref("bureauBtn", JOBS_PATHS.bureau);
-      setHref("matchBtn", JOBS_PATHS.match);
-      setHref("qrBtn", JOBS_PATHS.qr);
-
-      setHref("assistPublishBtn", JOBS_PATHS.publish);
-      setHref("assistQrBtn", JOBS_PATHS.qr);
-      setHref("assistBureauBtn", JOBS_PATHS.bureau);
-      setHref("assistMatchBtn", JOBS_PATHS.match);
-    }
-
-    function setSlug(nextSlug) {
-      const clean = normalizeSlug(nextSlug);
-      state.slug = clean;
-      if (clean) saveSlug(clean);
-      updateSlugUI();
-    }
-
-    function setTab(tab) {
-      if (PREVIEW_MODE && (tab === "candidates" || tab === "pipeline")) {
-        setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour ouvrir cette partie du cockpit.");
-        return;
+      function normSlug(value) {
+        return String(value || "")
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
       }
 
-      state.activeTab = tab;
-
-      document.querySelectorAll(".tab").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.tab === tab);
-      });
-
-      $("tab-candidates")?.classList.toggle("hidden", tab !== "candidates");
-      $("tab-offers")?.classList.toggle("hidden", tab !== "offers");
-      $("tab-pipeline")?.classList.toggle("hidden", tab !== "pipeline");
-
-      if (tab === "pipeline") renderPipeline();
-      if (tab === "offers") renderOffers();
-      if (tab === "candidates") applyCandidateFilters();
-    }
-
-    function getOfferMap() {
-      return new Map(state.offers.map((o) => [o.id, o]));
-    }
-
-    function computeStats() {
-      const all = Array.isArray(state.candidates) ? state.candidates : [];
-      const count = (s) => all.filter((x) => String(x.status || "new").toLowerCase() === s).length;
-
-      $("statOffers").textContent = state.offers.length;
-      $("statCandidates").textContent = all.length;
-      $("statNew").textContent = count("new");
-      $("statReview").textContent = count("review");
-      $("statShortlist").textContent = count("shortlist");
-      $("statCall").textContent = count("call");
-      $("statAccepted").textContent = count("accepted");
-    }
-
-    function fillOfferFilter() {
-      const el = $("offerFilter");
-      if (!el) return;
-
-      el.innerHTML =
-        '<option value="">Toutes les missions</option>' +
-        state.offers
-          .map((o) => `<option value="${escapeHtml(o.id)}">${escapeHtml(o.title || "Mission")}</option>`)
-          .join("");
-    }
-
-    function applyCandidateFilters() {
-      const q = $("searchInput")?.value.trim().toLowerCase() || "";
-      const status = $("statusFilter")?.value.trim().toLowerCase() || "";
-      const offerId = $("offerFilter")?.value.trim() || "";
-      const offerMap = getOfferMap();
-
-      state.filteredCandidates = state.candidates.filter((c) => {
-        const offer = offerMap.get(c.offer_id) || null;
-        const hay = [
-          c.full_name,
-          c.phone,
-          c.job_title,
-          c.trade,
-          c.city,
-          c.country,
-          c.years_experience,
-          c.availability,
-          c.message,
-          c.source,
-          c.status,
-          offer?.title || ""
-        ].join(" ").toLowerCase();
-
-        if (q && !hay.includes(q)) return false;
-        if (status && String(c.status || "new").toLowerCase() !== status) return false;
-        if (offerId && String(c.offer_id || "") !== offerId) return false;
-        return true;
-      });
-
-      renderCandidates();
-    }
-
-    function renderCandidates() {
-      const wrap = $("candidateCards");
-      if (!wrap) return;
-
-      if (!state.filteredCandidates.length) {
-        wrap.classList.add("hidden");
-        setStatusBox(
-          "empty",
-          PREVIEW_MODE
-            ? "Aperçu du cockpit actif. Active ton accès pour voir les candidatures réelles."
-            : "Aucune candidature ne correspond à ce filtre."
-        );
-        return;
+      function normPhone(value) {
+        const raw = String(value || "").trim();
+        const cleaned = raw.replace(/[^\d+]/g, "");
+        const digits = cleaned.replace(/[^\d]/g, "");
+        if (!digits) return "";
+        return cleaned.startsWith("+") ? `+${digits}` : digits;
       }
 
-      hideStatusBox();
-      wrap.classList.remove("hidden");
-
-      const offerMap = getOfferMap();
-
-      wrap.innerHTML = state.filteredCandidates.map((c) => {
-        const offer = offerMap.get(c.offer_id) || null;
-        const displayPhone = c.phone || "";
-        const waPhone = normalizePhone(displayPhone);
-        const waLink = waPhone
-          ? `https://wa.me/${encodeURIComponent(waPhone.replace("+", ""))}`
-          : "#";
-
-        const matchUrl = new URL(JOBS_PATHS.match, location.href);
-        matchUrl.searchParams.set("id", c.id);
-        if (offer?.id) matchUrl.searchParams.set("offer", offer.id);
-
-        return `
-          <article class="card">
-            <div class="card-top">
-              <div>
-                <h3 class="title">${escapeHtml(c.full_name || "Candidat")}</h3>
-                <div class="meta">
-                  ${escapeHtml(c.trade || c.job_title || "Profil non précisé")} •
-                  ${escapeHtml(c.city || "Ville à préciser")} •
-                  ${escapeHtml(c.country || "Sénégal")}
-                </div>
-              </div>
-              <div class="badge-row">
-                ${badgeStatus(c.status || "new")}
-              </div>
-            </div>
-
-            <div class="badge-row">
-              <span class="badge gold">${escapeHtml(offer?.title || "Candidature spontanée")}</span>
-              <span class="badge">${escapeHtml(c.source || "public_form")}</span>
-            </div>
-
-            <div class="mini-grid">
-              <div class="mini">
-                <div class="mini-label">Contact candidat</div>
-                <div class="mini-value">${escapeHtml(displayPhone || "—")}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Expérience</div>
-                <div class="mini-value">${escapeHtml(c.years_experience || "—")}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Disponibilité</div>
-                <div class="mini-value">${escapeHtml(c.availability || "—")}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Envoyé le</div>
-                <div class="mini-value">${escapeHtml(formatDate(c.created_at))}</div>
-              </div>
-            </div>
-
-            <div class="body" style="margin-top:12px;">${escapeHtml(c.message || "Aucun message laissé.")}</div>
-
-            <div class="actions">
-              ${waPhone ? `<a class="small-btn blue" href="${waLink}" target="_blank" rel="noopener">Contacter</a>` : ""}
-              <a class="small-btn" href="${matchUrl.toString()}" target="_blank" rel="noopener">Match</a>
-              <button class="small-btn gold" data-action="set-status" data-id="${c.id}" data-status="review" type="button">En lecture</button>
-              <button class="small-btn orange" data-action="set-status" data-id="${c.id}" data-status="shortlist" type="button">Sélectionné</button>
-              <button class="small-btn blue" data-action="set-status" data-id="${c.id}" data-status="call" type="button">À contacter</button>
-              <button class="small-btn green" data-action="set-status" data-id="${c.id}" data-status="accepted" type="button">Retenu</button>
-              <button class="small-btn red" data-action="set-status" data-id="${c.id}" data-status="rejected" type="button">Non retenu</button>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function renderOffers() {
-      const wrap = $("offerCards");
-      if (!wrap) return;
-
-      if (!state.slug) {
-        wrap.classList.add("hidden");
-        setStatusBox("empty", "Session JOBS non retrouvée. Repasse par l’entrée sécurisée.");
-        return;
-      }
-
-      if (!state.offers.length) {
-        wrap.classList.add("hidden");
-        setStatusBox(
-          "empty",
-          PREVIEW_MODE
-            ? "Aucune mission publiée trouvée en aperçu."
-            : "Aucune mission trouvée pour cet espace."
-        );
-        return;
-      }
-
-      hideStatusBox();
-      wrap.classList.remove("hidden");
-
-      const counts = {};
-      state.candidates.forEach((c) => {
-        const key = c.offer_id || "__none__";
-        counts[key] = (counts[key] || 0) + 1;
-      });
-
-      wrap.innerHTML = state.offers.map((o) => {
-        const linkedCount = counts[o.id] || 0;
-
-        const missionUrl = new URL(JOBS_PATHS.mission, location.href);
-        missionUrl.searchParams.set("id", o.id);
-
-        const matchUrl = new URL(JOBS_PATHS.match, location.href);
-        matchUrl.searchParams.set("offer", o.id);
-
-        return `
-          <article class="card">
-            <div class="card-top">
-              <div>
-                <h3 class="title">${escapeHtml(o.title || "Mission")}</h3>
-                <div class="meta">
-                  ${escapeHtml(labelSector(o.sector))} •
-                  ${escapeHtml(labelContract(o.contract_type))} •
-                  ${escapeHtml(o.city || "Ville à préciser")} •
-                  ${escapeHtml(o.pay || "Rémunération à préciser")}
-                </div>
-              </div>
-              <div class="badge-row">
-                <span class="badge green">${linkedCount} candidature${linkedCount > 1 ? "s" : ""}</span>
-              </div>
-            </div>
-
-            <div class="body">${escapeHtml(o.description || "Description à venir.")}</div>
-
-            <div class="mini-grid">
-              <div class="mini">
-                <div class="mini-label">Structure</div>
-                <div class="mini-value">${escapeHtml(o.employer_name || "—")}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Publié</div>
-                <div class="mini-value">${escapeHtml(formatDate(o.published_at || o.created_at))}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Logement</div>
-                <div class="mini-value">${o.has_housing ? "Oui" : "Non"}</div>
-              </div>
-              <div class="mini">
-                <div class="mini-label">Accueil familial</div>
-                <div class="mini-value">${o.has_family_welcome ? "Oui" : "Non"}</div>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button class="small-btn gold" data-action="filter-offer" data-offer-id="${o.id}" type="button">Voir candidats liés</button>
-              <a class="small-btn" href="${missionUrl.toString()}" target="_blank" rel="noopener">Ouvrir fiche</a>
-              <a class="small-btn blue" href="${matchUrl.toString()}" target="_blank" rel="noopener">Ouvrir match</a>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function renderPipeline() {
-      const wrap = $("pipelineGrid");
-      if (!wrap) return;
-
-      const buckets = ["new", "review", "shortlist", "call", "accepted", "rejected"];
-      wrap.classList.remove("hidden");
-
-      wrap.innerHTML = buckets.map((status) => {
-        const items = state.candidates.filter((c) => String(c.status || "new").toLowerCase() === status);
-
-        return `
-          <div class="pipe">
-            <h3>${escapeHtml(labelStatus(status))}</h3>
-            <div class="pipe-count">${items.length}</div>
-            <div class="pipe-list">
-              ${items.slice(0, 5).map((c) => `
-                <div class="pipe-item">
-                  <strong>${escapeHtml(c.full_name || "Candidat")}</strong><br/>
-                  ${escapeHtml(c.trade || c.job_title || "Profil")} • ${escapeHtml(c.city || "Ville")}
-                </div>
-              `).join("") || '<div class="pipe-item">Aucun profil.</div>'}
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    async function updateCandidateStatus(id, status) {
-      if (PREVIEW_MODE) {
-        setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour modifier les statuts.");
-        return;
-      }
-
-      if (!sb) {
-        setStatusBox("error", "Supabase indisponible.");
-        return;
-      }
-
-      setStatusBox("loading", `Mise à jour vers "${labelStatus(status)}"...`);
-
-      const { error } = await sb
-        .from("digiy_jobs_candidates_pro")
-        .update({ status, updated_at: new Date().toISOString() })
-        .eq("id", id);
-
-      if (error) {
-        console.error(error);
-        setStatusBox("error", `Impossible de mettre à jour le statut. Vérifie les droits JOBS côté Supabase.`);
-        return;
-      }
-
-      const row = state.candidates.find((x) => x.id === id);
-      if (row) row.status = status;
-
-      computeStats();
-
-      if (state.activeTab === "candidates") applyCandidateFilters();
-      if (state.activeTab === "offers") renderOffers();
-      if (state.activeTab === "pipeline") renderPipeline();
-
-      setStatusBox("loading", `Statut mis à jour : ${labelStatus(status)}`);
-      setTimeout(() => {
-        if (state.activeTab === "candidates" && state.filteredCandidates.length) hideStatusBox();
-      }, 900);
-    }
-
-    async function loadOffers() {
-      if (!sb) throw new Error("Supabase indisponible");
-
-      if (!state.slug) {
-        state.offers = [];
-        return;
-      }
-
-      const { data, error } = await sb
-        .from("digiy_jobs_offers_pro")
-        .select("id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,contact_phone,published_at,created_at")
-        .eq(DB_SLUG_COLUMN, state.slug)
-        .eq("status", "active")
-        .order("published_at", { ascending:false })
-        .order("created_at", { ascending:false });
-
-      if (error) throw error;
-      state.offers = Array.isArray(data) ? data : [];
-    }
-
-    async function loadCandidates() {
-      if (!sb) throw new Error("Supabase indisponible");
-
-      if (!state.slug && !state.offers.length) {
-        state.candidates = [];
-        return;
-      }
-
-      const rows = [];
-      const seen = new Set();
-
-      if (state.slug) {
-        const { data, error } = await sb
-          .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-          .eq(DB_SLUG_COLUMN, state.slug)
-          .order("created_at", { ascending:false });
-
-        if (error) throw error;
-
-        (data || []).forEach((item) => {
-          if (!seen.has(item.id)) {
-            seen.add(item.id);
-            rows.push(item);
+      function saveContext(slug, phone) {
+        try {
+          if (slug) {
+            localStorage.setItem(STORAGE.SLUG, slug);
+            localStorage.setItem(STORAGE.LAST_SLUG, slug);
+            sessionStorage.setItem(STORAGE.SLUG, slug);
+            sessionStorage.setItem(STORAGE.LAST_SLUG, slug);
           }
-        });
-      }
 
-      const offerIds = state.offers.map((o) => o.id).filter(Boolean);
-
-      if (offerIds.length) {
-        const { data, error } = await sb
-          .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-          .in("offer_id", offerIds)
-          .order("created_at", { ascending:false });
-
-        if (error) throw error;
-
-        (data || []).forEach((item) => {
-          if (!seen.has(item.id)) {
-            seen.add(item.id);
-            rows.push(item);
+          if (phone) {
+            localStorage.setItem(STORAGE.PHONE, phone);
+            sessionStorage.setItem(STORAGE.PHONE, phone);
           }
-        });
+        } catch (_) {}
       }
 
-      state.candidates = rows.sort((a, b) => {
-        const da = new Date(a.created_at || 0).getTime();
-        const db = new Date(b.created_at || 0).getTime();
-        return db - da;
-      });
-    }
+      function cleanVisibleUrl() {
+        try {
+          const url = new URL(window.location.href);
 
-    function applyPreviewMode() {
-      PREVIEW_MODE = true;
-      document.body.classList.add("is-preview");
-      syncModeChip();
-      syncPinFallbackVisibility();
-      setSourceChip("missions visibles • bureau fermé");
-
-      const hero = document.querySelector(".hero");
-
-      if (hero && !document.getElementById("previewBanner")) {
-        const banner = document.createElement("div");
-        banner.id = "previewBanner";
-        banner.className = "preview-banner";
-        banner.innerHTML = `
-          <div>
-            <strong>Mode aperçu activé.</strong>
-            Tu peux voir l’esprit du cockpit JOBS, mais les actions réelles restent verrouillées.
-          </div>
-          <div class="preview-actions">
-            <button id="previewPinBtn" class="gold-btn" type="button">Entrer par PIN</button>
-          </div>
-        `;
-
-        hero.appendChild(banner);
-
-        document.getElementById("previewPinBtn")?.addEventListener("click", () => {
-          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
-            window.DIGIY_GUARD.goPin();
-          } else if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.buildPinUrl === "function") {
-            location.href = window.DIGIY_GUARD.buildPinUrl();
-          } else {
-            location.href = JOBS_PATHS.pin;
-          }
-        });
-      }
-
-      $("tab-candidates")?.classList.add("preview-lock");
-      $("tab-pipeline")?.classList.add("preview-lock");
-      setTab("offers");
-    }
-
-    function clearPreviewMode() {
-      PREVIEW_MODE = false;
-      document.body.classList.remove("is-preview");
-      syncModeChip();
-      syncPinFallbackVisibility();
-      setSourceChip("données en direct");
-      $("tab-candidates")?.classList.remove("preview-lock");
-      $("tab-pipeline")?.classList.remove("preview-lock");
-      document.getElementById("previewBanner")?.remove();
-    }
-
-    async function loadAll(preview = false) {
-      try {
-        updateSlugUI();
-
-        if (!state.slug) {
-          state.offers = [];
-          state.candidates = [];
-          state.filteredCandidates = [];
-          computeStats();
-          fillOfferFilter();
-          renderOffers();
-          renderPipeline();
-          setStatusBox(
-            "empty",
-            preview
-              ? "Aucune session JOBS détectée pour afficher les missions."
-              : "Session JOBS non retrouvée. Repasse par l’entrée sécurisée."
+          const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+          const incomingPhone = normPhone(
+            url.searchParams.get("phone") ||
+            url.searchParams.get("tel") ||
+            url.searchParams.get("jobs_tel") ||
+            ""
           );
-          return;
+
+          saveContext(incomingSlug, incomingPhone);
+
+          let changed = false;
+
+          SENSITIVE_KEYS.forEach((key) => {
+            if (url.searchParams.has(key)) {
+              url.searchParams.delete(key);
+              changed = true;
+            }
+          });
+
+          if (changed) {
+            history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+          }
+        } catch (_) {}
+      }
+
+      function keepLinksClean() {
+        document.querySelectorAll("a[href]").forEach((link) => {
+          try {
+            const href = link.getAttribute("href") || "";
+            if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+
+            const url = new URL(href, window.location.href);
+            if (url.origin !== window.location.origin) return;
+
+            SENSITIVE_KEYS.forEach((key) => url.searchParams.delete(key));
+
+            const file = url.pathname.split("/").pop() || "index.html";
+            link.setAttribute("href", `./${file}${url.search || ""}${url.hash || ""}`);
+          } catch (_) {}
+        });
+      }
+
+      function setStatus(text, type) {
+        el.statusBox.textContent = text;
+        el.statusBox.className = "status" + (type ? " " + type : "");
+      }
+
+      function countStatus(rows, status) {
+        return (rows || []).filter((row) => String(row.status || "new").toLowerCase() === status).length;
+      }
+
+      function renderAlerts(offers, candidates) {
+        const totalOffers = offers.length;
+        const totalCandidates = candidates.length;
+        const newCount = countStatus(candidates, "new");
+        const callCount = countStatus(candidates, "call");
+        const shortlistCount = countStatus(candidates, "shortlist");
+
+        const alerts = [];
+
+        if (newCount > 0) {
+          alerts.push({
+            title: `🆕 ${newCount} nouvelle(s) candidature(s)`,
+            text: "À lire avant que le terrain refroidisse.",
+            primary: "Voir",
+            href: "./bureau.html",
+            cls: "primary"
+          });
         }
 
-        setStatusBox("loading", preview ? "Chargement de l’aperçu..." : "Chargement du cockpit...");
-
-        await loadOffers();
-
-        if (preview) {
-          state.candidates = [];
-          state.filteredCandidates = [];
-          computeStats();
-          fillOfferFilter();
-          renderOffers();
-          renderPipeline();
-          setStatusBox("empty", "Aperçu du cockpit actif. Active ton accès pour voir les candidatures réelles.");
-          return;
+        if (callCount > 0) {
+          alerts.push({
+            title: `📞 ${callCount} profil(s) à appeler`,
+            text: "Ce sont les dossiers qui demandent un contact.",
+            primary: "Appeler",
+            href: "./bureau.html",
+            cls: "green"
+          });
         }
 
-        await loadCandidates();
-        computeStats();
-        fillOfferFilter();
-        applyCandidateFilters();
-        renderOffers();
-        renderPipeline();
-
-        if (state.activeTab === "candidates" && state.filteredCandidates.length) {
-          hideStatusBox();
-        } else if (state.activeTab === "offers" && state.offers.length) {
-          hideStatusBox();
-        }
-      } catch (err) {
-        console.error(err);
-        setStatusBox("error", "Erreur de chargement. Vérifie les droits JOBS côté Supabase et la session active.");
-      }
-    }
-
-    async function bootGuard() {
-      cleanVisibleUrl();
-
-      const savedSlug = readSavedSlug();
-      if (savedSlug) setSlug(savedSlug);
-
-      if (!sb) {
-        setSourceChip("supabase indisponible");
-        setStatusBox("error", "Supabase n’est pas chargé.");
-        return { ok:false, preview:true };
-      }
-
-      if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-        applyPreviewMode();
-        setSourceChip("guard manquant");
-        return { ok:true, preview:true };
-      }
-
-      const session = await window.DIGIY_GUARD.ready();
-      state.session = session || null;
-
-      const sessionSlug = normalizeSlug(session?.slug || "");
-      if (sessionSlug) setSlug(sessionSlug);
-
-      if (!session?.access) {
-        applyPreviewMode();
-        return { ok:true, preview:true };
-      }
-
-      clearPreviewMode();
-      return { ok:true, preview:false };
-    }
-
-    async function bootClaw() {
-      try {
-        if (
-          window.DIGIY_CLAW_JOBS &&
-          typeof window.DIGIY_CLAW_JOBS.ready === "function"
-        ) {
-          await window.DIGIY_CLAW_JOBS.ready();
-        }
-      } catch (err) {
-        console.warn("[CLAW JOBS] boot silencieux échoué :", err);
-      }
-    }
-
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-action]");
-      if (!btn) return;
-
-      const action = btn.dataset.action;
-
-      if (action === "set-status") {
-        updateCandidateStatus(btn.dataset.id, btn.dataset.status);
-        return;
-      }
-
-      if (action === "filter-offer") {
-        if (PREVIEW_MODE) {
-          setStatusBox("empty", "Mode aperçu : active ton accès JOBS pour voir les candidats liés.");
-          return;
+        if (shortlistCount > 0) {
+          alerts.push({
+            title: `⭐ ${shortlistCount} profil(s) sélectionné(s)`,
+            text: "À garder sous la main pour décider vite.",
+            primary: "Ouvrir",
+            href: "./bureau.html",
+            cls: ""
+          });
         }
 
-        const offerFilter = $("offerFilter");
-        if (offerFilter) offerFilter.value = btn.dataset.offerId || "";
+        if (totalOffers === 0) {
+          alerts.push({
+            title: "➕ Aucune mission active",
+            text: "Crée une annonce prête pour ouvrir le terrain.",
+            primary: "Créer",
+            href: "./publier-mission.html",
+            cls: "primary"
+          });
+        }
 
-        setTab("candidates");
-        applyCandidateFilters();
+        if (totalOffers > 0 && totalCandidates === 0) {
+          alerts.push({
+            title: "📎 Mission sans candidature",
+            text: "Fais circuler le QR ou le mur public.",
+            primary: "Partager",
+            href: "./qr.html",
+            cls: "blue"
+          });
+        }
+
+        if (!alerts.length) {
+          alerts.push({
+            title: "✅ Rien d’urgent",
+            text: "Le coffre est propre. Tu peux créer, partager ou vérifier le bureau.",
+            primary: "Bureau",
+            href: "./bureau.html",
+            cls: ""
+          });
+        }
+
+        el.actionList.innerHTML = alerts.map((item) => `
+          <div class="action">
+            <div class="action-top">
+              <div>
+                <strong>${item.title}</strong>
+                <small>${item.text}</small>
+              </div>
+            </div>
+            <div class="btn-row">
+              <a class="btn ${item.cls || ""}" href="${item.href}">${item.primary}</a>
+            </div>
+          </div>
+        `).join("");
+
+        keepLinksClean();
       }
-    });
 
-    document.querySelectorAll(".tab").forEach((btn) => {
-      btn.addEventListener("click", () => setTab(btn.dataset.tab));
-    });
+      async function boot() {
+        cleanVisibleUrl();
+        keepLinksClean();
 
-    $("searchInput")?.addEventListener("input", applyCandidateFilters);
-    $("statusFilter")?.addEventListener("change", applyCandidateFilters);
-    $("offerFilter")?.addEventListener("change", applyCandidateFilters);
+        try {
+          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.ready === "function") {
+            const session = await window.DIGIY_GUARD.ready();
 
-    $("clearFiltersBtn")?.addEventListener("click", () => {
-      if ($("searchInput")) $("searchInput").value = "";
-      if ($("statusFilter")) $("statusFilter").value = "";
-      if ($("offerFilter")) $("offerFilter").value = "";
-      applyCandidateFilters();
-    });
+            if (!session || !session.access_ok) {
+              setStatus("Code demandé. Ouvre ton accès JOBS pour voir les alertes réelles.", "warn");
+              return;
+            }
+          }
 
-    $("refreshBtn")?.addEventListener("click", async () => {
-      const gate = await bootGuard();
-      if (!gate?.ok) return;
-      await bootClaw();
-      await loadAll(gate.preview);
-    });
+          if (!window.DIGIY_CLAW_JOBS || typeof window.DIGIY_CLAW_JOBS.fetchAll !== "function") {
+            setStatus("Mode léger ouvert. Les alertes réelles attendent l’outil JOBS.", "warn");
+            return;
+          }
 
-    $("pinFallbackBtn")?.addEventListener("click", () => {
-      if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.goPin === "function") {
-        window.DIGIY_GUARD.goPin();
-      } else if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.buildPinUrl === "function") {
-        location.href = window.DIGIY_GUARD.buildPinUrl();
-      } else {
-        location.href = JOBS_PATHS.pin;
+          const data = await window.DIGIY_CLAW_JOBS.fetchAll();
+
+          if (!data || !data.ok) {
+            setStatus("Veille ouverte. Aucune donnée réelle chargée pour l’instant.", "warn");
+            return;
+          }
+
+          const offers = Array.isArray(data.offers) ? data.offers : [];
+          const candidates = Array.isArray(data.candidates) ? data.candidates : [];
+
+          el.statOffers.textContent = offers.length;
+          el.statCandidates.textContent = candidates.length;
+          el.statNew.textContent = countStatus(candidates, "new");
+          el.statCall.textContent = countStatus(candidates, "call");
+
+          renderAlerts(offers, candidates);
+
+          setStatus("Veille active. DIGIY remonte seulement ce qui demande une action.", "ok");
+        } catch (err) {
+          console.error(err);
+          setStatus("Veille légère ouverte. Entre ton code si les alertes réelles ne chargent pas.", "warn");
+        }
       }
-    });
 
-    (async () => {
-      if (fixBrokenSearch()) return;
-      updateSlugUI();
-
-      const gate = await bootGuard();
-      if (!gate.ok) return;
-
-      await bootClaw();
-      await loadAll(gate.preview);
+      boot();
     })();
   </script>
 </body>
