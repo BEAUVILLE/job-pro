@@ -3,11 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>DIGIY JOBS PRO — Match candidat ↔ mission</title>
-  <meta
-    name="description"
-    content="DIGIY JOBS PRO — matching entre une mission publiée et les candidats du bureau, avec score lisible, raisons de compatibilité, notes bureau et mise en relation."
-  />
+  <title>DIGIY JOBS PRO — Match terrain</title>
+  <meta name="description" content="DIGIY JOBS PRO — rapprocher une mission et des candidats avec actions terrain rapides : WhatsApp, appel, validation, copie et suivi." />
   <meta name="theme-color" content="#071711" />
 
   <script>
@@ -104,28 +101,13 @@
       white-space:pre-line;
     }
     .status-box.info{display:block;color:#334155}
-    .status-box.warn{
-      display:block;
-      color:#8a4b00;
-      background:rgba(245,158,11,.10);
-      border-color:rgba(245,158,11,.24);
-    }
-    .status-box.error{
-      display:block;
-      color:#991b1b;
-      background:rgba(239,68,68,.10);
-      border-color:rgba(239,68,68,.24);
-    }
-    .status-box.ok{
-      display:block;
-      color:#065f46;
-      background:rgba(16,185,129,.10);
-      border-color:rgba(16,185,129,.24);
-    }
+    .status-box.warn{display:block;color:#8a4b00;background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.24)}
+    .status-box.error{display:block;color:#991b1b;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.24)}
+    .status-box.ok{display:block;color:#065f46;background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.24)}
 
     .hero{padding:24px 0 14px}
     .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px;align-items:stretch}
-    .hero-card,.panel,.stat,.mission-card,.filters,.list-card,.detail-card,.mini,.field,.match-box,.foot,.empty-card,.locked-card{
+    .hero-card,.panel,.stat,.mission-card,.filters,.list-card,.detail-card,.mini,.field,.match-box,.foot,.empty-card,.locked-card,.terrain-card{
       border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow);
     }
     .hero-card{
@@ -134,24 +116,15 @@
         radial-gradient(circle at top right, rgba(212,168,79,.16), transparent 30%),
         linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.90));
     }
-    .hero-card::after{
-      content:"";position:absolute;right:-45px;bottom:-45px;width:170px;height:170px;border-radius:50%;
-      border:26px solid rgba(10,17,40,.05);
-    }
+    .hero-card::after{content:"";position:absolute;right:-45px;bottom:-45px;width:170px;height:170px;border-radius:50%;border:26px solid rgba(10,17,40,.05)}
 
-    .eyebrow{
-      display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;border:1px solid var(--line);
-      background:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f;
-    }
-    h1{margin:16px 0 12px;font-size:clamp(34px,4vw,58px);line-height:.98;letter-spacing:-.04em;max-width:12ch}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b4f1f}
+    h1{margin:16px 0 12px;font-size:clamp(34px,4vw,58px);line-height:.98;letter-spacing:-.04em;max-width:13ch}
     .lead{margin:0;max-width:66ch;color:#334155;line-height:1.7;font-size:16px}
     .hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
     .tag{padding:10px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:var(--muted)}
 
-    .panel{
-      padding:18px;background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));color:#fff;border-color:#27365a;
-      display:flex;flex-direction:column;gap:14px;
-    }
+    .panel{padding:18px;background:linear-gradient(180deg, rgba(10,17,40,.98), rgba(20,32,65,.98));color:#fff;border-color:#27365a;display:flex;flex-direction:column;gap:14px}
     .panel h2{margin:0;font-size:20px;letter-spacing:-.02em}
     .panel p{margin:0;color:#dbe6f6;line-height:1.65}
     .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -166,19 +139,20 @@
     .stat strong{display:block;font-size:30px;line-height:1;margin-bottom:8px}
     .stat span{display:block;color:var(--muted);font-weight:700;font-size:14px;line-height:1.55}
 
-    .locked-card{
-      margin:14px 0 22px;
-      padding:22px;
-      display:none;
-      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,248,230,.94));
-    }
+    .locked-card{margin:14px 0 22px;padding:22px;display:none;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,248,230,.94))}
     .locked-card h2{margin:0 0 8px;font-size:25px}
     .locked-card p{margin:0 0 14px;color:var(--muted);line-height:1.65}
-    .locked-card a{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-height:50px;padding:13px 16px;border-radius:16px;
-      background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;font-weight:950;
-    }
+    .locked-card a{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:13px 16px;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;font-weight:950}
+
+    .terrain-card{margin-bottom:16px;padding:16px;background:linear-gradient(135deg,#fff,rgba(212,168,79,.10))}
+    .terrain-card h2{margin:0 0 6px;font-size:24px;letter-spacing:-.02em}
+    .terrain-card p{margin:0;color:var(--muted);line-height:1.6}
+    .quick-actions{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:14px}
+    .quick-actions button,.quick-actions a{border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px 10px;font-weight:950;display:flex;align-items:center;justify-content:center;text-align:center;min-height:54px;color:var(--ink)}
+    .quick-actions .gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#151515;border-color:transparent}
+    .quick-actions .green{background:var(--green);color:#fff;border-color:transparent}
+    .quick-actions .blue{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
+    .quick-actions .red{background:rgba(239,68,68,.10);color:#991b1b;border-color:rgba(239,68,68,.22)}
 
     .mission-section{padding-bottom:16px}
     .mission-card{padding:18px}
@@ -194,23 +168,17 @@
     .filters{padding:16px;margin-bottom:16px}
     .filter-grid{display:grid;grid-template-columns:1.2fr repeat(4,.8fr);gap:12px}
     .filter-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .filter-actions button{
-      border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;
-    }
+    .filter-actions button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer}
 
-    input,select,textarea{
-      width:100%;padding:12px 12px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);outline:none;
-    }
+    input,select,textarea{width:100%;padding:12px;border-radius:14px;border:1px solid #d1d5db;background:#fff;color:var(--ink);outline:none}
     input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.15)}
-    textarea{min-height:120px;resize:vertical}
+    textarea{min-height:90px;resize:vertical}
 
     .board{display:grid;grid-template-columns:.88fr 1.12fr;gap:18px;padding-bottom:36px}
     .left-col,.right-col{display:grid;gap:16px;align-content:start}
     .list-card,.detail-card{padding:16px}
     .list{display:grid;gap:12px;max-height:950px;overflow:auto;padding-right:2px}
-    .candidate{
-      border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
-    }
+    .candidate{border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
     .candidate:hover{transform:translateY(-1px)}
     .candidate.active{border-color:var(--blue);box-shadow:0 0 0 4px rgba(14,165,233,.11)}
     .candidate-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
@@ -226,27 +194,24 @@
     .chip.sector-driver{color:#075985;background:rgba(14,165,233,.12)}
     .chip.sector-other{color:#334155;background:#eef2f7}
     .candidate-note{margin-top:12px;color:var(--muted);font-size:13px;line-height:1.6}
-    .score-pill{
-      min-width:66px;height:66px;border-radius:18px;display:grid;place-items:center;font-weight:900;font-size:22px;color:#fff;
-      background:linear-gradient(135deg,var(--blue),var(--blue-2));box-shadow:0 12px 24px rgba(14,165,233,.20);
-    }
+    .score-pill{min-width:66px;height:66px;border-radius:18px;display:grid;place-items:center;font-weight:900;font-size:22px;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-2));box-shadow:0 12px 24px rgba(14,165,233,.20)}
 
     .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .detail-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
     .detail-actions,.button-row{display:flex;gap:10px;flex-wrap:wrap}
-    .detail-actions button,.detail-actions a,.button-row button,.button-row a{
-      border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer;
-      display:inline-flex;align-items:center;gap:10px;
-    }
+    .detail-actions button,.detail-actions a,.button-row button,.button-row a{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:10px}
     .detail-actions .primary,.button-row .primary{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;border-color:transparent}
     .detail-actions .green,.button-row .green{background:var(--green);color:#fff;border-color:transparent}
-    .detail-actions .gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#151515;border-color:transparent}
+    .detail-actions .gold,.button-row .gold{background:linear-gradient(135deg,var(--gold),#e8bf63);color:#151515;border-color:transparent}
+    .detail-actions .red,.button-row .red{background:rgba(239,68,68,.10);color:#991b1b;border-color:rgba(239,68,68,.22)}
 
     .match-box{padding:16px;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
     .match-box h4{margin:0 0 8px;font-size:20px;letter-spacing:-.02em}
     .match-box p{margin:0;color:var(--muted);line-height:1.65}
     .reason-list{display:grid;gap:10px;margin-top:12px}
     .reason-item{padding:12px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:700;color:#334155;line-height:1.55}
+    .note-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .note-buttons button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 11px;font-weight:900;font-size:13px}
 
     .notes-wrap{display:grid;gap:12px}
     .empty-card{padding:24px;text-align:center;background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.94))}
@@ -265,48 +230,18 @@
       .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid{grid-template-columns:1fr 1fr}
       .filter-grid > *:first-child{grid-column:1 / -1}
       .mission-grid .full{grid-column:1 / -1}
+      .quick-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
     @media (max-width:860px){
       .wrap{width:min(calc(100% - 20px), var(--max))}
       .hero-grid,.board,.stats-grid,.filter-grid,.mission-grid,.detail-grid,.mini-grid{grid-template-columns:1fr}
       h1{max-width:none}
       .top-actions a:nth-child(n+5){display:none}
+      .quick-actions{grid-template-columns:1fr 1fr}
       body{padding-bottom:86px}
-      .bottom-nav{
-        position:fixed;
-        z-index:60;
-        left:50%;
-        bottom:calc(10px + env(safe-area-inset-bottom));
-        transform:translateX(-50%);
-        width:min(calc(100% - 18px),640px);
-        border:1px solid rgba(15,23,42,.12);
-        background:rgba(255,255,255,.92);
-        backdrop-filter:blur(12px);
-        border-radius:22px;
-        padding:8px;
-        box-shadow:0 16px 55px rgba(15,23,42,.18);
-        display:grid;
-        grid-template-columns:repeat(5,1fr);
-        gap:6px;
-      }
-      .bottom-nav a{
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        gap:2px;
-        min-height:48px;
-        border-radius:16px;
-        color:#475569;
-        font-size:11px;
-        font-weight:900;
-        text-align:center;
-      }
-      .bottom-nav a.active{
-        background:rgba(14,165,233,.11);
-        color:#075985;
-        border:1px solid rgba(14,165,233,.18);
-      }
+      .bottom-nav{position:fixed;z-index:60;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 18px),640px);border:1px solid rgba(15,23,42,.12);background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-radius:22px;padding:8px;box-shadow:0 16px 55px rgba(15,23,42,.18);display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+      .bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:48px;border-radius:16px;color:#475569;font-size:11px;font-weight:900;text-align:center}
+      .bottom-nav a.active{background:rgba(14,165,233,.11);color:#075985;border:1px solid rgba(14,165,233,.18)}
       .bottom-nav b{font-size:17px;line-height:1}
     }
   </style>
@@ -318,7 +253,7 @@
         <span class="brand-mark">JM</span>
         <span>
           DIGIY JOBS
-          <small>Match candidat ↔ mission</small>
+          <small>Match terrain</small>
         </span>
       </a>
 
@@ -342,29 +277,29 @@
       <div class="wrap hero-grid">
         <article class="hero-card">
           <span class="eyebrow">Coffre JOBS</span>
-          <h1>Le bon besoin face au bon profil.</h1>
+          <h1>Le bon profil, le bon geste.</h1>
           <p class="lead">
-            Ici le bureau rapproche une mission et des candidatures réelles.
-            Le score aide à décider plus vite, mais le dernier mot reste au terrain.
+            Le score aide à lire vite. Le terrain décide : appeler, retenir, copier la fiche,
+            ouvrir la mission ou valider le rapprochement.
           </p>
           <div class="hero-tags">
-            <span class="tag">Mission réelle</span>
-            <span class="tag">Candidats réels</span>
             <span class="tag">Score lisible</span>
-            <span class="tag">Notes bureau</span>
+            <span class="tag">Actions rapides</span>
+            <span class="tag">WhatsApp prêt</span>
+            <span class="tag">Décision terrain</span>
           </div>
         </article>
 
         <aside class="panel">
           <span class="signal" id="signalPill">Coffre JOBS — vérification…</span>
-          <h2>État de lecture</h2>
+          <h2>Le geste simple</h2>
           <p>
-            Cette page reste dans le coffre professionnel. Elle ne montre pas le repère interne
-            et ne transporte pas de téléphone dans l’adresse.
+            Choisis une mission, ouvre un profil, puis clique l’action utile. Pas de téléphone dans l’URL,
+            pas de repère interne affiché : tout reste dans le coffre pro.
           </p>
           <div class="mini-grid">
-            <div class="mini"><strong>Mission lue</strong><span id="miniMissionSource">missions en direct</span></div>
-            <div class="mini"><strong>Candidats lus</strong><span id="miniCandidateSource">candidatures en direct</span></div>
+            <div class="mini"><strong>Mission</strong><span id="miniMissionSource">missions en direct</span></div>
+            <div class="mini"><strong>Candidats</strong><span id="miniCandidateSource">candidatures en direct</span></div>
             <div class="mini"><strong>Mode</strong><span id="miniMode">vérification…</span></div>
             <div class="mini"><strong>Session</strong><span id="miniSession">coffre protégé</span></div>
           </div>
@@ -376,8 +311,8 @@
       <div id="lockedCard" class="locked-card">
         <h2>Code PIN demandé</h2>
         <p>
-          Cette page sert à rapprocher les missions et les candidatures côté professionnel.
-          Entre ton code PIN JOBS : la session reste ouverte pendant 8h sur les pages internes.
+          Cette page rapproche les missions et les candidatures côté professionnel. Entre ton code PIN JOBS :
+          la session reste ouverte pendant 8h sur les pages internes.
         </p>
         <a href="./pin.html">Entrer mon code PIN</a>
       </div>
@@ -386,11 +321,26 @@
     <section id="appContent" hidden>
       <section class="stats">
         <div class="wrap stats-grid">
-          <article class="stat"><strong id="statCandidates">0</strong><span>candidats affichés</span></article>
-          <article class="stat"><strong id="statStrong">0</strong><span>matchs forts (80+)</span></article>
-          <article class="stat"><strong id="statMedium">0</strong><span>matchs à regarder (60+)</span></article>
-          <article class="stat"><strong id="statValidated">0</strong><span>matchs validés</span></article>
+          <article class="stat"><strong id="statCandidates">0</strong><span>profils affichés</span></article>
+          <article class="stat"><strong id="statStrong">0</strong><span>bons matchs</span></article>
+          <article class="stat"><strong id="statMedium">0</strong><span>à regarder</span></article>
+          <article class="stat"><strong id="statValidated">0</strong><span>validés localement</span></article>
         </div>
+      </section>
+
+      <section class="wrap">
+        <article class="terrain-card">
+          <h2>Actions rapides du match</h2>
+          <p>Le score ne remplace pas le jugement. Il sert à ouvrir vite le bon geste terrain.</p>
+          <div class="quick-actions">
+            <button id="quickCall" class="green" type="button">💬 WhatsApp</button>
+            <button id="quickGood" class="gold" type="button">⭐ Bon profil</button>
+            <button id="quickValidate" class="blue" type="button">🤝 Valider</button>
+            <button id="quickCopy" type="button">📋 Copier fiche</button>
+            <button id="quickMission" type="button">🧷 Mission</button>
+            <button id="quickReject" class="red" type="button">❌ Écarter</button>
+          </div>
+        </article>
       </section>
 
       <section class="mission-section">
@@ -399,13 +349,11 @@
             <div class="section-head">
               <div>
                 <h2>Mission active</h2>
-                <p>Le matching se base sur cette mission. Choisis une offre active si le compte en a plusieurs.</p>
+                <p>Choisis la mission, puis le match classe les profils. Le détail reste simple pour agir vite.</p>
               </div>
               <div style="min-width:280px;display:grid;gap:8px">
                 <label for="missionSelect" style="font-weight:900;color:#334155">Choisir une mission active</label>
-                <select id="missionSelect">
-                  <option value="">Aucune mission</option>
-                </select>
+                <select id="missionSelect"><option value="">Aucune mission</option></select>
               </div>
             </div>
             <div class="mission-grid" id="missionGrid"></div>
@@ -417,29 +365,26 @@
         <div class="filters">
           <div class="section-head" style="margin-bottom:14px">
             <div>
-              <h2>Filtres du matching</h2>
-              <p>Tu peux serrer la recherche ou laisser le score faire le premier tri.</p>
+              <h2>Recherche simple</h2>
+              <p>Commence par nom, métier ou ville. Les filtres existent, mais le terrain doit d’abord voir les meilleurs profils.</p>
             </div>
           </div>
 
           <div class="filter-grid">
-            <input id="searchInput" type="search" placeholder="Rechercher nom, métier, ville, message, expérience..." />
-
+            <input id="searchInput" type="search" placeholder="Rechercher nom, métier, ville, message..." />
             <select id="filterZoneMode">
               <option value="all">Toutes zones</option>
-              <option value="same">Même ville mission</option>
-              <option value="near">Ville mission + proches</option>
+              <option value="same">Même ville</option>
+              <option value="near">Ville + proches</option>
             </select>
-
             <select id="filterMinScore">
               <option value="0">Tous scores</option>
               <option value="40">40+</option>
               <option value="60">60+</option>
               <option value="80">80+</option>
             </select>
-
             <select id="filterStatus">
-              <option value="all">Tous statuts bureau</option>
+              <option value="all">Tous statuts</option>
               <option value="new">Nouveau</option>
               <option value="review">En lecture</option>
               <option value="shortlist">Sélectionné</option>
@@ -447,7 +392,6 @@
               <option value="accepted">Retenu</option>
               <option value="rejected">Non retenu</option>
             </select>
-
             <select id="filterAvailability">
               <option value="all">Toutes dispos</option>
               <option value="immediate">Immédiate</option>
@@ -469,8 +413,8 @@
           <article class="list-card">
             <div class="list-head">
               <div>
-                <h3>Candidats classés</h3>
-                <p>Le haut de liste montre les profils les plus proches de la mission active.</p>
+                <h3>Profils classés</h3>
+                <p>Le premier profil est celui à regarder en priorité pour la mission active.</p>
               </div>
             </div>
             <div class="list" id="candidateList"></div>
@@ -480,11 +424,8 @@
         <div class="right-col">
           <article class="detail-card">
             <div class="empty-card" id="emptyState">
-              <h4>Choisis un candidat</h4>
-              <p>
-                La mission est prête. Sélectionne un profil à gauche pour voir la compatibilité,
-                les raisons du score, les notes et la mise en relation.
-              </p>
+              <h4>Choisis un profil</h4>
+              <p>La mission est prête. Sélectionne un profil à gauche pour ouvrir les actions.</p>
             </div>
 
             <div id="detailContent" hidden>
@@ -496,8 +437,17 @@
                 <div class="chips" id="detailChips"></div>
               </div>
 
+              <div class="detail-actions" style="margin-bottom:16px">
+                <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+                <button class="gold" id="btnMarkGood" type="button">⭐ Bon profil</button>
+                <button class="primary" id="btnValidateMatch" type="button">🤝 Valider</button>
+                <button id="btnCopyCandidateLink" type="button">📋 Copier fiche</button>
+                <button id="btnCopyMissionLink" type="button">🧷 Copier mission</button>
+                <button class="red" id="btnRejectLocal" type="button">❌ Écarter</button>
+              </div>
+
               <div class="match-box">
-                <h4>Lecture du match</h4>
+                <h4>Lecture rapide du match</h4>
                 <p id="matchSummary">—</p>
                 <div class="reason-list" id="reasonList"></div>
               </div>
@@ -505,21 +455,20 @@
               <div class="detail-grid" id="detailGrid" style="margin-top:16px"></div>
 
               <div class="match-box" style="margin-top:16px">
-                <h4>Notes bureau pour ce match</h4>
-                <p>Note le vrai retour : sérieux, cohérence, réactivité, point à vérifier, étape suivante.</p>
+                <h4>Note courte</h4>
+                <p>Ajoute seulement ce qui aide à décider : appeler, vérifier, garder, écarter.</p>
+                <div class="note-buttons">
+                  <button data-note="À appeler aujourd’hui." type="button">📞 À appeler</button>
+                  <button data-note="Bon profil pour cette mission." type="button">⭐ Bon profil</button>
+                  <button data-note="Vérifier disponibilité et mobilité." type="button">🧭 Vérifier</button>
+                  <button data-note="À écarter pour cette mission." type="button">❌ Écarter</button>
+                </div>
                 <div class="notes-wrap" style="margin-top:12px">
-                  <textarea id="matchNotes" placeholder="Ex. Très bon profil pour démarrage rapide. Vérifier mobilité exacte. Possible mise en relation aujourd’hui."></textarea>
+                  <textarea id="matchNotes" placeholder="Ex. Bon profil. Vérifier mobilité exacte. Possible mise en relation aujourd’hui."></textarea>
                   <div class="button-row">
-                    <button class="primary" id="btnSaveMatchNotes" type="button">Enregistrer les notes</button>
+                    <button class="primary" id="btnSaveMatchNotes" type="button">💾 Garder la note</button>
                   </div>
                 </div>
-              </div>
-
-              <div class="detail-actions" style="margin-top:16px">
-                <a class="green" id="btnOpenWA" href="#" target="_blank" rel="noopener">💬 WhatsApp candidat</a>
-                <button id="btnCopyCandidateLink" type="button">📋 Copier fiche candidat</button>
-                <button id="btnCopyMissionLink" type="button">🧷 Copier lien mission</button>
-                <button class="primary" id="btnValidateMatch" type="button">🤝 Valider ce match</button>
               </div>
             </div>
           </article>
@@ -531,11 +480,9 @@
   <footer>
     <div class="wrap">
       <div class="foot">
-        <p>
-          DIGIY JOBS — match candidat ↔ mission. Un outil pour transformer les besoins et les dossiers en décision claire.
-        </p>
+        <p>DIGIY JOBS — match terrain. Le score aide. Le pro décide.</p>
         <div class="foot-links">
-          <button id="btnResetValidated" type="button">Vider validations</button>
+          <button id="btnResetValidated" type="button">Vider validations locales</button>
           <a href="./cockpit.html">Mon espace</a>
           <a href="./publier-mission.html">Proposer un poste</a>
           <a href="./bureau.html">Bureau</a>
@@ -558,38 +505,14 @@
     (function(){
       "use strict";
 
-      const SUPABASE_URL =
-        window.DIGIY_SUPABASE_URL ||
-        "https://wesqmwjjtsefyjnluosj.supabase.co";
-
-      const SUPABASE_ANON_KEY =
-        window.DIGIY_SUPABASE_ANON ||
-        window.DIGIY_SUPABASE_ANON_KEY ||
-        "";
-
-      const sb =
-        window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
-          ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-          : null;
-
+      const SUPABASE_URL = window.DIGIY_SUPABASE_URL || "https://wesqmwjjtsefyjnluosj.supabase.co";
+      const SUPABASE_ANON_KEY = window.DIGIY_SUPABASE_ANON || window.DIGIY_SUPABASE_ANON_KEY || "";
+      const sb = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
       const params = new URLSearchParams(location.search);
       const $ = (id) => document.getElementById(id);
+      const LOCAL_MATCH_PREFIX = "DIGIY_JOBS_MATCH_STATE_V5::";
 
-      const LOCAL_MATCH_PREFIX = "DIGIY_JOBS_MATCH_STATE_V4::";
-
-      const SENSITIVE_QUERY_KEYS = [
-        "slug",
-        "phone",
-        "tel",
-        "resa_tel",
-        "owner_phone",
-        "owner_id",
-        "business_code",
-        "keybox_code",
-        "keybox_location",
-        "access_note"
-      ];
-
+      const SENSITIVE_QUERY_KEYS = ["slug","phone","tel","resa_tel","owner_phone","owner_id","business_code","keybox_code","keybox_location","access_note"];
       const NEAR_ZONES = {
         dakar:["rufisque","thiès","thies"],
         rufisque:["dakar","thiès","thies","mbour"],
@@ -600,43 +523,10 @@
         ngaparou:["saly","somone","mbour"],
         somone:["ngaparou","saly","mbour"]
       };
-
-      const SECTOR_LABELS = {
-        build:"BTP",
-        beauty:"Beauté",
-        shop:"Boutique",
-        food:"Restauration",
-        service:"Services",
-        driver:"Chauffeur",
-        market:"Marché",
-        admin:"Admin"
-      };
-
-      const STATUS_LABELS = {
-        new:"Nouveau",
-        review:"En lecture",
-        shortlist:"Sélectionné",
-        call:"À contacter",
-        accepted:"Retenu",
-        rejected:"Non retenu"
-      };
-
-      const AVAILABILITY_LABELS = {
-        immediate:"Immédiate",
-        this_week:"Cette semaine",
-        this_month:"Ce mois-ci",
-        to_discuss:"À discuter"
-      };
-
-      const CONTRACT_LABELS = {
-        cdi:"CDI",
-        cdd:"CDD",
-        mission:"Mission",
-        stage:"Stage",
-        freelance:"Freelance",
-        extra:"Extra"
-      };
-
+      const SECTOR_LABELS = {build:"BTP",beauty:"Beauté",shop:"Boutique",food:"Restauration",service:"Services",driver:"Chauffeur",market:"Marché",admin:"Admin",other:"Autre"};
+      const STATUS_LABELS = {new:"Nouveau",review:"En lecture",shortlist:"Sélectionné",call:"À contacter",accepted:"Retenu",rejected:"Non retenu"};
+      const AVAILABILITY_LABELS = {immediate:"Immédiate",this_week:"Cette semaine",this_month:"Ce mois-ci",to_discuss:"À discuter"};
+      const CONTRACT_LABELS = {cdi:"CDI",cdd:"CDD",mission:"Mission",stage:"Stage",freelance:"Freelance",extra:"Extra"};
       const SECTOR_KEYWORDS = {
         build:["btp","chantier","construction","maçon","macon","électricien","electricien","plombier","soudeur","menuisier","peintre","carreleur","manoeuvre","manoeuvres","mecanicien","mécanicien"],
         beauty:["coiffeuse","coiffeur","esthetique","esthétique","beaute","beauté","maquillage","ongles","spa"],
@@ -648,816 +538,261 @@
         admin:["secrétaire","secretaire","bureau","admin","gestion","assistant","comptable"]
       };
 
-      const statusBox = $("statusBox");
-      const signalPill = $("signalPill");
-      const miniMode = $("miniMode");
-      const miniSession = $("miniSession");
-
-      const lockedCard = $("lockedCard");
-      const appContent = $("appContent");
-
-      const statCandidates = $("statCandidates");
-      const statStrong = $("statStrong");
-      const statMedium = $("statMedium");
-      const statValidated = $("statValidated");
-
-      const missionGrid = $("missionGrid");
-      const missionSelect = $("missionSelect");
-      const candidateList = $("candidateList");
-      const emptyState = $("emptyState");
-      const detailContent = $("detailContent");
-      const detailName = $("detailName");
-      const detailSubtitle = $("detailSubtitle");
-      const detailChips = $("detailChips");
-      const matchSummary = $("matchSummary");
-      const reasonList = $("reasonList");
-      const detailGrid = $("detailGrid");
-      const matchNotes = $("matchNotes");
-      const btnOpenWA = $("btnOpenWA");
-
-      const searchInput = $("searchInput");
-      const filterZoneMode = $("filterZoneMode");
-      const filterMinScore = $("filterMinScore");
-      const filterStatus = $("filterStatus");
-      const filterAvailability = $("filterAvailability");
-
-      const btnReloadMission = $("btnReloadMission");
-      const btnClearFilters = $("btnClearFilters");
-      const btnExportMatches = $("btnExportMatches");
-      const btnSaveMatchNotes = $("btnSaveMatchNotes");
-      const btnCopyCandidateLink = $("btnCopyCandidateLink");
-      const btnCopyMissionLink = $("btnCopyMissionLink");
-      const btnValidateMatch = $("btnValidateMatch");
-      const btnResetValidated = $("btnResetValidated");
-
-      const state = {
-        slug: "",
-        offers: [],
-        mission: null,
-        candidates: [],
-        ranked: [],
-        selectedId: null,
-        session: null,
-        matchState: {},
-        selectedMissionId: ""
+      const els = {
+        statusBox:$("statusBox"), signalPill:$("signalPill"), miniMode:$("miniMode"), miniSession:$("miniSession"), miniMissionSource:$("miniMissionSource"), miniCandidateSource:$("miniCandidateSource"),
+        lockedCard:$("lockedCard"), appContent:$("appContent"), statCandidates:$("statCandidates"), statStrong:$("statStrong"), statMedium:$("statMedium"), statValidated:$("statValidated"),
+        missionGrid:$("missionGrid"), missionSelect:$("missionSelect"), candidateList:$("candidateList"), emptyState:$("emptyState"), detailContent:$("detailContent"), detailName:$("detailName"), detailSubtitle:$("detailSubtitle"), detailChips:$("detailChips"), matchSummary:$("matchSummary"), reasonList:$("reasonList"), detailGrid:$("detailGrid"), matchNotes:$("matchNotes"), btnOpenWA:$("btnOpenWA"),
+        searchInput:$("searchInput"), filterZoneMode:$("filterZoneMode"), filterMinScore:$("filterMinScore"), filterStatus:$("filterStatus"), filterAvailability:$("filterAvailability"),
+        btnReloadMission:$("btnReloadMission"), btnClearFilters:$("btnClearFilters"), btnExportMatches:$("btnExportMatches"), btnSaveMatchNotes:$("btnSaveMatchNotes"), btnCopyCandidateLink:$("btnCopyCandidateLink"), btnCopyMissionLink:$("btnCopyMissionLink"), btnValidateMatch:$("btnValidateMatch"), btnResetValidated:$("btnResetValidated"), btnMarkGood:$("btnMarkGood"), btnRejectLocal:$("btnRejectLocal"),
+        quickCall:$("quickCall"), quickGood:$("quickGood"), quickValidate:$("quickValidate"), quickCopy:$("quickCopy"), quickMission:$("quickMission"), quickReject:$("quickReject")
       };
+
+      const state = { slug:"", offers:[], mission:null, candidates:[], ranked:[], selectedId:null, session:null, matchState:{}, selectedMissionId:"" };
 
       function scrubSensitiveUrl(){
         try{
           const url = new URL(location.href);
           let changed = false;
-
-          SENSITIVE_QUERY_KEYS.forEach((key) => {
-            if (url.searchParams.has(key)) {
-              url.searchParams.delete(key);
-              changed = true;
-            }
-          });
-
-          if (changed) {
-            const clean = url.pathname + (url.search ? url.search : "") + url.hash;
-            history.replaceState({}, document.title, clean);
-          }
+          SENSITIVE_QUERY_KEYS.forEach((key) => { if (url.searchParams.has(key)) { url.searchParams.delete(key); changed = true; } });
+          if (changed) history.replaceState({}, document.title, url.pathname + (url.search ? url.search : "") + url.hash);
         }catch(_){}
       }
-
-      function setStatus(text, tone = "info") {
-        if (!text) {
-          statusBox.className = "status-box";
-          statusBox.textContent = "";
-          statusBox.style.display = "none";
-          return;
-        }
-        statusBox.className = `status-box ${tone}`;
-        statusBox.textContent = text;
-        statusBox.style.display = "block";
+      function setStatus(text, tone = "info"){
+        if (!text) { els.statusBox.className = "status-box"; els.statusBox.textContent = ""; els.statusBox.style.display = "none"; return; }
+        els.statusBox.className = `status-box ${tone}`; els.statusBox.textContent = text; els.statusBox.style.display = "block";
       }
+      function safe(value, fallback = "—"){ return value == null || value === "" ? fallback : String(value); }
+      function formatDate(value){ if (!value) return "—"; try { return new Intl.DateTimeFormat("fr-FR",{dateStyle:"medium",timeStyle:"short"}).format(new Date(value)); } catch { return String(value); } }
+      function normalizeSlug(value = ""){ return String(value||"").trim().toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"").replace(/-+/g,"-").replace(/^-|-$/g,""); }
+      function normalizeText(value = ""){ return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim(); }
+      function escapeHtml(str = ""){ return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+      function sectorLabel(value = ""){ return SECTOR_LABELS[String(value||"").toLowerCase()] || value || "Secteur"; }
+      function contractLabel(value = ""){ return CONTRACT_LABELS[String(value||"").toLowerCase()] || value || "Contrat"; }
+      function statusLabel(value = ""){ return STATUS_LABELS[String(value||"").toLowerCase()] || value || "Statut"; }
+      function availabilityLabel(value = ""){ return AVAILABILITY_LABELS[String(value||"").toLowerCase()] || value || "Disponibilité"; }
+      function scoreClass(score){ if (score >= 80) return "score-high"; if (score >= 60) return "score-mid"; return "score-low"; }
+      function sectorClass(sector = ""){ const s = String(sector||"").toLowerCase(); if (["build","food","driver"].includes(s)) return "sector-" + s; return "sector-other"; }
 
-      function safe(value, fallback = "—") {
-        return value == null || value === "" ? fallback : String(value);
-      }
+      function matchStateKey(){ return LOCAL_MATCH_PREFIX + (state.slug || "jobs"); }
+      function loadMatchState(){ try { state.matchState = JSON.parse(localStorage.getItem(matchStateKey()) || "{}"); } catch (_) { state.matchState = {}; } }
+      function saveMatchState(){ try { localStorage.setItem(matchStateKey(), JSON.stringify(state.matchState)); } catch (_){} }
+      function getLocalMatch(candidateId){ return state.matchState[String(candidateId)] || { notes:"", validated:false, good:false, rejected:false }; }
+      function setLocalMatch(candidateId, patch){ state.matchState[String(candidateId)] = {...getLocalMatch(candidateId), ...patch}; saveMatchState(); }
+      function publicMissionHref(){ if (!state.mission?.id) return "./mission.html"; return "./mission.html?id=" + encodeURIComponent(state.mission.id); }
 
-      function formatDate(value) {
-        if (!value) return "—";
-        try {
-          return new Intl.DateTimeFormat("fr-FR", {
-            dateStyle: "medium",
-            timeStyle: "short"
-          }).format(new Date(value));
-        } catch {
-          return String(value);
-        }
-      }
-
-      function normalizeSlug(value = "") {
-        return String(value || "")
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "");
-      }
-
-      function normalizeText(value = "") {
-        return String(value || "")
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/\s+/g, " ")
-          .trim();
-      }
-
-      function escapeHtml(str = "") {
-        return String(str)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      function sectorLabel(value = "") {
-        return SECTOR_LABELS[String(value || "").toLowerCase()] || value || "Secteur";
-      }
-
-      function contractLabel(value = "") {
-        return CONTRACT_LABELS[String(value || "").toLowerCase()] || value || "Contrat";
-      }
-
-      function statusLabel(value = "") {
-        return STATUS_LABELS[String(value || "").toLowerCase()] || value || "Statut";
-      }
-
-      function availabilityLabel(value = "") {
-        return AVAILABILITY_LABELS[String(value || "").toLowerCase()] || value || "Disponibilité";
-      }
-
-      function scoreClass(score) {
-        if (score >= 80) return "score-high";
-        if (score >= 60) return "score-mid";
-        return "score-low";
-      }
-
-      function sectorClass(sector = "") {
-        const s = String(sector || "").toLowerCase();
-        if (["build","food","driver"].includes(s)) return "sector-" + s;
-        return "sector-other";
-      }
-
-      function matchStateKey() {
-        return LOCAL_MATCH_PREFIX + (state.slug || "jobs");
-      }
-
-      function loadMatchState() {
-        try {
-          state.matchState = JSON.parse(localStorage.getItem(matchStateKey()) || "{}");
-        } catch (_) {
-          state.matchState = {};
-        }
-      }
-
-      function saveMatchState() {
-        try {
-          localStorage.setItem(matchStateKey(), JSON.stringify(state.matchState));
-        } catch (_) {}
-      }
-
-      function getLocalMatch(candidateId) {
-        return state.matchState[String(candidateId)] || { notes: "", validated: false };
-      }
-
-      function setLocalMatch(candidateId, patch) {
-        state.matchState[String(candidateId)] = {
-          ...getLocalMatch(candidateId),
-          ...patch
-        };
-        saveMatchState();
-      }
-
-      function publicMissionHref() {
-        if (!state.mission?.id) return "./mission.html";
-        return "./mission.html?id=" + encodeURIComponent(state.mission.id);
-      }
-
-      function inferSector(candidate, offer) {
+      function inferSector(candidate, offer){
         if (offer?.sector) return String(offer.sector).toLowerCase();
-
-        const hay = normalizeText([
-          candidate.trade,
-          candidate.job_title,
-          candidate.message,
-          offer?.title,
-          offer?.description,
-          offer?.requirements
-        ].filter(Boolean).join(" "));
-
-        for (const [sector, words] of Object.entries(SECTOR_KEYWORDS)) {
-          if (words.some((w) => hay.includes(normalizeText(w)))) return sector;
-        }
-
+        const hay = normalizeText([candidate.trade,candidate.job_title,candidate.message,offer?.title,offer?.description,offer?.requirements].filter(Boolean).join(" "));
+        for (const [sector, words] of Object.entries(SECTOR_KEYWORDS)) if (words.some((w) => hay.includes(normalizeText(w)))) return sector;
         return "other";
       }
-
-      function sameOrNearZone(candidateCity, missionCity, zoneMode) {
-        const cand = normalizeText(candidateCity);
-        const miss = normalizeText(missionCity);
+      function sameOrNearZone(candidateCity, missionCity, zoneMode){
+        const cand = normalizeText(candidateCity), miss = normalizeText(missionCity);
         if (!miss || !cand || zoneMode === "all") return true;
         if (zoneMode === "same") return cand === miss;
         if (cand === miss) return true;
-        const near = NEAR_ZONES[miss] || [];
-        return near.includes(cand);
+        return (NEAR_ZONES[miss] || []).includes(cand);
       }
-
-      function buildReasons(candidate, offer) {
+      function buildReasons(candidate, offer){
         const reasons = [];
         const sector = inferSector(candidate, offer);
-        const offerText = normalizeText([offer?.title, offer?.description, offer?.requirements].filter(Boolean).join(" "));
-        const candText = normalizeText([candidate.trade, candidate.job_title, candidate.message].filter(Boolean).join(" "));
-
-        if (sector !== "other") reasons.push(`Secteur cohérent : ${sectorLabel(sector)}.`);
-        if (sameOrNearZone(candidate.city, offer?.city, "near")) {
-          reasons.push(`Zone compatible : ${safe(candidate.city)} ↔ ${safe(offer?.city)}.`);
-        }
-        if (["immediate","this_week"].includes(String(candidate.availability || "").toLowerCase())) {
-          reasons.push(`Disponibilité rapide : ${availabilityLabel(candidate.availability)}.`);
-        }
-        if (candidate.years_experience) {
-          reasons.push(`Expérience déclarée : ${candidate.years_experience}.`);
-        }
-
+        const offerText = normalizeText([offer?.title,offer?.description,offer?.requirements].filter(Boolean).join(" "));
+        const candText = normalizeText([candidate.trade,candidate.job_title,candidate.message].filter(Boolean).join(" "));
+        if (sector !== "other") reasons.push(`Métier proche : ${sectorLabel(sector)}.`);
+        if (sameOrNearZone(candidate.city, offer?.city, "near")) reasons.push(`Zone utile : ${safe(candidate.city)} ↔ ${safe(offer?.city)}.`);
+        if (["immediate","this_week"].includes(String(candidate.availability||"").toLowerCase())) reasons.push(`Disponibilité rapide : ${availabilityLabel(candidate.availability)}.`);
+        if (candidate.years_experience) reasons.push(`Expérience déclarée : ${candidate.years_experience}.`);
         const words = ["chauffeur","serveur","coiffe","vende","maçon","macon","plomb","electric","caisse","stock","chantier","cuisine","livraison"];
         const common = words.filter((w) => offerText.includes(w) && candText.includes(w));
-        if (common.length) reasons.push(`Mots-clés communs : ${common.slice(0, 4).join(", ")}.`);
-
-        if (!reasons.length) {
-          reasons.push("Lecture neutre : profil à vérifier manuellement avec le bureau.");
-        }
-
+        if (common.length) reasons.push(`Mots-clés communs : ${common.slice(0,4).join(", ")}.`);
+        if (!reasons.length) reasons.push("Lecture neutre : à vérifier manuellement.");
         return reasons;
       }
-
-      function computeScore(candidate, offer) {
+      function computeScore(candidate, offer){
         let score = 30;
         const sector = inferSector(candidate, offer);
-
         if (sector !== "other") score += 18;
-
         if (sameOrNearZone(candidate.city, offer?.city, "same")) score += 18;
         else if (sameOrNearZone(candidate.city, offer?.city, "near")) score += 10;
-
-        const availability = String(candidate.availability || "").toLowerCase();
-        if (availability === "immediate") score += 16;
-        else if (availability === "this_week") score += 12;
-        else if (availability === "this_month") score += 7;
-
+        const availability = String(candidate.availability||"").toLowerCase();
+        if (availability === "immediate") score += 16; else if (availability === "this_week") score += 12; else if (availability === "this_month") score += 7;
         const expText = normalizeText(candidate.years_experience);
-        if (/\b([3-9]|[1-9][0-9]+)\b/.test(expText)) score += 14;
-        else if (/\b(1|2)\b/.test(expText)) score += 8;
-        else if (expText) score += 4;
-
-        const offerText = normalizeText([offer?.title, offer?.description, offer?.requirements].filter(Boolean).join(" "));
-        const candText = normalizeText([candidate.trade, candidate.job_title, candidate.message].filter(Boolean).join(" "));
+        if (/\b([3-9]|[1-9][0-9]+)\b/.test(expText)) score += 14; else if (/\b(1|2)\b/.test(expText)) score += 8; else if (expText) score += 4;
+        const offerText = normalizeText([offer?.title,offer?.description,offer?.requirements].filter(Boolean).join(" "));
+        const candText = normalizeText([candidate.trade,candidate.job_title,candidate.message].filter(Boolean).join(" "));
         const keywords = ["chauffeur","serveur","coiffe","vende","maçon","macon","plomb","electric","caisse","stock","chantier","cuisine","livraison"];
-        const commonCount = keywords.filter((w) => offerText.includes(w) && candText.includes(w)).length;
-        score += Math.min(commonCount * 5, 15);
-
+        score += Math.min(keywords.filter((w) => offerText.includes(w) && candText.includes(w)).length * 5, 15);
         return Math.max(0, Math.min(100, Math.round(score)));
       }
 
-      function rankCandidates() {
-        if (!state.mission) {
-          state.ranked = [];
-          return;
-        }
-
-        const visible = state.candidates
-          .map((candidate) => {
-            const score = computeScore(candidate, state.mission);
-            const reasons = buildReasons(candidate, state.mission);
-            const local = getLocalMatch(candidate.id);
-            return {
-              ...candidate,
-              __score: score,
-              __reasons: reasons,
-              __sector: inferSector(candidate, state.mission),
-              __local: local
-            };
-          })
-          .filter((candidate) => {
-            const q = normalizeText(searchInput.value);
-            const zoneMode = filterZoneMode.value;
-            const minScore = Number(filterMinScore.value || 0);
-            const status = filterStatus.value;
-            const availability = filterAvailability.value;
-
-            if (candidate.__score < minScore) return false;
-            if (!sameOrNearZone(candidate.city, state.mission?.city, zoneMode)) return false;
-            if (status !== "all" && String(candidate.status || "new") !== status) return false;
-            if (availability !== "all" && String(candidate.availability || "") !== availability) return false;
-
-            if (q) {
-              const hay = normalizeText([
-                candidate.full_name,
-                candidate.trade,
-                candidate.job_title,
-                candidate.city,
-                candidate.country,
-                candidate.phone,
-                candidate.message,
-                candidate.years_experience,
-                candidate.__local?.notes
-              ].filter(Boolean).join(" "));
-              if (!hay.includes(q)) return false;
-            }
-
-            return true;
-          })
-          .sort((a, b) => {
-            if (b.__score !== a.__score) return b.__score - a.__score;
-            return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
-          });
-
-        state.ranked = visible;
-      }
-
-      function renderStats() {
-        statCandidates.textContent = String(state.ranked.length);
-        statStrong.textContent = String(state.ranked.filter((c) => c.__score >= 80).length);
-        statMedium.textContent = String(state.ranked.filter((c) => c.__score >= 60).length);
-        statValidated.textContent = String(state.ranked.filter((c) => c.__local?.validated).length);
-      }
-
-      function renderMissionSelect() {
-        missionSelect.innerHTML =
-          '<option value="">Aucune mission</option>' +
-          state.offers.map((offer) => {
-            const selected = String(offer.id) === String(state.selectedMissionId) ? ' selected' : '';
-            return `<option value="${escapeHtml(offer.id)}"${selected}>${escapeHtml(offer.title || "Mission")} — ${escapeHtml(safe(offer.city))}</option>`;
-          }).join("");
-      }
-
-      function renderMissionCard() {
-        if (!state.mission) {
-          missionGrid.innerHTML = `
-            <div class="field full">
-              <small>Mission</small>
-              <strong>Aucune mission active trouvée pour ce compte.</strong>
-            </div>
-          `;
-          return;
-        }
-
-        missionGrid.innerHTML = `
-          <div class="field">
-            <small>Titre</small>
-            <strong>${escapeHtml(safe(state.mission.title))}</strong>
-          </div>
-          <div class="field">
-            <small>Ville</small>
-            <strong>${escapeHtml(safe(state.mission.city))}</strong>
-          </div>
-          <div class="field">
-            <small>Pays</small>
-            <strong>${escapeHtml(safe(state.mission.country))}</strong>
-          </div>
-          <div class="field">
-            <small>Contrat</small>
-            <strong>${escapeHtml(contractLabel(state.mission.contract_type))}</strong>
-          </div>
-          <div class="field">
-            <small>Rémunération</small>
-            <strong>${escapeHtml(safe(state.mission.pay))}</strong>
-          </div>
-          <div class="field">
-            <small>Secteur</small>
-            <strong>${escapeHtml(sectorLabel(state.mission.sector))}</strong>
-          </div>
-          <div class="field">
-            <small>Structure</small>
-            <strong>${escapeHtml(safe(state.mission.employer_name))}</strong>
-          </div>
-          <div class="field">
-            <small>Publié</small>
-            <strong>${escapeHtml(formatDate(state.mission.published_at || state.mission.created_at))}</strong>
-          </div>
-          <div class="field full">
-            <small>Description</small>
-            <strong>${escapeHtml(safe(state.mission.description))}</strong>
-          </div>
-          <div class="field full">
-            <small>Conditions</small>
-            <strong>${escapeHtml(safe(state.mission.requirements))}</strong>
-          </div>
-        `;
-      }
-
-      function renderCandidateList() {
-        if (!state.ranked.length) {
-          candidateList.innerHTML = `
-            <div class="empty-card">
-              <h4>Aucun profil affiché</h4>
-              <p>Resserre moins les filtres ou vérifie que des candidats existent pour cette mission.</p>
-            </div>
-          `;
-          emptyState.hidden = false;
-          detailContent.hidden = true;
-          return;
-        }
-
-        if (!state.selectedId || !state.ranked.some((c) => String(c.id) === String(state.selectedId))) {
-          state.selectedId = state.ranked[0].id;
-        }
-
-        candidateList.innerHTML = state.ranked.map((candidate) => {
-          const isActive = String(candidate.id) === String(state.selectedId);
-          return `
-            <article class="candidate${isActive ? " active" : ""}" data-id="${escapeHtml(candidate.id)}">
-              <div class="candidate-top">
-                <div>
-                  <h4>${escapeHtml(safe(candidate.full_name))}</h4>
-                  <p class="sub">${escapeHtml([candidate.trade || candidate.job_title || "Profil", candidate.city || "", candidate.country || ""].filter(Boolean).join(" • "))}</p>
-                </div>
-                <div class="score-pill">${candidate.__score}</div>
-              </div>
-
-              <div class="chips">
-                <span class="chip ${scoreClass(candidate.__score)}">${candidate.__score}/100</span>
-                <span class="chip ${sectorClass(candidate.__sector)}">${escapeHtml(sectorLabel(candidate.__sector))}</span>
-                <span class="chip">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
-                <span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>
-                ${candidate.__local?.validated ? '<span class="chip score-high">Validé bureau</span>' : ''}
-              </div>
-
-              <div class="candidate-note">
-                ${escapeHtml((candidate.__local?.notes || candidate.message || "Pas encore de note locale.").slice(0, 180))}
-              </div>
-            </article>
-          `;
-        }).join("");
-
-        candidateList.querySelectorAll(".candidate").forEach((node) => {
-          node.addEventListener("click", function(){
-            state.selectedId = this.dataset.id;
-            renderCandidateList();
-            renderDetail();
-          });
+      function currentCandidate(){ return state.ranked.find((c) => String(c.id) === String(state.selectedId)) || null; }
+      function rankCandidates(){
+        if (!state.mission) { state.ranked = []; return; }
+        state.ranked = state.candidates.map((candidate) => {
+          const score = computeScore(candidate, state.mission);
+          const local = getLocalMatch(candidate.id);
+          return {...candidate, __score:score, __reasons:buildReasons(candidate, state.mission), __sector:inferSector(candidate, state.mission), __local:local};
+        }).filter((candidate) => {
+          const q = normalizeText(els.searchInput.value);
+          if (candidate.__local?.rejected && els.filterStatus.value !== "rejected") return false;
+          if (candidate.__score < Number(els.filterMinScore.value || 0)) return false;
+          if (!sameOrNearZone(candidate.city, state.mission?.city, els.filterZoneMode.value)) return false;
+          if (els.filterStatus.value !== "all" && String(candidate.status || "new") !== els.filterStatus.value && !(els.filterStatus.value === "rejected" && candidate.__local?.rejected)) return false;
+          if (els.filterAvailability.value !== "all" && String(candidate.availability || "") !== els.filterAvailability.value) return false;
+          if (q) {
+            const hay = normalizeText([candidate.full_name,candidate.trade,candidate.job_title,candidate.city,candidate.country,candidate.phone,candidate.message,candidate.years_experience,candidate.__local?.notes].filter(Boolean).join(" "));
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        }).sort((a,b) => {
+          if (!!b.__local?.validated !== !!a.__local?.validated) return Number(!!b.__local?.validated) - Number(!!a.__local?.validated);
+          if (!!b.__local?.good !== !!a.__local?.good) return Number(!!b.__local?.good) - Number(!!a.__local?.good);
+          if (b.__score !== a.__score) return b.__score - a.__score;
+          return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
         });
+      }
 
+      function renderStats(){
+        els.statCandidates.textContent = String(state.ranked.length);
+        els.statStrong.textContent = String(state.ranked.filter((c) => c.__score >= 80).length);
+        els.statMedium.textContent = String(state.ranked.filter((c) => c.__score >= 60).length);
+        els.statValidated.textContent = String(state.ranked.filter((c) => c.__local?.validated).length);
+        els.miniCandidateSource.textContent = state.ranked.length ? `${state.ranked.length} profil${state.ranked.length > 1 ? "s" : ""} affiché${state.ranked.length > 1 ? "s" : ""}` : "aucun profil affiché";
+      }
+      function renderMissionSelect(){
+        els.missionSelect.innerHTML = '<option value="">Aucune mission</option>' + state.offers.map((offer) => `<option value="${escapeHtml(offer.id)}"${String(offer.id) === String(state.selectedMissionId) ? " selected" : ""}>${escapeHtml(offer.title || "Mission")} — ${escapeHtml(safe(offer.city))}</option>`).join("");
+      }
+      function renderMissionCard(){
+        if (!state.mission) { els.missionGrid.innerHTML = '<div class="field full"><small>Mission</small><strong>Aucune mission active trouvée. Propose d’abord un poste.</strong></div>'; els.miniMissionSource.textContent = "aucune mission active"; return; }
+        els.miniMissionSource.textContent = state.mission.title || "mission active";
+        els.missionGrid.innerHTML = `
+          <div class="field"><small>Titre</small><strong>${escapeHtml(safe(state.mission.title))}</strong></div>
+          <div class="field"><small>Ville</small><strong>${escapeHtml(safe(state.mission.city))}</strong></div>
+          <div class="field"><small>Contrat</small><strong>${escapeHtml(contractLabel(state.mission.contract_type))}</strong></div>
+          <div class="field"><small>Rémunération</small><strong>${escapeHtml(safe(state.mission.pay))}</strong></div>
+          <div class="field full"><small>Description</small><strong>${escapeHtml(safe(state.mission.description))}</strong></div>
+          <div class="field full"><small>Conditions</small><strong>${escapeHtml(safe(state.mission.requirements))}</strong></div>`;
+      }
+      function renderCandidateList(){
+        if (!state.ranked.length) { els.candidateList.innerHTML = '<div class="empty-card"><h4>Aucun profil affiché</h4><p>Resserre moins les filtres ou vérifie que des candidats existent.</p></div>'; els.emptyState.hidden = false; els.detailContent.hidden = true; return; }
+        if (!state.selectedId || !state.ranked.some((c) => String(c.id) === String(state.selectedId))) state.selectedId = state.ranked[0].id;
+        els.candidateList.innerHTML = state.ranked.map((candidate) => {
+          const active = String(candidate.id) === String(state.selectedId);
+          return `<article class="candidate${active ? " active" : ""}" data-id="${escapeHtml(candidate.id)}">
+            <div class="candidate-top"><div><h4>${escapeHtml(safe(candidate.full_name))}</h4><p class="sub">${escapeHtml([candidate.trade || candidate.job_title || "Profil", candidate.city || "", candidate.country || ""].filter(Boolean).join(" • "))}</p></div><div class="score-pill">${candidate.__score}</div></div>
+            <div class="chips"><span class="chip ${scoreClass(candidate.__score)}">${candidate.__score}/100</span><span class="chip ${sectorClass(candidate.__sector)}">${escapeHtml(sectorLabel(candidate.__sector))}</span><span class="chip">${escapeHtml(statusLabel(candidate.status || "new"))}</span><span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>${candidate.__local?.good ? '<span class="chip score-mid">Bon profil</span>' : ''}${candidate.__local?.validated ? '<span class="chip score-high">Validé</span>' : ''}${candidate.__local?.rejected ? '<span class="chip score-low">Écarté</span>' : ''}</div>
+            <div class="candidate-note">${escapeHtml((candidate.__local?.notes || candidate.message || "Pas encore de note locale.").slice(0,180))}</div>
+          </article>`;
+        }).join("");
+        els.candidateList.querySelectorAll(".candidate").forEach((node) => node.addEventListener("click", function(){ state.selectedId = this.dataset.id; renderCandidateList(); renderDetail(); }));
         renderDetail();
       }
-
-      function buildWhatsAppLink(candidate) {
-        const lines = [
-          "Bonjour,",
-          "",
-          "je vous contacte depuis DIGIY JOBS concernant votre candidature.",
-          state.mission?.title ? `Mission : ${state.mission.title}` : null,
-          state.mission?.city ? `Ville mission : ${state.mission.city}` : null,
-          `Score de lecture : ${candidate.__score}/100`,
-          "",
-          "Nous pouvons avancer si vous êtes toujours disponible."
-        ].filter(Boolean).join("\n");
-
+      function buildWhatsAppLink(candidate){
+        const lines = ["Bonjour,","","je vous contacte depuis DIGIY JOBS concernant votre candidature.", state.mission?.title ? `Mission : ${state.mission.title}` : null, state.mission?.city ? `Ville mission : ${state.mission.city}` : null, `Lecture DIGIY : ${candidate.__score}/100`, "", "Êtes-vous toujours disponible pour avancer ?"].filter(Boolean).join("\n");
         const phone = String(candidate.phone || "").replace(/[^\d]/g, "");
-        const url = new URL(`https://wa.me/${phone}`);
-        url.searchParams.set("text", lines);
-        return url.toString();
+        if (!phone) return "#";
+        const url = new URL(`https://wa.me/${phone}`); url.searchParams.set("text", lines); return url.toString();
       }
-
-      function buildCandidateSheet(candidate) {
-        return [
-          `Nom : ${safe(candidate.full_name)}`,
-          `Téléphone candidat : ${safe(candidate.phone)}`,
-          `Ville : ${safe(candidate.city)}`,
-          `Pays : ${safe(candidate.country || "Sénégal")}`,
-          `Métier : ${safe(candidate.trade || candidate.job_title)}`,
-          `Expérience : ${safe(candidate.years_experience)}`,
-          `Disponibilité : ${availabilityLabel(candidate.availability)}`,
-          `Statut : ${statusLabel(candidate.status || "new")}`,
-          `Mission : ${safe(state.mission?.title)}`,
-          `Score : ${candidate.__score}/100`,
-          "",
-          "Raisons du match :",
-          ...candidate.__reasons.map((r) => `- ${r}`),
-          "",
-          "Notes bureau :",
-          safe(getLocalMatch(candidate.id).notes)
-        ].join("\n");
+      function buildCandidateSheet(candidate){
+        return [`Nom : ${safe(candidate.full_name)}`,`Téléphone candidat : ${safe(candidate.phone)}`,`Ville : ${safe(candidate.city)}`,`Pays : ${safe(candidate.country || "Sénégal")}`,`Métier : ${safe(candidate.trade || candidate.job_title)}`,`Expérience : ${safe(candidate.years_experience)}`,`Disponibilité : ${availabilityLabel(candidate.availability)}`,`Statut : ${statusLabel(candidate.status || "new")}`,`Mission : ${safe(state.mission?.title)}`,`Score : ${candidate.__score}/100`,"","Raisons du match:",...candidate.__reasons.map((r) => `- ${r}`),"","Notes bureau:",safe(getLocalMatch(candidate.id).notes)].join("\n");
       }
-
-      async function copyText(text) {
-        try {
-          await navigator.clipboard.writeText(text);
-          return true;
-        } catch (_) {
-          return false;
-        }
-      }
-
-      function renderDetail() {
-        const candidate = state.ranked.find((c) => String(c.id) === String(state.selectedId)) || null;
-
-        if (!candidate) {
-          emptyState.hidden = false;
-          detailContent.hidden = true;
-          return;
-        }
-
-        emptyState.hidden = true;
-        detailContent.hidden = false;
-
+      async function copyText(text){ try { await navigator.clipboard.writeText(text); return true; } catch (_) { return false; } }
+      function renderDetail(){
+        const candidate = currentCandidate();
+        if (!candidate) { els.emptyState.hidden = false; els.detailContent.hidden = true; return; }
+        els.emptyState.hidden = true; els.detailContent.hidden = false;
         const local = getLocalMatch(candidate.id);
-
-        detailName.textContent = safe(candidate.full_name);
-        detailSubtitle.textContent = [candidate.trade || candidate.job_title || "Profil", candidate.city || "", candidate.country || ""].filter(Boolean).join(" • ");
-        detailChips.innerHTML = `
-          <span class="chip ${scoreClass(candidate.__score)}">${candidate.__score}/100</span>
-          <span class="chip">${escapeHtml(statusLabel(candidate.status || "new"))}</span>
-          <span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>
-          ${local.validated ? '<span class="chip score-high">Validé bureau</span>' : ''}
-        `;
-
-        matchSummary.textContent = candidate.__score >= 80
-          ? "Très bon rapprochement. Profil à traiter en priorité."
-          : candidate.__score >= 60
-            ? "Rapprochement utile. Vérifie vite les points clés avant appel."
-            : "Rapprochement faible ou partiel. Lecture manuelle conseillée.";
-
-        reasonList.innerHTML = candidate.__reasons.map((reason) => `
-          <div class="reason-item">${escapeHtml(reason)}</div>
-        `).join("");
-
-        detailGrid.innerHTML = `
-          <div class="field"><small>Téléphone candidat</small><strong>${escapeHtml(safe(candidate.phone))}</strong></div>
-          <div class="field"><small>Disponibilité</small><strong>${escapeHtml(availabilityLabel(candidate.availability))}</strong></div>
-          <div class="field"><small>Expérience</small><strong>${escapeHtml(safe(candidate.years_experience))}</strong></div>
-          <div class="field"><small>Source</small><strong>${escapeHtml(safe(candidate.source))}</strong></div>
-          <div class="field"><small>Créé le</small><strong>${escapeHtml(formatDate(candidate.created_at))}</strong></div>
-          <div class="field"><small>Mis à jour</small><strong>${escapeHtml(formatDate(candidate.updated_at))}</strong></div>
-          <div class="field full"><small>Message candidat</small><strong>${escapeHtml(safe(candidate.message))}</strong></div>
-        `;
-
-        matchNotes.value = local.notes || "";
-        btnOpenWA.href = buildWhatsAppLink(candidate);
+        els.detailName.textContent = safe(candidate.full_name);
+        els.detailSubtitle.textContent = [candidate.trade || candidate.job_title || "Profil", candidate.city || "", candidate.country || ""].filter(Boolean).join(" • ");
+        els.detailChips.innerHTML = `<span class="chip ${scoreClass(candidate.__score)}">${candidate.__score}/100</span><span class="chip">${escapeHtml(statusLabel(candidate.status || "new"))}</span><span class="chip">${escapeHtml(availabilityLabel(candidate.availability))}</span>${local.good ? '<span class="chip score-mid">Bon profil</span>' : ''}${local.validated ? '<span class="chip score-high">Validé</span>' : ''}${local.rejected ? '<span class="chip score-low">Écarté</span>' : ''}`;
+        els.matchSummary.textContent = candidate.__score >= 80 ? "Priorité terrain : profil à contacter rapidement." : candidate.__score >= 60 ? "Profil intéressant : vérifie les points clés avant appel." : "Profil partiel : lecture manuelle avant décision.";
+        els.reasonList.innerHTML = candidate.__reasons.map((reason) => `<div class="reason-item">${escapeHtml(reason)}</div>`).join("");
+        els.detailGrid.innerHTML = `<div class="field"><small>Téléphone candidat</small><strong>${escapeHtml(safe(candidate.phone))}</strong></div><div class="field"><small>Disponibilité</small><strong>${escapeHtml(availabilityLabel(candidate.availability))}</strong></div><div class="field"><small>Expérience</small><strong>${escapeHtml(safe(candidate.years_experience))}</strong></div><div class="field"><small>Source</small><strong>${escapeHtml(safe(candidate.source))}</strong></div><div class="field"><small>Créé le</small><strong>${escapeHtml(formatDate(candidate.created_at))}</strong></div><div class="field"><small>Mis à jour</small><strong>${escapeHtml(formatDate(candidate.updated_at))}</strong></div><div class="field full"><small>Message candidat</small><strong>${escapeHtml(safe(candidate.message))}</strong></div>`;
+        els.matchNotes.value = local.notes || "";
+        els.btnOpenWA.href = buildWhatsAppLink(candidate);
       }
+      function renderAll(){
+        els.signalPill.textContent = state.session?.access ? "Coffre JOBS — session ouverte" : "Coffre JOBS — accès fermé";
+        els.miniMode.textContent = state.session?.access ? "session active" : "code demandé";
+        els.miniSession.textContent = state.session?.access ? "ouverte 8h" : "protégée";
+        renderMissionSelect(); renderMissionCard(); rankCandidates(); renderStats(); renderCandidateList();
+      }
+      function setLocked(){ els.lockedCard.style.display = "block"; els.appContent.hidden = true; els.signalPill.textContent = "Coffre JOBS — code demandé"; els.miniMode.textContent = "code demandé"; els.miniSession.textContent = "session fermée"; setStatus("Coffre protégé : entre ton code PIN JOBS pour utiliser le match.", "warn"); }
+      function setOpen(){ els.lockedCard.style.display = "none"; els.appContent.hidden = false; }
 
-      async function loadOffers() {
-        if (!sb || !state.slug) {
-          state.offers = [];
-          state.mission = null;
-          return;
-        }
-
-        const { data, error } = await sb
-          .from("digiy_jobs_offers_pro")
-          .select("id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at,created_at")
-          .eq("slug", state.slug)
-          .eq("status", "active")
-          .order("published_at", { ascending: false })
-          .order("created_at", { ascending: false });
-
+      async function loadOffers(){
+        if (!sb || !state.slug) { state.offers = []; state.mission = null; return; }
+        const { data, error } = await sb.from("digiy_jobs_offers_pro").select("id,slug,title,sector,city,country,contract_type,pay,status,description,requirements,has_housing,has_family_welcome,employer_name,published_at,created_at").eq("slug", state.slug).eq("status", "active").order("published_at", { ascending:false }).order("created_at", { ascending:false });
         if (error) throw error;
-
         state.offers = Array.isArray(data) ? data : [];
-
         const offerParam = String(params.get("offer") || params.get("id") || "").trim();
         const selected = state.offers.find((o) => String(o.id) === offerParam) || state.offers[0] || null;
-        state.mission = selected;
-        state.selectedMissionId = selected?.id || "";
+        state.mission = selected; state.selectedMissionId = selected?.id || "";
       }
-
-      async function loadCandidates() {
-        if (!sb || !state.slug) {
-          state.candidates = [];
-          return;
-        }
-
-        const rows = [];
-        const seen = new Set();
-
-        const bySlug = await sb
-          .from("digiy_jobs_candidates_pro")
-          .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-          .eq("slug", state.slug)
-          .order("created_at", { ascending: false });
-
+      async function loadCandidates(){
+        if (!sb || !state.slug) { state.candidates = []; return; }
+        const rows = [], seen = new Set();
+        const bySlug = await sb.from("digiy_jobs_candidates_pro").select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at").eq("slug", state.slug).order("created_at", { ascending:false });
         if (bySlug.error) throw bySlug.error;
-        (bySlug.data || []).forEach((item) => {
-          if (!seen.has(item.id)) {
-            seen.add(item.id);
-            rows.push(item);
-          }
-        });
-
+        (bySlug.data || []).forEach((item) => { if (!seen.has(item.id)) { seen.add(item.id); rows.push(item); } });
         const offerIds = state.offers.map((o) => o.id).filter(Boolean);
         if (offerIds.length) {
-          const byOffer = await sb
-            .from("digiy_jobs_candidates_pro")
-            .select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at")
-            .in("offer_id", offerIds)
-            .order("created_at", { ascending: false });
-
+          const byOffer = await sb.from("digiy_jobs_candidates_pro").select("id,offer_id,slug,full_name,phone,job_title,city,country,trade,years_experience,availability,message,status,source,created_at,updated_at").in("offer_id", offerIds).order("created_at", { ascending:false });
           if (byOffer.error) throw byOffer.error;
-          (byOffer.data || []).forEach((item) => {
-            if (!seen.has(item.id)) {
-              seen.add(item.id);
-              rows.push(item);
-            }
-          });
+          (byOffer.data || []).forEach((item) => { if (!seen.has(item.id)) { seen.add(item.id); rows.push(item); } });
         }
-
-        state.candidates = rows.sort((a, b) => {
-          const da = new Date(a.created_at || 0).getTime();
-          const db = new Date(b.created_at || 0).getTime();
-          return db - da;
-        });
+        state.candidates = rows.sort((a,b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
       }
 
-      function renderAll() {
-        signalPill.textContent = state.session?.access ? "Coffre JOBS — session ouverte" : "Coffre JOBS — accès fermé";
-        miniMode.textContent = state.session?.access ? "session active" : "code demandé";
-        miniSession.textContent = state.session?.access ? "ouverte 8h" : "protégée";
+      async function copyCurrent(){ const c = currentCandidate(); if (!c) return; const ok = await copyText(buildCandidateSheet(c)); if (ok) setStatus("Fiche candidat copiée.", "ok"); else prompt("Copie la fiche candidat :", buildCandidateSheet(c)); }
+      async function copyMission(){ if (!state.mission) return; const link = new URL(publicMissionHref(), location.href).toString(); const ok = await copyText(link); if (ok) setStatus("Lien public de la mission copié.", "ok"); else prompt("Copie le lien mission :", link); }
+      function saveNote(extra){ const c = currentCandidate(); if (!c) return; const note = (extra || els.matchNotes.value || "").trim(); setLocalMatch(c.id, { notes: note }); renderAll(); setStatus("Note de match gardée.", "ok"); }
+      function toggleGood(){ const c = currentCandidate(); if (!c) return; const current = getLocalMatch(c.id); setLocalMatch(c.id, { good: !current.good, rejected:false }); renderAll(); setStatus(current.good ? "Bon profil retiré." : "Profil marqué comme bon.", "ok"); }
+      function toggleValidate(){ const c = currentCandidate(); if (!c) return; const current = getLocalMatch(c.id); setLocalMatch(c.id, { validated: !current.validated, rejected:false }); renderAll(); setStatus(current.validated ? "Validation retirée." : "Match validé localement.", "ok"); }
+      function toggleReject(){ const c = currentCandidate(); if (!c) return; const current = getLocalMatch(c.id); setLocalMatch(c.id, { rejected: !current.rejected, good:false, validated:false, notes: current.notes || "À écarter pour cette mission." }); renderAll(); setStatus(current.rejected ? "Profil remis dans la lecture." : "Profil écarté localement.", "ok"); }
+      function openWhatsApp(){ const c = currentCandidate(); if (!c) return; const href = buildWhatsAppLink(c); if (href !== "#") window.open(href, "_blank", "noopener"); else setStatus("Téléphone candidat manquant pour ouvrir WhatsApp.", "warn"); }
 
-        renderMissionSelect();
-        renderMissionCard();
-        rankCandidates();
-        renderStats();
-        renderCandidateList();
-      }
-
-      function setLocked(){
-        lockedCard.style.display = "block";
-        appContent.hidden = true;
-        signalPill.textContent = "Coffre JOBS — code demandé";
-        miniMode.textContent = "code demandé";
-        miniSession.textContent = "session fermée";
-        setStatus("Coffre protégé : entre ton code PIN JOBS pour utiliser le match.", "warn");
-      }
-
-      function setOpen(){
-        lockedCard.style.display = "none";
-        appContent.hidden = false;
-      }
-
-      btnReloadMission.addEventListener("click", async function(){
-        await init();
+      els.btnReloadMission.addEventListener("click", init);
+      els.missionSelect.addEventListener("change", function(){ state.mission = state.offers.find((o) => String(o.id) === String(this.value)) || null; state.selectedMissionId = state.mission?.id || ""; renderAll(); });
+      [els.searchInput, els.filterZoneMode, els.filterMinScore, els.filterStatus, els.filterAvailability].forEach((el) => el.addEventListener(el.tagName === "INPUT" ? "input" : "change", renderAll));
+      els.btnClearFilters.addEventListener("click", function(){ els.searchInput.value = ""; els.filterZoneMode.value = "all"; els.filterMinScore.value = "0"; els.filterStatus.value = "all"; els.filterAvailability.value = "all"; renderAll(); });
+      els.btnSaveMatchNotes.addEventListener("click", () => saveNote());
+      els.btnValidateMatch.addEventListener("click", toggleValidate);
+      els.btnMarkGood.addEventListener("click", toggleGood);
+      els.btnRejectLocal.addEventListener("click", toggleReject);
+      els.btnCopyCandidateLink.addEventListener("click", copyCurrent);
+      els.btnCopyMissionLink.addEventListener("click", copyMission);
+      els.quickCall.addEventListener("click", openWhatsApp);
+      els.quickGood.addEventListener("click", toggleGood);
+      els.quickValidate.addEventListener("click", toggleValidate);
+      els.quickCopy.addEventListener("click", copyCurrent);
+      els.quickMission.addEventListener("click", copyMission);
+      els.quickReject.addEventListener("click", toggleReject);
+      document.querySelectorAll(".note-buttons button").forEach((btn) => btn.addEventListener("click", function(){ els.matchNotes.value = this.dataset.note || ""; saveNote(els.matchNotes.value); }));
+      els.btnExportMatches.addEventListener("click", function(){
+        const payload = state.ranked.map((candidate) => ({ mission_id:state.mission?.id || null, mission_title:state.mission?.title || null, candidate_id:candidate.id, offer_id:candidate.offer_id, full_name:candidate.full_name, candidate_phone:candidate.phone, city:candidate.city, country:candidate.country, trade:candidate.trade, years_experience:candidate.years_experience, availability:candidate.availability, status:candidate.status, score:candidate.__score, reasons:candidate.__reasons, notes_locales:getLocalMatch(candidate.id).notes || "", good_local:!!getLocalMatch(candidate.id).good, validated_local:!!getLocalMatch(candidate.id).validated, rejected_local:!!getLocalMatch(candidate.id).rejected }));
+        const blob = new Blob([JSON.stringify(payload,null,2)], { type:"application/json" });
+        const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = "digiy_jobs_match.json"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); setStatus("Export des matchs prêt.", "ok");
       });
+      els.btnResetValidated.addEventListener("click", function(){ if (!confirm("Vider les validations et notes locales de match ?")) return; state.matchState = {}; saveMatchState(); renderAll(); setStatus("Validations locales vidées.", "ok"); });
 
-      missionSelect.addEventListener("change", function(){
-        const mission = state.offers.find((o) => String(o.id) === String(this.value)) || null;
-        state.mission = mission;
-        state.selectedMissionId = mission?.id || "";
-        renderAll();
-      });
-
-      searchInput.addEventListener("input", renderAll);
-      filterZoneMode.addEventListener("change", renderAll);
-      filterMinScore.addEventListener("change", renderAll);
-      filterStatus.addEventListener("change", renderAll);
-      filterAvailability.addEventListener("change", renderAll);
-
-      btnClearFilters.addEventListener("click", function(){
-        searchInput.value = "";
-        filterZoneMode.value = "all";
-        filterMinScore.value = "0";
-        filterStatus.value = "all";
-        filterAvailability.value = "all";
-        renderAll();
-      });
-
-      btnSaveMatchNotes.addEventListener("click", function(){
-        if (!state.selectedId) return;
-        setLocalMatch(state.selectedId, { notes: matchNotes.value.trim() });
-        renderAll();
-        setStatus("Notes de match enregistrées.", "ok");
-      });
-
-      btnValidateMatch.addEventListener("click", function(){
-        if (!state.selectedId) return;
-        const current = getLocalMatch(state.selectedId);
-        setLocalMatch(state.selectedId, { validated: !current.validated });
-        renderAll();
-        setStatus(current.validated ? "Validation retirée." : "Match validé localement.", "ok");
-      });
-
-      btnCopyCandidateLink.addEventListener("click", async function(){
-        const candidate = state.ranked.find((c) => String(c.id) === String(state.selectedId));
-        if (!candidate) return;
-        const text = buildCandidateSheet(candidate);
-        const ok = await copyText(text);
-        if (ok) {
-          setStatus("Fiche candidat copiée.", "ok");
-        } else {
-          prompt("Copie la fiche candidat :", text);
-        }
-      });
-
-      btnCopyMissionLink.addEventListener("click", async function(){
-        if (!state.mission) return;
-        const link = new URL(publicMissionHref(), location.href).toString();
-        const ok = await copyText(link);
-        if (ok) {
-          setStatus("Lien public de la mission copié.", "ok");
-        } else {
-          prompt("Copie le lien mission :", link);
-        }
-      });
-
-      btnExportMatches.addEventListener("click", function(){
-        const payload = state.ranked.map((candidate) => ({
-          mission_id: state.mission?.id || null,
-          mission_title: state.mission?.title || null,
-          candidate_id: candidate.id,
-          offer_id: candidate.offer_id,
-          full_name: candidate.full_name,
-          candidate_phone: candidate.phone,
-          city: candidate.city,
-          country: candidate.country,
-          trade: candidate.trade,
-          years_experience: candidate.years_experience,
-          availability: candidate.availability,
-          status: candidate.status,
-          score: candidate.__score,
-          reasons: candidate.__reasons,
-          notes_locales: getLocalMatch(candidate.id).notes || "",
-          validated_local: !!getLocalMatch(candidate.id).validated
-        }));
-
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "digiy_jobs_match.json";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-        setStatus("Export des matchs prêt.", "ok");
-      });
-
-      btnResetValidated.addEventListener("click", function(){
-        if (!confirm("Vider les validations et notes locales de match ?")) return;
-        state.matchState = {};
-        saveMatchState();
-        renderAll();
-        setStatus("Validations locales vidées.", "ok");
-      });
-
-      async function init() {
+      async function init(){
         scrubSensitiveUrl();
-
-        try {
-          if (!sb) {
-            setStatus("Supabase non chargé. Vérifie la configuration front JOBS.", "error");
-            return;
-          }
-
-          if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") {
-            setLocked();
-            setStatus("Guard JOBS absent ou non chargé. La page reste protégée.", "warn");
-            return;
-          }
-
+        try{
+          if (!sb) { setStatus("Supabase non chargé. Vérifie la configuration front JOBS.", "error"); return; }
+          if (!window.DIGIY_GUARD || typeof window.DIGIY_GUARD.ready !== "function") { setLocked(); setStatus("Guard JOBS absent ou non chargé. La page reste protégée.", "warn"); return; }
           const session = await window.DIGIY_GUARD.ready();
           state.session = session || null;
-
-          if (!session?.access) {
-            setLocked();
-            return;
-          }
-
-          state.slug = normalizeSlug(
-            session?.slug ||
-            session?.job_slug ||
-            session?.jobs_slug ||
-            ""
-          );
-
-          if (!state.slug) {
-            setLocked();
-            setStatus("Session ouverte, mais aucun repère JOBS n’a été trouvé. Rentre par le PIN JOBS pour rattacher le match au bon compte.", "warn");
-            return;
-          }
-
-          setOpen();
-          loadMatchState();
-
-          await loadOffers();
-          await loadCandidates();
-
-          if (!state.mission) {
-            setStatus("Aucune mission active trouvée pour ce compte. Propose d’abord un poste, puis reviens au match.", "warn");
-          } else {
-            setStatus("Match JOBS chargé dans le coffre.", "ok");
-          }
-
+          if (!session?.access) { setLocked(); return; }
+          state.slug = normalizeSlug(session?.slug || session?.job_slug || session?.jobs_slug || "");
+          if (!state.slug) { setLocked(); setStatus("Session ouverte, mais aucun repère JOBS n’a été trouvé. Rentre par le PIN JOBS pour rattacher le match au bon compte.", "warn"); return; }
+          setOpen(); loadMatchState(); await loadOffers(); await loadCandidates();
+          setStatus(state.mission ? "Match JOBS chargé. Choisis un profil et clique l’action utile." : "Aucune mission active trouvée pour ce compte. Propose d’abord un poste, puis reviens au match.", state.mission ? "ok" : "warn");
           renderAll();
-        } catch (error) {
+        }catch(error){
           console.error(error);
-          setStatus("Erreur de chargement du match JOBS.\nSi la console indique permission denied, le front est prêt : il faudra ajuster la policy/RPC côté Supabase.", "error");
-          setOpen();
-          renderAll();
+          setStatus("Erreur de chargement du match JOBS. Si la console indique permission denied, le front est prêt : il faudra ajuster la policy/RPC côté Supabase.", "error");
+          setOpen(); renderAll();
         }
       }
 
