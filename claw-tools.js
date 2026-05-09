@@ -1,6 +1,9 @@
-// claw-tools.js — DIGIY JOBS / v2 unifiée
-// API canonique : window.DIGIY_CLAW_JOBS
-// Alias confort : window.CLAW_JOBS = window.DIGIY_CLAW_JOBS
+// claw-tools.js — DIGIY JOBS / v3 sécurité URL propre
+// Doctrine : le pro clique plus qu’il n’écrit.
+// DIGIY formule pour lui, le terrain valide avec sa vérité.
+//
+// Règle importante : ce helper ne remet jamais phone, tel ou slug dans l’URL visible.
+// Le contexte reste dans le coffre local + session guard 8h.
 
 (() => {
   "use strict";
@@ -16,7 +19,8 @@
       cockpit: "./cockpit.html",
       bureau: "./bureau.html",
       match: "./match.html",
-      mission: "./mission.html",
+      mission: "./publier-mission.html",
+      publish: "./publier-mission.html",
       qr: "./qr.html"
     },
 
@@ -56,6 +60,8 @@
     STORAGE_KEYS: {
       SESSION_LIST: [
         "DIGIY_JOBS_PIN_SESSION",
+        "DIGIY_JOBS_SESSION",
+        "DIGIY_JOBS_ACCESS",
         "DIGIY_PIN_SESSION",
         "DIGIY_ACCESS",
         "DIGIY_SESSION_JOBS",
@@ -78,9 +84,19 @@
       "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3"
   };
 
-  const CACHE = {
-    sb: null
-  };
+  const SENSITIVE_QUERY_KEYS = [
+    "slug",
+    "phone",
+    "tel",
+    "jobs_tel",
+    "owner_phone",
+    "contact_phone",
+    "module",
+    "return",
+    "from"
+  ];
+
+  const CACHE = { sb: null };
 
   function normSlug(value) {
     return String(value || "")
@@ -100,8 +116,115 @@
     return cleaned.startsWith("+") ? `+${digits}` : digits;
   }
 
+  function safeJsonParse(raw) {
+    try {
+      return JSON.parse(raw);
+    } catch (_) {
+      return null;
+    }
+  }
+
   function asError(message, extra = {}) {
     return { ok: false, error: String(message || "Erreur."), ...extra };
+  }
+
+  function saveSlug(slug) {
+    const clean = normSlug(slug);
+    if (!clean) return;
+
+    try {
+      localStorage.setItem(CFG.STORAGE_KEYS.SLUG, clean);
+      localStorage.setItem(CFG.STORAGE_KEYS.LAST_SLUG, clean);
+      sessionStorage.setItem(CFG.STORAGE_KEYS.SLUG, clean);
+      sessionStorage.setItem(CFG.STORAGE_KEYS.LAST_SLUG, clean);
+    } catch (_) {}
+  }
+
+  function savePhone(phone) {
+    const clean = normPhone(phone);
+    if (!clean) return;
+
+    try {
+      localStorage.setItem(CFG.STORAGE_KEYS.PHONE, clean);
+      sessionStorage.setItem(CFG.STORAGE_KEYS.PHONE, clean);
+    } catch (_) {}
+  }
+
+  function readStoredSlug() {
+    try {
+      return normSlug(
+        sessionStorage.getItem(CFG.STORAGE_KEYS.SLUG) ||
+        sessionStorage.getItem(CFG.STORAGE_KEYS.LAST_SLUG) ||
+        localStorage.getItem(CFG.STORAGE_KEYS.SLUG) ||
+        localStorage.getItem(CFG.STORAGE_KEYS.LAST_SLUG) ||
+        ""
+      );
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function readStoredPhone() {
+    try {
+      return normPhone(
+        sessionStorage.getItem(CFG.STORAGE_KEYS.PHONE) ||
+        localStorage.getItem(CFG.STORAGE_KEYS.PHONE) ||
+        ""
+      );
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function cleanVisibleUrlAndKeepContext() {
+    try {
+      const url = new URL(location.href);
+
+      const incomingSlug = normSlug(url.searchParams.get("slug") || "");
+      const incomingPhone = normPhone(
+        url.searchParams.get("phone") ||
+        url.searchParams.get("tel") ||
+        url.searchParams.get("jobs_tel") ||
+        ""
+      );
+
+      if (incomingSlug) saveSlug(incomingSlug);
+      if (incomingPhone) savePhone(incomingPhone);
+
+      let changed = false;
+
+      SENSITIVE_QUERY_KEYS.forEach((key) => {
+        if (url.searchParams.has(key)) {
+          url.searchParams.delete(key);
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+      }
+    } catch (_) {}
+  }
+
+  function cleanInternalUrl(pathname, fallback = "./cockpit.html") {
+    const raw = String(pathname || fallback).trim() || fallback;
+
+    try {
+      const url = new URL(raw, location.href);
+
+      SENSITIVE_QUERY_KEYS.forEach((key) => {
+        url.searchParams.delete(key);
+      });
+
+      if (url.origin === location.origin) {
+        const file = url.pathname.split("/").pop() || "cockpit.html";
+        return `./${file}${url.search || ""}${url.hash || ""}`;
+      }
+
+      return url.toString();
+    } catch (_) {
+      return fallback;
+    }
   }
 
   function guard() {
@@ -110,68 +233,56 @@
 
   function getSession() {
     const g = guard();
-    if (!g) return null;
-    if (typeof g.getSession === "function") return g.getSession();
+
+    if (g && typeof g.getSession === "function") {
+      return g.getSession();
+    }
+
+    for (const key of CFG.STORAGE_KEYS.SESSION_LIST) {
+      try {
+        const parsed =
+          safeJsonParse(localStorage.getItem(key)) ||
+          safeJsonParse(sessionStorage.getItem(key));
+
+        if (!parsed || typeof parsed !== "object") continue;
+
+        const moduleName = String(parsed.module || parsed.module_code || "")
+          .trim()
+          .toUpperCase();
+
+        if (moduleName && moduleName !== CFG.MODULE) continue;
+
+        return parsed;
+      } catch (_) {}
+    }
+
     return null;
   }
 
   function isAuthenticated() {
     const g = guard();
-    if (!g) return false;
-    if (typeof g.isAuthenticated === "function") return !!g.isAuthenticated();
+
+    if (g && typeof g.isAuthenticated === "function") {
+      return !!g.isAuthenticated();
+    }
+
     const s = getSession();
-    return !!(s?.access || s?.access_ok) && !s?.preview;
+
+    return !!(s?.access || s?.access_ok || s?.ok || s?.has_access) && !s?.preview;
   }
 
   function activeSlug() {
     const s = getSession();
-    const fromSession = normSlug(s?.slug || "");
-    if (fromSession) return fromSession;
-
-    const urlSlug = normSlug(new URLSearchParams(location.search).get("slug") || "");
-    if (urlSlug) return urlSlug;
-
-    try {
-      return normSlug(
-        localStorage.getItem(CFG.STORAGE_KEYS.SLUG) ||
-        localStorage.getItem(CFG.STORAGE_KEYS.LAST_SLUG) ||
-        sessionStorage.getItem(CFG.STORAGE_KEYS.SLUG) ||
-        sessionStorage.getItem(CFG.STORAGE_KEYS.LAST_SLUG) ||
-        ""
-      );
-    } catch (_) {
-      return "";
-    }
+    return normSlug(s?.slug || readStoredSlug() || "");
   }
 
   function activePhone() {
     const s = getSession();
-    const fromSession = normPhone(s?.phone || "");
-    if (fromSession) return fromSession;
-
-    const urlPhone = normPhone(new URLSearchParams(location.search).get("phone") || "");
-    if (urlPhone) return urlPhone;
-
-    try {
-      return normPhone(
-        localStorage.getItem(CFG.STORAGE_KEYS.PHONE) ||
-        sessionStorage.getItem(CFG.STORAGE_KEYS.PHONE) ||
-        ""
-      );
-    } catch (_) {
-      return "";
-    }
+    return normPhone(s?.phone || readStoredPhone() || "");
   }
 
-  function withIdentity(pathname, ctx = {}) {
-    const url = new URL(pathname, location.href);
-    const slug = normSlug(ctx.slug || "");
-    const phone = normPhone(ctx.phone || "");
-
-    if (slug) url.searchParams.set("slug", slug);
-    if (phone) url.searchParams.set("phone", phone);
-
-    return url.toString();
+  function withIdentity(pathname) {
+    return cleanInternalUrl(pathname, "./cockpit.html");
   }
 
   function getSupabaseClient() {
@@ -188,69 +299,63 @@
 
     CACHE.sb = window.supabase.createClient(
       CFG.SUPABASE_URL,
-      CFG.SUPABASE_ANON_KEY
+      CFG.SUPABASE_ANON_KEY,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false
+        }
+      }
     );
 
     return CACHE.sb;
   }
 
   async function getContext() {
+    cleanVisibleUrlAndKeepContext();
+
     const g = guard();
-
-    if (!g) {
-      return {
-        ok: true,
-        module: CFG.MODULE,
-        slug: activeSlug(),
-        phone: activePhone(),
-        owner_id: null,
-        access_ok: false,
-        preview: true,
-        source: "guard_missing",
-        pin_url: withIdentity(CFG.PATHS.pin, {
-          slug: activeSlug(),
-          phone: activePhone()
-        }),
-        pay_url: null
-      };
-    }
-
     let state = null;
 
-    if (typeof g.getSession === "function") {
+    if (g && typeof g.getSession === "function") {
       state = g.getSession();
     }
 
-    if (!state?.ready_flag && typeof g.ready === "function") {
-      state = await g.ready();
+    if (g && typeof g.ready === "function" && !state?.ready_flag) {
+      try {
+        state = await g.ready();
+      } catch (_) {}
     }
 
     state = state || {};
 
+    const slug = normSlug(state.slug || activeSlug() || "");
+    const phone = normPhone(state.phone || activePhone() || "");
+
+    if (slug) saveSlug(slug);
+    if (phone) savePhone(phone);
+
     return {
       ok: true,
       module: String(state.module || CFG.MODULE).toUpperCase(),
-      slug: normSlug(state.slug || activeSlug() || ""),
-      phone: normPhone(state.phone || activePhone() || ""),
+      slug,
+      phone,
       owner_id: state.owner_id || null,
-      access_ok: !!(state.access_ok || state.access),
-      preview: !!state.preview,
-      source: state.source || "guard",
-      pin_url:
-        state.pin_url ||
-        (typeof g.buildPinUrl === "function"
-          ? g.buildPinUrl()
-          : withIdentity(CFG.PATHS.pin, state)),
+      access_ok: !!(state.access_ok || state.access || state.ok || state.has_access),
+      preview: typeof state.preview === "boolean" ? !!state.preview : !isAuthenticated(),
+      source: state.source || (g ? "guard" : "storage"),
+      pin_url: cleanInternalUrl(state.pin_url || CFG.PATHS.pin, CFG.PATHS.pin),
       pay_url: state.pay_url || null
     };
   }
 
   async function requireContext(opts = {}) {
     const ctx = await getContext();
+
     if (!ctx.ok) return ctx;
 
     if (!ctx.slug && !opts.allowWithoutSlug) {
-      return asError("Slug JOBS manquant.", { context: ctx });
+      return asError("Repère JOBS manquant.", { context: ctx });
     }
 
     return ctx;
@@ -258,6 +363,7 @@
 
   async function requireReadAccess() {
     const ctx = await requireContext();
+
     if (!ctx.ok) return ctx;
 
     if (ctx.preview || !ctx.access_ok) {
@@ -272,6 +378,7 @@
 
   async function requireWriteAccess() {
     const ctx = await requireContext();
+
     if (!ctx.ok) return ctx;
 
     if (ctx.preview || !ctx.access_ok) {
@@ -288,7 +395,7 @@
     const seen = new Set();
     const out = [];
 
-    for (const row of rows) {
+    for (const row of rows || []) {
       const id = row?.id ? String(row.id) : "";
       if (!id || seen.has(id)) continue;
       seen.add(id);
@@ -299,7 +406,7 @@
   }
 
   function sortByCreatedDesc(rows = []) {
-    return [...rows].sort((a, b) => {
+    return [...(rows || [])].sort((a, b) => {
       const da = new Date(a?.created_at || 0).getTime();
       const db = new Date(b?.created_at || 0).getTime();
       return db - da;
@@ -308,15 +415,20 @@
 
   async function loadOffers(payload = {}) {
     const ctx = await requireContext();
+
     if (!ctx.ok) return ctx;
 
     const targetSlug = normSlug(payload.slug || ctx.slug || "");
+
     if (!targetSlug) {
-      return asError("Slug JOBS manquant.", { context: ctx });
+      return asError("Repère JOBS manquant.", { context: ctx });
     }
 
     const sb = getSupabaseClient();
-    if (!sb) return asError("Supabase indisponible.", { context: ctx });
+
+    if (!sb) {
+      return asError("Supabase indisponible.", { context: ctx });
+    }
 
     const { data, error } = await sb
       .from(CFG.TABLES.OFFERS)
@@ -346,15 +458,20 @@
 
   async function loadCandidates(payload = {}) {
     const ctx = await requireReadAccess();
+
     if (!ctx.ok) return ctx;
 
     const targetSlug = normSlug(payload.slug || ctx.slug || "");
+
     if (!targetSlug) {
-      return asError("Slug JOBS manquant.", { context: ctx });
+      return asError("Repère JOBS manquant.", { context: ctx });
     }
 
     const sb = getSupabaseClient();
-    if (!sb) return asError("Supabase indisponible.", { context: ctx });
+
+    if (!sb) {
+      return asError("Supabase indisponible.", { context: ctx });
+    }
 
     const rows = [];
 
@@ -373,14 +490,17 @@
     rows.push(...(Array.isArray(bySlug.data) ? bySlug.data : []));
 
     const offersRes = await loadOffers({ slug: targetSlug });
+
     if (!offersRes.ok) {
-      return asError("Impossible de charger les offres avant les candidatures.", {
+      return asError("Impossible de charger les missions avant les candidatures.", {
         context: ctx,
         cause: offersRes.error || "offers_failed"
       });
     }
 
-    const offerIds = (offersRes.rows || []).map((o) => o.id).filter(Boolean);
+    const offerIds = (offersRes.rows || [])
+      .map((offer) => offer.id)
+      .filter(Boolean);
 
     if (offerIds.length) {
       const byOffers = await sb
@@ -412,15 +532,22 @@
 
   async function updateCandidateStatus(payload = {}) {
     const ctx = await requireWriteAccess();
+
     if (!ctx.ok) return ctx;
 
     const id = String(payload.id || "").trim();
     const status = String(payload.status || "").trim().toLowerCase();
 
-    if (!id) return asError("Candidate id manquant.", { context: ctx });
-    if (!status) return asError("Status manquant.", { context: ctx });
+    if (!id) {
+      return asError("Candidate id manquant.", { context: ctx });
+    }
+
+    if (!status) {
+      return asError("Statut manquant.", { context: ctx });
+    }
 
     const allowed = new Set(CFG.STATUSES);
+
     if (!allowed.has(status)) {
       return asError(`Statut non autorisé: ${status}`, {
         context: ctx,
@@ -429,7 +556,10 @@
     }
 
     const sb = getSupabaseClient();
-    if (!sb) return asError("Supabase indisponible.", { context: ctx });
+
+    if (!sb) {
+      return asError("Supabase indisponible.", { context: ctx });
+    }
 
     const { error } = await sb
       .from(CFG.TABLES.CANDIDATES)
@@ -454,8 +584,8 @@
     };
   }
 
-  function navigate(pathname, ctx = {}, mode = "href") {
-    const url = withIdentity(pathname, ctx);
+  function navigate(pathname, mode = "href") {
+    const url = cleanInternalUrl(pathname, CFG.PATHS.cockpit);
 
     if (mode === "replace") {
       location.replace(url);
@@ -469,38 +599,37 @@
   async function openBureau() {
     const ctx = await requireContext();
     if (!ctx.ok) return ctx;
-    return navigate(CFG.PATHS.bureau, ctx);
+    return navigate(CFG.PATHS.bureau);
   }
 
   async function openMatch() {
     const ctx = await requireContext();
     if (!ctx.ok) return ctx;
-    return navigate(CFG.PATHS.match, ctx);
+    return navigate(CFG.PATHS.match);
   }
 
   async function openQr() {
     const ctx = await requireContext();
     if (!ctx.ok) return ctx;
-    return navigate(CFG.PATHS.qr, ctx);
+    return navigate(CFG.PATHS.qr);
   }
 
   async function openPin() {
-    const ctx = await getContext();
     const g = guard();
 
     if (g && typeof g.goPin === "function") {
-      g.goPin({ slug: ctx.slug || "", phone: ctx.phone || "" });
+      g.goPin();
       return { ok: true, tool: "open_pin" };
     }
 
-    return navigate(CFG.PATHS.pin, ctx, "replace");
+    return navigate(CFG.PATHS.pin, "replace");
   }
 
   async function refreshContext() {
     const g = guard();
 
     if (!g || typeof g.refresh !== "function") {
-      return asError("refresh guard indisponible.");
+      return asError("Refresh guard indisponible.");
     }
 
     const state = await g.refresh();
@@ -520,29 +649,35 @@
     };
   }
 
-  function buildUrl(page, slugOverride) {
-    const path = CFG.PATHS[page] || page;
-    const slug = normSlug(slugOverride || activeSlug());
-    if (!slug) return path;
-    const joiner = path.includes("?") ? "&" : "?";
-    return `${path}${joiner}slug=${encodeURIComponent(slug)}`;
+  function buildUrl(page) {
+    return cleanInternalUrl(CFG.PATHS[page] || page, CFG.PATHS.cockpit);
   }
 
   function groupByStatus(candidates = []) {
     const result = {};
-    CFG.STATUSES.forEach((s) => (result[s] = []));
-    (candidates || []).forEach((c) => {
-      const s = String(c.status || "new").toLowerCase();
-      if (result[s]) result[s].push(c);
-      else result[s] = [c];
+
+    CFG.STATUSES.forEach((status) => {
+      result[status] = [];
     });
+
+    (candidates || []).forEach((candidate) => {
+      const status = String(candidate.status || "new").toLowerCase();
+
+      if (result[status]) {
+        result[status].push(candidate);
+      } else {
+        result[status] = [candidate];
+      }
+    });
+
     return result;
   }
 
   function computeStats(offers = [], candidates = []) {
     const all = Array.isArray(candidates) ? candidates : [];
-    const count = (s) =>
-      all.filter((x) => String(x.status || "new").toLowerCase() === s).length;
+
+    const count = (status) =>
+      all.filter((item) => String(item.status || "new").toLowerCase() === status).length;
 
     return {
       offers: (offers || []).length,
@@ -560,45 +695,74 @@
     const q = String(filters.q || "").toLowerCase().trim();
     const status = String(filters.status || "").toLowerCase().trim();
     const offerId = String(filters.offerId || "").trim();
-    const offerMap = new Map((offers || []).map((o) => [o.id, o]));
+    const offerMap = new Map((offers || []).map((offer) => [offer.id, offer]));
 
-    return (candidates || []).filter((c) => {
-      const offer = offerMap.get(c.offer_id) || null;
+    return (candidates || []).filter((candidate) => {
+      const offer = offerMap.get(candidate.offer_id) || null;
+
       const hay = [
-        c.full_name,
-        c.phone,
-        c.job_title,
-        c.trade,
-        c.city,
-        c.country,
-        c.years_experience,
-        c.availability,
-        c.message,
-        c.source,
-        c.status,
+        candidate.full_name,
+        candidate.phone,
+        candidate.job_title,
+        candidate.trade,
+        candidate.city,
+        candidate.country,
+        candidate.years_experience,
+        candidate.availability,
+        candidate.message,
+        candidate.source,
+        candidate.status,
         offer?.title || ""
       ]
         .join(" ")
         .toLowerCase();
 
       if (q && !hay.includes(q)) return false;
-      if (status && String(c.status || "new").toLowerCase() !== status) return false;
-      if (offerId && String(c.offer_id || "") !== offerId) return false;
+      if (status && String(candidate.status || "new").toLowerCase() !== status) return false;
+      if (offerId && String(candidate.offer_id || "") !== offerId) return false;
+
       return true;
     });
   }
 
   function listTools() {
     return [
-      { name: "get_context", description: "Retourne le contexte réel du module JOBS." },
-      { name: "open_bureau", description: "Ouvre bureau.html avec le slug actif." },
-      { name: "open_match", description: "Ouvre match.html avec le slug actif." },
-      { name: "open_qr", description: "Ouvre qr.html avec le slug actif." },
-      { name: "load_offers", description: "Charge les missions actives du pro." },
-      { name: "load_candidates", description: "Charge les candidatures réelles liées au slug et aux offres." },
-      { name: "update_candidate_status", description: "Met à jour le statut d'un candidat." },
-      { name: "open_pin", description: "Renvoie vers l’entrée PIN si la session est cassée." },
-      { name: "refresh_context", description: "Redemande l’état réel au guard." }
+      {
+        name: "get_context",
+        description: "Retourne le contexte réel du module JOBS."
+      },
+      {
+        name: "open_bureau",
+        description: "Ouvre bureau.html sans exposer d’identifiant dans l’URL."
+      },
+      {
+        name: "open_match",
+        description: "Ouvre match.html sans exposer d’identifiant dans l’URL."
+      },
+      {
+        name: "open_qr",
+        description: "Ouvre qr.html sans exposer d’identifiant dans l’URL."
+      },
+      {
+        name: "load_offers",
+        description: "Charge les missions actives du pro."
+      },
+      {
+        name: "load_candidates",
+        description: "Charge les candidatures liées au repère gardé dans le coffre."
+      },
+      {
+        name: "update_candidate_status",
+        description: "Met à jour le statut d’un candidat."
+      },
+      {
+        name: "open_pin",
+        description: "Renvoie vers l’entrée PIN si la session est cassée."
+      },
+      {
+        name: "refresh_context",
+        description: "Redemande l’état réel au guard."
+      }
     ];
   }
 
@@ -631,6 +795,7 @@
 
   async function ready() {
     const ctx = await getContext();
+
     return {
       ok: true,
       module: CFG.MODULE,
@@ -641,13 +806,14 @@
 
   function snapshotSyncFromSession() {
     const session = getSession();
+
     return {
       guard_loaded: !!guard(),
       authenticated: isAuthenticated(),
       slug: activeSlug(),
       phone: activePhone(),
       owner_id: session?.owner_id || null,
-      preview: session?.preview ?? true,
+      preview: session?.preview ?? !isAuthenticated(),
       source: session?.source || "none",
       error: session?.error || null,
       verified_at_ms: session?.verified_at || null,
@@ -679,6 +845,7 @@
         : normSlug(input?.slug || "");
 
     const offers = await runAction("load_offers", slug ? { slug } : {});
+
     if (!offers?.ok) {
       return {
         ok: false,
@@ -689,6 +856,7 @@
     }
 
     const candidates = await runAction("load_candidates", slug ? { slug } : {});
+
     if (!candidates?.ok) {
       return {
         ok: false,
@@ -718,6 +886,7 @@
     };
 
     const action = map[String(target || "").toLowerCase()];
+
     if (!action) {
       return asError(`Navigation inconnue: ${target}`);
     }
@@ -745,6 +914,7 @@
     isAuthenticated,
     activeSlug,
     activePhone,
+    withIdentity,
     buildUrl,
 
     ready,
@@ -763,11 +933,13 @@
     goTo
   };
 
+  cleanVisibleUrlAndKeepContext();
+
   window.DIGIY_CLAW_JOBS = api;
   window.CLAW_JOBS = api;
 
   console.info(
-    "[DIGIY_CLAW_JOBS] chargé — slug actif :",
+    "[DIGIY_CLAW_JOBS] v3 sécurité URL propre — slug actif coffre :",
     api.activeSlug() || "(aucun)"
   );
-})();;
+})();
