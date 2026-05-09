@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>DIGIY JOBS PRO — Mur des missions</title>
-  <meta name="description" content="DIGIY JOBS PRO — mur interne des missions, lecture par session sécurisée, navigation vers mission, bureau, cockpit et match." />
+  <meta name="description" content="DIGIY JOBS PRO — mur interne des missions pour agence intérimaire terrain : lecture sécurisée, missions, candidatures, match et placement." />
   <meta name="theme-color" content="#071711" />
 
   <script>
@@ -48,6 +48,7 @@
 
     a{color:inherit;text-decoration:none}
     button,input,select{font:inherit}
+    button{cursor:pointer}
 
     .wrap{max-width:var(--max);margin:0 auto;padding:18px 16px 88px}
 
@@ -126,7 +127,7 @@
       font-size:17px;
       line-height:1.6;
       color:var(--muted);
-      max-width:700px;
+      max-width:720px;
     }
 
     .hero-box{
@@ -193,6 +194,23 @@
     .field input::placeholder{color:rgba(236,255,244,.46)}
     .field input:focus,.field select:focus{border-color:rgba(250,204,21,.45);box-shadow:0 0 0 4px rgba(250,204,21,.08)}
 
+    .agency-strip{
+      margin-top:16px;
+      border:1px solid rgba(250,204,21,.22);
+      border-radius:24px;
+      background:linear-gradient(180deg, rgba(250,204,21,.09), rgba(255,255,255,.03));
+      padding:16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .agency-strip strong{display:block;color:#fff7c2;font-size:17px;margin-bottom:3px}
+    .agency-strip span{display:block;color:var(--muted);font-size:14px;line-height:1.5}
+    .agency-actions{display:flex;gap:10px;flex-wrap:wrap}
+
     .toolbar{
       display:flex;
       align-items:center;
@@ -220,6 +238,7 @@
     }
 
     .link-btn.blue{border-color:rgba(56,189,248,.28);background:rgba(56,189,248,.10);color:#d9f4ff}
+    .link-btn.green{border-color:rgba(34,197,94,.26);background:rgba(34,197,94,.10);color:#caffd5}
 
     .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 
@@ -277,6 +296,7 @@
     .btn-primary{background:linear-gradient(180deg,var(--gold),#eab308);color:#151515}
     .btn-secondary{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--line)}
     .btn-blue{background:rgba(56,189,248,.10);color:#d9f4ff;border:1px solid rgba(56,189,248,.28)}
+    .btn-green{background:rgba(34,197,94,.12);color:#caffd5;border:1px solid rgba(34,197,94,.28)}
 
     .empty,.loading,.error,.ok{
       border:1px dashed var(--line);
@@ -316,8 +336,9 @@
       .filters{grid-template-columns:1fr}
       .grid{grid-template-columns:1fr}
       .toolbar{flex-direction:column;align-items:flex-start}
-      .toolbar-actions,.top-links{width:100%}
+      .toolbar-actions,.top-links,.agency-actions{width:100%}
       .chip-link,.link-btn{flex:1 1 auto}
+      .agency-strip{align-items:stretch}
       h1{font-size:36px}
     }
   </style>
@@ -328,6 +349,7 @@
       <a class="chip-link" href="https://digiylyfe.com/" target="_blank" rel="noopener">← Retour au site</a>
       <a id="homeLink" class="chip-link" href="./index.html">Accueil JOBS</a>
       <a id="missionsWallLink" class="chip-link gold" href="./mur%20des%20missions.html">Missions</a>
+      <a id="publishLink" class="chip-link gold" href="./publier-mission.html">Nouvelle mission</a>
       <a id="pinLink" class="chip-link" href="./pin.html">Code PIN</a>
       <a id="cockpitLink" class="chip-link" href="./cockpit.html">Mon espace</a>
       <a id="bureauLink" class="chip-link" href="./bureau.html">Bureau</a>
@@ -337,11 +359,11 @@
     <section class="hero">
       <div class="hero-grid">
         <div>
-          <div class="kicker">DIGIY JOBS PRO • coffre • missions • pilotage</div>
-          <h1>Les missions à suivre maintenant.</h1>
+          <div class="kicker">DIGIY JOBS PRO • agence intérimaire terrain • placement</div>
+          <h1>Les missions à placer maintenant.</h1>
           <p class="lead">
-            Ici, tu vois les missions de ton espace, tu ouvres la bonne fiche,
-            tu passes au bureau, puis tu fais le lien avec les bons profils sans détour.
+            Ici, l’agence voit les missions ouvertes, suit les besoins, ouvre les candidatures,
+            rapproche les bons profils et prépare le placement sans se noyer dans les papiers.
           </p>
 
           <div class="meta-line">
@@ -353,24 +375,37 @@
         </div>
 
         <div class="hero-box">
-          <h2>À quoi sert ce mur</h2>
+          <h2>Boîte à outils intérim</h2>
           <p>
-            Lire vite les missions ouvertes, choisir celle qui demande attention,
-            ouvrir le tri des candidatures et avancer sans repasser par une porte publique.
+            Une bonne agence ne cherche pas dans le vide : elle pose la mission,
+            trie les dossiers, appelle les bons profils, puis valide le placement.
           </p>
           <div class="pill-row">
-            <span class="pill">Voir les missions</span>
-            <span class="pill">Ouvrir la fiche</span>
-            <span class="pill">Trier les profils</span>
-            <span class="pill">Faire le match</span>
+            <span class="pill">Mission</span>
+            <span class="pill">Candidat</span>
+            <span class="pill">Tri</span>
+            <span class="pill">Match</span>
+            <span class="pill">Placement</span>
           </div>
+        </div>
+      </div>
+
+      <div class="agency-strip">
+        <div>
+          <strong>Actions rapides de l’agence</strong>
+          <span>Moins écrire. Plus agir. Le pro clique, DIGIY garde la route propre.</span>
+        </div>
+        <div class="agency-actions">
+          <a id="agencyPublishLink" class="link-btn green" href="./publier-mission.html">➕ Nouvelle mission</a>
+          <a id="agencyBureauLink" class="link-btn" href="./bureau.html">📂 Candidatures</a>
+          <a id="agencyMatchLink" class="link-btn blue" href="./match.html">🎯 Matcher</a>
         </div>
       </div>
 
       <div class="filters">
         <div class="field">
           <label for="searchInput">Recherche</label>
-          <input id="searchInput" type="text" placeholder="ex: maçon, chauffeur, coiffeuse, boutique..." />
+          <input id="searchInput" type="text" placeholder="ex: maçon, chauffeur, serveuse, boutique..." />
         </div>
 
         <div class="field">
@@ -405,9 +440,10 @@
     <div class="toolbar">
       <div id="count" class="count">Vérification de l’accès...</div>
       <div class="toolbar-actions">
-        <a id="toolbarCockpitLink" class="link-btn" href="./cockpit.html">Ouvrir mon espace</a>
-        <a id="toolbarBureauLink" class="link-btn" href="./bureau.html">Ouvrir le bureau</a>
-        <a id="toolbarMatchLink" class="link-btn blue" href="./match.html">Ouvrir le match</a>
+        <a id="toolbarPublishLink" class="link-btn green" href="./publier-mission.html">➕ Mission rapide</a>
+        <a id="toolbarCockpitLink" class="link-btn" href="./cockpit.html">Mon espace</a>
+        <a id="toolbarBureauLink" class="link-btn" href="./bureau.html">Bureau</a>
+        <a id="toolbarMatchLink" class="link-btn blue" href="./match.html">Match</a>
       </div>
     </div>
 
@@ -454,6 +490,7 @@
         pin: "./pin.html",
         cockpit: "./cockpit.html",
         bureau: "./bureau.html",
+        publish: "./publier-mission.html",
         postuler: "./postuler.html",
         mission: "./mission.html",
         match: "./match.html"
@@ -571,20 +608,30 @@
       function setSecurityLabels(){
         $("modeChip").textContent = state.hasAccess ? "coffre ouvert" : "code demandé";
         $("sessionChip").textContent = state.hasAccess ? "ouverte 8h" : "à ouvrir";
-        $("railChip").textContent = state.hasAccess ? "navigation interne" : "entrée PIN";
+        $("railChip").textContent = state.hasAccess ? "navigation agence" : "entrée PIN";
         $("sourceChip").textContent = state.hasAccess ? "missions du coffre" : "lecture fermée";
       }
 
+      function setHref(id, href){
+        const el = $(id);
+        if (el) el.href = href;
+      }
+
       function syncLinks(){
-        $("homeLink").href = JOBS_PATHS.home;
-        $("missionsWallLink").href = JOBS_PATHS.missions;
-        $("pinLink").href = JOBS_PATHS.pin;
-        $("cockpitLink").href = JOBS_PATHS.cockpit;
-        $("bureauLink").href = JOBS_PATHS.bureau;
-        $("matchLink").href = JOBS_PATHS.match;
-        $("toolbarCockpitLink").href = JOBS_PATHS.cockpit;
-        $("toolbarBureauLink").href = JOBS_PATHS.bureau;
-        $("toolbarMatchLink").href = JOBS_PATHS.match;
+        setHref("homeLink", JOBS_PATHS.home);
+        setHref("missionsWallLink", JOBS_PATHS.missions);
+        setHref("pinLink", JOBS_PATHS.pin);
+        setHref("cockpitLink", JOBS_PATHS.cockpit);
+        setHref("bureauLink", JOBS_PATHS.bureau);
+        setHref("matchLink", JOBS_PATHS.match);
+        setHref("publishLink", JOBS_PATHS.publish);
+        setHref("toolbarPublishLink", JOBS_PATHS.publish);
+        setHref("toolbarCockpitLink", JOBS_PATHS.cockpit);
+        setHref("toolbarBureauLink", JOBS_PATHS.bureau);
+        setHref("toolbarMatchLink", JOBS_PATHS.match);
+        setHref("agencyPublishLink", JOBS_PATHS.publish);
+        setHref("agencyBureauLink", JOBS_PATHS.bureau);
+        setHref("agencyMatchLink", JOBS_PATHS.match);
         setSecurityLabels();
       }
 
@@ -621,7 +668,7 @@
         if (!state.hasAccess) {
           renderStatus(
             "empty",
-            "Ce mur est un espace professionnel. Entre ton code PIN : la session reste ouverte 8h.",
+            "Ce mur est l’espace professionnel de l’agence. Entre ton code PIN : la session reste ouverte 8h.",
             true
           );
           $("count").textContent = "Accès à ouvrir";
@@ -631,15 +678,15 @@
         if (!list.length) {
           renderStatus(
             "empty",
-            "Aucune mission active trouvée pour cette session pour le moment."
+            "Aucune mission active trouvée pour cette session. Tu peux proposer une mission rapide pour alimenter le bureau."
           );
-          $("count").textContent = "0 mission trouvée";
+          $("count").textContent = "0 mission à placer";
           return;
         }
 
         $("statusBox").style.display = "none";
         cards.style.display = "grid";
-        $("count").textContent = `${list.length} mission${list.length > 1 ? "s" : ""} trouvée${list.length > 1 ? "s" : ""}`;
+        $("count").textContent = `${list.length} mission${list.length > 1 ? "s" : ""} à placer`;
 
         cards.innerHTML = list.map(item => {
           const flags = [];
@@ -653,14 +700,15 @@
                 <span class="badge gold">${escapeHtml(labelSector(item.sector))}</span>
                 <span class="badge">${escapeHtml(labelContract(item.contract_type))}</span>
                 ${item.employer_name ? `<span class="badge green">${escapeHtml(item.employer_name)}</span>` : ""}
+                <span class="badge blue">À placer</span>
               </div>
 
               <h3 class="title">${escapeHtml(item.title || "Mission")}</h3>
 
               <div class="meta">
-                <span>${escapeHtml(item.city || "Ville à préciser")}</span>
+                <span>📍 ${escapeHtml(item.city || "Ville à préciser")}</span>
                 <span>${escapeHtml(item.country || "Sénégal")}</span>
-                <span>${escapeHtml(item.pay || "Rémunération à préciser")}</span>
+                <span>💰 ${escapeHtml(item.pay || "Rémunération à préciser")}</span>
               </div>
 
               <p class="desc">${escapeHtml(shortText(item.description || "Description à venir."))}</p>
@@ -668,9 +716,9 @@
               <div class="flags">${flags.join("")}</div>
 
               <div class="actions">
-                <a class="btn btn-secondary" href="${missionHref(item)}">Voir la mission</a>
-                <a class="btn btn-blue" href="${bureauHref(item)}">Bureau</a>
-                <a class="btn btn-primary" href="${matchHref(item)}">Match</a>
+                <a class="btn btn-primary" href="${matchHref(item)}">🎯 Matcher</a>
+                <a class="btn btn-blue" href="${bureauHref(item)}">📂 Candidatures</a>
+                <a class="btn btn-secondary" href="${missionHref(item)}">👁️ Fiche</a>
               </div>
             </article>
           `;
@@ -775,7 +823,7 @@
           return;
         }
 
-        renderStatus("loading", "Chargement des missions de ton espace...");
+        renderStatus("loading", "Chargement des missions de ton agence...");
 
         const { data, error } = await sb
           .from("digiy_jobs_offers_pro")
