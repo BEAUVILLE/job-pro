@@ -1,12 +1,11 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-
-  <title>DIGIY JOBS PRO — Actions</title>
-  <meta name="description" content="DIGIY JOBS PRO — écran d’action léger : fiche, mission rapide, candidatures, alertes, partage.">
-  <meta name="theme-color" content="#061b14">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#061b14"/>
+  <title>DIGIY JOBS PRO — Veille</title>
+  <meta name="description" content="DIGIY JOBS PRO — veille légère : alertes, actions, fiche et annonces prêtes." />
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -15,6 +14,10 @@
     window.DIGIY_MODULE = "JOBS";
     window.DIGIY_LOGIN_URL = "./pin.html";
   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js"></script>
+  <script src="./claw-tools.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +28,7 @@
       --bg:#061b14;
       --bg2:#0a2b1f;
       --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.09);
       --line:rgba(255,255,255,.13);
       --text:#ecfff4;
       --muted:rgba(236,255,244,.72);
@@ -47,13 +51,13 @@
       font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top left,rgba(250,204,21,.11),transparent 28%),
-        radial-gradient(circle at 82% 18%,rgba(56,189,248,.08),transparent 24%),
+        radial-gradient(circle at top left, rgba(250,204,21,.11), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(56,189,248,.08), transparent 24%),
         linear-gradient(180deg,var(--bg),#030b08 100%);
     }
 
     body{
-      padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(86px + env(safe-area-inset-bottom,0px));
+      padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(88px + env(safe-area-inset-bottom,0px));
     }
 
     a{text-decoration:none;color:inherit}
@@ -79,24 +83,18 @@
       min-width:0;
     }
 
-    .logo{
+    .brand-mark{
       width:46px;
       height:46px;
-      border-radius:15px;
-      overflow:hidden;
-      background:#fff;
-      flex:0 0 auto;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      color:#171717;
+      font-weight:1000;
       box-shadow:0 12px 28px rgba(0,0,0,.24);
+      flex:0 0 auto;
     }
-
-    .logo img{
-      width:100%;
-      height:100%;
-      display:block;
-      object-fit:cover;
-    }
-
-    .brand-title{min-width:0}
 
     .brand-title strong{
       display:block;
@@ -114,12 +112,6 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-    }
-
-    .top-actions{
-      display:flex;
-      gap:8px;
-      flex:0 0 auto;
     }
 
     .chip{
@@ -146,7 +138,7 @@
       border:1px solid var(--line);
       border-radius:32px;
       background:
-        radial-gradient(circle at 85% 12%,rgba(250,204,21,.13),transparent 24%),
+        radial-gradient(circle at 85% 12%, rgba(250,204,21,.13), transparent 24%),
         linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));
       box-shadow:var(--shadow);
       padding:18px;
@@ -166,96 +158,74 @@
 
     h1{
       margin:10px 0 8px;
-      font-size:clamp(30px,7vw,58px);
+      font-size:clamp(30px,7vw,56px);
       line-height:.96;
       letter-spacing:-.045em;
-      max-width:11ch;
     }
 
     .lead{
       margin:0;
       color:var(--muted);
-      line-height:1.55;
+      line-height:1.5;
       font-size:15px;
       font-weight:750;
       max-width:64ch;
     }
 
-    .doctrine{
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:20px;
-      border:1px solid rgba(250,204,21,.22);
-      background:rgba(250,204,21,.08);
-      color:#fff4bd;
-      font-weight:950;
-      line-height:1.42;
-    }
-
-    .audio-inline{
+    .status{
       margin-top:14px;
       border:1px solid rgba(56,189,248,.22);
+      background:rgba(56,189,248,.08);
+      color:#d8f5ff;
       border-radius:20px;
       padding:12px 14px;
-      background:rgba(56,189,248,.08);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .audio-inline p{
-      margin:0;
-      color:#d8f5ff;
-      font-size:13px;
       line-height:1.45;
-      font-weight:800;
+      font-size:13px;
+      font-weight:850;
     }
 
-    .audio-inline button{
-      min-height:42px;
-      border:none;
-      border-radius:999px;
-      padding:10px 14px;
-      background:linear-gradient(135deg,var(--gold),#eab308);
-      color:#171717;
-      font-weight:1000;
+    .status.ok{
+      border-color:rgba(34,197,94,.25);
+      background:rgba(34,197,94,.10);
+      color:#c9ffd4;
     }
 
-    .screen{
+    .status.warn{
+      border-color:rgba(250,204,21,.26);
+      background:rgba(250,204,21,.10);
+      color:#fff4bd;
+    }
+
+    .status.err{
+      border-color:rgba(251,113,133,.26);
+      background:rgba(251,113,133,.10);
+      color:#ffd9df;
+    }
+
+    .grid{
       display:grid;
-      grid-template-columns:1fr .92fr;
+      grid-template-columns:.9fr 1.1fr;
       gap:16px;
-      align-items:stretch;
       margin-top:16px;
     }
 
-    .pie-card,.alerts-card{
+    .card{
       border:1px solid var(--line);
       border-radius:30px;
-      background:rgba(255,255,255,.045);
+      background:var(--card);
       box-shadow:var(--shadow);
       padding:16px;
       min-height:100%;
     }
 
-    .section-head{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:12px;
-    }
-
-    .section-head h2{
+    .card h2{
       margin:0;
-      font-size:20px;
+      font-size:21px;
       line-height:1.1;
       letter-spacing:-.02em;
     }
 
-    .section-head p{
+    .card p{
       margin:5px 0 0;
       color:var(--muted);
       font-size:13px;
@@ -263,94 +233,109 @@
       font-weight:750;
     }
 
-    .pie{
-      position:relative;
-      width:min(430px,100%);
-      aspect-ratio:1/1;
-      margin:8px auto 2px;
-      border-radius:50%;
-      background:
-        radial-gradient(circle at center,rgba(250,204,21,.16) 0 23%,transparent 24%),
-        conic-gradient(
-          from -90deg,
-          rgba(250,204,21,.18),
-          rgba(56,189,248,.15),
-          rgba(34,197,94,.15),
-          rgba(255,255,255,.08),
-          rgba(250,204,21,.18)
-        );
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
-    }
-
-    .center{
-      position:absolute;
-      inset:50%;
-      transform:translate(-50%,-50%);
-      width:34%;
-      height:34%;
-      border-radius:50%;
+    .metrics{
       display:grid;
-      place-items:center;
-      text-align:center;
-      background:linear-gradient(180deg,var(--gold),#eab308);
-      color:#141414;
-      font-weight:1000;
-      box-shadow:0 18px 35px rgba(0,0,0,.28);
-      z-index:3;
-      padding:10px;
-      line-height:1.05;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
     }
 
-    .slice{
-      position:absolute;
-      left:50%;
-      top:50%;
-      width:120px;
-      min-height:64px;
-      transform:
-        rotate(var(--a))
-        translate(145px)
-        rotate(calc(-1 * var(--a)))
-        translate(-50%,-50%);
-      border:1px solid rgba(255,255,255,.13);
-      border-radius:20px;
-      background:rgba(6,27,20,.83);
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
-      color:var(--text);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:3px;
-      padding:10px;
-      box-shadow:0 14px 30px rgba(0,0,0,.25);
-      transition:transform .16s ease,border-color .16s ease,background .16s ease;
+    .metric{
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:rgba(255,255,255,.055);
+      padding:13px;
+      min-height:88px;
     }
 
-    .slice:hover{
-      border-color:rgba(250,204,21,.44);
-      background:rgba(250,204,21,.13);
-      transform:
-        rotate(var(--a))
-        translate(149px)
-        rotate(calc(-1 * var(--a)))
-        translate(-50%,-50%);
-    }
-
-    .slice strong{
+    .metric strong{
       display:block;
-      font-size:13px;
-      line-height:1.08;
+      font-size:30px;
+      line-height:1;
       font-weight:1000;
+      letter-spacing:-.04em;
     }
 
-    .slice span{
+    .metric span{
       display:block;
+      margin-top:6px;
       color:var(--muted);
-      font-size:11px;
-      line-height:1.22;
+      font-size:12px;
+      line-height:1.3;
+      font-weight:850;
+    }
+
+    .actions{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .action{
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:13px;
+      background:rgba(255,255,255,.055);
+      display:grid;
+      gap:10px;
+    }
+
+    .action-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .action strong{
+      display:block;
+      font-size:15px;
+      line-height:1.16;
+    }
+
+    .action small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
       font-weight:750;
+    }
+
+    .btn-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      min-height:42px;
+      border:none;
+      border-radius:15px;
+      padding:10px 12px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      font-weight:950;
+    }
+
+    .btn.primary{
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      color:#151515;
+    }
+
+    .btn.blue{
+      background:rgba(56,189,248,.14);
+      color:#d8f5ff;
+      border:1px solid rgba(56,189,248,.22);
+    }
+
+    .btn.green{
+      background:rgba(34,197,94,.14);
+      color:#c9ffd4;
+      border:1px solid rgba(34,197,94,.22);
     }
 
     details{
@@ -377,6 +362,17 @@
       font-size:13px;
       line-height:1.5;
       font-weight:750;
+    }
+
+    .empty{
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:22px;
+      padding:16px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:800;
+      line-height:1.45;
+      margin-top:14px;
     }
 
     .bottom-nav{
@@ -423,96 +419,41 @@
       line-height:1;
     }
 
-    .hidden{display:none!important}
-
-    #digiyProAudioBtn{
-      position:fixed;
-      left:14px;
-      bottom:calc(92px + env(safe-area-inset-bottom,0px));
-      z-index:120;
-      min-height:50px;
-      border:none;
-      border-radius:999px;
-      padding:12px 16px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:9px;
-      background:linear-gradient(135deg,#facc15,#eab308);
-      color:#171717;
-      font-weight:1000;
-      box-shadow:0 18px 38px rgba(0,0,0,.24);
-    }
-
-    #digiyProAudioBtn span{
-      font-size:18px;
-      line-height:1;
-    }
-
-    #digiyProAudioBtn[aria-pressed="true"]{
-      background:linear-gradient(135deg,#0f172a,#233548);
-      color:#fff;
-    }
-
-    @media (max-width:880px){
-      .screen{grid-template-columns:1fr}
-      .pie{width:min(420px,100%)}
+    @media (max-width:860px){
+      .grid{
+        grid-template-columns:1fr;
+      }
     }
 
     @media (max-width:560px){
-      body{padding-left:10px;padding-right:10px}
-      .top-actions .hide-mobile{display:none}
-      .hero{padding:16px;border-radius:28px}
-      h1{max-width:none;font-size:34px}
-      .lead{font-size:14px}
-      .pie-card,.alerts-card{border-radius:26px;padding:14px}
-      .pie{width:100%;max-width:360px}
-      .slice{
-        width:98px;
-        min-height:58px;
-        padding:8px;
-        border-radius:18px;
-        transform:
-          rotate(var(--a))
-          translate(122px)
-          rotate(calc(-1 * var(--a)))
-          translate(-50%,-50%);
+      .hero,.card{
+        border-radius:26px;
+        padding:14px;
       }
-      .slice:hover{
-        transform:
-          rotate(var(--a))
-          translate(125px)
-          rotate(calc(-1 * var(--a)))
-          translate(-50%,-50%);
-      }
-      .slice strong{font-size:12px}
-      .slice span{font-size:10px}
-      .center{width:32%;height:32%;font-size:13px}
-      #digiyProAudioBtn{
-        left:10px;
-        bottom:calc(86px + env(safe-area-inset-bottom,0px));
-        padding:12px 14px;
-      }
-    }
 
-    @media (max-width:390px){
-      .slice{
-        width:90px;
-        min-height:54px;
-        transform:
-          rotate(var(--a))
-          translate(111px)
-          rotate(calc(-1 * var(--a)))
-          translate(-50%,-50%);
+      h1{
+        font-size:34px;
       }
-      .slice:hover{
-        transform:
-          rotate(var(--a))
-          translate(114px)
-          rotate(calc(-1 * var(--a)))
-          translate(-50%,-50%);
+
+      .lead{
+        font-size:14px;
       }
-      .center{font-size:12px}
+
+      .metrics{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .metric{
+        min-height:82px;
+      }
+
+      .metric strong{
+        font-size:26px;
+      }
+
+      .btn-row .btn{
+        flex:1 1 auto;
+      }
     }
   </style>
 </head>
@@ -520,134 +461,128 @@
 <body>
   <div class="wrap">
     <header class="top">
-      <a class="brand" href="https://digiylyfe.com/" aria-label="Retour DIGIYLYFE">
-        <span class="logo">
-          <img src="https://digiylyfe.net/wp-content/uploads/2026/03/digiylyfe_logo_qr.jpeg" alt="DIGIYLYFE">
-        </span>
+      <a class="brand" href="./index.html" aria-label="Retour actions JOBS">
+        <span class="brand-mark">JP</span>
         <span class="brand-title">
           <strong>DIGIY JOBS</strong>
-          <span>Actions pro · terrain d’abord</span>
+          <span>Veille · alertes · actions</span>
         </span>
       </a>
 
-      <nav class="top-actions" aria-label="Liens rapides">
-        <a class="chip hide-mobile" href="https://digiy-hub.digiylyfe.com/">HUB</a>
-        <a class="chip gold" href="./pin.html" id="topPin">Code</a>
-      </nav>
+      <a class="chip gold" href="./pin.html">Code</a>
     </header>
 
     <main>
       <section class="hero">
-        <span class="kicker">JOBS PRO · moins de bruit · plus d’action</span>
-
-        <h1>Que veux-tu faire maintenant ?</h1>
-
+        <span class="kicker">Poste de veille</span>
+        <h1>DIGIY surveille derrière.</h1>
         <p class="lead">
-          Ici, le pro ne gère pas un tableau. Il choisit une action. DIGIY garde le reste derrière.
+          Le pro ne reçoit pas une administration lourde. Il reçoit ce qui demande une action.
         </p>
 
-        <div class="doctrine">
-          Le pro clique plus qu’il n’écrit.<br>
-          DIGIY formule pour lui, le terrain valide avec sa vérité.
-        </div>
-
-        <div class="audio-inline">
-          <p>
-            🎧 Accueil vocal · une voix explique au professionnel comment utiliser cette porte sans se fatiguer.
-          </p>
-          <button type="button" id="digiyProAudioInline">Écouter</button>
+        <div id="statusBox" class="status">
+          Ouverture du coffre JOBS…
         </div>
       </section>
 
-      <section class="screen" aria-label="Actions principales JOBS">
-        <article class="pie-card">
-          <div class="section-head">
-            <div>
-              <h2>Camembert d’actions</h2>
-              <p>Les fichiers sont appelés par gestes simples.</p>
+      <section class="grid">
+        <article class="card">
+          <h2>État rapide</h2>
+          <p>Lecture simple du terrain. Le détail reste rangé.</p>
+
+          <div class="metrics">
+            <div class="metric">
+              <strong id="statOffers">0</strong>
+              <span>missions actives</span>
+            </div>
+
+            <div class="metric">
+              <strong id="statCandidates">0</strong>
+              <span>candidatures</span>
+            </div>
+
+            <div class="metric">
+              <strong id="statNew">0</strong>
+              <span>nouvelles</span>
+            </div>
+
+            <div class="metric">
+              <strong id="statCall">0</strong>
+              <span>à appeler</span>
             </div>
           </div>
 
-          <div class="pie" aria-label="Camembert des actions">
-            <div class="center">JOBS<br>PRO</div>
-
-            <a class="slice" style="--a:-90deg" href="./cockpit.html">
-              <strong>🏠 Ma fiche</strong>
-              <span>activité</span>
-            </a>
-
-            <a class="slice" style="--a:-39deg" href="./publier-mission.html">
-              <strong>➕ Annonce</strong>
-              <span>pré-remplie</span>
-            </a>
-
-            <a class="slice" style="--a:12deg" href="./bureau.html">
-              <strong>🔔 Alertes</strong>
-              <span>à traiter</span>
-            </a>
-
-            <a class="slice" style="--a:63deg" href="./bureau.html">
-              <strong>📥 Candidats</strong>
-              <span>voir vite</span>
-            </a>
-
-            <a class="slice" style="--a:114deg" href="./match.html">
-              <strong>🎯 Rapprocher</strong>
-              <span>profil / poste</span>
-            </a>
-
-            <a class="slice" style="--a:165deg" href="./qr.html">
-              <strong>📎 Partager</strong>
-              <span>QR</span>
-            </a>
-
-            <a class="slice" style="--a:216deg" href="./mur%20des%20missions.html">
-              <strong>🌍 Public</strong>
-              <span>missions</span>
-            </a>
-          </div>
-
           <details>
-            <summary>Voir la règle de l’écran</summary>
+            <summary>Voir la règle</summary>
             <div class="details-body">
-              L’écran montre les actions. Les explications longues restent rangées. Les données sensibles restent dans le coffre local et la session sécurisée.
+              Fiche à remplir, annonces prêtes, alertes à traiter. Le reste reste derrière pour ne pas fatiguer le pro.
             </div>
           </details>
         </article>
 
-        <aside class="alerts-card">
-          <div class="section-head">
-            <div>
-              <h2>À faire maintenant</h2>
-              <p>Le chef de passe montre seulement ce qui mérite une action.</p>
+        <article class="card">
+          <h2>Alertes d’action</h2>
+          <p>Ce qui compte maintenant, sans bruit.</p>
+
+          <div id="actionList" class="actions">
+            <div class="action">
+              <div class="action-top">
+                <div>
+                  <strong>➕ Publier une mission prête</strong>
+                  <small>Choisir un besoin, DIGIY prépare le texte.</small>
+                </div>
+              </div>
+              <div class="btn-row">
+                <a class="btn primary" href="./publier-mission.html">Créer</a>
+              </div>
+            </div>
+
+            <div class="action">
+              <div class="action-top">
+                <div>
+                  <strong>📥 Voir les candidatures</strong>
+                  <small>Appeler, sélectionner, retenir ou classer.</small>
+                </div>
+              </div>
+              <div class="btn-row">
+                <a class="btn" href="./bureau.html">Ouvrir</a>
+              </div>
+            </div>
+
+            <div class="action">
+              <div class="action-top">
+                <div>
+                  <strong>📎 Faire circuler</strong>
+                  <small>Partager le QR ou le mur public quand le terrain doit répondre.</small>
+                </div>
+              </div>
+              <div class="btn-row">
+                <a class="btn blue" href="./qr.html">QR</a>
+                <a class="btn" href="./mur%20des%20missions.html">Mur public</a>
+                <a class="btn gold" href="https://pro-pay.digiylyfe.com/admin.html">💰 Mon Argent</a>
+              </div>
             </div>
           </div>
 
-          <div id="jobsAlerts" data-digiy-jobs-alerts></div>
-
           <details>
-            <summary>Conseil DIGIY</summary>
+            <summary>Conseil caché</summary>
             <div class="details-body">
-              Le logiciel lit derrière. Le pro voit devant seulement les alertes utiles.
+              Une alerte doit toujours conduire à un geste : ouvrir, appeler, sélectionner, relancer, partager, décider.
             </div>
           </details>
-        </aside>
+        </article>
       </section>
     </main>
   </div>
 
   <nav class="bottom-nav" aria-label="Navigation basse">
-    <a class="active" href="./index.html"><b>◎</b>Actions</a>
+    <a href="./index.html"><b>◎</b>Actions</a>
     <a href="./publier-mission.html"><b>＋</b>Annonce</a>
-    <a href="./bureau.html"><b>🔔</b>Alertes</a>
-    <a href="./qr.html"><b>▣</b>Partager</a>
+    <a class="active" href="./cockpit.html"><b>🔔</b>Veille</a>
+    <a href="./bureau.html"><b>📥</b>Bureau</a>
     <a href="./pin.html"><b>🔒</b>Code</a>
+    <a href="https://pro-pay.digiylyfe.com/admin.html"><b>💰</b>Mon Argent</a>
   </nav>
-
-  <button id="digiyProAudioBtn" type="button" aria-label="Écouter DIGIY PRO" aria-pressed="false">
-    <span>🎧</span>
-    <strong>Écouter DIGIY</strong>
-  </button>
 
   <script>
     (() => {
@@ -669,6 +604,15 @@
         SLUG: "digiy_jobs_slug",
         LAST_SLUG: "digiy_jobs_last_slug",
         PHONE: "digiy_jobs_phone"
+      };
+
+      const el = {
+        statusBox: document.getElementById("statusBox"),
+        statOffers: document.getElementById("statOffers"),
+        statCandidates: document.getElementById("statCandidates"),
+        statNew: document.getElementById("statNew"),
+        statCall: document.getElementById("statCall"),
+        actionList: document.getElementById("actionList")
       };
 
       function normSlug(value) {
@@ -741,7 +685,6 @@
             if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
 
             const url = new URL(href, window.location.href);
-
             if (url.origin !== window.location.origin) return;
 
             SENSITIVE_KEYS.forEach((key) => url.searchParams.delete(key));
@@ -752,140 +695,148 @@
         });
       }
 
-      cleanVisibleUrl();
-      keepLinksClean();
-    })();
-  </script>
-
-  <script>
-    (() => {
-      "use strict";
-
-      const AUDIO_TEXT =
-        "Bienvenue dans DIGIY JOBS PRO. Ici, le professionnel ne doit pas se perdre dans un tableau lourd. Il choisit une action et DIGIY garde le reste derrière. Si tu veux régler ton activité, ouvre Ma fiche. Si tu veux publier un besoin, clique sur Annonce. Si des candidatures arrivent ou si une mission attend une décision, regarde Alertes ou Candidats. Si tu veux rapprocher un profil avec une mission, ouvre Rapprocher. Si tu veux faire circuler le travail sur le terrain, utilise Partager et le QR. Le chef de passe lit derrière et te montre seulement ce qui mérite ton action. Le pro clique plus qu’il n’écrit. DIGIY formule pour lui, et le terrain valide avec sa vérité.";
-
-      const CFG = {
-        rate: 0.86,
-        pitch: 1.04,
-        volume: 1
-      };
-
-      const btn = document.getElementById("digiyProAudioBtn");
-      const inlineBtn = document.getElementById("digiyProAudioInline");
-
-      function canSpeak(){
-        return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+      function setStatus(text, type) {
+        el.statusBox.textContent = text;
+        el.statusBox.className = "status" + (type ? " " + type : "");
       }
 
-      function updateButton(isPlaying){
-        if (!btn) return;
+      function countStatus(rows, status) {
+        return (rows || []).filter((row) => String(row.status || "new").toLowerCase() === status).length;
+      }
 
-        btn.setAttribute("aria-pressed", isPlaying ? "true" : "false");
-        btn.innerHTML = isPlaying
-          ? "<span>⏹</span><strong>Stop</strong>"
-          : "<span>🎧</span><strong>Écouter DIGIY</strong>";
+      function renderAlerts(offers, candidates) {
+        const totalOffers = offers.length;
+        const totalCandidates = candidates.length;
+        const newCount = countStatus(candidates, "new");
+        const callCount = countStatus(candidates, "call");
+        const shortlistCount = countStatus(candidates, "shortlist");
 
-        if (inlineBtn) {
-          inlineBtn.textContent = isPlaying ? "Stop" : "Écouter";
+        const alerts = [];
+
+        if (newCount > 0) {
+          alerts.push({
+            title: `🆕 ${newCount} nouvelle(s) candidature(s)`,
+            text: "À lire avant que le terrain refroidisse.",
+            primary: "Voir",
+            href: "./bureau.html",
+            cls: "primary"
+          });
         }
+
+        if (callCount > 0) {
+          alerts.push({
+            title: `📞 ${callCount} profil(s) à appeler`,
+            text: "Ce sont les dossiers qui demandent un contact.",
+            primary: "Appeler",
+            href: "./bureau.html",
+            cls: "green"
+          });
+        }
+
+        if (shortlistCount > 0) {
+          alerts.push({
+            title: `⭐ ${shortlistCount} profil(s) sélectionné(s)`,
+            text: "À garder sous la main pour décider vite.",
+            primary: "Ouvrir",
+            href: "./bureau.html",
+            cls: ""
+          });
+        }
+
+        if (totalOffers === 0) {
+          alerts.push({
+            title: "➕ Aucune mission active",
+            text: "Crée une annonce prête pour ouvrir le terrain.",
+            primary: "Créer",
+            href: "./publier-mission.html",
+            cls: "primary"
+          });
+        }
+
+        if (totalOffers > 0 && totalCandidates === 0) {
+          alerts.push({
+            title: "📎 Mission sans candidature",
+            text: "Fais circuler le QR ou le mur public.",
+            primary: "Partager",
+            href: "./qr.html",
+            cls: "blue"
+          });
+        }
+
+        if (!alerts.length) {
+          alerts.push({
+            title: "✅ Rien d’urgent",
+            text: "Le coffre est propre. Tu peux créer, partager ou vérifier le bureau.",
+            primary: "Bureau",
+            href: "./bureau.html",
+            cls: ""
+          });
+        }
+
+        el.actionList.innerHTML = alerts.map((item) => `
+          <div class="action">
+            <div class="action-top">
+              <div>
+                <strong>${item.title}</strong>
+                <small>${item.text}</small>
+              </div>
+            </div>
+            <div class="btn-row">
+              <a class="btn ${item.cls || ""}" href="${item.href}">${item.primary}</a>
+            </div>
+          </div>
+        `).join("");
+
+        keepLinksClean();
       }
 
-      function getFrenchVoice(){
-        const voices = window.speechSynthesis.getVoices() || [];
+      async function boot() {
+        cleanVisibleUrl();
+        keepLinksClean();
 
-        return (
-          voices.find((v) => /fr[-_]?fr/i.test(v.lang || "")) ||
-          voices.find((v) => /^fr/i.test(v.lang || "")) ||
-          voices[0] ||
-          null
-        );
-      }
+        try {
+          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.ready === "function") {
+            const session = await window.DIGIY_GUARD.ready();
 
-      function loadVoices(){
-        return new Promise((resolve) => {
-          if (!canSpeak()) {
-            resolve([]);
+            if (!session || !session.access_ok) {
+              setStatus("Code demandé. Ouvre ton accès JOBS pour voir les alertes réelles.", "warn");
+              return;
+            }
+          }
+
+          if (!window.DIGIY_CLAW_JOBS || typeof window.DIGIY_CLAW_JOBS.fetchAll !== "function") {
+            setStatus("Mode léger ouvert. Les alertes réelles attendent l’outil JOBS.", "warn");
             return;
           }
 
-          const ready = window.speechSynthesis.getVoices();
+          const data = await window.DIGIY_CLAW_JOBS.fetchAll();
 
-          if (ready && ready.length) {
-            resolve(ready);
+          if (!data || !data.ok) {
+            setStatus("Veille ouverte. Aucune donnée réelle chargée pour l’instant.", "warn");
             return;
           }
 
-          let done = false;
+          const offers = Array.isArray(data.offers) ? data.offers : [];
+          const candidates = Array.isArray(data.candidates) ? data.candidates : [];
 
-          const finish = () => {
-            if (done) return;
-            done = true;
-            resolve(window.speechSynthesis.getVoices() || []);
-          };
+          el.statOffers.textContent = offers.length;
+          el.statCandidates.textContent = candidates.length;
+          el.statNew.textContent = countStatus(candidates, "new");
+          el.statCall.textContent = countStatus(candidates, "call");
 
-          window.speechSynthesis.onvoiceschanged = finish;
-          setTimeout(finish, 700);
-        });
-      }
+          renderAlerts(offers, candidates);
 
-      function stop(){
-        if (!canSpeak()) return;
-        window.speechSynthesis.cancel();
-        updateButton(false);
-      }
-
-      async function speak(){
-        if (!canSpeak()) {
-          alert("La lecture vocale n’est pas disponible sur ce navigateur.");
-          return;
+          setStatus("Veille active. DIGIY remonte seulement ce qui demande une action.", "ok");
+        } catch (err) {
+          console.error(err);
+          setStatus("Veille légère ouverte. Entre ton code si les alertes réelles ne chargent pas.", "warn");
         }
-
-        await loadVoices();
-
-        window.speechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(AUDIO_TEXT);
-        const voice = getFrenchVoice();
-
-        if (voice) utterance.voice = voice;
-
-        utterance.lang = voice?.lang || "fr-FR";
-        utterance.rate = CFG.rate;
-        utterance.pitch = CFG.pitch;
-        utterance.volume = CFG.volume;
-
-        utterance.onstart = () => updateButton(true);
-        utterance.onend = () => updateButton(false);
-        utterance.onerror = () => updateButton(false);
-
-        window.speechSynthesis.speak(utterance);
       }
 
-      function toggle(){
-        if (canSpeak() && window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-          stop();
-          return;
-        }
-
-        speak();
-      }
-
-      btn?.addEventListener("click", toggle);
-      inlineBtn?.addEventListener("click", toggle);
-      window.addEventListener("pagehide", stop);
-
-      window.DIGIY_PRO_AUDIO = {
-        speak,
-        stop,
-        text: AUDIO_TEXT
-      };
+      boot();
     })();
   </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./guard.js"></script>
-  <script src="./claw-tools.js"></script>
-  <script src="./jobs-alerts.js"></script>
 </body>
 </html>
+
 
