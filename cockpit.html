@@ -376,37 +376,89 @@
     }
 
     .voice-row{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+      padding:15px;
+      border-radius:24px;
+      border:2px solid rgba(250,204,21,.34);
+      background:
+        radial-gradient(circle at 100% 0%,rgba(250,204,21,.18),transparent 38%),
+        rgba(250,204,21,.08);
+      box-shadow:0 14px 34px rgba(0,0,0,.20);
+    }
+
+    .voice-head{
       display:flex;
-      align-items:center;
-      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
       flex-wrap:wrap;
-      margin-top:12px;
+    }
+
+    .voice-title{
+      font-size:18px;
+      line-height:1.15;
+      font-weight:1000;
+      color:#fff4bd;
+    }
+
+    .voice-sub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+      font-weight:850;
+      max-width:58ch;
+    }
+
+    .voice-buttons{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
     }
 
     .btn-voice{
-      min-height:38px;
-      border:1px solid rgba(250,204,21,.22);
+      min-height:48px;
+      border:1px solid rgba(250,204,21,.34);
       border-radius:999px;
-      padding:8px 14px;
-      background:rgba(250,204,21,.10);
+      padding:11px 15px;
+      background:rgba(250,204,21,.14);
       color:#fff4bd;
-      font-size:12px;
+      font-size:13px;
       font-weight:1000;
       cursor:pointer;
       font-family:inherit;
       display:inline-flex;
       align-items:center;
-      gap:6px;
+      justify-content:center;
+      gap:7px;
+      box-shadow:0 8px 18px rgba(0,0,0,.12);
+    }
+
+    .btn-voice.main{
+      background:linear-gradient(135deg,var(--gold),#eab308);
+      border-color:transparent;
+      color:#171717;
+      min-width:190px;
     }
 
     .btn-voice[aria-pressed="true"]{
-      background:rgba(250,204,21,.22);
-      border-color:rgba(250,204,21,.40);
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      border-color:transparent;
+      color:#03150c;
     }
 
     .voice-status-text{
+      display:inline-flex;
+      width:max-content;
+      max-width:100%;
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.055);
       font-size:12px;
-      font-weight:800;
+      font-weight:900;
       color:var(--muted);
       line-height:1.4;
     }
@@ -520,9 +572,19 @@
           Ouverture du coffre JOBS…
         </div>
 
-        <div class="voice-row">
-          <button class="btn-voice" id="btnJobsVoice" type="button" aria-pressed="false">🔔 Alertes vocales</button>
-          <span class="voice-status-text" id="jobsVoiceStatus">Voix non activée</span>
+        <div class="voice-row" id="jobsVoicePanel" aria-label="Alertes vocales DIGIY JOBS">
+          <div class="voice-head">
+            <div>
+              <div class="voice-title">🔔 Alertes vocales DIGIY JOBS</div>
+              <div class="voice-sub">DIGIY parle seulement quand une candidature ou une mission demande une action. Le pro entend, puis il clique.</div>
+            </div>
+            <span class="voice-status-text" id="jobsVoiceStatus">Voix non activée</span>
+          </div>
+          <div class="voice-buttons">
+            <button class="btn-voice main" id="btnJobsVoice" type="button" aria-pressed="false">🔔 Activer les alertes</button>
+            <button class="btn-voice" id="btnJobsTestCandidate" type="button">📥 Test candidature</button>
+            <button class="btn-voice" id="btnJobsTestMission" type="button">📌 Test mission</button>
+          </div>
         </div>
       </section>
 
@@ -1073,6 +1135,32 @@
       voiceUnlocked = false;
       refreshVoiceButton();
       if(btnVoice) btnVoice.addEventListener("click", unlockVoice);
+
+      const btnTestCandidate = document.getElementById("btnJobsTestCandidate");
+      const btnTestMission = document.getElementById("btnJobsTestMission");
+
+      if(btnTestCandidate){
+        btnTestCandidate.addEventListener("click", () => {
+          if(!voiceEnabled || !voiceUnlocked){
+            unlockVoice();
+            setTimeout(() => speakDigiy("Nouvelle candidature reçue. Ouvre le bureau pour voir le profil."), 450);
+            return;
+          }
+          speakDigiy("Nouvelle candidature reçue. Ouvre le bureau pour voir le profil.");
+        });
+      }
+
+      if(btnTestMission){
+        btnTestMission.addEventListener("click", () => {
+          if(!voiceEnabled || !voiceUnlocked){
+            unlockVoice();
+            setTimeout(() => speakDigiy("Mission à suivre. Fais circuler le QR ou vérifie les candidatures."), 450);
+            return;
+          }
+          speakDigiy("Mission à suivre. Fais circuler le QR ou vérifie les candidatures.");
+        });
+      }
+
       if("speechSynthesis" in window){
         speechSynthesis.onvoiceschanged = () => pickVoice();
       }
@@ -1093,5 +1181,7 @@
   </script>
 </body>
 </html>
+
+
 
 
