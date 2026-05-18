@@ -375,6 +375,42 @@
       margin-top:14px;
     }
 
+    .voice-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .btn-voice{
+      min-height:38px;
+      border:1px solid rgba(250,204,21,.22);
+      border-radius:999px;
+      padding:8px 14px;
+      background:rgba(250,204,21,.10);
+      color:#fff4bd;
+      font-size:12px;
+      font-weight:1000;
+      cursor:pointer;
+      font-family:inherit;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .btn-voice[aria-pressed="true"]{
+      background:rgba(250,204,21,.22);
+      border-color:rgba(250,204,21,.40);
+    }
+
+    .voice-status-text{
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
     .bottom-nav{
       position:fixed;
       left:50%;
@@ -482,6 +518,11 @@
 
         <div id="statusBox" class="status">
           Ouverture du coffre JOBS…
+        </div>
+
+        <div class="voice-row">
+          <button class="btn-voice" id="btnJobsVoice" type="button" aria-pressed="false">🔔 Alertes vocales</button>
+          <span class="voice-status-text" id="jobsVoiceStatus">Voix non activée</span>
         </div>
       </section>
 
@@ -826,6 +867,9 @@
 
           renderAlerts(offers, candidates);
 
+          // ── Alertes vocales réactives JOBS ──
+          window.DIGIY_JOBS_VOICE?.announceUsefulAlerts?.(offers, candidates);
+
           setStatus("Veille active. DIGIY remonte seulement ce qui demande une action.", "ok");
         } catch (err) {
           console.error(err);
@@ -836,6 +880,218 @@
       boot();
     })();
   </script>
+  <script>
+  (function(){
+    "use strict";
+
+    // ── Constantes ────────────────────────────────────────────────
+    const VOICE_ENABLED_KEY = "digiy_jobs_voice_enabled";
+    const VOICE_SEEN_KEY    = "digiy_jobs_voice_seen_keys";
+
+    let voiceEnabled  = false;
+    let voiceUnlocked = false;
+    let lastJobsSnapshot = null;
+
+    const btnVoice    = document.getElementById("btnJobsVoice");
+    const voiceStatusEl = document.getElementById("jobsVoiceStatus");
+
+    // ── Voix ──────────────────────────────────────────────────────
+    function pickVoice(){
+      if(!("speechSynthesis" in window)) return null;
+      const voices = speechSynthesis.getVoices() || [];
+      return (
+        voices.find(v => /fr[-_]?FR/i.test(v.lang) && /thomas|paul|daniel|homme|male/i.test(v.name)) ||
+        voices.find(v => /^fr/i.test(v.lang)) ||
+        voices[0] || null
+      );
+    }
+
+    function setVoiceStatus(text){
+      if(voiceStatusEl) voiceStatusEl.textContent = text || "";
+    }
+
+    function refreshVoiceButton(){
+      if(!btnVoice) return;
+      if(voiceEnabled){
+        btnVoice.textContent = "🔔 Alertes activées";
+        btnVoice.setAttribute("aria-pressed","true");
+        setVoiceStatus("Alertes actives cette session");
+      }else{
+        btnVoice.textContent = "🔔 Alertes vocales";
+        btnVoice.setAttribute("aria-pressed","false");
+        setVoiceStatus("Voix non activée");
+      }
+    }
+
+    function speakDigiy(message){
+      if(!voiceEnabled || !voiceUnlocked) return;
+      if(!message || !("speechSynthesis" in window)) return;
+      try{
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(message);
+        const voice = pickVoice();
+        if(voice) u.voice = voice;
+        u.lang   = voice?.lang || "fr-FR";
+        u.rate   = 0.88;
+        u.pitch  = 1.02;
+        u.volume = 1;
+        u.onstart = () => setVoiceStatus("DIGIY parle…");
+        u.onend   = () => setVoiceStatus("Alertes activées");
+        u.onerror = () => setVoiceStatus("Voix interrompue");
+        speechSynthesis.speak(u);
+      }catch(err){ console.warn("[JOBS VOICE]", err); }
+    }
+
+    function unlockVoice(){
+      if(!("speechSynthesis" in window)){
+        setVoiceStatus("Voix non disponible sur ce navigateur");
+        return;
+      }
+      voiceEnabled = !voiceEnabled;
+      try{ localStorage.setItem(VOICE_ENABLED_KEY, voiceEnabled ? "1" : "0"); }catch{}
+      if(voiceEnabled){
+        voiceUnlocked = true;
+        refreshVoiceButton();
+        const u = new SpeechSynthesisUtterance("Alertes vocales DIGIY JOBS activées. Je parlerai seulement quand une candidature ou une mission demande une action.");
+        const voice = pickVoice();
+        if(voice) u.voice = voice;
+        u.lang  = voice?.lang || "fr-FR";
+        u.rate  = 0.88;
+        u.pitch = 1.02;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }else{
+        try{ speechSynthesis.cancel(); }catch{}
+        voiceUnlocked = false;
+        refreshVoiceButton();
+      }
+    }
+
+    // ── Fingerprint / snapshot ─────────────────────────────────────
+    function candidateKey(c){
+      return [
+        c?.id || c?.phone || c?.email || "",
+        c?.status || "new",
+        c?.created_at || c?.submitted_at || ""
+      ].join("|").toLowerCase();
+    }
+
+    function offerKey(o){
+      return [
+        o?.id || o?.slug || "",
+        o?.status || "active",
+        o?.created_at || o?.updated_at || ""
+      ].join("|").toLowerCase();
+    }
+
+    function countByStatus(list, status){
+      return (list||[]).filter(r => String(r?.status||"new").toLowerCase() === status).length;
+    }
+
+    function buildJobsSnapshot(offers, candidates){
+      return {
+        offers:     (offers||[]).length,
+        candidates: (candidates||[]).length,
+        newCands:   countByStatus(candidates,"new"),
+        callCands:  countByStatus(candidates,"call"),
+        shortlist:  countByStatus(candidates,"shortlist")
+      };
+    }
+
+    function readSeenVoiceKeys(){
+      try{
+        const raw = localStorage.getItem(VOICE_SEEN_KEY) || "[]";
+        const arr = JSON.parse(raw);
+        return new Set(Array.isArray(arr) ? arr : []);
+      }catch{ return new Set(); }
+    }
+
+    function writeSeenVoiceKeys(set){
+      try{
+        localStorage.setItem(VOICE_SEEN_KEY, JSON.stringify(Array.from(set).slice(-80)));
+      }catch{}
+    }
+
+    // ── Annonces JOBS ─────────────────────────────────────────────
+    function announceUsefulAlerts(offers, candidates){
+      if(!voiceEnabled || !voiceUnlocked) return;
+
+      const offerList = Array.isArray(offers) ? offers : [];
+      const candList  = Array.isArray(candidates) ? candidates : [];
+      const snapshot  = buildJobsSnapshot(offerList, candList);
+
+      // Premier passage : mémorise l'état sans parler
+      if(!lastJobsSnapshot){
+        lastJobsSnapshot = snapshot;
+        const seen = readSeenVoiceKeys();
+        offerList.forEach(o => { const k = offerKey(o); if(k) seen.add(k); });
+        candList.forEach(c => { const k = candidateKey(c); if(k) seen.add(k); });
+        writeSeenVoiceKeys(seen);
+        return;
+      }
+
+      const seen = readSeenVoiceKeys();
+
+      const newCands = candList.filter(c => {
+        const k = candidateKey(c);
+        return k && !seen.has(k);
+      });
+      const newOffers = offerList.filter(o => {
+        const k = offerKey(o);
+        return k && !seen.has(k);
+      });
+
+      offerList.forEach(o => { const k = offerKey(o); if(k) seen.add(k); });
+      candList.forEach(c => { const k = candidateKey(c); if(k) seen.add(k); });
+      writeSeenVoiceKeys(seen);
+
+      let message = "";
+
+      if(newCands.length > 0){
+        message = newCands.length === 1
+          ? "Nouvelle candidature reçue. Ouvre le bureau pour voir le profil."
+          : `${newCands.length} nouvelles candidatures reçues. Ouvre le bureau pour les traiter.`;
+      }else if(snapshot.callCands > lastJobsSnapshot.callCands){
+        const n = snapshot.callCands;
+        message = `${n} profil${n>1?"s":""} à appeler. Ouvre le bureau pour agir.`;
+      }else if(snapshot.shortlist > lastJobsSnapshot.shortlist){
+        const n = snapshot.shortlist;
+        message = `${n} profil${n>1?"s":""} sélectionné${n>1?"s":""}. Pense à finaliser la mission.`;
+      }else if(newOffers.length > 0 && snapshot.candidates === 0){
+        message = "Mission active sans candidature. Fais circuler le QR pour attirer des profils.";
+      }else if(snapshot.offers < lastJobsSnapshot.offers){
+        message = "Une mission a été retirée du terrain. Vérifie l'état dans le bureau.";
+      }
+
+      lastJobsSnapshot = snapshot;
+      if(message) speakDigiy(message);
+    }
+
+    // ── Init ──────────────────────────────────────────────────────
+    function initVoiceAlerts(){
+      try{ voiceEnabled = localStorage.getItem(VOICE_ENABLED_KEY) === "1"; }catch{ voiceEnabled = false; }
+      voiceUnlocked = false;
+      refreshVoiceButton();
+      if(btnVoice) btnVoice.addEventListener("click", unlockVoice);
+      if("speechSynthesis" in window){
+        speechSynthesis.onvoiceschanged = () => pickVoice();
+      }
+    }
+
+    // ── Exposition globale ────────────────────────────────────────
+    window.DIGIY_JOBS_VOICE = { announceUsefulAlerts, speakDigiy };
+
+    window.addEventListener("beforeunload", () => {
+      try{ speechSynthesis.cancel(); }catch(_){}
+    });
+    document.addEventListener("visibilitychange", () => {
+      if(document.hidden){ try{ speechSynthesis.cancel(); }catch(_){} }
+    });
+
+    initVoiceAlerts();
+  })();
+  </script>
 </body>
 </html>
+
 
