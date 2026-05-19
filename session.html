@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Mes missions — Ma session</title>
+  <meta name="theme-color" content="#061b14"/>
+  <meta name="description" content="DIGIY JOBS PRO — état de session, accès protégé et nettoyage local sans exposer téléphone ni slug."/>
+  <meta name="robots" content="noindex,nofollow"/>
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "JOBS";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js?v=jobs-session-terrain-20260519"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#061b14;--bg2:#0a2b1f;--bg3:#030b08;--bar:rgba(6,27,20,.96);
+      --gold:#facc15;--gold2:#fde68a;--green:#22c55e;--line:rgba(255,255,255,.16);
+      --text:#ecfff4;--muted:rgba(236,255,244,.74);--shadow:0 18px 48px rgba(0,0,0,.32);
+      --r:18px;--max:960px;--hdrH:52px;--barH:78px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{
+      margin:0;min-height:100dvh;color:var(--text);font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:19px;font-weight:950;
+      background:radial-gradient(620px 390px at 10% 0%,rgba(250,204,21,.12),transparent 58%),radial-gradient(430px 280px at 92% 10%,rgba(56,189,248,.10),transparent 52%),linear-gradient(180deg,var(--bg) 0%,var(--bg2) 54%,var(--bg3) 100%);
+      padding:calc(var(--hdrH) + 14px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 18px)
+    }
+    a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer}
+    .topHeader{position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;background:var(--bar);border-bottom:1px solid rgba(250,204,21,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+    .hdrBack{min-height:36px;display:inline-flex;align-items:center;justify-content:center;color:rgba(236,255,244,.72);font-size:14px;font-weight:1000;white-space:nowrap}
+    .hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+    .hdrPill{min-height:32px;display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--muted);font-size:12px;font-weight:1000;white-space:nowrap;max-width:38vw;overflow:hidden;text-overflow:ellipsis}
+    .hdrPill.ok{color:#bbf7d0;border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.12)}
+    .hdrPill.warn{color:#fde68a;border-color:rgba(245,158,11,.38);background:rgba(245,158,11,.12)}
+    .wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:16px}
+    .head{padding:2px 2px 4px}
+    .eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}
+    h1{margin:0 0 8px;font-size:clamp(34px,8.5vw,54px);font-weight:1000;line-height:.94;letter-spacing:-.05em}
+    .sub{color:var(--muted);font-size:17px;font-weight:1000;line-height:1.38;max-width:760px}
+    .rule{margin-top:10px;padding:12px 14px;border-radius:18px;border:1px dashed rgba(255,255,255,.22);background:rgba(5,31,17,.32);color:rgba(236,255,244,.90);font-size:14px;font-weight:1000;line-height:1.35}
+    .rule b{color:var(--gold2)}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+    .card,.action{min-height:136px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:14px;border-radius:var(--r);border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);box-shadow:var(--shadow);-webkit-tap-highlight-color:transparent}
+    .cardTop,.actionTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+    .ico{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:25px;flex:0 0 auto}
+    .tag{min-height:27px;display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);font-size:10px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+    .card b,.action b{display:block;font-size:20px;font-weight:1000;line-height:1.06;letter-spacing:-.025em;color:#fff}
+    .card span,.action span{display:block;margin-top:5px;color:var(--muted);font-size:14px;font-weight:1000;line-height:1.28}
+    .card.ok,.action.ok{border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.13)}
+    .card.warn,.action.warn{border-color:rgba(245,158,11,.38);background:rgba(245,158,11,.12)}
+    .card.gold,.action.gold{border-color:rgba(250,204,21,.42);background:rgba(250,204,21,.11)}
+    .action{transition:transform .12s ease,background .12s ease,border-color .12s ease}
+    .action:hover{transform:translateY(-1px);background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25)}
+    .dangerBtn{width:100%;min-height:60px;border-radius:18px;border:1px solid rgba(251,113,133,.34);background:rgba(251,113,133,.10);color:#fecaca;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:1000;box-shadow:var(--shadow)}
+    .notice{padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--muted);font-size:15px;font-weight:1000;line-height:1.45}
+    .notice b{color:#fff}
+    .bottomBar{position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(6,27,20,.97);border-top:1px solid rgba(250,204,21,.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+    .bottomInner{width:min(100%,760px);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+    .bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(236,255,244,.58);font-size:11px;font-weight:1000;text-align:center;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04)}
+    .bottomInner a.active{color:#171717;background:linear-gradient(135deg,var(--gold),var(--green));border-color:rgba(250,204,21,.32)}
+    .bottomInner .bi{font-size:19px;line-height:1}
+    @media(max-width:860px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:520px){body{padding:calc(var(--hdrH) + 12px) 10px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 16px);font-size:19px}.topHeader{padding:0 10px;gap:7px}.hdrBack{font-size:13px}.hdrTitle{font-size:11px;letter-spacing:.12em}.hdrPill{font-size:11px;padding:6px 8px;max-width:34vw}h1{font-size:34px}.sub{font-size:16px}.grid{gap:8px}.card,.action{min-height:132px;padding:13px}.ico{width:46px;height:46px;font-size:24px}.card b,.action b{font-size:19px;line-height:1.05}.card span,.action span{font-size:13.5px;line-height:1.25}.tag{font-size:9px;padding:4px 7px}.dangerBtn{font-size:15px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.action{transition:none}}
+  </style>
+</head>
+
+<body>
+  <header class="topHeader">
+    <a class="hdrBack" href="./hub.html">← HUB</a>
+    <div class="hdrTitle">Ma session</div>
+    <div class="hdrPill warn" id="sessionPill">session…</div>
+  </header>
+
+  <main class="wrap">
+    <section class="head">
+      <div class="eyebrow">💼 MES MISSIONS</div>
+      <h1>Session missions.</h1>
+      <div class="sub" id="sessionSub">
+        Ici on contrôle l’accès sans afficher de téléphone, sans exposer de slug, sans toucher aux missions ni aux candidatures.
+      </div>
+      <div class="rule">
+        Règle moule : <b>on nettoie l’accès</b>, mais <b>on ne supprime pas les missions</b>, <b>ni les candidatures</b>, <b>ni la fiche pro</b>.
+      </div>
+    </section>
+
+    <section class="grid" aria-label="État de session JOBS">
+      <article class="card warn" id="statusCard">
+        <div class="cardTop"><div class="ico">🔐</div><div class="tag" id="statusTag">Contrôle</div></div>
+        <div><b id="statusTitle">Vérification</b><span id="statusText">Lecture de l’état de session…</span></div>
+      </article>
+
+      <article class="card" id="moduleCard">
+        <div class="cardTop"><div class="ico">💼</div><div class="tag">Module</div></div>
+        <div><b>Mes missions</b><span id="moduleText">Accès protégé par code.</span></div>
+      </article>
+
+      <article class="card" id="identityCard">
+        <div class="cardTop"><div class="ico">🛡️</div><div class="tag">Privé</div></div>
+        <div><b>Identité masquée</b><span>Aucun téléphone ni slug affiché ici.</span></div>
+      </article>
+
+      <article class="card gold" id="nextCard">
+        <div class="cardTop"><div class="ico">🧭</div><div class="tag">Suite</div></div>
+        <div><b id="nextTitle">Retour HUB</b><span id="nextText">Ouvre les pavés missions pour agir vite.</span></div>
+      </article>
+    </section>
+
+    <section class="grid" aria-label="Actions de session JOBS">
+      <a class="action ok" href="./hub.html">
+        <div class="actionTop"><div class="ico">🧭</div><div class="tag">HUB</div></div>
+        <div><b>HUB missions</b><span>Pavés métier, moins de scroll.</span></div>
+      </a>
+
+      <a class="action gold" href="./bureau.html">
+        <div class="actionTop"><div class="ico">📥</div><div class="tag">Bureau</div></div>
+        <div><b>Mon bureau</b><span>Candidatures, appels, profils.</span></div>
+      </a>
+
+      <a class="action" href="./pin.html">
+        <div class="actionTop"><div class="ico">🔑</div><div class="tag">Code</div></div>
+        <div><b>Mon accès</b><span>Ouvrir ou renouveler la session.</span></div>
+      </a>
+
+      <a class="action" href="./fiche.html">
+        <div class="actionTop"><div class="ico">🪪</div><div class="tag">Fiche</div></div>
+        <div><b>Ma fiche pro</b><span>Activité, zone, contact terrain.</span></div>
+      </a>
+    </section>
+
+    <button class="dangerBtn" id="btnClearAccess" type="button">
+      🧹 Nettoyer l’accès local missions sur ce téléphone
+    </button>
+
+    <div class="notice" id="notice">
+      <b>Important :</b> ce nettoyage retire seulement les traces d’accès Mes missions du navigateur.
+      Il ne touche pas aux missions, candidatures, alertes ou réglages de fiche.
+    </div>
+  </main>
+
+  <nav class="bottomBar" aria-label="Navigation rapide JOBS">
+    <div class="bottomInner">
+      <a href="./hub.html"><span class="bi">🧭</span><span>HUB</span></a>
+      <a href="./publier-mission.html"><span class="bi">➕</span><span>Mission</span></a>
+      <a href="./bureau.html"><span class="bi">📥</span><span>Bureau</span></a>
+      <a href="./cockpit.html"><span class="bi">🔔</span><span>Veille</span></a>
+      <a class="active" href="./session.html"><span class="bi">🛡️</span><span>Session</span></a>
+    </div>
+  </nav>
+
+  <script>
+    (() => {
+      "use strict";
+      const MODULE = "JOBS";
+      const SENSITIVE_KEYS = ["slug","phone","tel","jobs_tel","owner_phone","contact_phone","module","return","from","pin","token","session_token","redirect","url","v"];
+
+      const JOBS_ACCESS_KEYS = [
+        "digiy_jobs_slug","digiy_jobs_last_slug","digiy_jobs_phone","digiy_jobs_last_phone",
+        "jobs_slug","jobs_phone","DIGIY_JOBS_SESSION","DIGIY_JOBS_PIN_SESSION","DIGIY_SESSION_JOBS",
+        "digiy_jobs_session","digiy_jobs_access"
+      ];
+      const GLOBAL_ACCESS_KEYS = ["DIGIY_ACCESS","DIGIY_PIN_SESSION","DIGIY_SESSION","digiy_access"];
+      const $ = id => document.getElementById(id);
+
+      function safeJsonParse(v){ try{ return typeof v === "string" ? JSON.parse(v) : v; }catch(_){ return null; } }
+
+      function cleanVisibleUrl(){
+        try{
+          const url = new URL(location.href); let changed = false;
+          SENSITIVE_KEYS.forEach(key => { if(url.searchParams.has(key)){ url.searchParams.delete(key); changed = true; } });
+          if(changed) history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+        }catch(_){}
+      }
+
+      function cleanInternalLinks(){
+        try{
+          document.querySelectorAll("a[href]").forEach(link => {
+            const href = link.getAttribute("href") || "";
+            if(!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+            const url = new URL(href, location.href);
+            if(url.origin !== location.origin) return;
+            SENSITIVE_KEYS.forEach(key => url.searchParams.delete(key));
+            const file = url.pathname.split("/").pop() || "index.html";
+            link.setAttribute("href","./" + file + (url.search || "") + (url.hash || ""));
+          });
+        }catch(_){}
+      }
+
+      async function waitGuard(){
+        try{
+          const guard = window.DIGIY_GUARD;
+          if(!guard) return {};
+          if(typeof guard.ready === "function"){
+            const out = guard.ready({ redirect:false, preserve_validation:true });
+            if(out && typeof out.then === "function") await out;
+          }else if(guard.ready && typeof guard.ready.then === "function"){
+            await guard.ready;
+          }
+          if(typeof guard.getSession === "function") return guard.getSession() || guard.state || {};
+          return guard.state || {};
+        }catch(e){
+          console.warn("[JOBS SESSION] guard", e);
+          return {};
+        }
+      }
+
+      function setPill(text, mode){
+        const el = $("sessionPill");
+        if(!el) return;
+        el.textContent = text;
+        el.className = "hdrPill " + (mode || "warn");
+      }
+
+      function setStatus(state){
+        const moduleName = String(state?.module || state?.module_code || MODULE).toUpperCase();
+        const ok = !!(state && (state.access_ok || state.access || state.pin_session_ok) && ["JOBS","JOB","MISSIONS","MES_MISSIONS"].includes(moduleName));
+        const card = $("statusCard"), tag = $("statusTag"), title = $("statusTitle"), text = $("statusText");
+        const sub = $("sessionSub"), nextTitle = $("nextTitle"), nextText = $("nextText");
+
+        if(ok){
+          setPill(state.pin_session_ok ? "session ouverte" : "accès ouvert", "ok");
+          if(card) card.className = "card ok";
+          if(tag) tag.textContent = "Ouvert";
+          if(title) title.textContent = "Accès confirmé";
+          if(text) text.textContent = "La session Mes missions est active sur ce navigateur.";
+          if(sub) sub.textContent = "Accès reconnu. Tu peux revenir au HUB, au bureau ou à ta fiche pro.";
+          if(nextTitle) nextTitle.textContent = "Tu peux travailler";
+          if(nextText) nextText.textContent = "Retour HUB ou bureau selon le geste.";
+          return;
+        }
+
+        setPill("accès à vérifier", "warn");
+        if(card) card.className = "card warn";
+        if(tag) tag.textContent = "Code";
+        if(title) title.textContent = "Session à ouvrir";
+        if(text) text.textContent = "Passe par Mon accès pour ouvrir Mes missions proprement.";
+        if(sub) sub.textContent = "Aucun téléphone affiché ici. Le code ouvre l’accès sans polluer le moule.";
+        if(nextTitle) nextTitle.textContent = "Retour code";
+        if(nextText) nextText.textContent = "Ouvre la session avant de piloter Mes missions.";
+      }
+
+      function removeKeyFromStores(key){
+        [sessionStorage, localStorage].forEach(store => { try{ store.removeItem(key); }catch(_){} });
+      }
+
+      function removeGlobalAccessIfJobs(key){
+        [sessionStorage, localStorage].forEach(store => {
+          try{
+            const raw = store.getItem(key);
+            if(!raw) return;
+            const obj = safeJsonParse(raw);
+            const moduleName = String(obj?.module || obj?.module_code || "").toUpperCase();
+            if(["JOBS","JOB","MISSIONS","MES_MISSIONS"].includes(moduleName)) store.removeItem(key);
+          }catch(_){}
+        });
+      }
+
+      function clearAccessOnly(){
+        JOBS_ACCESS_KEYS.forEach(removeKeyFromStores);
+        GLOBAL_ACCESS_KEYS.forEach(removeGlobalAccessIfJobs);
+        const notice = $("notice");
+        if(notice) notice.innerHTML = "<b>Nettoyage fait :</b> accès local Mes missions retiré de ce navigateur. Les missions, candidatures, alertes et fiche restent en place.";
+        setPill("accès nettoyé", "warn");
+        setStatus({});
+      }
+
+      async function boot(){
+        cleanVisibleUrl();
+        cleanInternalLinks();
+        const state = await waitGuard();
+        setStatus(state || {});
+        cleanVisibleUrl();
+        cleanInternalLinks();
+      }
+
+      $("btnClearAccess")?.addEventListener("click", clearAccessOnly);
+      boot();
+    })();
+  </script>
+</body>
+</html>
