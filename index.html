@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Mes missions — Entrée</title>
   <meta name="theme-color" content="#061b14"/>
-  <title>DIGIY JOBS PRO — Veille</title>
-  <meta name="description" content="DIGIY JOBS PRO — veille légère : alertes, actions, fiche et annonces prêtes." />
+  <meta name="description" content="DIGIY JOBS PRO — porte courte vers le HUB missions, avec secours anti-404."/>
+  <meta name="robots" content="noindex,nofollow"/>
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -15,828 +16,357 @@
     window.DIGIY_LOGIN_URL = "./pin.html";
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./guard.js"></script>
-  <script src="./claw-tools.js"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet"/>
 
   <style>
     :root{
       --bg:#061b14;
       --bg2:#0a2b1f;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.09);
-      --line:rgba(255,255,255,.13);
-      --text:#ecfff4;
-      --muted:rgba(236,255,244,.72);
+      --bg3:#030b08;
       --gold:#facc15;
       --gold2:#fde68a;
       --green:#22c55e;
       --blue:#38bdf8;
-      --red:#fb7185;
+      --line:rgba(255,255,255,.16);
+      --text:#ecfff4;
+      --muted:rgba(236,255,244,.76);
       --shadow:0 22px 70px rgba(0,0,0,.34);
-      --radius:28px;
-      --max:980px;
+      --r:28px;
+      --max:760px;
     }
 
     *{box-sizing:border-box}
-
-    html,body{
-      margin:0;
-      padding:0;
-      min-height:100%;
-      font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(250,204,21,.11), transparent 28%),
-        radial-gradient(circle at 82% 18%, rgba(56,189,248,.08), transparent 24%),
-        linear-gradient(180deg,var(--bg),#030b08 100%);
-    }
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
     body{
-      padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(88px + env(safe-area-inset-bottom,0px));
+      margin:0;
+      min-height:100dvh;
+      display:grid;
+      place-items:center;
+      padding:16px;
+      color:var(--text);
+      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
+      font-size:19px;
+      font-weight:950;
+      background:
+        radial-gradient(620px 390px at 12% 0%,rgba(250,204,21,.13),transparent 58%),
+        radial-gradient(430px 280px at 92% 8%,rgba(56,189,248,.10),transparent 52%),
+        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 54%,var(--bg3) 100%);
     }
 
-    a{text-decoration:none;color:inherit}
-    button{font:inherit;cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;cursor:pointer}
 
-    .wrap{
-      width:min(100%,var(--max));
-      margin:0 auto;
-    }
-
-    .top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:14px;
+    .door{
+      width:min(var(--max),100%);
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      background:
+        radial-gradient(500px 220px at 100% 0%,rgba(250,204,21,.12),transparent 70%),
+        rgba(255,255,255,.07);
+      box-shadow:var(--shadow);
+      padding:22px;
+      display:grid;
+      gap:16px;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
     }
 
     .brand{
       display:flex;
       align-items:center;
-      gap:10px;
-      min-width:0;
+      gap:13px;
     }
 
-    .brand-mark{
-      width:46px;
-      height:46px;
-      border-radius:16px;
+    .badge{
+      width:58px;
+      height:58px;
+      border-radius:20px;
       display:grid;
       place-items:center;
-      background:linear-gradient(135deg,var(--gold),#eab308);
+      background:linear-gradient(135deg,var(--gold),var(--green));
       color:#171717;
-      font-weight:1000;
-      box-shadow:0 12px 28px rgba(0,0,0,.24);
+      border:1px solid rgba(250,204,21,.32);
+      font-size:30px;
       flex:0 0 auto;
-    }
-
-    .brand-title strong{
-      display:block;
-      font-size:18px;
-      font-weight:1000;
-      line-height:1.05;
-    }
-
-    .brand-title span{
-      display:block;
-      margin-top:3px;
-      font-size:12px;
-      color:var(--muted);
-      font-weight:800;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .chip{
-      min-height:42px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:999px;
-      padding:10px 13px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.06);
-      font-size:13px;
-      font-weight:950;
-      color:var(--text);
-    }
-
-    .chip.gold{
-      color:#171717;
-      background:linear-gradient(135deg,var(--gold),#eab308);
-      border-color:transparent;
-    }
-
-    .hero{
-      border:1px solid var(--line);
-      border-radius:32px;
-      background:
-        radial-gradient(circle at 85% 12%, rgba(250,204,21,.13), transparent 24%),
-        linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));
-      box-shadow:var(--shadow);
-      padding:18px;
-      overflow:hidden;
+      box-shadow:0 14px 34px rgba(0,0,0,.22);
     }
 
     .kicker{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
       color:var(--gold2);
       font-size:12px;
-      letter-spacing:.13em;
+      letter-spacing:.16em;
       text-transform:uppercase;
       font-weight:1000;
     }
 
-    h1{
-      margin:10px 0 8px;
-      font-size:clamp(30px,7vw,56px);
-      line-height:.96;
-      letter-spacing:-.045em;
+    .brandTitle{
+      color:#fff;
+      font-size:18px;
+      font-weight:1000;
+      margin-top:2px;
     }
+
+    h1{
+      margin:0;
+      color:#fff;
+      font-size:clamp(36px,9vw,62px);
+      line-height:.96;
+      letter-spacing:-.055em;
+      font-weight:1000;
+    }
+
+    h1 span{color:var(--gold2)}
 
     .lead{
       margin:0;
       color:var(--muted);
-      line-height:1.5;
-      font-size:15px;
-      font-weight:750;
-      max-width:64ch;
+      font-size:17px;
+      font-weight:1000;
+      line-height:1.42;
     }
 
     .status{
-      margin-top:14px;
-      border:1px solid rgba(56,189,248,.22);
-      background:rgba(56,189,248,.08);
-      color:#d8f5ff;
-      border-radius:20px;
-      padding:12px 14px;
-      line-height:1.45;
-      font-size:13px;
-      font-weight:850;
-    }
-
-    .status.ok{
-      border-color:rgba(34,197,94,.25);
-      background:rgba(34,197,94,.10);
-      color:#c9ffd4;
-    }
-
-    .status.warn{
-      border-color:rgba(250,204,21,.26);
-      background:rgba(250,204,21,.10);
-      color:#fff4bd;
-    }
-
-    .status.err{
-      border-color:rgba(251,113,133,.26);
-      background:rgba(251,113,133,.10);
-      color:#ffd9df;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:.9fr 1.1fr;
-      gap:16px;
-      margin-top:16px;
-    }
-
-    .card{
-      border:1px solid var(--line);
-      border-radius:30px;
-      background:var(--card);
-      box-shadow:var(--shadow);
-      padding:16px;
-      min-height:100%;
-    }
-
-    .card h2{
-      margin:0;
-      font-size:21px;
-      line-height:1.1;
-      letter-spacing:-.02em;
-    }
-
-    .card p{
-      margin:5px 0 0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.45;
-      font-weight:750;
-    }
-
-    .metrics{
-      display:grid;
-      grid-template-columns:1fr 1fr;
+      min-height:54px;
+      display:flex;
+      align-items:center;
       gap:10px;
-      margin-top:14px;
-    }
-
-    .metric{
-      border:1px solid var(--line);
-      border-radius:22px;
-      background:rgba(255,255,255,.055);
-      padding:13px;
-      min-height:88px;
-    }
-
-    .metric strong{
-      display:block;
-      font-size:30px;
-      line-height:1;
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.08);
+      color:rgba(236,255,244,.92);
+      font-size:15px;
       font-weight:1000;
-      letter-spacing:-.04em;
+      line-height:1.35;
     }
 
-    .metric span{
-      display:block;
-      margin-top:6px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.3;
-      font-weight:850;
+    .dot{
+      width:13px;
+      height:13px;
+      border-radius:50%;
+      background:#f59e0b;
+      box-shadow:0 0 0 6px rgba(245,158,11,.12);
+      flex:0 0 auto;
+    }
+
+    .status.ok .dot{
+      background:#22c55e;
+      box-shadow:0 0 0 6px rgba(34,197,94,.12);
+    }
+
+    .status.bad .dot{
+      background:#ef4444;
+      box-shadow:0 0 0 6px rgba(239,68,68,.12);
     }
 
     .actions{
       display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:10px;
-      margin-top:14px;
-    }
-
-    .action{
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:13px;
-      background:rgba(255,255,255,.055);
-      display:grid;
-      gap:10px;
-    }
-
-    .action-top{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:flex-start;
-    }
-
-    .action strong{
-      display:block;
-      font-size:15px;
-      line-height:1.16;
-    }
-
-    .action small{
-      display:block;
-      margin-top:4px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.35;
-      font-weight:750;
-    }
-
-    .btn-row{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
     }
 
     .btn{
-      min-height:42px;
-      border:none;
-      border-radius:15px;
-      padding:10px 12px;
-      display:inline-flex;
+      min-height:60px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.09);
+      display:flex;
       align-items:center;
       justify-content:center;
-      background:rgba(255,255,255,.08);
+      gap:9px;
+      padding:13px 14px;
       color:var(--text);
-      font-weight:950;
+      font-size:17px;
+      font-weight:1000;
+      text-align:center;
+      box-shadow:0 10px 24px rgba(0,0,0,.13);
     }
 
     .btn.primary{
-      background:linear-gradient(135deg,var(--gold),#eab308);
-      color:#151515;
+      color:#171717;
+      border-color:rgba(34,197,94,.38);
+      background:linear-gradient(135deg,var(--gold),var(--green));
     }
 
-    .btn.blue{
-      background:rgba(56,189,248,.14);
-      color:#d8f5ff;
-      border:1px solid rgba(56,189,248,.22);
+    .btn.gold{
+      color:#171717;
+      border-color:rgba(250,204,21,.38);
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
     }
 
-    .btn.green{
-      background:rgba(34,197,94,.14);
-      color:#c9ffd4;
-      border:1px solid rgba(34,197,94,.22);
+    .btn.ghost{
+      color:rgba(236,255,244,.88);
+      background:rgba(255,255,255,.06);
     }
 
-    details{
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:20px;
-      background:rgba(255,255,255,.035);
-      margin-top:12px;
-      overflow:hidden;
-    }
-
-    summary{
-      cursor:pointer;
-      list-style:none;
-      padding:13px 14px;
-      font-weight:950;
-      color:#fff4bd;
-    }
-
-    summary::-webkit-details-marker{display:none}
-
-    .details-body{
-      padding:0 14px 14px;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-      font-weight:750;
-    }
-
-    .empty{
-      border:1px dashed rgba(255,255,255,.18);
-      border-radius:22px;
-      padding:16px;
-      text-align:center;
-      color:var(--muted);
-      font-weight:800;
-      line-height:1.45;
-      margin-top:14px;
-    }
-
-    .bottom-nav{
-      position:fixed;
-      left:50%;
-      bottom:calc(10px + env(safe-area-inset-bottom,0px));
-      transform:translateX(-50%);
-      width:min(680px,calc(100% - 18px));
-      z-index:99;
-      border:1px solid rgba(255,255,255,.13);
-      border-radius:24px;
-      background:rgba(6,27,20,.88);
-      backdrop-filter:blur(14px);
-      -webkit-backdrop-filter:blur(14px);
-      padding:8px;
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:6px;
-      box-shadow:0 18px 50px rgba(0,0,0,.35);
-    }
-
-    .bottom-nav a{
-      min-height:50px;
+    .rule{
+      padding:12px 14px;
       border-radius:18px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:2px;
-      font-size:11px;
-      font-weight:950;
-      color:rgba(236,255,244,.78);
-      text-align:center;
+      border:1px dashed rgba(255,255,255,.22);
+      background:rgba(0,0,0,.14);
+      color:rgba(236,255,244,.86);
+      font-size:14px;
+      font-weight:1000;
+      line-height:1.4;
     }
 
-    .bottom-nav a.active{
-      background:rgba(250,204,21,.14);
-      color:#fff4bd;
-      border:1px solid rgba(250,204,21,.22);
-    }
+    .rule b{color:var(--gold2)}
 
-    .bottom-nav b{
-      font-size:18px;
-      line-height:1;
-    }
-
-    @media (max-width:860px){
-      .grid{
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media (max-width:560px){
-      .hero,.card{
-        border-radius:26px;
-        padding:14px;
-      }
-
-      h1{
-        font-size:34px;
-      }
-
-      .lead{
-        font-size:14px;
-      }
-
-      .metrics{
-        grid-template-columns:1fr 1fr;
-      }
-
-      .metric{
-        min-height:82px;
-      }
-
-      .metric strong{
-        font-size:26px;
-      }
-
-      .btn-row .btn{
-        flex:1 1 auto;
-      }
+    @media(max-width:540px){
+      body{padding:10px}
+      .door{padding:18px;border-radius:24px}
+      .actions{grid-template-columns:1fr}
+      .btn{font-size:18px}
+      .lead{font-size:16px}
+      .rule{font-size:13px}
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header class="top">
-      <a class="brand" href="./index.html" aria-label="Retour actions JOBS">
-        <span class="brand-mark">JP</span>
-        <span class="brand-title">
-          <strong>DIGIY JOBS</strong>
-          <span>Veille · alertes · actions</span>
-        </span>
-      </a>
+  <main class="door" aria-label="Entrée Mes missions">
+    <div class="brand">
+      <div class="badge">💼</div>
+      <div>
+        <div class="kicker">DIGIY PRO · MES MISSIONS</div>
+        <div class="brandTitle">Porte d’entrée</div>
+      </div>
+    </div>
 
-      <a class="chip gold" href="./pin.html">Code</a>
-    </header>
+    <h1>Entrée courte.<br><span>Direction HUB.</span></h1>
 
-    <main>
-      <section class="hero">
-        <span class="kicker">Poste de veille</span>
-        <h1>DIGIY surveille derrière.</h1>
-        <p class="lead">
-          Le pro ne reçoit pas une administration lourde. Il reçoit ce qui demande une action.
-        </p>
+    <p class="lead">
+      Cette page ne porte plus tout le module.
+      Elle ouvre le HUB missions ; la veille reste dans cockpit.html.
+    </p>
 
-        <div id="statusBox" class="status">
-          Ouverture du coffre JOBS…
-        </div>
-      </section>
+    <div class="status" id="statusBox">
+      <span class="dot"></span>
+      <span id="statusText">Contrôle du HUB Mes missions…</span>
+    </div>
 
-      <section class="grid">
-        <article class="card">
-          <h2>État rapide</h2>
-          <p>Lecture simple du terrain. Le détail reste rangé.</p>
+    <div class="actions">
+      <button class="btn primary" id="btnHub" type="button">🧭 Ouvrir le HUB</button>
+      <a class="btn gold" id="btnPin" href="./pin.html">🔐 Mon accès</a>
+      <a class="btn ghost" id="btnCockpit" href="./cockpit.html">🔔 Ma veille</a>
+      <a class="btn ghost" id="btnFiche" href="./fiche.html">🪪 Ma fiche pro</a>
+    </div>
 
-          <div class="metrics">
-            <div class="metric">
-              <strong id="statOffers">0</strong>
-              <span>missions actives</span>
-            </div>
-
-            <div class="metric">
-              <strong id="statCandidates">0</strong>
-              <span>candidatures</span>
-            </div>
-
-            <div class="metric">
-              <strong id="statNew">0</strong>
-              <span>nouvelles</span>
-            </div>
-
-            <div class="metric">
-              <strong id="statCall">0</strong>
-              <span>à appeler</span>
-            </div>
-          </div>
-
-          <details>
-            <summary>Voir la règle</summary>
-            <div class="details-body">
-              Fiche à remplir, annonces prêtes, alertes à traiter. Le reste reste derrière pour ne pas fatiguer le pro.
-            </div>
-          </details>
-        </article>
-
-        <article class="card">
-          <h2>Alertes d’action</h2>
-          <p>Ce qui compte maintenant, sans bruit.</p>
-
-          <div id="actionList" class="actions">
-            <div class="action">
-              <div class="action-top">
-                <div>
-                  <strong>➕ Publier une mission prête</strong>
-                  <small>Choisir un besoin, DIGIY prépare le texte.</small>
-                </div>
-              </div>
-              <div class="btn-row">
-                <a class="btn primary" href="./publier-mission.html">Créer</a>
-              </div>
-            </div>
-
-            <div class="action">
-              <div class="action-top">
-                <div>
-                  <strong>📥 Voir les candidatures</strong>
-                  <small>Appeler, sélectionner, retenir ou classer.</small>
-                </div>
-              </div>
-              <div class="btn-row">
-                <a class="btn" href="./bureau.html">Ouvrir</a>
-              </div>
-            </div>
-
-            <div class="action">
-              <div class="action-top">
-                <div>
-                  <strong>📎 Faire circuler</strong>
-                  <small>Partager le QR ou le mur public quand le terrain doit répondre.</small>
-                </div>
-              </div>
-              <div class="btn-row">
-                <a class="btn blue" href="./qr.html">QR</a>
-                <a class="btn" href="./mur%20des%20missions.html">Mur public</a>
-                <a class="btn gold" href="https://pro-pay.digiylyfe.com/admin.html">💰 Mon Argent</a>
-              </div>
-            </div>
-          </div>
-
-          <details>
-            <summary>Conseil caché</summary>
-            <div class="details-body">
-              Une alerte doit toujours conduire à un geste : ouvrir, appeler, sélectionner, relancer, partager, décider.
-            </div>
-          </details>
-        </article>
-      </section>
-    </main>
-  </div>
-
-  <nav class="bottom-nav" aria-label="Navigation basse">
-    <a href="./index.html"><b>◎</b>Actions</a>
-    <a href="./publier-mission.html"><b>＋</b>Annonce</a>
-    <a class="active" href="./cockpit.html"><b>🔔</b>Veille</a>
-    <a href="./bureau.html"><b>📥</b>Bureau</a>
-    <a href="./pin.html"><b>🔒</b>Code</a>
-    <a href="https://pro-pay.digiylyfe.com/admin.html"><b>💰</b>Mon Argent</a>
-  </nav>
+    <div class="rule">
+      Ordre propre : poser <b>hub.html</b>, puis poser cet <b>index.html</b>.
+      Si le HUB manque, cette porte ne force pas un 404.
+    </div>
+  </main>
 
   <script>
     (() => {
       "use strict";
 
+      const ROUTES = {
+        hub:"./hub.html",
+        pin:"./pin.html",
+        cockpit:"./cockpit.html",
+        fiche:"./fiche.html"
+      };
+
       const SENSITIVE_KEYS = [
-        "slug",
-        "phone",
-        "tel",
-        "jobs_tel",
-        "owner_phone",
-        "contact_phone",
-        "module",
-        "return",
-        "from"
+        "phone","tel","p_phone","owner_phone","owner_id","slug","jobs_phone","jobs_tel","jobs_slug",
+        "business_phone","whatsapp","msisdn","subscription_phone","checkout_phone","subscription_slug",
+        "pro_slug","source_slug","pin","pin4","token","session_token","module","return","redirect",
+        "redirect_url","url","from","v"
       ];
 
-      const STORAGE = {
-        SLUG: "digiy_jobs_slug",
-        LAST_SLUG: "digiy_jobs_last_slug",
-        PHONE: "digiy_jobs_phone"
-      };
+      const $ = id => document.getElementById(id);
+      let hubAvailable = false;
 
-      const el = {
-        statusBox: document.getElementById("statusBox"),
-        statOffers: document.getElementById("statOffers"),
-        statCandidates: document.getElementById("statCandidates"),
-        statNew: document.getElementById("statNew"),
-        statCall: document.getElementById("statCall"),
-        actionList: document.getElementById("actionList")
-      };
-
-      function normSlug(value) {
-        return String(value || "")
-          .trim()
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "");
-      }
-
-      function normPhone(value) {
-        const raw = String(value || "").trim();
-        const cleaned = raw.replace(/[^\d+]/g, "");
-        const digits = cleaned.replace(/[^\d]/g, "");
-        if (!digits) return "";
-        return cleaned.startsWith("+") ? `+${digits}` : digits;
-      }
-
-      function saveContext(slug, phone) {
-        try {
-          if (slug) {
-            localStorage.setItem(STORAGE.SLUG, slug);
-            localStorage.setItem(STORAGE.LAST_SLUG, slug);
-            sessionStorage.setItem(STORAGE.SLUG, slug);
-            sessionStorage.setItem(STORAGE.LAST_SLUG, slug);
-          }
-
-          if (phone) {
-            localStorage.setItem(STORAGE.PHONE, phone);
-            sessionStorage.setItem(STORAGE.PHONE, phone);
-          }
-        } catch (_) {}
-      }
-
-      function cleanVisibleUrl() {
-        try {
-          const url = new URL(window.location.href);
-
-          const incomingSlug = normSlug(url.searchParams.get("slug") || "");
-          const incomingPhone = normPhone(
-            url.searchParams.get("phone") ||
-            url.searchParams.get("tel") ||
-            url.searchParams.get("jobs_tel") ||
-            ""
-          );
-
-          saveContext(incomingSlug, incomingPhone);
-
+      function cleanVisibleUrl(){
+        try{
+          const url = new URL(location.href);
           let changed = false;
 
-          SENSITIVE_KEYS.forEach((key) => {
-            if (url.searchParams.has(key)) {
+          SENSITIVE_KEYS.forEach(key => {
+            if(url.searchParams.has(key)){
               url.searchParams.delete(key);
               changed = true;
             }
           });
 
-          if (changed) {
+          if(changed){
             history.replaceState({}, document.title, url.pathname + url.search + url.hash);
           }
-        } catch (_) {}
+        }catch(_){}
       }
 
-      function keepLinksClean() {
-        document.querySelectorAll("a[href]").forEach((link) => {
-          try {
+      function cleanInternalLinks(){
+        try{
+          document.querySelectorAll("a[href]").forEach(link => {
             const href = link.getAttribute("href") || "";
-            if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+            if(!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
 
-            const url = new URL(href, window.location.href);
-            if (url.origin !== window.location.origin) return;
+            const url = new URL(href, location.href);
 
-            SENSITIVE_KEYS.forEach((key) => url.searchParams.delete(key));
+            if(url.origin !== location.origin) return;
+
+            SENSITIVE_KEYS.forEach(key => url.searchParams.delete(key));
 
             const file = url.pathname.split("/").pop() || "index.html";
-            link.setAttribute("href", `./${file}${url.search || ""}${url.hash || ""}`);
-          } catch (_) {}
-        });
+            link.setAttribute("href","./" + file + (url.search || "") + (url.hash || ""));
+          });
+        }catch(_){}
       }
 
-      function setStatus(text, type) {
-        el.statusBox.textContent = text;
-        el.statusBox.className = "status" + (type ? " " + type : "");
+      function setStatus(text, mode){
+        const box = $("statusBox");
+        const txt = $("statusText");
+        if(txt) txt.textContent = text;
+        if(box) box.className = "status " + (mode || "");
       }
 
-      function countStatus(rows, status) {
-        return (rows || []).filter((row) => String(row.status || "new").toLowerCase() === status).length;
+      function openHub(){
+        if(hubAvailable){
+          location.href = ROUTES.hub;
+          return;
+        }
+
+        setStatus("HUB non confirmé. Pose hub.html d’abord, puis reviens ici.", "bad");
       }
 
-      function renderAlerts(offers, candidates) {
-        const totalOffers = offers.length;
-        const totalCandidates = candidates.length;
-        const newCount = countStatus(candidates, "new");
-        const callCount = countStatus(candidates, "call");
-        const shortlistCount = countStatus(candidates, "shortlist");
-
-        const alerts = [];
-
-        if (newCount > 0) {
-          alerts.push({
-            title: `🆕 ${newCount} nouvelle(s) candidature(s)`,
-            text: "À lire avant que le terrain refroidisse.",
-            primary: "Voir",
-            href: "./bureau.html",
-            cls: "primary"
-          });
-        }
-
-        if (callCount > 0) {
-          alerts.push({
-            title: `📞 ${callCount} profil(s) à appeler`,
-            text: "Ce sont les dossiers qui demandent un contact.",
-            primary: "Appeler",
-            href: "./bureau.html",
-            cls: "green"
-          });
-        }
-
-        if (shortlistCount > 0) {
-          alerts.push({
-            title: `⭐ ${shortlistCount} profil(s) sélectionné(s)`,
-            text: "À garder sous la main pour décider vite.",
-            primary: "Ouvrir",
-            href: "./bureau.html",
-            cls: ""
-          });
-        }
-
-        if (totalOffers === 0) {
-          alerts.push({
-            title: "➕ Aucune mission active",
-            text: "Crée une annonce prête pour ouvrir le terrain.",
-            primary: "Créer",
-            href: "./publier-mission.html",
-            cls: "primary"
-          });
-        }
-
-        if (totalOffers > 0 && totalCandidates === 0) {
-          alerts.push({
-            title: "📎 Mission sans candidature",
-            text: "Fais circuler le QR ou le mur public.",
-            primary: "Partager",
-            href: "./qr.html",
-            cls: "blue"
-          });
-        }
-
-        if (!alerts.length) {
-          alerts.push({
-            title: "✅ Rien d’urgent",
-            text: "Le coffre est propre. Tu peux créer, partager ou vérifier le bureau.",
-            primary: "Bureau",
-            href: "./bureau.html",
-            cls: ""
-          });
-        }
-
-        el.actionList.innerHTML = alerts.map((item) => `
-          <div class="action">
-            <div class="action-top">
-              <div>
-                <strong>${item.title}</strong>
-                <small>${item.text}</small>
-              </div>
-            </div>
-            <div class="btn-row">
-              <a class="btn ${item.cls || ""}" href="${item.href}">${item.primary}</a>
-            </div>
-          </div>
-        `).join("");
-
-        keepLinksClean();
-      }
-
-      async function boot() {
+      async function checkHub(){
         cleanVisibleUrl();
-        keepLinksClean();
+        cleanInternalLinks();
 
-        try {
-          if (window.DIGIY_GUARD && typeof window.DIGIY_GUARD.ready === "function") {
-            const session = await window.DIGIY_GUARD.ready();
+        try{
+          const res = await fetch(ROUTES.hub, { method:"HEAD", cache:"no-store" });
 
-            if (!session || !session.access_ok) {
-              setStatus("Code demandé. Ouvre ton accès JOBS pour voir les alertes réelles.", "warn");
-              return;
-            }
-          }
+          if(res && res.ok){
+            hubAvailable = true;
+            setStatus("HUB trouvé. Redirection propre vers Mes missions…", "ok");
 
-          if (!window.DIGIY_CLAW_JOBS || typeof window.DIGIY_CLAW_JOBS.fetchAll !== "function") {
-            setStatus("Mode léger ouvert. Les alertes réelles attendent l’outil JOBS.", "warn");
+            setTimeout(() => {
+              location.replace(ROUTES.hub);
+            }, 650);
+
             return;
           }
 
-          const data = await window.DIGIY_CLAW_JOBS.fetchAll();
-
-          if (!data || !data.ok) {
-            setStatus("Veille ouverte. Aucune donnée réelle chargée pour l’instant.", "warn");
-            return;
-          }
-
-          const offers = Array.isArray(data.offers) ? data.offers : [];
-          const candidates = Array.isArray(data.candidates) ? data.candidates : [];
-
-          el.statOffers.textContent = offers.length;
-          el.statCandidates.textContent = candidates.length;
-          el.statNew.textContent = countStatus(candidates, "new");
-          el.statCall.textContent = countStatus(candidates, "call");
-
-          renderAlerts(offers, candidates);
-
-          setStatus("Veille active. DIGIY remonte seulement ce qui demande une action.", "ok");
-        } catch (err) {
-          console.error(err);
-          setStatus("Veille légère ouverte. Entre ton code si les alertes réelles ne chargent pas.", "warn");
+          hubAvailable = false;
+          setStatus("HUB pas encore trouvé. Tu peux poser hub.html puis revenir.", "bad");
+        }catch(_){
+          hubAvailable = false;
+          setStatus("Contrôle HUB impossible. Utilise le bouton HUB après dépôt du fichier.", "bad");
         }
       }
 
-      boot();
+      $("btnHub")?.addEventListener("click", openHub);
+
+      checkHub();
     })();
   </script>
 </body>
 </html>
+
 
 
