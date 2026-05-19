@@ -74,7 +74,7 @@
     .tile:active{transform:none}
     .tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 
-    .tileLogoImg{width:48px;height:48px;object-fit:contain;border-radius:15px;background:#fff;padding:5px;box-shadow:0 10px 24px rgba(0,0,0,.20);border:1px solid rgba(250,204,21,.28)}
+    .tileLogoImg{width:96px;height:96px;object-fit:contain;border-radius:24px;background:#fff;padding:8px;box-shadow:0 10px 24px rgba(0,0,0,.20);border:1px solid rgba(250,204,21,.28)}
     .tileIcon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:25px;flex:0 0 auto}
     .tileTag{min-height:27px;display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);font-size:10px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
     .tile b{display:block;font-size:20px;font-weight:1000;line-height:1.06;letter-spacing:-.025em;color:#fff}
@@ -83,6 +83,19 @@
     .tile.gold{border-color:rgba(250,204,21,.42);background:rgba(250,204,21,.11)}
     .tile.blue{border-color:rgba(56,189,248,.32);background:rgba(56,189,248,.10)}
     .tile.pay{border-color:rgba(250,204,21,.48);background:linear-gradient(180deg,rgba(250,204,21,.16),rgba(255,255,255,.08))}
+
+    .missionTile{
+      border-color:rgba(250,204,21,.46)!important;
+      background:linear-gradient(180deg,rgba(250,204,21,.24),rgba(255,255,255,.16))!important;
+    }
+    .missionTile b{color:#fffdf3!important}
+    .missionTile span{color:rgba(255,248,220,.92)!important}
+    .missionTile .tileIcon{
+      background:#fff7d6!important;
+      color:#171717!important;
+      border-color:rgba(250,204,21,.38)!important;
+      box-shadow:0 10px 22px rgba(0,0,0,.14);
+    }
     .bottomBar{position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(6,27,20,.97);border-top:1px solid rgba(250,204,21,.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
     .bottomInner{width:min(100%,760px);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
     .bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(236,255,244,.58);font-size:11px;font-weight:1000;text-align:center;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04)}
@@ -92,7 +105,7 @@
     @media(max-width:520px){
       body{padding:calc(var(--hdrH) + 12px) 10px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 16px);font-size:19px}
       .topHeader{padding:0 10px;gap:7px}.hdrBack{font-size:13px}.hdrTitle{font-size:11px;letter-spacing:.12em}.hdrPill{font-size:11px;padding:6px 8px;max-width:34vw}
-      h1{font-size:34px}.hubSub{font-size:16px}.tile{min-height:132px;padding:13px}.tileIcon{width:46px;height:46px;font-size:24px}.tileLogoImg{width:46px;height:46px;border-radius:15px}.tile b{font-size:19px;line-height:1.05}.tile span{font-size:13.5px;line-height:1.25}.tileTag{font-size:9px;padding:4px 7px}
+      h1{font-size:34px}.hubSub{font-size:16px}.tile{min-height:132px;padding:13px}.tileIcon{width:46px;height:46px;font-size:24px}.tileLogoImg{width:92px;height:92px;border-radius:22px}.tile b{font-size:19px;line-height:1.05}.tile span{font-size:13.5px;line-height:1.25}.tileTag{font-size:9px;padding:4px 7px}
     }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tile{transition:none}}
   </style>
@@ -120,7 +133,7 @@
     <section class="group" aria-label="Actions immédiates JOBS">
       <div class="groupLabel">Action immédiate</div>
       <div class="tileGrid">
-        <a class="tile gold" href="https://digiylyfe.com/" aria-label="DIGIYLYFE Métiers pro">
+        <a class="tile gold" href="https://digiylyfe.com/" aria-label="DIGIYLYFE Métiers pro" style="min-height:168px;">
           <div class="tileTop">
             <img
               class="tileLogoImg"
@@ -134,7 +147,7 @@
           <div><b>Métiers pro</b><span>Le sceau commun des portes métier.</span></div>
         </a>
 
-        <a class="tile primary" href="./publier-mission.html">
+        <a class="tile primary missionTile" href="./publier-mission.html">
           <div class="tileTop"><div class="tileIcon">➕</div><div class="tileTag">Mission</div></div>
           <div><b>Publier une mission</b><span>Créer une annonce claire pour le terrain.</span></div>
         </a>
@@ -284,13 +297,6 @@
         cleanVisibleUrl();
         cleanInternalLinks();
       }
-
-      boot();
-    })();
-  </script>
-</body>
-</html>
-
 
       boot();
     })();
