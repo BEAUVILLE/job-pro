@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Mes missions — Ma fiche pro</title>
+  <meta name="theme-color" content="#061b14"/>
+  <meta name="description" content="DIGIY JOBS PRO — fiche pro terrain : activité, zone, contact, confiance et lien public."/>
+  <meta name="robots" content="noindex,nofollow"/>
+
+  <script>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "JOBS";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./guard.js?v=jobs-fiche-terrain-20260519"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#061b14;--bg2:#0a2b1f;--bg3:#030b08;--bar:rgba(6,27,20,.96);
+      --gold:#facc15;--gold2:#fde68a;--green:#22c55e;--blue:#38bdf8;--red:#fb7185;
+      --line:rgba(255,255,255,.16);--text:#ecfff4;--muted:rgba(236,255,244,.74);
+      --shadow:0 18px 48px rgba(0,0,0,.32);--r:20px;--max:960px;--hdrH:52px;--barH:78px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{
+      margin:0;min-height:100dvh;color:var(--text);
+      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;font-weight:850;
+      background:
+        radial-gradient(620px 390px at 10% 0%,rgba(250,204,21,.12),transparent 58%),
+        radial-gradient(430px 280px at 92% 10%,rgba(56,189,248,.10),transparent 52%),
+        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 54%,var(--bg3) 100%);
+      padding:calc(var(--hdrH) + 14px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 18px)
+    }
+    a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}
+    button{cursor:pointer;color:inherit}
+    .topHeader{position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;background:var(--bar);border-bottom:1px solid rgba(250,204,21,.22);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+    .hdrBack{min-height:36px;display:inline-flex;align-items:center;justify-content:center;color:rgba(236,255,244,.72);font-size:14px;font-weight:1000;white-space:nowrap}
+    .hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+    .hdrPill{min-height:32px;display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--muted);font-size:12px;font-weight:1000;white-space:nowrap;max-width:38vw;overflow:hidden;text-overflow:ellipsis}
+    .wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:14px}
+    .hero,.card{border:1px solid var(--line);border-radius:26px;background:rgba(255,255,255,.07);box-shadow:var(--shadow);padding:16px}
+    .eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}
+    h1{margin:0 0 8px;font-size:clamp(32px,8vw,54px);font-weight:1000;line-height:.94;letter-spacing:-.05em}
+    .sub{color:var(--muted);font-size:16px;font-weight:900;line-height:1.45;max-width:760px}
+    .fast{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}
+    .fast a,.fast button{min-height:52px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:14px;font-weight:1000}
+    .fast .primary{background:linear-gradient(135deg,var(--gold),var(--green));color:#171717;border:none}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    label{display:block;margin:0 0 6px;color:rgba(236,255,244,.72);font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:.04em}
+    input,textarea,select{
+      width:100%;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.20);
+      color:var(--text);padding:12px 13px;outline:none;font-weight:900
+    }
+    textarea{min-height:116px;resize:vertical;line-height:1.45}
+    input:focus,textarea:focus,select:focus{border-color:rgba(250,204,21,.45);box-shadow:0 0 0 3px rgba(250,204,21,.08)}
+    .actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:12px}
+    .btn{min-height:56px;border-radius:17px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;text-align:center;font-weight:1000}
+    .btn.primary{background:linear-gradient(135deg,var(--gold),var(--green));color:#171717;border:none}
+    .btn.blue{background:rgba(56,189,248,.13);border-color:rgba(56,189,248,.28);color:#d8f5ff}
+    .btn.bad{background:rgba(251,113,133,.11);border-color:rgba(251,113,133,.28);color:#ffd9df}
+    .preview{display:grid;gap:10px}
+    .previewCard{border:1px solid rgba(255,255,255,.14);border-radius:22px;background:rgba(0,0,0,.16);padding:14px}
+    .previewTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .avatar{width:60px;height:60px;border-radius:20px;background:linear-gradient(135deg,var(--gold),var(--green));color:#171717;display:grid;place-items:center;font-size:28px;font-weight:1000;flex:0 0 auto;overflow:hidden}
+    .avatar img{width:100%;height:100%;object-fit:cover}
+    .pvName{font-size:22px;font-weight:1000;line-height:1.05;color:#fff}
+    .pvMeta{margin-top:5px;color:var(--muted);font-size:14px;font-weight:900;line-height:1.35}
+    .pillRow{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+    .pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);color:var(--gold2);font-size:12px;font-weight:1000;padding:6px 9px}
+    .notice{padding:12px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:var(--muted);font-size:14px;font-weight:900;line-height:1.45}
+    .notice b{color:#fff}
+    .bottomBar{position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(6,27,20,.97);border-top:1px solid rgba(250,204,21,.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+    .bottomInner{width:min(100%,760px);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+    .bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(236,255,244,.58);font-size:11px;font-weight:1000;text-align:center;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04)}
+    .bottomInner a.active{color:#171717;background:linear-gradient(135deg,var(--gold),var(--green));border-color:rgba(250,204,21,.32)}
+    .bottomInner .bi{font-size:19px;line-height:1}
+    @media(max-width:760px){.grid{grid-template-columns:1fr}.fast{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{grid-template-columns:1fr}.hero,.card{border-radius:24px;padding:14px}}
+    @media(max-width:520px){body{padding:calc(var(--hdrH) + 12px) 10px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 16px)}h1{font-size:34px}.sub{font-size:15px}.hdrTitle{font-size:11px}.hdrBack{font-size:13px}.hdrPill{font-size:11px;padding:6px 8px;max-width:34vw}}
+  </style>
+</head>
+
+<body>
+  <header class="topHeader">
+    <a class="hdrBack" href="./hub.html">← HUB</a>
+    <div class="hdrTitle">Ma fiche pro</div>
+    <div class="hdrPill">JOBS</div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">💼 MES MISSIONS</div>
+      <h1>Ma fiche pro.</h1>
+      <div class="sub">
+        Ici tu présentes ton activité, ta zone, ton contact et ce que le terrain doit comprendre vite avant de répondre à une mission.
+      </div>
+      <div class="fast">
+        <a href="./hub.html">🧭 HUB</a>
+        <a href="./bureau.html">📥 Bureau</a>
+        <a href="./qr.html">🔳 QR</a>
+        <a class="primary" href="./publier-mission.html">➕ Mission</a>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="eyebrow">Identité terrain</div>
+
+        <div class="grid">
+          <div>
+            <label>Nom visible</label>
+            <input id="name" placeholder="Ex : Ndiaga Recrutement / Atelier Saly"/>
+          </div>
+          <div>
+            <label>Ville / zone</label>
+            <input id="city" placeholder="Ex : Saly · Dakar · Mbour"/>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px">
+          <div>
+            <label>Activité</label>
+            <input id="activity" placeholder="Ex : Recrutement local, missions terrain, extra restaurant"/>
+          </div>
+          <div>
+            <label>Contact public</label>
+            <input id="contact" placeholder="Ex : WhatsApp / téléphone visible client"/>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:10px">
+          <div>
+            <label>Photo / logo</label>
+            <input id="photo" placeholder="Lien image https://..."/>
+          </div>
+          <div>
+            <label>Lien public</label>
+            <input id="publicUrl" placeholder="Lien public ou mur des missions"/>
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Présentation courte</label>
+          <textarea id="bio" placeholder="Ex : Nous publions des missions simples, rapides et claires pour connecter le terrain aux bons profils."></textarea>
+        </div>
+
+        <div class="grid" style="margin-top:10px">
+          <div>
+            <label>Types de missions</label>
+            <input id="missionTypes" placeholder="Ex : restauration, chantier, livraison, commerce"/>
+          </div>
+          <div>
+            <label>Badge visible</label>
+            <input id="badge" placeholder="Ex : ✅ Missions vérifiées"/>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="btnSave" type="button">💾 Enregistrer</button>
+          <button class="btn blue" id="btnCopy" type="button">📋 Copier fiche</button>
+          <button class="btn bad" id="btnClear" type="button">🧹 Vider local</button>
+        </div>
+      </article>
+
+      <article class="card preview">
+        <div class="eyebrow">Aperçu</div>
+        <div class="previewCard">
+          <div class="previewTop">
+            <div class="avatar" id="pvAvatar">💼</div>
+            <div style="flex:1;min-width:0">
+              <div class="pvName" id="pvName">Ma fiche pro</div>
+              <div class="pvMeta" id="pvMeta">Activité · Zone</div>
+            </div>
+          </div>
+          <div class="pillRow">
+            <span class="pill" id="pvBadge">✅ Missions claires</span>
+            <span class="pill" id="pvContact">Contact public</span>
+          </div>
+          <div class="notice" id="pvBio" style="margin-top:12px">
+            Le pro présente son activité, le terrain comprend vite, puis il répond ou partage.
+          </div>
+          <div class="notice" id="pvTypes" style="margin-top:10px">
+            Types de missions : à préciser.
+          </div>
+        </div>
+
+        <div class="notice" id="msg">
+          <b>Doctrine :</b> la fiche pro ne doit pas devenir une administration. Elle rassure, explique vite, et garde le terrain en mouvement.
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <nav class="bottomBar" aria-label="Navigation rapide JOBS">
+    <div class="bottomInner">
+      <a href="./hub.html"><span class="bi">🧭</span><span>HUB</span></a>
+      <a href="./publier-mission.html"><span class="bi">➕</span><span>Mission</span></a>
+      <a href="./bureau.html"><span class="bi">📥</span><span>Bureau</span></a>
+      <a href="./cockpit.html"><span class="bi">🔔</span><span>Veille</span></a>
+      <a class="active" href="./fiche.html"><span class="bi">🪪</span><span>Fiche</span></a>
+    </div>
+  </nav>
+
+  <script>
+    (() => {
+      "use strict";
+      const KEY = "DIGIY_JOBS_FICHE_PRO";
+      const SENSITIVE_KEYS = ["slug","phone","tel","jobs_tel","owner_phone","contact_phone","module","return","from","pin","token","session_token","redirect","url","v"];
+      const $ = id => document.getElementById(id);
+
+      function cleanVisibleUrl(){
+        try{
+          const url = new URL(location.href); let changed = false;
+          SENSITIVE_KEYS.forEach(key => { if(url.searchParams.has(key)){ url.searchParams.delete(key); changed = true; } });
+          if(changed) history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+        }catch(_){}
+      }
+
+      function cleanInternalLinks(){
+        try{
+          document.querySelectorAll("a[href]").forEach(link => {
+            const href = link.getAttribute("href") || "";
+            if(!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
+            const url = new URL(href, location.href);
+            if(url.origin !== location.origin) return;
+            SENSITIVE_KEYS.forEach(key => url.searchParams.delete(key));
+            const file = url.pathname.split("/").pop() || "index.html";
+            link.setAttribute("href","./" + file + (url.search || "") + (url.hash || ""));
+          });
+        }catch(_){}
+      }
+
+      function read(){
+        try{ return JSON.parse(localStorage.getItem(KEY) || "{}") || {}; }catch(_){ return {}; }
+      }
+
+      function write(data){
+        try{ localStorage.setItem(KEY, JSON.stringify(data || {})); return true; }catch(_){ return false; }
+      }
+
+      function value(id){ return String($(id)?.value || "").trim(); }
+
+      function fill(data){
+        ["name","city","activity","contact","photo","publicUrl","bio","missionTypes","badge"].forEach(id => {
+          if($(id)) $(id).value = data[id] || "";
+        });
+        render();
+      }
+
+      function collect(){
+        return {
+          name:value("name"),
+          city:value("city"),
+          activity:value("activity"),
+          contact:value("contact"),
+          photo:value("photo"),
+          publicUrl:value("publicUrl"),
+          bio:value("bio"),
+          missionTypes:value("missionTypes"),
+          badge:value("badge"),
+          updated_at:new Date().toISOString()
+        };
+      }
+
+      function render(){
+        const data = collect();
+        $("pvName").textContent = data.name || "Ma fiche pro";
+        $("pvMeta").textContent = [data.activity || "Activité", data.city || "Zone"].filter(Boolean).join(" · ");
+        $("pvBadge").textContent = data.badge || "✅ Missions claires";
+        $("pvContact").textContent = data.contact || "Contact public";
+        $("pvBio").textContent = data.bio || "Le pro présente son activité, le terrain comprend vite, puis il répond ou partage.";
+        $("pvTypes").textContent = "Types de missions : " + (data.missionTypes || "à préciser.");
+
+        const avatar = $("pvAvatar");
+        if(data.photo){
+          avatar.innerHTML = `<img src="${data.photo.replace(/"/g,"&quot;")}" alt="Photo fiche pro">`;
+        }else{
+          avatar.textContent = "💼";
+        }
+      }
+
+      function save(){
+        const data = collect();
+        write(data);
+        $("msg").innerHTML = "<b>Fiche gardée :</b> les informations restent sur ce téléphone. Prochaine étape : relier à la base quand le module JOBS sera prêt.";
+        render();
+      }
+
+      async function copyFiche(){
+        const data = collect();
+        const txt = [
+          data.name || "Ma fiche pro",
+          data.activity ? "Activité : " + data.activity : "",
+          data.city ? "Zone : " + data.city : "",
+          data.contact ? "Contact : " + data.contact : "",
+          data.missionTypes ? "Missions : " + data.missionTypes : "",
+          data.bio || ""
+        ].filter(Boolean).join("\n");
+
+        try{
+          if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(txt);
+          else window.prompt("Copie la fiche :", txt);
+          $("msg").innerHTML = "<b>Copié :</b> fiche prête à partager.";
+        }catch(_){
+          window.prompt("Copie la fiche :", txt);
+        }
+      }
+
+      function clearLocal(){
+        if(!confirm("Vider la fiche pro gardée sur ce téléphone ?")) return;
+        try{ localStorage.removeItem(KEY); }catch(_){}
+        fill({});
+        $("msg").innerHTML = "<b>Nettoyé :</b> fiche locale vidée.";
+      }
+
+      function boot(){
+        cleanVisibleUrl();
+        cleanInternalLinks();
+        fill(read());
+        ["name","city","activity","contact","photo","publicUrl","bio","missionTypes","badge"].forEach(id => $(id)?.addEventListener("input", render));
+        $("btnSave")?.addEventListener("click", save);
+        $("btnCopy")?.addEventListener("click", copyFiche);
+        $("btnClear")?.addEventListener("click", clearLocal);
+        cleanVisibleUrl();
+        cleanInternalLinks();
+      }
+
+      boot();
+    })();
+  </script>
+</body>
+</html>
