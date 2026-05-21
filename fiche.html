@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#061b14"/>
   <meta name="description" content="DIGIY JOBS PRO — fiche pro terrain : activité, zone, contact, confiance et lien public."/>
   <meta name="robots" content="noindex,nofollow"/>
+  <meta name="digiy-build" content="jobs-click-first-20260521"/>
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -18,6 +19,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./guard.js?v=jobs-fiche-terrain-20260519"></script>
+  <script src="./assets/js/digiy-module-bridge.js?v=jobs-final-rail-clean-20260521"></script>
+  <script src="./assets/js/digiy-jobs-memory.js?v=jobs-final-rail-clean-20260521"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -84,6 +87,67 @@
     .bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(236,255,244,.58);font-size:11px;font-weight:1000;text-align:center;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04)}
     .bottomInner a.active{color:#171717;background:linear-gradient(135deg,var(--gold),var(--green));border-color:rgba(250,204,21,.32)}
     .bottomInner .bi{font-size:19px;line-height:1}
+
+    .clickCard{
+      margin-top:14px;
+      border:2px solid rgba(250,204,21,.28);
+      border-radius:24px;
+      background:
+        radial-gradient(420px 180px at 0% 0%,rgba(250,204,21,.14),transparent 70%),
+        rgba(255,255,255,.06);
+      padding:14px;
+    }
+    .clickTitle{
+      color:#fff4bd;
+      font-size:18px;
+      font-weight:1000;
+      line-height:1.15;
+    }
+    .clickSub{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:900;
+      line-height:1.38;
+    }
+    .clickGroup{
+      margin-top:12px;
+      display:grid;
+      gap:7px;
+    }
+    .clickLabel{
+      color:rgba(236,255,244,.72);
+      font-size:11px;
+      font-weight:1000;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+    }
+    .clickChips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .clickChip{
+      min-height:42px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:1000;
+    }
+    .clickChip.gold{
+      background:linear-gradient(135deg,var(--gold),var(--green));
+      border:none;
+      color:#171717;
+    }
+    .clickChip.active{
+      background:rgba(250,204,21,.16);
+      border-color:rgba(250,204,21,.42);
+      color:#fff4bd;
+    }
+
     @media(max-width:760px){.grid{grid-template-columns:1fr}.fast{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{grid-template-columns:1fr}.hero,.card{border-radius:24px;padding:14px}}
     @media(max-width:520px){body{padding:calc(var(--hdrH) + 12px) 10px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 16px)}h1{font-size:34px}.sub{font-size:15px}.hdrTitle{font-size:11px}.hdrBack{font-size:13px}.hdrPill{font-size:11px;padding:6px 8px;max-width:34vw}}
   </style>
@@ -114,6 +178,54 @@
     <section class="grid">
       <article class="card">
         <div class="eyebrow">Identité terrain</div>
+
+        <div class="clickCard" id="ficheClickFirst">
+          <div class="clickTitle">⚡ Fiche en clics</div>
+          <div class="clickSub">Choisis le métier, la zone, le badge. DIGIY remplit la fiche, tu ajustes seulement si besoin.</div>
+
+          <div class="clickGroup">
+            <div class="clickLabel">Activité prête</div>
+            <div class="clickChips">
+              <button class="clickChip gold" type="button" data-fiche-preset="recrutement">💼 Recrutement local</button>
+              <button class="clickChip" type="button" data-fiche-preset="resto">🍽️ Extras resto</button>
+              <button class="clickChip" type="button" data-fiche-preset="chantier">🧱 Chantiers</button>
+              <button class="clickChip" type="button" data-fiche-preset="livraison">🚚 Livraison</button>
+              <button class="clickChip" type="button" data-fiche-preset="commerce">🛍️ Commerce</button>
+              <button class="clickChip" type="button" data-fiche-preset="hotel">🏨 Hôtel / villa</button>
+            </div>
+          </div>
+
+          <div class="clickGroup">
+            <div class="clickLabel">Zone rapide</div>
+            <div class="clickChips">
+              <button class="clickChip" type="button" data-fiche-city="Saly">📍 Saly</button>
+              <button class="clickChip" type="button" data-fiche-city="Mbour">📍 Mbour</button>
+              <button class="clickChip" type="button" data-fiche-city="Dakar">📍 Dakar</button>
+              <button class="clickChip" type="button" data-fiche-city="Touba">📍 Touba</button>
+              <button class="clickChip" type="button" data-fiche-city="Petite-Côte">📍 Petite-Côte</button>
+            </div>
+          </div>
+
+          <div class="clickGroup">
+            <div class="clickLabel">Confiance visible</div>
+            <div class="clickChips">
+              <button class="clickChip" type="button" data-fiche-badge="✅ Missions vérifiées">✅ Missions vérifiées</button>
+              <button class="clickChip" type="button" data-fiche-badge="⚡ Réponse rapide">⚡ Réponse rapide</button>
+              <button class="clickChip" type="button" data-fiche-badge="📲 Contact direct">📲 Contact direct</button>
+              <button class="clickChip" type="button" data-fiche-badge="🧭 Terrain local">🧭 Terrain local</button>
+            </div>
+          </div>
+
+          <div class="clickGroup">
+            <div class="clickLabel">Contact</div>
+            <div class="clickChips">
+              <button class="clickChip" type="button" data-fiche-contact="WhatsApp direct">💬 WhatsApp direct</button>
+              <button class="clickChip" type="button" data-fiche-contact="Appel direct">📞 Appel direct</button>
+              <button class="clickChip" type="button" data-fiche-contact="QR public + WhatsApp">🔳 QR + WhatsApp</button>
+            </div>
+          </div>
+        </div>
+
 
         <div class="grid">
           <div>
@@ -216,6 +328,96 @@
       const KEY = "DIGIY_JOBS_FICHE_PRO";
       const SENSITIVE_KEYS = ["slug","phone","tel","jobs_tel","owner_phone","contact_phone","module","return","from","pin","token","session_token","redirect","url","v"];
       const $ = id => document.getElementById(id);
+
+
+      const FICHE_PRESETS = {
+        recrutement: {
+          activity: "Recrutement local et missions terrain",
+          bio: "Nous publions des missions simples, claires et rapides pour connecter les besoins du terrain aux bons profils.",
+          missionTypes: "restauration, service, chantier, livraison, commerce, hôtellerie",
+          badge: "✅ Missions vérifiées"
+        },
+        resto: {
+          activity: "Extras restaurant et service client",
+          bio: "Nous aidons les restaurants à trouver vite des profils sérieux pour le service, l’accueil, la plonge ou les extras.",
+          missionTypes: "serveur, serveuse, plonge, accueil, aide cuisine, extra restaurant",
+          badge: "🍽️ Profils service"
+        },
+        chantier: {
+          activity: "Missions chantier et travaux",
+          bio: "Nous relayons des besoins terrain pour chantiers, manutention, artisans et travaux simples avec des profils disponibles.",
+          missionTypes: "ouvrier, artisan, manutention, chantier, aide travaux",
+          badge: "🧱 Terrain chantier"
+        },
+        livraison: {
+          activity: "Livraison locale et courses",
+          bio: "Nous aidons à trouver des personnes sérieuses pour livrer, se déplacer, répondre vite et respecter les horaires.",
+          missionTypes: "livreur, courses, logistique locale, distribution",
+          badge: "🚚 Livraison locale"
+        },
+        commerce: {
+          activity: "Boutique, vente et aide commerce",
+          bio: "Nous aidons les commerces à trouver des personnes fiables pour l’accueil, la vente, le rangement et le suivi simple.",
+          missionTypes: "vendeur, vendeuse, caisse simple, boutique, stock",
+          badge: "🛍️ Commerce local"
+        },
+        hotel: {
+          activity: "Hôtel, villa et accueil",
+          bio: "Nous aidons les hébergements à trouver des profils pour l’accueil, l’entretien, les chambres et les services utiles.",
+          missionTypes: "accueil, ménage, chambre, villa, hôtel, polyvalent",
+          badge: "🏨 Hôtel / villa"
+        }
+      };
+
+      function markActive(selector, button){
+        try{
+          document.querySelectorAll(selector).forEach(b => b.classList.remove("active"));
+          button?.classList.add("active");
+        }catch(_){}
+      }
+
+      function applyFichePreset(key, button){
+        const preset = FICHE_PRESETS[key];
+        if(!preset) return;
+        $("activity").value = preset.activity;
+        $("bio").value = preset.bio;
+        $("missionTypes").value = preset.missionTypes;
+        $("badge").value = preset.badge;
+        markActive("[data-fiche-preset]", button);
+        render();
+        $("msg").innerHTML = "<b>DIGIY a préparé :</b> activité, présentation, types de missions et badge. Tu ajustes seulement si besoin.";
+      }
+
+      function bindClickFirst(){
+        document.querySelectorAll("[data-fiche-preset]").forEach(button => {
+          button.addEventListener("click", () => applyFichePreset(button.dataset.fichePreset, button));
+        });
+
+        document.querySelectorAll("[data-fiche-city]").forEach(button => {
+          button.addEventListener("click", () => {
+            $("city").value = button.dataset.ficheCity || "";
+            markActive("[data-fiche-city]", button);
+            render();
+          });
+        });
+
+        document.querySelectorAll("[data-fiche-badge]").forEach(button => {
+          button.addEventListener("click", () => {
+            $("badge").value = button.dataset.ficheBadge || "";
+            markActive("[data-fiche-badge]", button);
+            render();
+          });
+        });
+
+        document.querySelectorAll("[data-fiche-contact]").forEach(button => {
+          button.addEventListener("click", () => {
+            $("contact").value = button.dataset.ficheContact || "";
+            markActive("[data-fiche-contact]", button);
+            render();
+          });
+        });
+      }
+
 
       function cleanVisibleUrl(){
         try{
@@ -326,6 +528,7 @@
         cleanVisibleUrl();
         cleanInternalLinks();
         fill(read());
+        bindClickFirst();
         ["name","city","activity","contact","photo","publicUrl","bio","missionTypes","badge"].forEach(id => $(id)?.addEventListener("input", render));
         $("btnSave")?.addEventListener("click", save);
         $("btnCopy")?.addEventListener("click", copyFiche);
