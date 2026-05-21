@@ -19,6 +19,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./guard.js"></script>
+  <script src="./assets/js/digiy-module-bridge.js?v=jobs-rail-clean-20260521"></script>
+  <script src="./assets/js/digiy-jobs-memory.js?v=jobs-rail-clean-20260521"></script>
   <script src="./claw-tools.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -288,6 +290,19 @@
       color:#d8f5ff;
     }
 
+
+    .clickHelp{
+      margin-top:13px;
+      border:1px solid rgba(250,204,21,.24);
+      background:rgba(250,204,21,.08);
+      color:#fff4bd;
+      border-radius:20px;
+      padding:12px 13px;
+      font-size:13px;
+      font-weight:900;
+      line-height:1.45;
+    }
+
     .form{
       display:grid;
       gap:12px;
@@ -508,6 +523,7 @@
       .preset-grid{grid-template-columns:1fr}
     }
   </style>
+  <meta name="digiy-build" content="jobs-click-first-20260521"/>
 </head>
 
 <body>
@@ -595,6 +611,34 @@
           <button class="quick" type="button" data-contract="mission">🕒 Mission</button>
           <button class="quick" type="button" data-contract="cdi">📌 CDI</button>
         </div>
+
+        <div class="clickHelp">
+          Le pro clique. DIGIY ajoute les bons mots dans l’annonce. Il ajuste seulement ce qui change.
+        </div>
+
+        <div class="quick-row">
+          <button class="quick" type="button" data-need="urgent">⚡ Urgent</button>
+          <button class="quick" type="button" data-need="today">🕒 Aujourd’hui</button>
+          <button class="quick" type="button" data-need="weekend">📅 Week-end</button>
+          <button class="quick" type="button" data-need="morning">🌅 Matin</button>
+          <button class="quick" type="button" data-need="evening">🌙 Soir</button>
+        </div>
+
+        <div class="quick-row">
+          <button class="quick" type="button" data-quality="serieux">✅ Sérieux</button>
+          <button class="quick" type="button" data-quality="ponctuel">⏱️ Ponctuel</button>
+          <button class="quick" type="button" data-quality="experience">⭐ Expérience</button>
+          <button class="quick" type="button" data-quality="debutant">🌱 Débutant accepté</button>
+          <button class="quick" type="button" data-quality="joignable">📲 Joignable</button>
+        </div>
+
+        <div class="quick-row">
+          <button class="quick" type="button" data-option="housing">🏠 Logement possible</button>
+          <button class="quick" type="button" data-option="family">🤝 Accueil famille</button>
+          <button class="quick" type="button" data-employer="Commerce local">🏪 Commerce local</button>
+          <button class="quick" type="button" data-employer="Restaurant / hôtel">🍽️ Restaurant / hôtel</button>
+        </div>
+
       </section>
 
       <section class="card">
@@ -959,6 +1003,69 @@
         setStatus("Annonce préparée. Ajuste seulement ce qui change.", "ok");
       }
 
+
+      function appendOnce(node, sentence){
+        if(!node || !sentence) return;
+        const current = String(node.value || "").trim();
+        if(current.includes(sentence)) return;
+        node.value = current ? current + "\n" + sentence : sentence;
+      }
+
+      function activateMulti(button){
+        button?.classList.toggle("active");
+      }
+
+      function bindClickWords(){
+        document.querySelectorAll("[data-need]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const map = {
+              urgent: "Besoin urgent : la personne doit pouvoir répondre rapidement.",
+              today: "Disponibilité souhaitée dès aujourd’hui ou très rapidement.",
+              weekend: "Mission possible le week-end selon les besoins.",
+              morning: "Créneau matin à confirmer avec le responsable.",
+              evening: "Créneau soir à confirmer avec le responsable."
+            };
+            appendOnce(el.description, map[button.dataset.need]);
+            activateMulti(button);
+            renderPreview();
+          });
+        });
+
+        document.querySelectorAll("[data-quality]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const map = {
+              serieux: "Sérieux demandé.",
+              ponctuel: "Ponctualité importante.",
+              experience: "Expérience appréciée.",
+              debutant: "Débutant accepté si motivé et fiable.",
+              joignable: "Téléphone joignable demandé."
+            };
+            appendOnce(el.requirements, map[button.dataset.quality]);
+            activateMulti(button);
+            renderPreview();
+          });
+        });
+
+        document.querySelectorAll("[data-option]").forEach((button) => {
+          button.addEventListener("click", () => {
+            if(button.dataset.option === "housing") el.hasHousing.checked = true;
+            if(button.dataset.option === "family") el.hasFamilyWelcome.checked = true;
+            activateMulti(button);
+            renderPreview();
+          });
+        });
+
+        document.querySelectorAll("[data-employer]").forEach((button) => {
+          button.addEventListener("click", () => {
+            el.employerName.value = button.dataset.employer || "";
+            document.querySelectorAll("[data-employer]").forEach((b) => b.classList.remove("active"));
+            button.classList.add("active");
+            renderPreview();
+          });
+        });
+      }
+
+
       function resetForm() {
         state.selectedPreset = "";
         el.missionForm.reset();
@@ -1016,6 +1123,7 @@
 
         el.btnReset.addEventListener("click", resetForm);
         el.missionForm.addEventListener("submit", publish);
+        bindClickWords();
       }
 
       function validate() {
@@ -1137,3 +1245,4 @@
   </script>
 </body>
 </html>
+
