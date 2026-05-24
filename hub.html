@@ -5,309 +5,59 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <title>Mes missions — HUB</title>
   <meta name="theme-color" content="#061b14"/>
-  <meta name="description" content="DIGIY JOBS PRO — HUB mobile terrain en pavés : missions, candidatures, bureau, fiche, QR, argent et session."/>
+  <meta name="description" content="DIGIY JOBS PRO — HUB mobile terrain : missions, bureau, oreille, fiche, QR, argent et session."/>
   <meta name="robots" content="noindex,nofollow"/>
-  <meta name="digiy-build" content="jobs-final-rail-clean-20260521"/>
+  <meta name="digiy-build" content="jobs-hub-porte-oreille-20260524"/>
 
   <script>
-  window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
-  window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
-  window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
-  window.DIGIY_SUPABASE_KEY = window.DIGIY_SUPABASE_ANON_KEY;
-
-  window.DIGIY_MODULE = "JOBS";
-  window.DIGIY_ABOS_MODULE = "JOBS";
-  window.DIGIY_LOGIN_URL = "./pin.html";
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./assets/js/digiy-abos-access.js?v=abos-20260522"></script>
-
-<script src="./guard.js?v=jobs-hub-terrain-20260519"></script>
-<script src="./assets/js/digiy-module-bridge.js?v=jobs-rail-clean-20260521"></script>
-<script src="./assets/js/digiy-jobs-memory.js?v=jobs-rail-clean-20260521"></script>
-  <link rel="preload" as="image" href="https://digiylyfe.net/wp-content/uploads/2026/05/metier-pro-1.png"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet"/>
+    window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+    window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+    window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_SUPABASE_KEY = window.DIGIY_SUPABASE_ANON_KEY;
+    window.DIGIY_MODULE = "JOBS";
+    window.DIGIY_ABOS_MODULE = "JOBS";
+    window.DIGIY_LOGIN_URL = "./pin.html";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./assets/js/digiy-abos-access.js?v=abos-20260522"></script>
+  <script src="./guard.js?v=jobs-hub-porte-oreille-20260524"></script>
+  <script src="./assets/js/digiy-module-bridge.js?v=jobs-hub-porte-oreille-20260524"></script>
+  <script src="./assets/js/digiy-jobs-memory.js?v=jobs-hub-porte-oreille-20260524"></script>
 
   <style>
-    :root{
-      --bg:#061b14;--bg2:#0a2b1f;--bg3:#030b08;--bar:rgba(6,27,20,.96);
-      --gold:#facc15;--gold2:#fde68a;--green:#22c55e;--blue:#38bdf8;
-      --line:rgba(255,255,255,.16);--text:#ecfff4;--muted:rgba(236,255,244,.74);
-      --shadow:0 18px 48px rgba(0,0,0,.32);--r:18px;--max:980px;--hdrH:52px;--barH:78px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-    body{
-      margin:0;min-height:100dvh;color:var(--text);
-      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:19px;font-weight:950;
-      background:
-        radial-gradient(620px 390px at 10% 0%,rgba(250,204,21,.12),transparent 58%),
-        radial-gradient(430px 280px at 92% 10%,rgba(56,189,248,.10),transparent 52%),
-        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 54%,var(--bg3) 100%);
-      padding:calc(var(--hdrH) + 14px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 18px);
-    }
-    a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer}
-    .topHeader{
-      position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;
-      display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;
-      background:var(--bar);border-bottom:1px solid rgba(250,204,21,.22);
-      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
-    }
-    .hdrBack{min-height:36px;display:inline-flex;align-items:center;justify-content:center;color:rgba(236,255,244,.72);font-size:14px;font-weight:1000;white-space:nowrap}
-    .hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
-    .hdrPill{min-height:32px;display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--muted);font-size:12px;font-weight:1000;white-space:nowrap;max-width:38vw;overflow:hidden;text-overflow:ellipsis}
-    .hdrPill.ok{color:#bbf7d0;border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.12)}
-    .hdrPill.warn{color:#fde68a;border-color:rgba(245,158,11,.38);background:rgba(245,158,11,.12)}
-    .wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:16px}
-    .hubHead{padding:2px 2px 4px}
-
-    .eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}
-    h1{margin:0 0 8px;font-size:clamp(34px,8.5vw,56px);font-weight:1000;line-height:.94;letter-spacing:-.05em}
-    .hubSub{color:var(--muted);font-size:17px;font-weight:1000;line-height:1.38;max-width:760px}
-    .rule{margin-top:10px;padding:12px 14px;border-radius:18px;border:1px dashed rgba(255,255,255,.22);background:rgba(5,31,17,.32);color:rgba(236,255,244,.90);font-size:14px;font-weight:1000;line-height:1.35}
-    .rule b{color:var(--gold2)}
-    .group{display:grid;gap:8px}
-    .groupLabel{font-size:11px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(236,255,244,.50);padding:0 2px}
-    .tileGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
-    .tile{
-      min-height:136px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:14px;border-radius:var(--r);
-      border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);box-shadow:var(--shadow);
-      transition:transform .12s ease,background .12s ease,border-color .12s ease;-webkit-tap-highlight-color:transparent
-    }
-    .tile:hover{transform:translateY(-1px);background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.25)}
-    .tile:active{transform:none}
-    .tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-
-    .tileLogoImg{width:96px;height:96px;object-fit:contain;border-radius:24px;background:#fff;padding:8px;box-shadow:0 10px 24px rgba(0,0,0,.20);border:1px solid rgba(250,204,21,.28)}
-    .tileIcon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:25px;flex:0 0 auto}
-    .tileTag{min-height:27px;display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);font-size:10px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
-    .tile b{display:block;font-size:20px;font-weight:1000;line-height:1.06;letter-spacing:-.025em;color:#fff}
-    .tile span{display:block;margin-top:5px;color:var(--muted);font-size:14px;font-weight:1000;line-height:1.28}
-    .tile.primary{border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.13)}
-    .tile.gold{border-color:rgba(250,204,21,.42);background:rgba(250,204,21,.11)}
-    .tile.blue{border-color:rgba(56,189,248,.32);background:rgba(56,189,248,.10)}
-    .tile.pay{border-color:rgba(250,204,21,.48);background:linear-gradient(180deg,rgba(250,204,21,.16),rgba(255,255,255,.08))}
-
-    .missionTile{
-      border-color:rgba(250,204,21,.46)!important;
-      background:linear-gradient(180deg,rgba(250,204,21,.24),rgba(255,255,255,.16))!important;
-    }
-    .missionTile b{color:#fffdf3!important}
-    .missionTile span{color:rgba(255,248,220,.92)!important}
-    .missionTile .tileIcon{
-      background:#fff7d6!important;
-      color:#171717!important;
-      border-color:rgba(250,204,21,.38)!important;
-      box-shadow:0 10px 22px rgba(0,0,0,.14);
-    }
-    .bottomBar{position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(6,27,20,.97);border-top:1px solid rgba(250,204,21,.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-    .bottomInner{width:min(100%,760px);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-    .bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(236,255,244,.58);font-size:11px;font-weight:1000;text-align:center;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04)}
-    .bottomInner a.active{color:#171717;background:linear-gradient(135deg,var(--gold),var(--green));border-color:rgba(250,204,21,.32)}
-    .bottomInner .bi{font-size:19px;line-height:1}
-    @media(max-width:860px){.tileGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:520px){
-      body{padding:calc(var(--hdrH) + 12px) 10px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 16px);font-size:19px}
-      .topHeader{padding:0 10px;gap:7px}.hdrBack{font-size:13px}.hdrTitle{font-size:11px;letter-spacing:.12em}.hdrPill{font-size:11px;padding:6px 8px;max-width:34vw}
-      h1{font-size:34px}.hubSub{font-size:16px}.tile{min-height:132px;padding:13px}.tileIcon{width:46px;height:46px;font-size:24px}.tileLogoImg{width:92px;height:92px;border-radius:22px}.tile b{font-size:19px;line-height:1.05}.tile span{font-size:13.5px;line-height:1.25}.tileTag{font-size:9px;padding:4px 7px}
-    }
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.tile{transition:none}}
+    :root{--bg:#061b14;--bg2:#0a2b1f;--bg3:#030b08;--bar:rgba(6,27,20,.96);--gold:#facc15;--gold2:#fde68a;--green:#22c55e;--blue:#38bdf8;--line:rgba(255,255,255,.16);--text:#ecfff4;--muted:rgba(236,255,244,.74);--shadow:0 18px 48px rgba(0,0,0,.32);--r:18px;--max:980px;--hdrH:52px;--barH:78px}
+    *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{margin:0;min-height:100dvh;color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:19px;font-weight:950;background:radial-gradient(620px 390px at 10% 0%,rgba(250,204,21,.12),transparent 58%),radial-gradient(430px 280px at 92% 10%,rgba(56,189,248,.10),transparent 52%),linear-gradient(180deg,var(--bg) 0%,var(--bg2) 54%,var(--bg3) 100%);padding:calc(var(--hdrH) + 14px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 18px)}
+    a{color:inherit;text-decoration:none}.topHeader{position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;background:var(--bar);border-bottom:1px solid rgba(250,204,21,.22);backdrop-filter:blur(18px)}.hdrBack{color:rgba(236,255,244,.72);font-size:14px;font-weight:1000;white-space:nowrap}.hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}.hdrPill{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--muted);font-size:12px;font-weight:1000}.hdrPill.ok{color:#bbf7d0;border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.12)}
+    .wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:16px}.eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}h1{margin:0 0 8px;font-size:clamp(34px,8.5vw,56px);font-weight:1000;line-height:.94;letter-spacing:-.05em}.hubSub{color:var(--muted);font-size:17px;font-weight:1000;line-height:1.38;max-width:760px}.rule{margin-top:10px;padding:12px 14px;border-radius:18px;border:1px dashed rgba(255,255,255,.22);background:rgba(5,31,17,.32);color:rgba(236,255,244,.90);font-size:14px;font-weight:1000;line-height:1.35}.rule b{color:var(--gold2)}.group{display:grid;gap:8px}.groupLabel{font-size:11px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(236,255,244,.50);padding:0 2px}.tileGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.tile{min-height:136px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:14px;border-radius:var(--r);border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);box-shadow:var(--shadow);-webkit-tap-highlight-color:transparent}.tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.tileIcon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:25px}.tileTag{min-height:27px;display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);font-size:10px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase}.tile b{display:block;font-size:20px;font-weight:1000;line-height:1.06;letter-spacing:-.025em;color:#fff}.tile span{display:block;margin-top:5px;color:var(--muted);font-size:14px;font-weight:1000;line-height:1.28}.primary{border-color:rgba(34,197,94,.38)!important;background:rgba(34,197,94,.13)!important}.gold{border-color:rgba(250,204,21,.42)!important;background:rgba(250,204,21,.11)!important}.blue{border-color:rgba(56,189,248,.32)!important;background:rgba(56,189,248,.10)!important}.voice{border-color:rgba(250,204,21,.54)!important;background:linear-gradient(135deg,rgba(250,204,21,.22),rgba(34,197,94,.12))!important}.pay{border-color:rgba(250,204,21,.48)!important;background:linear-gradient(180deg,rgba(250,204,21,.16),rgba(255,255,255,.08))!important}.bottomBar{position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(6,27,20,.97);border-top:1px solid rgba(250,204,21,.18);backdrop-filter:blur(18px)}.bottomInner{width:min(100%,760px);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(236,255,244,.58);font-size:11px;font-weight:1000;text-align:center;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04)}.bottomInner a.active{color:#171717;background:linear-gradient(135deg,var(--gold),var(--green));border-color:rgba(250,204,21,.32)}.bi{font-size:19px;line-height:1}@media(max-width:860px){.tileGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){body{padding-left:10px;padding-right:10px}.tile{min-height:132px;padding:13px}.tile b{font-size:19px}.tile span{font-size:13.5px}.tileTag{font-size:9px}h1{font-size:34px}.hubSub{font-size:16px}}
   </style>
 </head>
-
 <body>
-  <header class="topHeader">
-    <a class="hdrBack" id="hdrBack" href="./index.html">← Actions</a>
-    <div class="hdrTitle">HUB MISSIONS</div>
-    <div class="hdrPill warn" id="sessionPill">session…</div>
-  </header>
-
+  <header class="topHeader"><a class="hdrBack" href="./index.html">← Actions</a><div class="hdrTitle">HUB MISSIONS</div><div class="hdrPill" id="sessionPill">session…</div></header>
   <main class="wrap">
-    <section class="hubHead">
-      <div class="eyebrow">💼 MES MISSIONS</div>
-      <h1>Toutes tes portes.</h1>
-      <div class="hubSub" id="hubSub">
-        Ouvre le bon pavé : publier une mission, suivre les candidatures, gérer le bureau, partager le QR ou contrôler ta session.
-      </div>
-      <div class="rule">
-        <b>Index</b> = porte courte. <b>HUB</b> = navigation. <b>Bureau</b> = candidatures. <b>Veille</b> = alertes d’action.
-      </div>
-    </section>
-
-    <section class="group" aria-label="Actions immédiates JOBS">
-      <div class="groupLabel">Action immédiate</div>
-      <div class="tileGrid">
-        <a class="tile gold" href="https://digiylyfe.com/" aria-label="DIGIYLYFE Métiers pro" style="min-height:168px;">
-          <div class="tileTop">
-            <img
-              class="tileLogoImg"
-              src="https://digiylyfe.net/wp-content/uploads/2026/05/metier-pro-1.png"
-              alt="DIGIYLYFE — Métiers pro"
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="tileTag">DIGIY</div>
-          </div>
-          <div><b>Métiers pro</b><span>Le sceau commun des portes métier.</span></div>
-        </a>
-
-        <a class="tile primary missionTile" href="./publier-mission.html">
-          <div class="tileTop"><div class="tileIcon">➕</div><div class="tileTag">Mission</div></div>
-          <div><b>Publier une mission</b><span>Créer une annonce claire pour le terrain.</span></div>
-        </a>
-
-        <a class="tile gold" href="./bureau.html">
-          <div class="tileTop"><div class="tileIcon">📥</div><div class="tileTag">Bureau</div></div>
-          <div><b>Mon bureau</b><span>Candidatures, appels, profils à suivre.</span></div>
-        </a>
-
-        <a class="tile blue" href="./cockpit.html">
-          <div class="tileTop"><div class="tileIcon">🔔</div><div class="tileTag">Veille</div></div>
-          <div><b>Ma veille</b><span>Alertes et actions importantes.</span></div>
-        </a>
-
-        <a class="tile" href="./match.html">
-          <div class="tileTop"><div class="tileIcon">🤝</div><div class="tileTag">Match</div></div>
-          <div><b>Mes matchs</b><span>Rapprocher missions et profils.</span></div>
-        </a>
-      </div>
-    </section>
-
-    <section class="group" aria-label="Visibilité JOBS">
-      <div class="groupLabel">Visibilité · terrain</div>
-      <div class="tileGrid">
-        <a class="tile" href="./fiche.html">
-          <div class="tileTop"><div class="tileIcon">🪪</div><div class="tileTag">Fiche</div></div>
-          <div><b>Ma fiche pro</b><span>Activité, contact, confiance, zones.</span></div>
-        </a>
-
-        <a class="tile" href="./qr.html">
-          <div class="tileTop"><div class="tileIcon">🔳</div><div class="tileTag">QR</div></div>
-          <div><b>Mon QR</b><span>Faire circuler les missions.</span></div>
-        </a>
-
-        <a class="tile blue" href="./mur%20des%20missions.html">
-          <div class="tileTop"><div class="tileIcon">🌍</div><div class="tileTag">Public</div></div>
-          <div><b>Mur public</b><span>Voir les missions côté terrain.</span></div>
-        </a>
-
-        <a class="tile pay" href="https://pro-pay.digiylyfe.com/admin.html">
-          <div class="tileTop"><div class="tileIcon">💰</div><div class="tileTag">PAY</div></div>
-          <div><b>Mon argent</b><span>Frais, paiements, suivi utile.</span></div>
-        </a>
-      </div>
-    </section>
-
-    <section class="group" aria-label="Accès JOBS">
-      <div class="groupLabel">Accès · session</div>
-      <div class="tileGrid">
-        <a class="tile blue" href="./session.html">
-          <div class="tileTop"><div class="tileIcon">🛡️</div><div class="tileTag">Session</div></div>
-          <div><b>Ma session</b><span>État d’accès, nettoyage local.</span></div>
-        </a>
-
-        <a class="tile" href="./pin.html">
-          <div class="tileTop"><div class="tileIcon">🔐</div><div class="tileTag">Code</div></div>
-          <div><b>Mon accès</b><span>Ouvrir ou renouveler le code.</span></div>
-        </a>
-
-        <a class="tile" href="https://digiylyfe.com/">
-          <div class="tileTop"><div class="tileIcon">🌍</div><div class="tileTag">Site</div></div>
-          <div><b>Site DIGIY</b><span>Maison publique DIGIYLYFE.</span></div>
-        </a>
-
-        <a class="tile gold" href="https://digiy-hub.digiylyfe.com/">
-          <div class="tileTop"><div class="tileIcon">🧭</div><div class="tileTag">Général</div></div>
-          <div><b>HUB général</b><span>Retour aux portes DIGIY.</span></div>
-        </a>
-      </div>
-    </section>
+    <section><div class="eyebrow">💼 MES MISSIONS</div><h1>Toutes tes portes.</h1><div class="hubSub">Ouvre le bon pavé : mission, Oreille, bureau, matchs, fiche, QR ou session.</div><div class="rule"><b>HUB</b> = navigation. <b>Oreille</b> = vraie page de travail vocal. <b>Bureau</b> = candidatures. Rien ne se confirme seul.</div></section>
+    <section class="group"><div class="groupLabel">Action immédiate</div><div class="tileGrid">
+      <a class="tile primary" href="./publier-mission.html"><div class="tileTop"><div class="tileIcon">➕</div><div class="tileTag">Mission</div></div><div><b>Publier une mission</b><span>Créer une annonce claire pour le terrain.</span></div></a>
+      <a class="tile voice" href="./oreille.html"><div class="tileTop"><div class="tileIcon">🎙️</div><div class="tileTag">Oreille</div></div><div><b>Oreille JOBS</b><span>Parler, formuler, valider.</span></div></a>
+      <a class="tile gold" href="./bureau.html"><div class="tileTop"><div class="tileIcon">📥</div><div class="tileTag">Bureau</div></div><div><b>Mon bureau</b><span>Candidatures, appels, profils.</span></div></a>
+      <a class="tile blue" href="./cockpit.html"><div class="tileTop"><div class="tileIcon">🔔</div><div class="tileTag">Veille</div></div><div><b>Ma veille</b><span>Alertes et actions importantes.</span></div></a>
+      <a class="tile" href="./match.html"><div class="tileTop"><div class="tileIcon">🤝</div><div class="tileTag">Match</div></div><div><b>Mes matchs</b><span>Rapprocher missions et profils.</span></div></a>
+    </div></section>
+    <section class="group"><div class="groupLabel">Visibilité · terrain</div><div class="tileGrid">
+      <a class="tile" href="./fiche.html"><div class="tileTop"><div class="tileIcon">🪪</div><div class="tileTag">Fiche</div></div><div><b>Ma fiche pro</b><span>Activité, contact, confiance, zones.</span></div></a>
+      <a class="tile" href="./qr.html"><div class="tileTop"><div class="tileIcon">🔳</div><div class="tileTag">QR</div></div><div><b>Mon QR</b><span>Faire circuler les missions.</span></div></a>
+      <a class="tile blue" href="./mur%20des%20missions.html"><div class="tileTop"><div class="tileIcon">🌍</div><div class="tileTag">Public</div></div><div><b>Mur public</b><span>Voir les missions côté terrain.</span></div></a>
+      <a class="tile pay" href="https://pro-pay.digiylyfe.com/admin.html"><div class="tileTop"><div class="tileIcon">💰</div><div class="tileTag">PAY</div></div><div><b>Mon argent</b><span>Frais, paiements, suivi utile.</span></div></a>
+    </div></section>
+    <section class="group"><div class="groupLabel">Accès · session</div><div class="tileGrid">
+      <a class="tile blue" href="./session.html"><div class="tileTop"><div class="tileIcon">🛡️</div><div class="tileTag">Session</div></div><div><b>Ma session</b><span>État d’accès, nettoyage local.</span></div></a>
+      <a class="tile" href="./pin.html"><div class="tileTop"><div class="tileIcon">🔐</div><div class="tileTag">Code</div></div><div><b>Mon accès</b><span>Ouvrir ou renouveler le code.</span></div></a>
+      <a class="tile" href="https://digiylyfe.com/"><div class="tileTop"><div class="tileIcon">🌍</div><div class="tileTag">Site</div></div><div><b>Site DIGIY</b><span>Maison publique DIGIYLYFE.</span></div></a>
+      <a class="tile gold" href="https://digiy-hub.digiylyfe.com/"><div class="tileTop"><div class="tileIcon">🧭</div><div class="tileTag">HUB</div></div><div><b>HUB général</b><span>Retour aux portes DIGIY.</span></div></a>
+    </div></section>
   </main>
-
-  <nav class="bottomBar" aria-label="Navigation rapide JOBS">
-    <div class="bottomInner">
-      <a class="active" href="./hub.html"><span class="bi">🧭</span><span>HUB</span></a>
-      <a href="./publier-mission.html"><span class="bi">➕</span><span>Mission</span></a>
-      <a href="./bureau.html"><span class="bi">📥</span><span>Bureau</span></a>
-      <a href="./cockpit.html"><span class="bi">🔔</span><span>Veille</span></a>
-      <a href="./session.html"><span class="bi">🛡️</span><span>Session</span></a>
-    </div>
-  </nav>
-
+  <nav class="bottomBar" aria-label="Navigation rapide JOBS"><div class="bottomInner"><a class="active" href="./hub.html"><span class="bi">🧭</span><span>HUB</span></a><a href="./publier-mission.html"><span class="bi">➕</span><span>Mission</span></a><a href="./oreille.html"><span class="bi">🎙️</span><span>Oreille</span></a><a href="./bureau.html"><span class="bi">📥</span><span>Bureau</span></a><a href="./session.html"><span class="bi">🛡️</span><span>Session</span></a></div></nav>
   <script>
-    (() => {
-      "use strict";
-      const SENSITIVE_KEYS = ["slug","phone","tel","jobs_tel","owner_phone","contact_phone","module","return","from","pin","token","session_token","redirect","url","v"];
-      const $ = id => document.getElementById(id);
-
-      function cleanVisibleUrl(){
-        try{
-          const url = new URL(location.href); let changed = false;
-          SENSITIVE_KEYS.forEach(key => { if(url.searchParams.has(key)){ url.searchParams.delete(key); changed = true; } });
-          if(changed) history.replaceState({}, document.title, url.pathname + url.search + url.hash);
-        }catch(_){}
-      }
-
-      function cleanInternalLinks(){
-        try{
-          document.querySelectorAll("a[href]").forEach(link => {
-            const href = link.getAttribute("href") || "";
-            if(!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return;
-            const url = new URL(href, location.href);
-            if(url.origin !== location.origin) return;
-            SENSITIVE_KEYS.forEach(key => url.searchParams.delete(key));
-            const file = url.pathname.split("/").pop() || "index.html";
-            link.setAttribute("href","./" + file + (url.search || "") + (url.hash || ""));
-          });
-        }catch(_){}
-      }
-
-      async function waitGuard(){
-        try{
-          const guard = window.DIGIY_GUARD;
-          if(!guard) return {};
-          if(typeof guard.ready === "function"){
-            const out = guard.ready({ redirect:false, preserve_validation:true });
-            if(out && typeof out.then === "function") await out;
-          }else if(guard.ready && typeof guard.ready.then === "function"){
-            await guard.ready;
-          }
-          if(typeof guard.getSession === "function") return guard.getSession() || guard.state || {};
-          return guard.state || {};
-        }catch(e){
-          console.warn("[JOBS HUB] guard", e);
-          return {};
-        }
-      }
-
-      function updatePill(state){
-        const el = $("sessionPill");
-        if(!el) return;
-        const ok = !!(state && (state.access_ok || state.access || state.pin_session_ok));
-        if(ok){
-          el.textContent = state.pin_session_ok ? "session ouverte" : "accès ouvert";
-          el.className = "hdrPill ok";
-        }else{
-          el.textContent = "accès à vérifier";
-          el.className = "hdrPill warn";
-        }
-      }
-
-      async function boot(){
-        cleanVisibleUrl();
-        cleanInternalLinks();
-        const state = await waitGuard();
-        updatePill(state || {});
-        cleanVisibleUrl();
-        cleanInternalLinks();
-      }
-
-      boot();
-    })();
+    (()=>{const p=document.getElementById('sessionPill');async function boot(){let st={};try{if(window.DIGIY_GUARD&&typeof window.DIGIY_GUARD.ready==='function'){const out=window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true});if(out&&typeof out.then==='function')await out;}st=(window.DIGIY_GUARD&&(window.DIGIY_GUARD.getSession?.()||window.DIGIY_GUARD.state))||{};}catch(_){}if(p){const ok=!!(st&&(st.access_ok||st.access||st.pin_session_ok));p.textContent=ok?'session ouverte':'accès à vérifier';p.className='hdrPill '+(ok?'ok':'');}}boot();})();
   </script>
 </body>
 </html>
-
