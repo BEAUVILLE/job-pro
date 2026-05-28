@@ -233,8 +233,44 @@
     return true;
   }
 
+  function injectJobsGoPaves(){
+    try{
+      var path = String(location.pathname || "").toLowerCase();
+      if(path.indexOf("hub") === -1 && !/\/$/.test(path)) return;
+      var grid = document.querySelector(".tileGrid");
+      if(!grid) return;
+
+      if(!document.getElementById("doorDigiyGoJobs")){
+        var go = document.createElement("a");
+        go.id = "doorDigiyGoJobs";
+        go.className = "tile voice";
+        go.href = "./action.html";
+        go.innerHTML = '<div class="tileTop"><div class="tileIcon">🎙️</div><div class="tileTag">GO</div></div><div><b>DIGIY GO JOBS</b><span>Le pro parle. JOBS prépare la mission.</span></div>';
+        grid.insertBefore(go, grid.firstElementChild);
+      }
+
+      if(!document.getElementById("doorJobsPayTransition")){
+        var pay = document.createElement("a");
+        pay.id = "doorJobsPayTransition";
+        pay.className = "tile pay";
+        pay.href = "./pay-transition.html";
+        pay.innerHTML = '<div class="tileTop"><div class="tileIcon">💳</div><div class="tileTag">PAY</div></div><div><b>Frais vers PAY</b><span>Argent réel seulement. PAY valide.</span></div>';
+        var payDoor = document.querySelector('a[href*="pro-pay"], a[href*="PAY"], a[href*="pay"]');
+        if(payDoor && payDoor.parentNode) payDoor.parentNode.insertBefore(pay, payDoor);
+        else grid.appendChild(pay);
+      }
+    }catch(e){
+      console.warn("[DIGIY JOBS] pavés GO/PAY non injectés", e && e.message ? e.message : e);
+    }
+  }
+
+  function bootJobsGoPaves(){
+    injectJobsGoPaves();
+    setTimeout(injectJobsGoPaves, 500);
+  }
+
   window.DIGIY_JOBS_MEMORY = {
-    version: "jobs-memory-v1-20260521",
+    version: "jobs-memory-v1-20260528-go-pay",
     sessionHint,
     rememberSession,
     saveDraft,
@@ -248,6 +284,13 @@
     upsertCandidate,
     notes,
     addNote,
-    clearLocal
+    clearLocal,
+    injectJobsGoPaves
   };
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", bootJobsGoPaves);
+  }else{
+    bootJobsGoPaves();
+  }
 })();
