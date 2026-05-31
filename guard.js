@@ -5,8 +5,8 @@
    - téléphone + slug restent dans le coffre local/session, pas dans la barre d’adresse
    - si session valide : navigation interne directe
    - si session absente/expirée : retour pin.html propre
-   - Rail ABOS : digiy_has_module_access_from_abos(phone, "BUILD") d'abord
-   - Secours transition : digiy_has_access(phone, "BUILD")
+   - Rail ABOS : digiy_has_module_access_from_abos(phone, "JOBS") d'abord
+   - Secours transition : digiy_has_access(phone, "JOBS")
 */
 (() => {
   "use strict";
@@ -21,8 +21,8 @@
       window.DIGIY_SUPABASE_ANON_KEY ||
       "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3",
 
-    MODULE_CODE: String(window.DIGIY_MODULE || "BUILD").trim().toUpperCase(),
-    MODULE_CODE_LOWER: String(window.DIGIY_MODULE || "BUILD").trim().toLowerCase(),
+    MODULE_CODE: String(window.DIGIY_MODULE || "JOBS").trim().toUpperCase(),
+    MODULE_CODE_LOWER: String(window.DIGIY_MODULE || "JOBS").trim().toLowerCase(),
 
     SESSION_MAX_AGE_MS: 8 * 60 * 60 * 1000,
 
@@ -47,14 +47,14 @@
   const MODULE_ALIASES = Array.from(new Set([
     MODULE,
     MODULE_LOWER,
-    "BUILD",
-    "build",
-    "BUILD_PRO",
-    "build_pro",
-    "MES_SERVICES",
-    "mes_services",
-    "SERVICES",
-    "services"
+    "JOBS",
+    "jobs",
+    "JOBS_PRO",
+    "jobs_pro",
+    "JE_CHERCHE",
+    "je_cherche",
+    "MES_MISSIONS",
+    "mes_missions"
   ]));
 
   const STORAGE = {
@@ -451,7 +451,7 @@
     } catch (_) {}
   }
 
-  function cleanInternalUrl(raw, fallback = "./dashboard-pro.html") {
+  function cleanInternalUrl(raw, fallback = "./hub.html") {
     const input = String(raw || "").trim() || fallback;
 
     try {
@@ -467,7 +467,7 @@
       }
 
       if (url.origin === location.origin) {
-        const file = url.pathname.split("/").pop() || "dashboard-pro.html";
+        const file = url.pathname.split("/").pop() || "hub.html";
         return `./${file}${url.search || ""}${url.hash || ""}`;
       }
 
@@ -571,7 +571,7 @@
   function buildPayUrl() {
     const url = new URL(CFG.PAY_URL);
     url.searchParams.set("module", MODULE);
-    url.searchParams.set("return", cleanInternalUrl(location.href, "./dashboard-pro.html"));
+    url.searchParams.set("return", cleanInternalUrl(location.href, "./hub.html"));
     return url.toString();
   }
 
@@ -884,7 +884,7 @@
     if (!finalSlug && finalPhone) finalSlug = `${MODULE_LOWER}-${finalPhone}`;
 
     const accessOk = await checkAccess(finalPhone);
-    if (!accessOk) return { ok: false, error: "Accès BUILD / Mes services inactif." };
+    if (!accessOk) return { ok: false, error: "Accès JOBS / Je cherche du travail inactif." };
 
     const saved = saveSession({
       slug: finalSlug,
@@ -1215,3 +1215,4 @@
     ready({ redirect: true }).catch(() => showPage());
   }
 })();
+
