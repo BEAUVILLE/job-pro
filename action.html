@@ -1,345 +1,275 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ACTION JOBS — Préparer mission</title>
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#061b14">
+<meta name="digiy-build" content="jobs-action-memory-pay-20260602-v2">
 
-  <title>DIGIY GO JOBS</title>
+<script>
+window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+window.DIGIY_SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+window.DIGIY_SUPABASE_ANON = window.DIGIY_SUPABASE_ANON_KEY;
+window.DIGIY_MODULE = "JOBS";
+window.DIGIY_ABOS_MODULE = "JOBS";
+window.DIGIY_LOGIN_URL = "./pin.html";
+</script>
 
-  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./guard.js?v=jobs-action-20260602"></script>
+<script src="./assets/js/digiy-module-bridge.js?v=jobs-action-20260602"></script>
+<script src="./assets/js/digiy-jobs-memory.js?v=jobs-action-20260602"></script>
+<script src="./assets/js/digiy-go-jobs-vocab.js?v=20260528"></script>
 
-  <script src="./assets/js/digiy-go-jobs-vocab.js?v=20260528"></script>
-
-  <style>
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:system-ui;
-      background:linear-gradient(180deg,#0a2b1f,#030b08);
-      color:#ecfff4;
-      padding:70px 12px 90px;
-      font-weight:900;
-    }
-
-    .top{
-      position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      height:56px;
-      background:#061b14;
-      border-bottom:1px solid rgba(250,204,21,.25);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 12px;
-    }
-
-    .top a{
-      color:#fff;
-      text-decoration:none;
-    }
-
-    .wrap{
-      width:min(860px,100%);
-      margin:auto;
-      display:grid;
-      gap:12px;
-    }
-
-    .card{
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.08);
-      padding:16px;
-    }
-
-    .k{
-      color:#fde68a;
-      font-size:12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-    }
-
-    h1{
-      font-size:clamp(44px,14vw,78px);
-      line-height:.88;
-      margin:8px 0;
-    }
-
-    .lead{
-      font-size:17px;
-      line-height:1.38;
-      color:rgba(236,255,244,.82);
-    }
-
-    textarea{
-      width:100%;
-      min-height:140px;
-      border-radius:20px;
-      border:1px solid rgba(250,204,21,.35);
-      background:#061b14;
-      color:#fff;
-      padding:14px;
-      font:900 17px system-ui;
-      margin-top:10px;
-    }
-
-    .actions{
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:9px;
-      margin-top:10px;
-    }
-
-    .btn{
-      min-height:58px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.1);
-      color:#fff;
-      font-weight:1000;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:10px;
-      text-decoration:none;
-    }
-
-    .go{
-      background:linear-gradient(135deg,#facc15,#22c55e);
-      color:#061b14;
-    }
-
-    .gold{
-      background:#facc15;
-      color:#111;
-    }
-
-    .dark{
-      background:#061b14;
-    }
-
-    .msg{
-      white-space:pre-wrap;
-      background:#061b14;
-      border:1px solid rgba(250,204,21,.25);
-      border-radius:20px;
-      padding:13px;
-      font-weight:900;
-      line-height:1.42;
-      margin-top:10px;
-    }
-
-    .bar{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      height:70px;
-      background:#061b14;
-      border-top:1px solid rgba(250,204,21,.22);
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:6px;
-      padding:7px;
-    }
-
-    .bar a{
-      display:grid;
-      place-items:center;
-      text-align:center;
-      border-radius:14px;
-      background:rgba(255,255,255,.07);
-      font-size:11px;
-      color:rgba(236,255,244,.75);
-      text-decoration:none;
-    }
-
-    .bar .on{
-      background:#facc15;
-      color:#061b14;
-    }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:84px;
-      transform:translateX(-50%);
-      background:#052e16;
-      border:1px solid #d6a63a;
-      border-radius:18px;
-      padding:12px;
-      display:none;
-    }
-  </style>
+<style>
+:root{--bg:#061b14;--bg2:#0a2b1f;--bar:#061b14;--gold:#facc15;--green:#22c55e;--text:#ecfff4;--muted:rgba(236,255,244,.78);--line:rgba(255,255,255,.16);--soft:rgba(255,255,255,.08)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,#0a2b1f,#030b08);color:var(--text);padding:70px 12px 90px;font-weight:900}
+a{color:inherit;text-decoration:none}button,textarea{font:inherit}
+.top{position:fixed;top:0;left:0;right:0;height:56px;background:var(--bar);border-bottom:1px solid rgba(250,204,21,.25);display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:20}
+.wrap{width:min(900px,100%);margin:auto;display:grid;gap:12px}
+.card{border-radius:26px;border:1px solid var(--line);background:var(--soft);padding:16px;box-shadow:0 18px 46px rgba(0,0,0,.25)}
+.k{color:#fde68a;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+h1{font-size:clamp(42px,13vw,78px);line-height:.88;margin:8px 0;letter-spacing:-.06em}
+.lead{font-size:17px;line-height:1.38;color:var(--muted)}
+textarea{width:100%;min-height:142px;border-radius:20px;border:1px solid rgba(250,204,21,.35);background:#061b14;color:#fff;padding:14px;font:900 17px system-ui;margin-top:10px;resize:vertical;line-height:1.4}
+.actions,.templates{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.btn,.tpl{min-height:58px;border-radius:18px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.1);color:#fff;font-weight:1000;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;text-decoration:none;cursor:pointer}
+.tpl{font-size:14px;line-height:1.2;justify-content:flex-start;text-align:left}
+.go{background:linear-gradient(135deg,#facc15,#22c55e);color:#061b14}
+.gold{background:#facc15;color:#111}
+.dark{background:#061b14}
+.blue{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.25);color:#d9f4ff}
+.msg{white-space:pre-wrap;background:#061b14;border:1px solid rgba(250,204,21,.25);border-radius:20px;padding:13px;font-weight:900;line-height:1.42;margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.field{background:#061b14;border:1px solid rgba(250,204,21,.24);border-radius:18px;padding:11px}
+.field small{display:block;color:#fde68a;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+.field b{display:block;margin-top:4px;word-break:break-word}
+.proof{border-color:rgba(34,197,94,.34);background:rgba(34,197,94,.09)}
+.bar{position:fixed;bottom:0;left:0;right:0;height:72px;background:var(--bar);border-top:1px solid rgba(250,204,21,.22);display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:7px;z-index:20}
+.bar a{display:grid;place-items:center;text-align:center;border-radius:14px;background:rgba(255,255,255,.07);font-size:11px;color:rgba(236,255,244,.75);text-decoration:none;font-weight:1000}
+.bar .on{background:#facc15;color:#061b14}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);background:#052e16;border:1px solid #d6a63a;border-radius:18px;padding:12px;display:none;z-index:40}
+@media(max-width:560px){.actions,.templates,.grid{grid-template-columns:1fr}.tpl{min-height:52px}}
+</style>
 </head>
 
 <body>
-  <header class="top">
-    <a href="./hub.html">← HUB</a>
-    <b>DIGIY GO JOBS</b>
-    <span>JOBS</span>
-  </header>
+<header class="top">
+  <a href="./hub.html">← HUB</a>
+  <b>🎙️ ACTION JOBS</b>
+  <span>JOBS</span>
+</header>
 
-  <main class="wrap">
-    <section class="card">
-      <div class="k">💼 Mes missions · vocabulaire métier</div>
+<main class="wrap">
+<section class="card">
+  <div class="k">💼 Mes missions · action métier</div>
+  <h1>Préparer la mission.</h1>
+  <p class="lead" id="doctrine">JOBS prépare une mission, une candidature ou une réponse. Le pro valide. Rien n’est publié ni promis automatiquement.</p>
 
-      <h1>Dis la mission.</h1>
+  <textarea id="txt">Mission serveur restaurant à Saly samedi soir 6 heures salaire 15000 contact WhatsApp urgent.</textarea>
 
-      <p class="lead" id="doctrine">
-        Chargement du vocabulaire JOBS…
-      </p>
+  <div class="actions">
+    <button class="btn go" id="listen" type="button">🎙️ Écouter</button>
+    <button class="btn gold" id="prep" type="button">✨ Préparer</button>
+    <button class="btn" id="copy" type="button">📋 Copier</button>
+    <button class="btn dark" id="pay" type="button">💳 Frais vers PAY</button>
+    <a class="btn blue" href="./publier-mission.html">➕ Publier mission</a>
+    <a class="btn blue" href="./bureau.html">📥 Bureau</a>
+  </div>
 
-      <textarea id="txt">Mission serveur restaurant à Saly samedi soir 6 heures salaire 15000 contact WhatsApp urgent.</textarea>
+  <p id="status">Prêt. Le jugement humain reste obligatoire.</p>
+</section>
 
-      <div class="actions">
-        <button class="btn go" id="listen">🎙️ Écouter</button>
-        <button class="btn" id="prep">⚡ Préparer</button>
-        <button class="btn gold" id="copy">📋 Copier</button>
-        <a class="btn dark" href="./pay-transition.html">💳 Frais vers PAY</a>
-      </div>
+<section class="card">
+  <div class="k">🧩 Exemples prêts</div>
+  <div class="templates">
+    <button class="tpl" data-tpl="Mission serveur restaurant à Saly samedi soir 6 heures salaire 15000 contact WhatsApp urgent.">🍽️ Serveur resto</button>
+    <button class="tpl" data-tpl="Mission femme de ménage logement à Saly demain matin 3 heures salaire 8000 contact WhatsApp.">🧹 Ménage logement</button>
+    <button class="tpl" data-tpl="Candidature Mamadou chauffeur disponible Dakar Saly permis valide expérience 5 ans téléphone à appeler.">🚕 Candidat chauffeur</button>
+    <button class="tpl" data-tpl="Réponse client : nous avons bien reçu votre candidature. Le recruteur vérifie et vous recontacte si le profil correspond.">📩 Réponse candidat</button>
+  </div>
+</section>
 
-      <p id="status">
-        Prêt. Rien n’est confirmé automatiquement.
-      </p>
-    </section>
+<section class="card">
+  <h2>📋 Fiche préparée</h2>
+  <div class="grid">
+    <div class="field"><small>Type</small><b id="fType">—</b></div>
+    <div class="field"><small>Métier / poste</small><b id="fRole">—</b></div>
+    <div class="field"><small>Lieu</small><b id="fPlace">—</b></div>
+    <div class="field"><small>Date / durée</small><b id="fTime">—</b></div>
+    <div class="field"><small>Salaire / frais</small><b id="fAmount">—</b></div>
+    <div class="field"><small>Statut</small><b id="fStatus">Brouillon</b></div>
+  </div>
+  <div class="msg" id="msg">Aucun brouillon.</div>
+</section>
 
-    <section class="card">
-      <h2>📋 Brouillon métier</h2>
-      <div class="msg" id="msg">Aucun brouillon.</div>
-    </section>
-  </main>
+<section class="card proof">
+  <h2>✅ Preuve ACTION JOBS</h2>
+  <div class="msg" id="proof">Aucune preuve encore.</div>
+</section>
+</main>
 
-  <nav class="bar">
-    <a href="./hub.html">HUB</a>
-    <a class="on" href="./action.html">GO</a>
-    <a href="./publier-mission.html">Mission</a>
-    <a href="./oreille.html">Oreille</a>
-    <a href="./session.html">Session</a>
-  </nav>
+<nav class="bar">
+  <a href="./hub.html">HUB</a>
+  <a class="on" href="./action.html">ACTION</a>
+  <a href="./publier-mission.html">Mission</a>
+  <a href="./bureau.html">Bureau</a>
+  <a href="./session.html">Session</a>
+</nav>
 
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-  <script>
-    (function(){
-      function $(id){
-        return document.getElementById(id);
-      }
+<script>
+(function(){
+"use strict";
 
-      function toast(message){
-        var t = $("toast");
-        t.textContent = message;
-        t.style.display = "block";
+function $(id){return document.getElementById(id)}
+function toast(message){var t=$("toast");t.textContent=message;t.style.display="block";setTimeout(function(){t.style.display="none"},2200)}
+function norm(v){return String(v||"").replace(/\s+/g," ").trim()}
+function low(v){return norm(v).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+function money(n){return Math.round(Number(n)||0).toLocaleString("fr-FR")+" F"}
 
-        setTimeout(function(){
-          t.style.display = "none";
-        }, 2200);
-      }
-
-      function V(){
-        return (
-          window.DIGIY_GO_VOCABS &&
-          window.DIGIY_GO_VOCABS.JOBS
-        ) || window.DIGIY_GO_JOBS_VOCAB || {};
-      }
-
-      function match(raw, groups){
-        raw = String(raw || "").toLowerCase();
-
-        var out = [];
-
-        Object.keys(groups || {}).forEach(function(key){
-          (groups[key] || []).forEach(function(word){
-            if(
-              raw.indexOf(String(word).toLowerCase()) > -1 &&
-              out.indexOf(key) < 0
-            ){
-              out.push(key);
-            }
-          });
-        });
-
-        return out;
-      }
-
-      function boot(){
-        var v = V();
-
-        $("doctrine").textContent =
-          v.doctrine || "JOBS prépare mission, profil ou candidature. PAY garde seulement argent réel.";
-
-        if(v.examples && v.examples[0]){
-          $("txt").value = v.examples[0];
-        }
-      }
-
-      function prepare(){
-        var v = V();
-        var raw = $("txt").value.trim();
-
-        var intents = match(raw, v.intents);
-        var fields = match(raw, v.fields);
-
-        var message = [
-          (v.label || "JOBS") + " — brouillon préparé",
-          "Texte : " + raw,
-          "Intentions : " + (intents.join(", ") || "à vérifier"),
-          "Champs métier : " + (fields.join(", ") || "à compléter"),
-          "",
-          "Doctrine : " + (v.doctrine || ""),
-          "Validation humaine obligatoire. Rien n’est confirmé automatiquement."
-        ].join("\\n");
-
-        $("msg").textContent = message;
-
-        try{
-          localStorage.setItem("DIGIY_JOBS_GO_LATEST", JSON.stringify({
-            raw: raw,
-            intents: intents,
-            fields: fields,
-            preparedAt: new Date().toISOString()
-          }));
-        }catch(e){}
-
-        $("status").textContent = "Brouillon JOBS préparé avec vocabulaire métier.";
-        toast("Brouillon JOBS prêt");
-      }
-
-      $("prep").onclick = prepare;
-
-      $("copy").onclick = function(){
-        prepare();
-
-        if(navigator.clipboard){
-          navigator.clipboard.writeText($("msg").textContent);
-        }
-      };
-
-      $("listen").onclick = function(){
-        var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-        if(!SR){
-          toast("Micro non disponible");
-          return;
-        }
-
-        var recognition = new SR();
-        recognition.lang = "fr-FR";
-
-        recognition.onresult = function(e){
-          $("txt").value = e.results[0][0].transcript;
-          prepare();
-        };
-
-        recognition.start();
-        toast("Micro ouvert");
-      };
-
-      boot();
-    })();
-  </script>
+function parseType(text){
+  const s=low(text);
+  if(s.includes("candidature") || s.includes("candidat") || s.includes("profil")) return "candidature";
+  if(s.includes("reponse") || s.includes("réponse") || s.includes("message")) return "message";
+  return "mission";
+}
+function parseRole(text){
+  const s=low(text);
+  const roles=["serveur","serveuse","chauffeur","menage","ménage","cuisinier","cuisiniere","vendeur","vendeuse","plombier","electricien","électricien","securite","sécurité","guide","livreur","livreuse"];
+  for(const r of roles){ if(s.includes(r)) return r.replace("menage","ménage"); }
+  const m=norm(text).match(/\b(?:mission|poste|profil|candidature)\s+([A-Za-zÀ-ÿ' -]{3,45})(?=,|;|\.|\s+à|\s+a\s|\s+samedi|\s+demain|\s+salaire|\s+contact|$)/i);
+  return m?m[1].trim():"Mission JOBS";
+}
+function parsePlace(text){
+  const m=norm(text).match(/\b(?:à|a|lieu|zone)\s+([A-Za-zÀ-ÿ' -]{2,35})(?=,|;|\.|\s+samedi|\s+dimanche|\s+lundi|\s+mardi|\s+mercredi|\s+jeudi|\s+vendredi|\s+demain|\s+salaire|\s+contact|\s+\d|$)/i);
+  if(m) return m[1].trim();
+  const s=low(text);
+  if(s.includes("saly")) return "Saly";
+  if(s.includes("dakar")) return "Dakar";
+  return "À préciser";
+}
+function parseTime(text){
+  const s=low(text);
+  const parts=[];
+  ["aujourd'hui","aujourd’hui","demain","samedi","dimanche","lundi","mardi","mercredi","jeudi","vendredi","soir","matin","midi"].forEach(w=>{if(s.includes(low(w))) parts.push(w)});
+  const h=norm(text).match(/\b(\d{1,2})\s*(h|heures|heure)\b/i);
+  if(h) parts.push(h[1]+" heures");
+  return parts.length?parts.join(" · "):"À préciser";
+}
+function parseAmount(text){
+  const m=norm(text).match(/\b(?:salaire|frais|montant|payé|paye)\s+(\d[\d\s.,]*)/i) || norm(text).match(/\b(\d[\d\s.,]*)\s*(fcfa|cfa|xof)\b/i);
+  return m?Number(String(m[1]).replace(/[^0-9]/g,"")):0;
+}
+function build(){
+  const raw=$("txt").value.trim();
+  const type=parseType(raw);
+  const amount=parseAmount(raw);
+  const role=parseRole(raw);
+  return {
+    id:"JOBS-ACTION-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),
+    source:"ACTION_JOBS",
+    type:type,
+    status:"draft",
+    role:role,
+    mission:role,
+    title:type==="mission" ? ("Mission "+role) : type==="candidature" ? ("Candidature "+role) : "Message JOBS",
+    place:parsePlace(raw),
+    timing:parseTime(raw),
+    amount:amount,
+    salary_xof:amount,
+    note:raw,
+    raw_text:raw,
+    created_at:new Date().toISOString(),
+    validation_required:true
+  };
+}
+function save(d){
+  try{ localStorage.setItem("DIGIY_JOBS_ACTION_LATEST", JSON.stringify(d)); }catch(_){}
+  try{ localStorage.setItem("DIGIY_JOBS_GO_LATEST", JSON.stringify(d)); }catch(_){}
+  try{
+    if(window.DIGIY_JOBS_MEMORY){
+      if(typeof window.DIGIY_JOBS_MEMORY.saveDraft==="function") window.DIGIY_JOBS_MEMORY.saveDraft(d);
+      if(d.type==="mission" && typeof window.DIGIY_JOBS_MEMORY.addOffer==="function") window.DIGIY_JOBS_MEMORY.addOffer(d);
+      if(d.type==="candidature" && typeof window.DIGIY_JOBS_MEMORY.upsertCandidate==="function") window.DIGIY_JOBS_MEMORY.upsertCandidate(d);
+      if(typeof window.DIGIY_JOBS_MEMORY.addNote==="function") window.DIGIY_JOBS_MEMORY.addNote(d.raw_text,{source:"ACTION_JOBS",type:d.type});
+    }
+  }catch(e){ console.warn("[ACTION JOBS] mémoire fragile", e && e.message ? e.message : e); }
+}
+function display(d){
+  $("fType").textContent=d.type;
+  $("fRole").textContent=d.role || "—";
+  $("fPlace").textContent=d.place || "—";
+  $("fTime").textContent=d.timing || "—";
+  $("fAmount").textContent=d.amount?money(d.amount):"—";
+  $("fStatus").textContent="Brouillon gardé";
+  const message=[
+    "JOBS — brouillon préparé",
+    "Type : "+d.type,
+    "Métier / poste : "+d.role,
+    "Lieu : "+d.place,
+    "Date / durée : "+d.timing,
+    "Salaire / frais : "+(d.amount?money(d.amount):"—"),
+    "",
+    "Texte terrain :",
+    d.raw_text,
+    "",
+    "Validation humaine obligatoire. Rien n’est publié automatiquement."
+  ].join("\n");
+  $("msg").textContent=message;
+}
+function prepare(){
+  const d=build();
+  display(d);
+  save(d);
+  $("proof").textContent=[
+    "PREUVE ACTION JOBS — DIGIYLYFE",
+    "Statut : BROUILLON GARDÉ",
+    "Référence : "+d.id,
+    "Type : "+d.type,
+    "Poste : "+d.role,
+    "Lieu : "+d.place,
+    "Montant : "+(d.amount?money(d.amount):"—"),
+    "Validation humaine : oui",
+    "Publication automatique : non"
+  ].join("\n");
+  $("status").textContent="Brouillon JOBS gardé. Ouvre mission, bureau ou veille pour vérifier.";
+  toast("ACTION JOBS prête");
+  return d;
+}
+function openPay(){
+  const d=prepare();
+  const phrase=d.amount ? ("recette JOBS "+d.amount+" Wave - "+d.title) : ("frais JOBS 0 Wave - "+d.title);
+  try{ navigator.clipboard && navigator.clipboard.writeText(phrase); }catch(_){}
+  window.location.href="./pay-transition.html";
+}
+document.addEventListener("click",function(e){
+  const b=e.target.closest("[data-tpl]");
+  if(!b) return;
+  $("txt").value=b.getAttribute("data-tpl")||"";
+  prepare();
+});
+$("prep").onclick=prepare;
+$("copy").onclick=function(){ prepare(); try{navigator.clipboard&&navigator.clipboard.writeText($("msg").textContent);toast("Copié")}catch(_){prompt("Copie :", $("msg").textContent)} };
+$("pay").onclick=openPay;
+$("listen").onclick=function(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast("Micro non disponible");return}
+  var r=new SR(); r.lang="fr-FR"; r.interimResults=false;
+  r.onresult=function(e){$("txt").value=e.results[0][0].transcript;prepare()};
+  r.onerror=function(){toast("Micro fragile")};
+  r.start(); toast("Micro ouvert");
+};
+try{
+  var v=(window.DIGIY_GO_VOCABS&&window.DIGIY_GO_VOCABS.JOBS)||window.DIGIY_GO_JOBS_VOCAB||{};
+  if(v.doctrine) $("doctrine").textContent=v.doctrine.replace(/DIGIY GO/g,"ACTION");
+  if(v.examples&&v.examples[0]) $("txt").value=v.examples[0];
+}catch(_){}
+})();
+</script>
 </body>
 </html>
