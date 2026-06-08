@@ -1,0 +1,1248 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>DIGIY ♾️ — Publier mission NDIMBAL</title>
+  <meta name="theme-color" content="#16a34a"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root{
+      --green:#16a34a; --green2:#22c55e;
+      --bg:#061b14; --card:#0b2a1f;
+      --line:rgba(255,255,255,.14); 
+      --text:#eafff1; 
+      --muted:rgba(234,255,241,.78);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; 
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:radial-gradient(900px 500px at 10% -10%, rgba(34,197,94,.20), transparent 60%), var(--bg);
+      color:var(--text);
+    }
+
+    .digiy-route-bar{
+      position:fixed;
+      top:calc(env(safe-area-inset-top, 0px) + 12px);
+      left:calc(env(safe-area-inset-left, 0px) + 12px);
+      right:calc(env(safe-area-inset-right, 0px) + 12px);
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      pointer-events:none;
+    }
+    .digiy-route-group{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      pointer-events:auto;
+    }
+    .digiy-route-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:46px;
+      padding:11px 15px;
+      border-radius:999px;
+      text-decoration:none;
+      font-size:14px;
+      font-weight:950;
+      color:var(--text);
+      background:rgba(11,42,31,.82);
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      box-shadow:0 14px 30px rgba(0,0,0,.28);
+      transition:transform .18s ease, background .18s ease, border-color .18s ease;
+      touch-action:manipulation;
+      white-space:nowrap;
+    }
+    .digiy-route-btn.main{
+      color:#052e16;
+      background:linear-gradient(135deg,#facc15,#22c55e);
+      border-color:rgba(255,255,255,.24);
+    }
+    .digiy-route-btn:hover{
+      transform:translateY(-1px);
+      background:rgba(22,163,74,.18);
+      border-color:rgba(34,197,94,.38);
+    }
+    .digiy-route-btn.main:hover{
+      background:linear-gradient(135deg,#fde68a,#22c55e);
+    }
+    .digiy-route-btn:active{
+      transform:scale(.97);
+    }
+
+    header{
+      padding:18px 16px 14px; 
+      text-align:center; 
+      border-bottom:1px solid var(--line);
+      background:rgba(6,27,20,.72);
+      backdrop-filter:blur(10px);
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+    .brand{
+      font-weight:950;
+      letter-spacing:.12em;
+      font-size:18px;
+    }
+    .subtitle{
+      margin-top:6px;
+      font-weight:800;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .header-links{
+      margin-top:10px;
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .header-links a{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:34px;
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);
+      color:#bbf7d0;
+      font-size:12px;
+      font-weight:950;
+      text-decoration:none;
+    }
+    main{
+      max-width:580px; 
+      margin:0 auto; 
+      padding:14px;
+      padding-bottom:80px;
+    }
+    
+    /* Progress Bar */
+    .progress-container{
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:12px;
+    }
+    .progress-bar{
+      width:100%;
+      height:8px;
+      background:rgba(0,0,0,.3);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .progress-fill{
+      height:100%;
+      background:linear-gradient(90deg,var(--green),var(--green2));
+      transition:width .3s ease;
+      width:0%;
+    }
+    .progress-text{
+      margin-top:8px;
+      font-size:11px;
+      font-weight:800;
+      color:var(--muted);
+      text-align:center;
+    }
+
+    .info-box{
+      background:rgba(236,253,245,.12); 
+      color:#86efac; 
+      border:1px solid rgba(187,247,208,.3);
+      border-radius:14px; 
+      padding:14px; 
+      font-size:13px; 
+      font-weight:800; 
+      margin-bottom:14px;
+      line-height:1.5;
+    }
+    .info-box strong{
+      color:#bbf7d0;
+    }
+
+    .card{
+      background:rgba(255,255,255,.06); 
+      border:1px solid var(--line); 
+      border-radius:var(--radius); 
+      padding:16px;
+      box-shadow:0 18px 40px rgba(0,0,0,.18);
+    }
+    .card-title{
+      font-weight:950;
+      font-size:16px;
+      margin-bottom:14px;
+    }
+
+    label{
+      display:block; 
+      font-weight:900; 
+      margin:14px 0 6px;
+      font-size:14px;
+    }
+    .required{
+      color:#f87171;
+    }
+
+    input,textarea,select{
+      width:100%; 
+      padding:12px; 
+      border-radius:14px; 
+      border:1px solid var(--line);
+      background:#052e16; 
+      color:var(--text); 
+      font-weight:800;
+      font-size:14px;
+      outline:none;
+      transition:border-color .2s;
+    }
+    input:focus,textarea:focus,select:focus{
+      border-color:var(--green);
+    }
+    input.error,textarea.error,select.error{
+      border-color:#f87171;
+    }
+    textarea{
+      resize:vertical;
+      min-height:80px;
+      line-height:1.5;
+    }
+
+    .input-group{
+      position:relative;
+    }
+    .char-counter{
+      position:absolute;
+      right:12px;
+      bottom:8px;
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .time-quick-btns{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .time-btn{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+      transition:all .2s;
+    }
+    .time-btn:hover{
+      background:rgba(34,197,94,.15);
+      border-color:rgba(34,197,94,.3);
+    }
+    .time-btn.active{
+      background:linear-gradient(135deg,var(--green),var(--green2));
+      color:#052e16;
+      border-color:transparent;
+    }
+
+    .zone-quick-btns{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(100px, 1fr));
+      gap:8px;
+      margin-top:8px;
+    }
+    .zone-btn{
+      padding:10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+      transition:all .2s;
+      text-align:center;
+    }
+    .zone-btn:hover{
+      background:rgba(34,197,94,.15);
+      border-color:rgba(34,197,94,.3);
+    }
+    .zone-btn.active{
+      background:linear-gradient(135deg,var(--green),var(--green2));
+      color:#052e16;
+      border-color:transparent;
+    }
+
+    .btn{
+      width:100%; 
+      margin-top:14px; 
+      padding:15px;
+      border-radius:16px; 
+      border:none;
+      background:linear-gradient(135deg,#16a34a,#22c55e);
+      color:#052e16; 
+      font-weight:950; 
+      cursor:pointer;
+      font-size:16px;
+      transition:all .2s;
+      box-shadow:0 2px 8px rgba(34,197,94,.3);
+    }
+    .btn:hover:not(:disabled){
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(34,197,94,.4);
+    }
+    .btn:active:not(:disabled){
+      transform:translateY(0);
+    }
+    .btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+    .btn.ghost{
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      color:var(--text);
+      box-shadow:none;
+    }
+
+    .note{
+      font-size:12px; 
+      color:var(--muted); 
+      margin-top:10px;
+      font-weight:800;
+      line-height:1.4;
+    }
+
+    .success-msg{
+      display:none;
+      margin-top:14px;
+      padding:14px;
+      background:rgba(34,197,94,.12);
+      border:1px solid rgba(34,197,94,.25);
+      border-radius:14px;
+      color:#86efac;
+      font-weight:900;
+      font-size:13px;
+    }
+    .error-msg{
+      display:none;
+      margin-top:14px;
+      padding:14px;
+      background:rgba(239,68,68,.12);
+      border:1px solid rgba(239,68,68,.25);
+      border-radius:14px;
+      color:#fca5a5;
+      font-weight:900;
+      font-size:13px;
+      line-height:1.4;
+    }
+
+    /* Preview Modal */
+    .modal-overlay{
+      position:fixed;
+      top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,.75);
+      backdrop-filter:blur(8px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+      padding:20px;
+    }
+    .modal-overlay.active{
+      display:flex;
+    }
+    .modal{
+      background:rgba(6,27,20,.98);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      max-width:500px;
+      width:100%;
+      max-height:90vh;
+      overflow-y:auto;
+      padding:20px;
+      box-shadow:0 20px 60px rgba(0,0,0,.6);
+    }
+    .modal-header{
+      font-weight:950;
+      font-size:17px;
+      margin-bottom:16px;
+      text-align:center;
+    }
+    .modal-body{
+      margin-bottom:16px;
+    }
+    .preview-field{
+      margin-bottom:12px;
+      padding-bottom:12px;
+      border-bottom:1px solid var(--line);
+    }
+    .preview-field:last-child{
+      border:none;
+    }
+    .preview-label{
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:4px;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+    .preview-value{
+      font-weight:900;
+      font-size:14px;
+      white-space:pre-wrap;
+    }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+    }
+    .modal-actions button{
+      flex:1;
+      padding:13px;
+      border:none;
+      border-radius:14px;
+      font-weight:950;
+      cursor:pointer;
+      font-size:14px;
+      transition:all .2s;
+    }
+    .modal-confirm{
+      background:linear-gradient(135deg,var(--green),var(--green2));
+      color:#052e16;
+    }
+    .modal-cancel{
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+    }
+
+    footer{
+      padding:20px 16px; 
+      text-align:center; 
+      font-size:12px; 
+      color:var(--muted);
+      border-top:1px solid var(--line);
+      background:rgba(6,27,20,.55);
+    }
+    a{
+      color:#86efac; 
+      text-decoration:none; 
+      font-weight:950;
+    }
+
+    @media(max-width:600px){
+      .modal{
+        padding:16px;
+      }
+      .zone-quick-btns{
+        grid-template-columns:repeat(2, 1fr);
+      }
+      header{
+        padding-top:72px;
+      }
+      .digiy-route-bar{
+        top:calc(env(safe-area-inset-top, 0px) + 10px);
+        left:calc(env(safe-area-inset-left, 0px) + 10px);
+        right:calc(env(safe-area-inset-right, 0px) + 10px);
+      }
+      .digiy-route-group{
+        gap:6px;
+      }
+      .digiy-route-btn{
+        min-height:42px;
+        padding:10px 13px;
+        font-size:13px;
+      }
+      .digiy-route-btn span{
+        display:none;
+      }
+    }
+
+    /* DIGIY AUDIO — lecteur public visible */
+    .digiy-audio-card{
+      margin:14px 0;
+      padding:15px;
+      border-radius:18px;
+      border:1px solid rgba(34,197,94,.30);
+      background:
+        radial-gradient(circle at top right,rgba(34,197,94,.14),transparent 42%),
+        rgba(255,255,255,.06);
+      box-shadow:0 18px 40px rgba(0,0,0,.18);
+    }
+
+    .digiy-audio-card-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .digiy-audio-card-head strong{
+      display:block;
+      color:#bbf7d0;
+      font-size:16px;
+      font-weight:1000;
+      line-height:1.2;
+    }
+
+    .digiy-audio-card-head span{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      font-weight:850;
+    }
+
+    .digiy-audio-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+      font-weight:850;
+    }
+
+    .digiy-audio-controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .digiy-audio-controls button{
+      min-height:42px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      padding:10px 13px;
+      font:1000 13px/1 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      cursor:pointer;
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+    }
+
+    .digiy-audio-controls .play{
+      background:linear-gradient(135deg,#16a34a,#34d399);
+      color:#04150d;
+      border-color:rgba(34,197,94,.50);
+      box-shadow:0 12px 28px rgba(34,197,94,.22);
+    }
+
+    .digiy-audio-controls .stop{
+      background:rgba(239,68,68,.14);
+      color:#fecaca;
+      border-color:rgba(248,113,113,.38);
+    }
+
+    .digiy-audio-help{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-top:11px;
+    }
+
+    .digiy-audio-help a{
+      min-height:40px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:9px 11px;
+      color:#bbf7d0;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.14);
+      font-size:12px;
+      font-weight:1000;
+      text-decoration:none;
+    }
+
+    .digiy-audio-progress-wrap{
+      margin-top:11px;
+      height:5px;
+      border-radius:999px;
+      opacity:1;
+      background:rgba(34,197,94,.14);
+      overflow:hidden;
+    }
+
+    .digiy-audio-progress{
+      width:0%;
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#22c55e,#facc15);
+      transition:width .18s linear;
+    }
+
+    .digiy-audio-status{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+    }
+
+    @media(max-width:600px){
+      .digiy-audio-controls,
+      .digiy-audio-help{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        width:100%;
+      }
+
+      .digiy-audio-controls button{
+        width:100%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<nav class="digiy-route-bar" aria-label="Navigation DIGIYLYFE">
+  <div class="digiy-route-group">
+    <a class="digiy-route-btn main" href="https://digiylyfe.com/" rel="noopener">🌍 <span>Site</span></a>
+  </div>
+  <div class="digiy-route-group">
+    <a class="digiy-route-btn" href="https://digiy-hub.digiylyfe.com/" rel="noopener">🧭 <span>HUB</span></a>
+    <a class="digiy-route-btn" href="https://tarifs.digiylyfe.com/" rel="noopener">📦 <span>Tarifs</span></a>
+  </div>
+</nav>
+
+<header>
+  <div class="brand">♾️ DIGIY NDIMBAL</div>
+  <div class="subtitle">Missions courtes • 0% commission • Contact direct</div>
+  <div class="header-links" aria-label="Liens rapides DIGIYLYFE">
+    <a href="https://digiylyfe.com/" rel="noopener">🌍 Site</a>
+    <a href="https://digiy-hub.digiylyfe.com/" rel="noopener">🧭 HUB</a>
+    <a href="https://tarifs.digiylyfe.com/" rel="noopener">📦 Tarifs</a>
+  </div>
+</header>
+
+<main>
+  <div class="info-box">
+    💼 DIGIY NDIMBAL sert à publier des <strong>missions courtes et urgentes</strong>.<br>
+    💰 Les conditions et le paiement se discutent <strong>librement entre vous</strong>.<br>
+    ✨ <strong>0% commission</strong> — tu gardes 100% de ce que tu gagnes.
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-text">Formulaire complété : <span id="progressPercent">0</span>%</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Détails de la mission</div>
+
+    <label>Titre de la mission <span class="required">*</span></label>
+    <input 
+      id="title" 
+      placeholder="Ex: Livraison urgente de documents à Dakar"
+      maxlength="100"
+      oninput="updateProgress(); updateCharCount('title', 100)"
+    />
+    <div class="char-counter" id="titleCounter" style="position:relative;text-align:right;margin-top:4px">0/100</div>
+
+    <label>Zone / Localisation <span class="required">*</span></label>
+    <input 
+      id="zone" 
+      placeholder="Tape ou sélectionne une zone"
+      oninput="updateProgress()"
+    />
+    <div class="zone-quick-btns">
+      <button type="button" class="zone-btn" onclick="selectZone('Saly')">📍 Saly</button>
+      <button type="button" class="zone-btn" onclick="selectZone('Dakar')">📍 Dakar</button>
+      <button type="button" class="zone-btn" onclick="selectZone('Mbour')">📍 Mbour</button>
+      <button type="button" class="zone-btn" onclick="selectZone('Thiès')">📍 Thiès</button>
+    </div>
+
+    <label>Téléphone WhatsApp <span class="required">*</span></label>
+    <input 
+      id="phone" 
+      type="tel"
+      placeholder="+221 77 123 45 67"
+      oninput="updateProgress()"
+    />
+    <button type="button" class="btn ghost" onclick="formatPhone()" style="margin-top:8px;padding:10px">
+      📱 Auto-formater numéro
+    </button>
+
+    <label>Quand ? (Urgence) <span class="required">*</span></label>
+    <input 
+      id="when_time" 
+      placeholder="Ex: Aujourd'hui à 14h, Ce soir, Demain matin"
+      oninput="updateProgress()"
+    />
+    <div class="time-quick-btns">
+      <button type="button" class="time-btn" onclick="selectTime('Maintenant')">⚡ Maintenant</button>
+      <button type="button" class="time-btn" onclick="selectTime('Aujourd\'hui')">📅 Aujourd'hui</button>
+      <button type="button" class="time-btn" onclick="selectTime('Ce soir')">🌙 Ce soir</button>
+      <button type="button" class="time-btn" onclick="selectTime('Demain')">☀️ Demain</button>
+    </div>
+
+    <label>Détails supplémentaires</label>
+    <div class="input-group">
+      <textarea 
+        id="details" 
+        rows="4" 
+        placeholder="Décris la mission : ce qu'il faut faire, durée estimée, équipement nécessaire, rémunération proposée..."
+        maxlength="500"
+        oninput="updateCharCount('details', 500)"
+      ></textarea>
+      <div class="char-counter" id="detailsCounter">0/500</div>
+    </div>
+
+    <div class="success-msg" id="successMsg"></div>
+    <div class="error-msg" id="errorMsg"></div>
+
+    <button type="button" class="btn" id="btnSubmit" onclick="preview()">
+      👁️ Prévisualiser la mission
+    </button>
+
+    <div class="note">
+      ⚠️ <strong>Champs obligatoires :</strong> Titre (min 6 car.), Zone, Téléphone, Quand<br>
+      💾 Ton formulaire est sauvegardé automatiquement
+    </div>
+
+    <button type="button" class="btn ghost" onclick="goBack()">
+      ← Retour
+    </button>
+  </div>
+</main>
+
+<div class="modal-overlay" id="previewModal">
+  <div class="modal">
+    <div class="modal-header">👁️ Aperçu de ta mission</div>
+    <div class="modal-body" id="previewContent"></div>
+    <div class="modal-actions">
+      <button type="button" class="modal-cancel" onclick="closePreview()">✏️ Modifier</button>
+      <button type="button" class="modal-confirm" onclick="submitMission()">📤 Publier</button>
+    </div>
+  </div>
+</div>
+
+
+<section class="digiy-audio-card" id="digiyAudioCard" aria-label="Lecteur DIGIY NDIMBAL">
+  <div class="digiy-audio-card-head">
+    <div>
+      <strong>🎧 Écouter avant de publier</strong>
+      <span>Une voix explique comment publier une mission courte sans se tromper.</span>
+    </div>
+    <div class="digiy-audio-controls">
+      <button class="play" id="digiyAudioNdimbalPlay" type="button">▶️ Lecture</button>
+      <button class="stop" id="digiyAudioNdimbalStop" type="button">⏹ Arrêt</button>
+    </div>
+  </div>
+  <p>
+    Cette page est publique : titre, zone, téléphone WhatsApp, moment de la mission, détails, prévisualisation, puis publication.
+  </p>
+  <div class="digiy-audio-help">
+    <a href="https://wa.me/221771342889?text=Bonjour%20DIGIY%20NDIMBAL%2C%20je%20veux%20une%20information%20pour%20publier%20une%20mission." target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+    <a href="sms:+221771342889?body=Bonjour%20DIGIY%20NDIMBAL%2C%20je%20veux%20une%20information%20pour%20publier%20une%20mission.">✉️ SMS</a>
+  </div>
+  <div class="digiy-audio-progress-wrap" id="digiyAudioProgressWrap" aria-hidden="true">
+    <div class="digiy-audio-progress" id="digiyAudioProgress"></div>
+  </div>
+  <div class="digiy-audio-status" id="digiyAudioStatus">Prêt à écouter.</div>
+</section>
+
+<footer>
+  DIGIYLYFE ♾️ — direct au peuple • 0% commission •
+  <a href="https://digiy-hub.digiylyfe.com/" rel="noopener">HUB</a> • <a href="https://tarifs.digiylyfe.com/" rel="noopener">Tarifs</a>
+</footer>
+
+<script>
+/* ======================================================
+   SUPABASE
+====================================================== */
+const SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+const SB = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ======================================================
+   PROGRESS TRACKING
+====================================================== */
+function updateProgress(){
+  const fields = ["title", "zone", "phone", "when_time"];
+  let filled = 0;
+  
+  fields.forEach(id => {
+    const val = document.getElementById(id).value.trim();
+    if(val) filled++;
+  });
+  
+  const percent = Math.round((filled / fields.length) * 100);
+  document.getElementById("progressFill").style.width = percent + "%";
+  document.getElementById("progressPercent").textContent = percent;
+  
+  saveDraft();
+}
+
+/* ======================================================
+   CHAR COUNTER
+====================================================== */
+function updateCharCount(fieldId, max){
+  const field = document.getElementById(fieldId);
+  const counter = document.getElementById(fieldId + "Counter");
+  const len = field.value.length;
+  counter.textContent = len + "/" + max;
+  
+  if(len > max){
+    field.classList.add("error");
+    counter.style.color = "#f87171";
+  } else {
+    field.classList.remove("error");
+    counter.style.color = "var(--muted)";
+  }
+}
+
+/* ======================================================
+   QUICK SELECTORS
+====================================================== */
+function selectZone(zone){
+  document.getElementById("zone").value = zone;
+  document.querySelectorAll(".zone-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.textContent.includes(zone));
+  });
+  updateProgress();
+}
+
+function selectTime(time){
+  document.getElementById("when_time").value = time;
+  document.querySelectorAll(".time-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.textContent.includes(time));
+  });
+  updateProgress();
+}
+
+/* ======================================================
+   PHONE FORMATTING
+====================================================== */
+function formatPhone(){
+  const input = document.getElementById("phone");
+  let phone = input.value.replace(/\D/g, "");
+  
+  if(phone.startsWith("00221")) phone = phone.substring(5);
+  if(phone.startsWith("221")) phone = phone.substring(3);
+  
+  if(phone.length === 9 && phone.startsWith("7")){
+    input.value = "+221" + phone;
+    input.classList.remove("error");
+    updateProgress();
+    hideMessages();
+  } else {
+    showError("⚠️ Format invalide. Numéro sénégalais attendu (ex: 771234567)");
+    input.classList.add("error");
+  }
+}
+
+function validatePhone(phone){
+  const normalized = phone.replace(/\s/g, "");
+  return /^(\+221|00221)?(7[05678])\d{7}$/.test(normalized);
+}
+
+/* ======================================================
+   DRAFT MANAGEMENT
+====================================================== */
+function saveDraft(){
+  const draft = {
+    title: document.getElementById("title").value,
+    zone: document.getElementById("zone").value,
+    phone: document.getElementById("phone").value,
+    when_time: document.getElementById("when_time").value,
+    details: document.getElementById("details").value,
+    timestamp: Date.now()
+  };
+  localStorage.setItem("ndimbal_draft", JSON.stringify(draft));
+}
+
+function loadDraft(){
+  const draftStr = localStorage.getItem("ndimbal_draft");
+  if(!draftStr) return false;
+  
+  const draft = JSON.parse(draftStr);
+  if(!draft.title && !draft.zone && !draft.phone && !draft.when_time && !draft.details) return false;
+  
+  if(confirm("📝 Reprendre le brouillon sauvegardé ?")){
+    document.getElementById("title").value = draft.title || "";
+    document.getElementById("zone").value = draft.zone || "";
+    document.getElementById("phone").value = draft.phone || "";
+    document.getElementById("when_time").value = draft.when_time || "";
+    document.getElementById("details").value = draft.details || "";
+    updateProgress();
+    updateCharCount("title", 100);
+    updateCharCount("details", 500);
+    return true;
+  }
+  return false;
+}
+
+function clearDraft(){
+  localStorage.removeItem("ndimbal_draft");
+}
+
+/* ======================================================
+   MESSAGES
+====================================================== */
+function showSuccess(msg){
+  const box = document.getElementById("successMsg");
+  box.textContent = msg;
+  box.style.display = "block";
+  document.getElementById("errorMsg").style.display = "none";
+}
+
+function showError(msg){
+  const box = document.getElementById("errorMsg");
+  box.innerHTML = msg;
+  box.style.display = "block";
+  document.getElementById("successMsg").style.display = "none";
+}
+
+function hideMessages(){
+  document.getElementById("successMsg").style.display = "none";
+  document.getElementById("errorMsg").style.display = "none";
+}
+
+/* ======================================================
+   PREVIEW
+====================================================== */
+function preview(){
+  hideMessages();
+  
+  const title = document.getElementById("title").value.trim();
+  const zone = document.getElementById("zone").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const when_time = document.getElementById("when_time").value.trim();
+  const details = document.getElementById("details").value.trim();
+  
+  if(title.length < 6){
+    showError("⚠️ Le titre doit faire au moins 6 caractères.");
+    document.getElementById("title").focus();
+    return;
+  }
+  if(!zone){
+    showError("⚠️ La zone est obligatoire.");
+    document.getElementById("zone").focus();
+    return;
+  }
+  if(!phone){
+    showError("⚠️ Le téléphone WhatsApp est obligatoire.");
+    document.getElementById("phone").focus();
+    return;
+  }
+  if(!validatePhone(phone)){
+    showError("⚠️ Format téléphone invalide. Utilise +221XXXXXXXXX ou clique sur “Auto-formater”.");
+    document.getElementById("phone").classList.add("error");
+    document.getElementById("phone").focus();
+    return;
+  }
+  document.getElementById("phone").classList.remove("error");
+
+  if(!when_time){
+    showError("⚠️ Précise quand tu as besoin de cette mission.");
+    document.getElementById("when_time").focus();
+    return;
+  }
+  
+  const previewHTML = `
+    <div class="preview-field">
+      <div class="preview-label">📋 Titre</div>
+      <div class="preview-value">${esc(title)}</div>
+    </div>
+    <div class="preview-field">
+      <div class="preview-label">📍 Zone</div>
+      <div class="preview-value">${esc(zone)}</div>
+    </div>
+    <div class="preview-field">
+      <div class="preview-label">📱 Contact WhatsApp</div>
+      <div class="preview-value">${esc(phone)}</div>
+    </div>
+    <div class="preview-field">
+      <div class="preview-label">⏰ Quand</div>
+      <div class="preview-value">${esc(when_time)}</div>
+    </div>
+    ${details ? `
+    <div class="preview-field">
+      <div class="preview-label">📝 Détails</div>
+      <div class="preview-value">${esc(details)}</div>
+    </div>` : ''}
+  `;
+  
+  document.getElementById("previewContent").innerHTML = previewHTML;
+  document.getElementById("previewModal").classList.add("active");
+}
+
+function closePreview(){
+  document.getElementById("previewModal").classList.remove("active");
+}
+
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+
+/* ======================================================
+   SUBMIT
+====================================================== */
+async function submitMission(){
+  const btnSubmit = document.getElementById("btnSubmit");
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = "📤 Publication en cours...";
+  
+  closePreview();
+  
+  const payload = {
+    title: document.getElementById("title").value.trim(),
+    zone: document.getElementById("zone").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    note: `Quand: ${document.getElementById("when_time").value.trim()}\n\n${document.getElementById("details").value.trim()}`,
+    status: "pending"
+  };
+  
+  try{
+    const { error } = await SB.from("jef_missions").insert(payload);
+    
+    if(error){
+      console.error(error);
+      showError(`❌ Erreur lors de la publication : <b>${esc(error.message)}</b>`);
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "👁️ Prévisualiser la mission";
+      return;
+    }
+    
+    clearDraft();
+    showSuccess("✅ Mission publiée avec succès ! Elle sera validée dans les 24-48h.");
+    
+    setTimeout(() => {
+      location.href = "digiy-jef.html";
+    }, 2000);
+    
+  }catch(err){
+    console.error(err);
+    showError("❌ Une erreur est survenue. Réessaie dans quelques instants.");
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = "👁️ Prévisualiser la mission";
+  }
+}
+
+/* ======================================================
+   NAVIGATION
+====================================================== */
+function goBack(){
+  if(confirm("⚠️ Quitter sans publier ? (Ton brouillon sera sauvegardé)")){
+    location.href = "index.html";
+  }
+}
+
+/* ======================================================
+   INIT
+====================================================== */
+window.addEventListener("load", () => {
+  loadDraft();
+  updateProgress();
+  updateCharCount("title", 100);
+  updateCharCount("details", 500);
+});
+</script>
+
+
+<script>
+/* ======================================================
+   DIGIY AUDIO — NDIMBAL MISSION COURTE
+   Doctrine : DIGIY = diji i
+====================================================== */
+(function(){
+  "use strict";
+
+  const RAW_AUDIO_TEXT =
+    "Bienvenue dans DIGIY NDIMBAL. Cette page publique sert à publier une mission courte, une aide ponctuelle ou un besoin urgent. " +
+    "Si tu découvres l’outil, avance simplement. D’abord, donne un titre clair : par exemple livraison urgente, aide ménage, manutention, course, réparation ou coup de main. " +
+    "Ensuite, indique la zone : Saly, Dakar, Mbour, Thiès ou un autre lieu précis. " +
+    "Ajoute ton téléphone WhatsApp pour que la personne puisse te contacter directement. Tu peux aussi demander de l’aide par SMS si tu es plus à l’aise. " +
+    "Précise quand la mission doit se faire : maintenant, aujourd’hui, ce soir, demain, ou une heure précise. " +
+    "Dans les détails, explique ce qu’il faut faire, la durée, le matériel nécessaire, et si une rémunération est proposée. " +
+    "Avant de publier, DIGIY te montre un aperçu. Tu vérifies, tu corriges si besoin, puis tu publies. " +
+    "DIGIY ne prend pas de commission. Les conditions et le paiement se discutent directement entre les personnes. " +
+    "Le but est simple : publier vite, rester clair, et aider le terrain sans créer de confusion.";
+
+  const playBtn = document.getElementById("digiyAudioNdimbalPlay");
+  const stopBtn = document.getElementById("digiyAudioNdimbalStop");
+  const wrap = document.getElementById("digiyAudioProgressWrap");
+  const bar = document.getElementById("digiyAudioProgress");
+  const status = document.getElementById("digiyAudioStatus");
+
+  if(!playBtn || !stopBtn || !wrap || !bar || !status) return;
+
+  if(!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)){
+    playBtn.disabled = true;
+    stopBtn.disabled = true;
+    status.textContent = "Lecture vocale non disponible sur ce navigateur.";
+    return;
+  }
+
+  const synth = window.speechSynthesis;
+  let playing = false;
+  let timer = null;
+  let launchId = 0;
+
+  function preparePronunciation(text){
+    return String(text || "")
+      .replace(/\bDIGIYLYFE\b/g, "diji i laïfe")
+      .replace(/\bDIGIY\b/g, "diji i")
+      .replace(/\bNDIMBAL\b/g, "ndimbal")
+      .replace(/\bQR\b/g, "Q R")
+      .replace(/\bSMS\b/g, "S M S")
+      .replace(/\bWhatsApp\b/g, "Ouatsap")
+      .replace(/\bWave\b/g, "Ouève")
+      .replace(/0\s*%/g, "zéro pour cent")
+      .replace(/100\s*%/g, "cent pour cent");
+  }
+
+  function pickFrenchVoice(){
+    try{
+      const voices = synth.getVoices() || [];
+      return voices.find(v => /fr[-_]?FR/i.test(v.lang || "") && /google/i.test(v.name || "")) ||
+             voices.find(v => /fr[-_]?FR/i.test(v.lang || "")) ||
+             voices.find(v => /^fr/i.test(v.lang || "")) ||
+             null;
+    }catch(_){
+      return null;
+    }
+  }
+
+  function setProgress(value){
+    bar.style.width = Math.max(0, Math.min(100, value)) + "%";
+  }
+
+  function setIdle(message){
+    clearInterval(timer);
+    timer = null;
+    playing = false;
+    playBtn.disabled = false;
+    setProgress(0);
+    status.textContent = message || "Prêt à écouter.";
+  }
+
+  function setPlaying(){
+    playing = true;
+    playBtn.disabled = true;
+    status.textContent = "Lecture en cours…";
+  }
+
+  function startProgress(text, currentId){
+    const words = (text.match(/\S+/g) || []).length;
+    const duration = Math.max(2500, words * 520);
+    let elapsed = 0;
+
+    clearInterval(timer);
+    setProgress(0);
+
+    timer = setInterval(() => {
+      if(!playing || currentId !== launchId){
+        clearInterval(timer);
+        timer = null;
+        return;
+      }
+      elapsed += 180;
+      setProgress(Math.min((elapsed / duration) * 100, 97));
+    }, 180);
+  }
+
+  function stopAudio(){
+    try{ synth.cancel(); }catch(_){}
+    setIdle("Lecture arrêtée.");
+  }
+
+  function launch(){
+    launchId += 1;
+    const currentId = launchId;
+    const spokenText = preparePronunciation(RAW_AUDIO_TEXT);
+
+    try{ synth.cancel(); }catch(_){}
+
+    const utter = new SpeechSynthesisUtterance(spokenText);
+    utter.lang = "fr-FR";
+    utter.rate = 0.84;
+    utter.pitch = 1.02;
+    utter.volume = 1;
+
+    const voice = pickFrenchVoice();
+    if(voice) utter.voice = voice;
+
+    utter.onstart = () => {
+      if(currentId !== launchId) return;
+      setPlaying();
+      startProgress(spokenText, currentId);
+    };
+
+    utter.onend = () => {
+      if(currentId !== launchId) return;
+      setProgress(100);
+      setTimeout(() => {
+        if(currentId === launchId) setIdle("Lecture terminée.");
+      }, 350);
+    };
+
+    utter.onerror = () => {
+      if(currentId !== launchId) return;
+      setIdle("Lecture interrompue.");
+    };
+
+    synth.speak(utter);
+  }
+
+  function playAudio(){
+    if(playing) return;
+
+    const voices = synth.getVoices();
+    if(voices && voices.length){
+      launch();
+      return;
+    }
+
+    let started = false;
+    function handleVoices(){
+      if(started) return;
+      started = true;
+      synth.removeEventListener("voiceschanged", handleVoices);
+      launch();
+    }
+
+    synth.addEventListener("voiceschanged", handleVoices);
+    setTimeout(handleVoices, 700);
+  }
+
+  playBtn.addEventListener("click", playAudio);
+  stopBtn.addEventListener("click", stopAudio);
+  window.addEventListener("beforeunload", stopAudio);
+  document.addEventListener("visibilitychange", () => {
+    if(document.hidden && playing) stopAudio();
+  });
+
+  window.DIGIY_NDIMBAL_AUDIO = {
+    play: playAudio,
+    stop: stopAudio
+  };
+
+  setIdle();
+})();
+</script>
+
+</body>
+</html>
+
