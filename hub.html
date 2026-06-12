@@ -4,12 +4,12 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 
-  <title>Mes missions — HUB</title>
+  <title>Mes missions — Menu</title>
 
   <meta name="theme-color" content="#061b14"/>
-  <meta name="description" content="DIGIY JOBS PRO — HUB mobile terrain : missions, bureau, oreille, fiche, QR, argent et session."/>
+  <meta name="description" content="DIGIY JOBS PRO — menu direct mobile : parler mission, publier, NDIMBAL Express, bureau, fiche, QR, PAY et session."/>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-  <meta name="digiy-build" content="jobs-hub-porte-ndimbal-express-20260608"/>
+  <meta name="digiy-build" content="jobs-menu-compact-plus-20260612"/>
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -19,267 +19,337 @@
     window.DIGIY_MODULE = "JOBS";
     window.DIGIY_ABOS_MODULE = "JOBS";
     window.DIGIY_LOGIN_URL = "./pin.html";
+    window.DIGIY_PAY_URL = "https://pay.digiylyfe.com/";
   </script>
 
+  <style>
+    :root{
+      --bg:#061b14;--bg2:#0a2b1f;--bg3:#030b08;--bar:rgba(6,27,20,.96);
+      --gold:#facc15;--gold2:#fde68a;--green:#22c55e;--blue:#38bdf8;
+      --line:rgba(255,255,255,.16);--text:#ecfff4;--muted:rgba(236,255,244,.78);
+      --shadow:0 16px 38px rgba(0,0,0,.28);--r:18px;--max:900px;--hdrH:52px;--barH:76px;
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+    body{
+      margin:0;min-height:100dvh;color:var(--text);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      font-size:18px;font-weight:950;
+      background:
+        radial-gradient(620px 390px at 10% 0%,rgba(250,204,21,.13),transparent 58%),
+        radial-gradient(430px 280px at 92% 10%,rgba(56,189,248,.10),transparent 52%),
+        linear-gradient(180deg,var(--bg) 0%,var(--bg2) 54%,var(--bg3) 100%);
+      padding:calc(var(--hdrH) + 12px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 14px);
+    }
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit;cursor:pointer}
+
+    .topHeader{
+      position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:0 12px;background:var(--bar);border-bottom:1px solid rgba(250,204,21,.22);
+      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    }
+    .hdrBack{color:rgba(236,255,244,.72);font-size:13px;font-weight:1000;white-space:nowrap}
+    .hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+    .hdrPill{
+      display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:6px 9px;border-radius:999px;
+      border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--muted);
+      font-size:11px;font-weight:1000;white-space:nowrap;
+    }
+    .hdrPill.ok{color:#bbf7d0;border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.12)}
+
+    .wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:11px}
+    .head{display:grid;gap:6px}
+    .eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:1000}
+    h1{margin:0;font-size:clamp(30px,8vw,48px);font-weight:1000;line-height:.94;letter-spacing:-.055em}
+    .hubSub{color:var(--muted);font-size:15px;font-weight:1000;line-height:1.32;max-width:760px}
+
+    .quick{
+      border:1px solid rgba(250,204,21,.28);
+      border-radius:22px;
+      background:linear-gradient(135deg,rgba(250,204,21,.13),rgba(34,197,94,.10));
+      box-shadow:var(--shadow);
+      padding:10px;
+      display:grid;gap:8px;
+    }
+    .quickTitle{
+      display:flex;align-items:center;justify-content:space-between;gap:8px;
+      color:#fff7bd;font-size:11px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;
+    }
+    .quickGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .quickBtn{
+      min-height:84px;border-radius:18px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.09);padding:10px;display:flex;flex-direction:column;justify-content:center;gap:5px;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+    }
+    .quickBtn strong{font-size:21px;line-height:1.05;font-weight:1000;color:#fff}
+    .quickBtn span{font-size:12px;line-height:1.18;color:rgba(236,255,244,.78);font-weight:1000}
+    .quickBtn.hot{background:linear-gradient(180deg,rgba(250,204,21,.20),rgba(255,255,255,.08));border-color:rgba(250,204,21,.38)}
+    .quickBtn.green{background:linear-gradient(180deg,rgba(34,197,94,.18),rgba(255,255,255,.08));border-color:rgba(34,197,94,.34)}
+
+    .group{display:grid;gap:8px}
+    .groupLabel{font-size:11px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(236,255,244,.52);padding:0 2px}
+    .tileGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .tile{
+      min-height:112px;display:flex;flex-direction:column;justify-content:space-between;gap:9px;padding:12px;border-radius:18px;
+      border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);box-shadow:var(--shadow);
+      -webkit-tap-highlight-color:transparent;
+    }
+    .tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:7px}
+    .tileIcon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:23px}
+    .tileTag{
+      min-height:25px;display:inline-flex;align-items:center;justify-content:center;padding:4px 7px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);
+      font-size:9px;font-weight:1000;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;
+    }
+    .tile b{display:block;font-size:18px;font-weight:1000;line-height:1.05;letter-spacing:-.025em;color:#fff}
+    .tile span{display:block;margin-top:4px;color:var(--muted);font-size:12.5px;font-weight:1000;line-height:1.22}
+    .gold{border-color:rgba(250,204,21,.42)!important;background:rgba(250,204,21,.11)!important}
+    .blue{border-color:rgba(56,189,248,.32)!important;background:rgba(56,189,248,.10)!important}
+    .pay{border-color:rgba(250,204,21,.48)!important;background:linear-gradient(180deg,rgba(250,204,21,.16),rgba(255,255,255,.08))!important}
+    .voice{border-color:rgba(250,204,21,.50)!important;background:linear-gradient(135deg,rgba(250,204,21,.22),rgba(34,197,94,.12))!important}
+
+    .bottomBar{
+      position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+      background:rgba(6,27,20,.97);border-top:1px solid rgba(250,204,21,.18);backdrop-filter:blur(18px);
+    }
+    .bottomInner{width:min(100%,680px);height:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .bottomInner a,.bottomInner button{
+      min-height:58px;border-radius:18px;display:grid;place-items:center;align-content:center;gap:3px;
+      color:rgba(236,255,244,.75);font-size:12px;font-weight:1000;text-align:center;border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.05);
+    }
+    .bottomInner .active{color:#171717;background:linear-gradient(135deg,var(--gold),var(--green));border-color:rgba(250,204,21,.32)}
+    .bi{font-size:21px;line-height:1}
+
+    .overlay{
+      position:fixed;inset:0;z-index:220;display:none;background:rgba(3,11,8,.98);
+      padding:calc(var(--hdrH) + 12px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 16px);
+      overflow:auto;
+    }
+    .overlay.open{display:block}
+    .plusBox{width:min(var(--max),100%);margin:0 auto;display:grid;gap:10px}
+    .plusTop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .plusTop h2{margin:0;font-size:34px;line-height:.95;letter-spacing:-.05em;color:#fff}
+    .closeBtn{width:42px;height:42px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);font-weight:1000}
+    .reader{
+      border:1px solid rgba(250,204,21,.28);border-radius:22px;padding:12px;
+      background:linear-gradient(135deg,rgba(250,204,21,.13),rgba(56,189,248,.09));display:grid;gap:8px;
+    }
+    .reader p{margin:0;color:rgba(236,255,244,.84);font-size:14px;line-height:1.38;font-weight:950}
+    .readerActions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .readerActions button{min-height:48px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);font-weight:1000}
+    .readerActions .main{background:linear-gradient(135deg,var(--gold),var(--green));color:#171717}
+    .status{color:var(--gold2);font-size:12px;font-weight:1000;min-height:18px}
+
+    @media(max-width:720px){
+      .quickGrid{grid-template-columns:1fr 1fr 1fr}
+      .tileGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:460px){
+      body{padding-left:10px;padding-right:10px}
+      h1{font-size:32px}
+      .hubSub{font-size:14px}
+      .quick{padding:9px}
+      .quickGrid{gap:7px}
+      .quickBtn{min-height:78px;padding:8px;border-radius:16px}
+      .quickBtn strong{font-size:18px}
+      .quickBtn span{font-size:11px}
+      .tile{min-height:104px;padding:10px}
+      .tileIcon{width:38px;height:38px;font-size:21px}
+      .tile b{font-size:16px}
+      .tile span{font-size:11.5px}
+      .tileTag{font-size:8px}
+    }
+  </style>
+</head>
+<body>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./assets/js/digiy-abos-access.js?v=abos-20260522"></script>
   <script src="./guard.js?v=jobs-guard-hub-20260531"></script>
   <script src="./assets/js/digiy-module-bridge.js?v=jobs-hub-session-pill-clickable-20260524"></script>
   <script src="./assets/js/digiy-jobs-memory.js?v=jobs-hub-session-pill-clickable-20260524"></script>
-  <style>
-    :root{--bg:#061b14;--bg2:#0a2b1f;--bg3:#030b08;--bar:rgba(6,27,20,.96);--gold:#facc15;--gold2:#fde68a;--green:#22c55e;--blue:#38bdf8;--line:rgba(255,255,255,.16);--text:#ecfff4;--muted:rgba(236,255,244,.74);--shadow:0 18px 48px rgba(0,0,0,.32);--r:18px;--max:980px;--hdrH:52px;--barH:78px}
-    *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{margin:0;min-height:100dvh;color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:19px;font-weight:950;background:radial-gradient(620px 390px at 10% 0%,rgba(250,204,21,.12),transparent 58%),radial-gradient(430px 280px at 92% 10%,rgba(56,189,248,.10),transparent 52%),linear-gradient(180deg,var(--bg) 0%,var(--bg2) 54%,var(--bg3) 100%);padding:calc(var(--hdrH) + 14px) 12px calc(var(--barH) + env(safe-area-inset-bottom,0px) + 18px)}
-    a{color:inherit;text-decoration:none}.topHeader{position:fixed;top:0;left:0;right:0;height:var(--hdrH);z-index:100;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;background:var(--bar);border-bottom:1px solid rgba(250,204,21,.22);backdrop-filter:blur(18px)}.hdrBack{color:rgba(236,255,244,.72);font-size:14px;font-weight:1000;white-space:nowrap}.hdrTitle{font-size:12px;font-weight:1000;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}.hdrPill{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--muted);font-size:12px;font-weight:1000;white-space:nowrap}.hdrPill.ok{color:#bbf7d0;border-color:rgba(34,197,94,.38);background:rgba(34,197,94,.12)}
-    .wrap{width:min(var(--max),100%);margin:0 auto;display:grid;gap:16px}.eyebrow{color:var(--gold2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:1000;margin-bottom:8px}h1{margin:0 0 8px;font-size:clamp(34px,8.5vw,56px);font-weight:1000;line-height:.94;letter-spacing:-.05em}.hubSub{color:var(--muted);font-size:17px;font-weight:1000;line-height:1.38;max-width:760px}.rule{margin-top:10px;padding:12px 14px;border-radius:18px;border:1px dashed rgba(255,255,255,.22);background:rgba(5,31,17,.32);color:rgba(236,255,244,.90);font-size:14px;font-weight:1000;line-height:1.35}.rule b{color:var(--gold2)}.group{display:grid;gap:8px}.groupLabel{font-size:11px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:rgba(236,255,244,.50);padding:0 2px}.tileGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.tile{min-height:136px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:14px;border-radius:var(--r);border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);box-shadow:var(--shadow);-webkit-tap-highlight-color:transparent}.tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.tileIcon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:25px}.tileTag{min-height:27px;display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:var(--gold2);font-size:10px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase}.tile b{display:block;font-size:20px;font-weight:1000;line-height:1.06;letter-spacing:-.025em;color:#fff}.tile span{display:block;margin-top:5px;color:var(--muted);font-size:14px;font-weight:1000;line-height:1.28}.primary{border-color:rgba(34,197,94,.38)!important;background:rgba(34,197,94,.13)!important}.gold{border-color:rgba(250,204,21,.42)!important;background:rgba(250,204,21,.11)!important}.blue{border-color:rgba(56,189,248,.32)!important;background:rgba(56,189,248,.10)!important}.voice{border-color:rgba(250,204,21,.54)!important;background:linear-gradient(135deg,rgba(250,204,21,.22),rgba(34,197,94,.12))!important}.pay{border-color:rgba(250,204,21,.48)!important;background:linear-gradient(180deg,rgba(250,204,21,.16),rgba(255,255,255,.08))!important}.bottomBar{position:fixed;left:0;right:0;bottom:0;height:var(--barH);z-index:100;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(6,27,20,.97);border-top:1px solid rgba(250,204,21,.18);backdrop-filter:blur(18px)}.bottomInner{width:min(100%,760px);height:100%;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.bottomInner a{min-height:58px;border-radius:16px;display:grid;place-items:center;align-content:center;gap:3px;color:rgba(236,255,244,.58);font-size:11px;font-weight:1000;text-align:center;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.04)}.bottomInner a.active{color:#171717;background:linear-gradient(135deg,var(--gold),var(--green));border-color:rgba(250,204,21,.32)}.bi{font-size:19px;line-height:1}@media(max-width:860px){.tileGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){body{padding-left:10px;padding-right:10px}.tile{min-height:132px;padding:13px}.tile b{font-size:19px}.tile span{font-size:13.5px}.tileTag{font-size:9px}h1{font-size:34px}.hubSub{font-size:16px}.hdrPill{font-size:11px;padding:6px 8px}}
-  
-    /* ══ LECTEUR DIGIY — JOBS ══ */
-    .digiyReader{
-      display:grid;
-      gap:12px;
-      padding:16px;
-      border-radius:24px;
-      border:1px solid rgba(250,204,21,.34);
-      background:
-        radial-gradient(520px 190px at 100% 0%,rgba(250,204,21,.17),transparent 70%),
-        linear-gradient(135deg,rgba(34,197,94,.14),rgba(56,189,248,.10));
-      box-shadow:var(--shadow);
-    }
-    .digiyReaderTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-    .digiyReaderKicker{
-      color:var(--gold2);
-      font-size:11px;
-      font-weight:1000;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      margin-bottom:6px;
-    }
-    .digiyReader h2{
-      margin:0;
-      color:#fff;
-      font-size:clamp(25px,6vw,38px);
-      line-height:.98;
-      letter-spacing:-.045em;
-      font-weight:1000;
-    }
-    .digiyReaderText{
-      color:rgba(236,255,244,.84);
-      font-size:15px;
-      font-weight:950;
-      line-height:1.45;
-      max-width:760px;
-    }
-    .digiyReaderActions{
-      display:flex;
-      gap:9px;
-      flex-wrap:wrap;
-    }
-    .digiyReaderActions button{
-      min-height:52px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.08);
-      color:#ecfff4;
-      padding:0 15px;
-      font:inherit;
-      font-size:14px;
-      font-weight:1000;
-      cursor:pointer;
-    }
-    .digiyReaderActions .main{
-      background:linear-gradient(135deg,var(--gold),var(--green));
-      color:#171717;
-      border-color:rgba(250,204,21,.36);
-      box-shadow:0 12px 28px rgba(0,0,0,.18);
-    }
-    .digiyReaderActions .stop{
-      background:rgba(251,113,133,.12);
-      color:#fecaca;
-      border-color:rgba(251,113,133,.32);
-    }
-    .digiyReaderStatus{
-      min-height:20px;
-      color:var(--gold2);
-      font-size:13px;
-      font-weight:1000;
-    }
-    @media(max-width:520px){
-      .digiyReaderActions{display:grid;grid-template-columns:1fr 1fr}
-      .digiyReaderActions button{width:100%}
-    }
 
-  </style>
-</head>
-<body>
   <header class="topHeader">
-    <a class="hdrBack" href="./action.html">← ACTION</a>
-    <div class="hdrTitle">HUB MISSIONS</div>
+    <a class="hdrBack" href="https://digiy-hub.digiylyfe.com/">← HUB</a>
+    <div class="hdrTitle">MES MISSIONS</div>
     <a class="hdrPill" id="sessionPill" href="./session.html" aria-label="Ouvrir ma session JOBS">Session</a>
   </header>
-  <main class="wrap">
-    <section><div class="eyebrow">💼 MES MISSIONS</div><h1>Toutes tes portes.</h1><div class="hubSub">Ouvre le bon pavé : ACTION JOBS, mission, NDIMBAL Express, bureau, matchs, fiche, QR ou session.</div><div class="rule"><b>HUB</b> = navigation. <b>ACTION JOBS</b> = préparation rapide. <b>NDIMBAL Express</b> = missions courtes urgentes. <b>Oreille</b> = page de travail vocal. <b>Lexique Wolof</b> = aide terrain. <b>Bureau</b> = candidatures. Rien ne se confirme seul.</div></section>
 
-    <section class="digiyReader" aria-label="Lecteur DIGIY JOBS">
-      <div class="digiyReaderTop">
-        <div>
-          <div class="digiyReaderKicker">🎧 Lecteur DIGIY · JOBS</div>
-          <h2>Comprendre le module.</h2>
-        </div>
-        <div class="digiyReaderActions">
-          <button class="main" id="digiyJobsAudioPlay" type="button">▶ Écouter</button>
-          <button class="stop" id="digiyJobsAudioStop" type="button">⏹ Stop</button>
-        </div>
-      </div>
-      <div class="digiyReaderText" id="digiyJobsAudioText">
-        JOBS aide le pro à publier une mission, ouvrir NDIMBAL Express pour les missions courtes urgentes, suivre les candidatures, rapprocher missions et profils,
-        faire circuler son QR, gérer sa fiche et garder les traces utiles vers PAY. Le pro parle ou clique,
-        DIGIY prépare, le terrain valide. Le lexique Wolof JOBS aide à parler simplement : offre, candidature, expérience, disponibilité et entretien.
-      </div>
-      <div class="digiyReaderStatus" id="digiyJobsAudioStatus">Prêt à lire · indications courtes</div>
+  <main class="wrap">
+    <section class="head">
+      <div class="eyebrow">💼 JOBS PRO</div>
+      <h1>Que veux-tu faire ?</h1>
+      <div class="hubSub">Le pro choisit un geste : parler une mission, publier, ouvrir NDIMBAL Express ou piloter ses candidats.</div>
     </section>
 
-    <section class="group"><div class="groupLabel">Action immédiate</div><div class="tileGrid">
-      <a class="tile voice" href="./action.html"><div class="tileTop"><div class="tileIcon">🎙️</div><div class="tileTag">ACTION</div></div><div><b>ACTION JOBS</b><span>Parler ou écrire : JOBS prépare la mission.</span></div></a>
-      <a class="tile primary" href="./publier-mission.html"><div class="tileTop"><div class="tileIcon">➕</div><div class="tileTag">Mission</div></div><div><b>Publier une mission</b><span>Créer une annonce claire pour le terrain.</span></div></a>
-      <a class="tile gold" href="./ndimbal-express.html"><div class="tileTop"><div class="tileIcon">⚡</div><div class="tileTag">Express</div></div><div><b>NDIMBAL Express</b><span>Missions courtes, urgentes, aide ponctuelle.</span></div></a>
-      <a class="tile voice" href="./oreille.html"><div class="tileTop"><div class="tileIcon">🎙️</div><div class="tileTag">Oreille</div></div><div><b>Oreille JOBS</b><span>Parler, formuler, valider.</span></div></a>
-      <a class="tile gold" href="https://jobs.digiylyfe.com/lexique-jobs.html?v=lexique-jobs-v2-mobile-20260607"><div class="tileTop"><div class="tileIcon">🇸🇳</div><div class="tileTag">Wolof</div></div><div><b>Lexique Wolof JOBS</b><span>Offre, candidature, expérience, disponibilité, entretien.</span></div></a>
-      <a class="tile gold" href="./bureau.html"><div class="tileTop"><div class="tileIcon">📥</div><div class="tileTag">Bureau</div></div><div><b>Mon bureau</b><span>Candidatures, appels, profils.</span></div></a>
-      <a class="tile blue" href="./cockpit.html"><div class="tileTop"><div class="tileIcon">🔔</div><div class="tileTag">Veille</div></div><div><b>Ma veille</b><span>Alertes et actions importantes.</span></div></a>
-      <a class="tile" href="./match.html"><div class="tileTop"><div class="tileIcon">🤝</div><div class="tileTag">Match</div></div><div><b>Mes matchs</b><span>Rapprocher missions et profils.</span></div></a>
-    </div></section>
-    <section class="group"><div class="groupLabel">Visibilité · terrain</div><div class="tileGrid">
-      <a class="tile" href="./fiche.html"><div class="tileTop"><div class="tileIcon">🪪</div><div class="tileTag">Fiche</div></div><div><b>Ma fiche pro</b><span>Activité, contact, confiance, zones.</span></div></a>
-      <a class="tile" href="./qr.html"><div class="tileTop"><div class="tileIcon">🔳</div><div class="tileTag">QR</div></div><div><b>Mon QR</b><span>Faire circuler les missions.</span></div></a>
-      <a class="tile blue" href="./mur%20des%20missions.html"><div class="tileTop"><div class="tileIcon">🌍</div><div class="tileTag">Public</div></div><div><b>Mur public</b><span>Voir les missions côté terrain.</span></div></a>
-      <a class="tile pay" href="https://pro-pay.digiylyfe.com/admin.html"><div class="tileTop"><div class="tileIcon">💰</div><div class="tileTag">PAY</div></div><div><b>Mon argent</b><span>Frais, paiements, suivi utile.</span></div></a>
-    </div></section>
-    <section class="group"><div class="groupLabel">Accès · session</div><div class="tileGrid">
-      <a class="tile blue" href="./session.html"><div class="tileTop"><div class="tileIcon">🛡️</div><div class="tileTag">Session</div></div><div><b>Ma session</b><span>État d’accès, nettoyage local.</span></div></a>
-      <a class="tile" href="./pin.html"><div class="tileTop"><div class="tileIcon">🔐</div><div class="tileTag">Code</div></div><div><b>Mon accès</b><span>Ouvrir ou renouveler le code.</span></div></a>
-      <a class="tile" href="https://digiylyfe.com/"><div class="tileTop"><div class="tileIcon">🌍</div><div class="tileTag">Site</div></div><div><b>Site DIGIY</b><span>Maison publique DIGIYLYFE.</span></div></a>
-      <a class="tile gold" href="https://digiy-hub.digiylyfe.com/"><div class="tileTop"><div class="tileIcon">🧭</div><div class="tileTag">HUB</div></div><div><b>HUB général</b><span>Retour aux portes DIGIY.</span></div></a>
-    </div></section>
+    <section class="quick" aria-label="Départ rapide JOBS">
+      <div class="quickTitle"><span>Départ rapide</span><span>3 gestes</span></div>
+      <div class="quickGrid">
+        <a class="quickBtn hot" href="./oreille.html?mode=mission"><strong>🎙️ Parler</strong><span>Mission ou besoin.</span></a>
+        <a class="quickBtn green" href="./publier-mission.html"><strong>➕ Mission</strong><span>Publier clair.</span></a>
+        <a class="quickBtn" href="./ndimbal-express.html"><strong>⚡ Express</strong><span>Urgent / court.</span></a>
+      </div>
+    </section>
+
+    <section class="group" aria-label="Portes principales JOBS">
+      <div class="groupLabel">Portes utiles</div>
+      <div class="tileGrid">
+        <a class="tile gold" href="./bureau.html">
+          <div class="tileTop"><div class="tileIcon">📥</div><div class="tileTag">Bureau</div></div>
+          <div><b>Bureau</b><span>Candidatures, appels, profils.</span></div>
+        </a>
+        <a class="tile blue" href="./match.html">
+          <div class="tileTop"><div class="tileIcon">🤝</div><div class="tileTag">Match</div></div>
+          <div><b>Matchs</b><span>Missions et profils.</span></div>
+        </a>
+        <a class="tile" href="./fiche.html">
+          <div class="tileTop"><div class="tileIcon">🪪</div><div class="tileTag">Fiche</div></div>
+          <div><b>Fiche</b><span>Confiance, activité, zones.</span></div>
+        </a>
+        <a class="tile" href="./qr.html">
+          <div class="tileTop"><div class="tileIcon">🔳</div><div class="tileTag">QR</div></div>
+          <div><b>QR</b><span>Faire circuler.</span></div>
+        </a>
+        <a class="tile pay" href="https://pay.digiylyfe.com/">
+          <div class="tileTop"><div class="tileIcon">💳</div><div class="tileTag">PAY</div></div>
+          <div><b>PAY</b><span>Ouvrir l’argent.</span></div>
+        </a>
+        <a class="tile gold" href="https://jobs.digiylyfe.com/lexique-jobs.html?v=lexique-jobs-v2-mobile-20260607">
+          <div class="tileTop"><div class="tileIcon">🇸🇳</div><div class="tileTag">Wolof</div></div>
+          <div><b>Wolof</b><span>Offre, profil, entretien.</span></div>
+        </a>
+      </div>
+    </section>
   </main>
-  <nav class="bottomBar" aria-label="Navigation rapide JOBS"><div class="bottomInner"><a class="active" href="./hub.html"><span class="bi">🧭</span><span>HUB</span></a><a href="./publier-mission.html"><span class="bi">➕</span><span>Mission</span></a><a href="./oreille.html"><span class="bi">🎙️</span><span>Oreille</span></a><a href="https://jobs.digiylyfe.com/lexique-jobs.html?v=lexique-jobs-v2-mobile-20260607"><span class="bi">🇸🇳</span><span>Wolof</span></a><a href="./bureau.html"><span class="bi">📥</span><span>Bureau</span></a><a href="./session.html"><span class="bi">🛡️</span><span>Session</span></a></div></nav>
+
+  <nav class="bottomBar" aria-label="Navigation rapide JOBS">
+    <div class="bottomInner">
+      <a class="active" href="./index.html"><span class="bi">🧭</span><span>Menu</span></a>
+      <button type="button" id="openPlus"><span class="bi">☰</span><span>Plus</span></button>
+    </div>
+  </nav>
+
+  <section class="overlay" id="plusOverlay" aria-label="Plus JOBS">
+    <div class="plusBox">
+      <div class="plusTop">
+        <h2>Plus JOBS</h2>
+        <button class="closeBtn" id="closePlus" type="button">×</button>
+      </div>
+
+      <section class="reader" aria-label="Comprendre JOBS">
+        <div class="eyebrow">🎧 Comprendre JOBS</div>
+        <p>JOBS aide le pro à publier une mission, ouvrir NDIMBAL Express, suivre les candidatures, rapprocher missions et profils, faire circuler le QR et garder les traces utiles. DIGIY prépare, le terrain valide.</p>
+        <div class="readerActions">
+          <button class="main" id="jobsReadPlay" type="button">▶ Écouter</button>
+          <button id="jobsReadStop" type="button">⏹ Stop</button>
+        </div>
+        <div class="status" id="jobsReadStatus">Prêt</div>
+      </section>
+
+      <section class="group">
+        <div class="groupLabel">Autres portes</div>
+        <div class="tileGrid">
+          <a class="tile voice" href="./action.html">
+            <div class="tileTop"><div class="tileIcon">🎙️</div><div class="tileTag">Action</div></div>
+            <div><b>ACTION</b><span>Préparation rapide.</span></div>
+          </a>
+          <a class="tile blue" href="./cockpit.html">
+            <div class="tileTop"><div class="tileIcon">🔔</div><div class="tileTag">Veille</div></div>
+            <div><b>Veille</b><span>Alertes et actions.</span></div>
+          </a>
+          <a class="tile blue" href="./mur%20des%20missions.html">
+            <div class="tileTop"><div class="tileIcon">🌍</div><div class="tileTag">Public</div></div>
+            <div><b>Mur</b><span>Côté terrain.</span></div>
+          </a>
+          <a class="tile blue" href="./session.html">
+            <div class="tileTop"><div class="tileIcon">🛡️</div><div class="tileTag">Session</div></div>
+            <div><b>Session</b><span>État d’accès.</span></div>
+          </a>
+          <a class="tile" href="./pin.html">
+            <div class="tileTop"><div class="tileIcon">🔐</div><div class="tileTag">PIN</div></div>
+            <div><b>Accès</b><span>Code protégé.</span></div>
+          </a>
+          <a class="tile gold" href="https://digiylyfe.com/">
+            <div class="tileTop"><div class="tileIcon">🦅</div><div class="tileTag">DIGIY</div></div>
+            <div><b>Site DIGIY</b><span>Maison publique.</span></div>
+          </a>
+        </div>
+      </section>
+    </div>
+  </section>
+
   <script>
-    (()=>{const p=document.getElementById('sessionPill');async function boot(){let st={};try{if(window.DIGIY_GUARD&&typeof window.DIGIY_GUARD.ready==='function'){const out=window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true});if(out&&typeof out.then==='function')await out;}st=(window.DIGIY_GUARD&&(window.DIGIY_GUARD.getSession?.()||window.DIGIY_GUARD.state))||{};}catch(_){}if(p){const ok=!!(st&&(st.access_ok||st.access||st.pin_session_ok));p.textContent=ok?'Session ouverte':'Session';p.className='hdrPill '+(ok?'ok':'');}}boot();})();
+    (() => {
+      const p = document.getElementById("sessionPill");
+
+      async function boot(){
+        let st = {};
+        try{
+          if(window.DIGIY_GUARD && typeof window.DIGIY_GUARD.ready === "function"){
+            const out = window.DIGIY_GUARD.ready({redirect:false,preserve_validation:true});
+            if(out && typeof out.then === "function") await out;
+          }
+          st = (window.DIGIY_GUARD && (window.DIGIY_GUARD.getSession?.() || window.DIGIY_GUARD.state)) || {};
+        }catch(_){}
+
+        if(p){
+          const ok = !!(st && (st.access_ok || st.access || st.pin_session_ok));
+          p.textContent = ok ? "Session ouverte" : "Session";
+          p.className = "hdrPill " + (ok ? "ok" : "");
+        }
+      }
+
+      const overlay = document.getElementById("plusOverlay");
+      document.getElementById("openPlus")?.addEventListener("click", () => overlay?.classList.add("open"));
+      document.getElementById("closePlus")?.addEventListener("click", () => overlay?.classList.remove("open"));
+      overlay?.addEventListener("click", (e) => { if(e.target === overlay) overlay.classList.remove("open"); });
+      document.addEventListener("keydown", (e) => { if(e.key === "Escape") overlay?.classList.remove("open"); });
+
+      const play = document.getElementById("jobsReadPlay");
+      const stop = document.getElementById("jobsReadStop");
+      const status = document.getElementById("jobsReadStatus");
+      const text =
+        "Bienvenue dans JOBS, le module Mes missions de Di-ji-laïf. " +
+        "Le pro peut parler une mission, publier une annonce, ouvrir NDIMBAL Express, suivre le bureau, rapprocher missions et profils, partager son QR et ouvrir PAY pour l'argent. " +
+        "JOBS ne promet pas un emploi, ne valide pas un profil et ne confirme pas une mission seul. Le logiciel prépare. Le terrain valide.";
+
+      function setStatus(v){ if(status) status.textContent = v; }
+      function stopSpeech(){
+        if("speechSynthesis" in window) window.speechSynthesis.cancel();
+        if(play) play.textContent = "▶ Écouter";
+        setStatus("Arrêté");
+      }
+      function speak(){
+        if(!("speechSynthesis" in window)){ setStatus("Voix non disponible"); return; }
+        if(window.speechSynthesis.speaking){
+          window.speechSynthesis.cancel();
+          if(play) play.textContent = "▶ Écouter";
+          setStatus("Arrêté");
+          return;
+        }
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "fr-FR"; u.rate = 0.86; u.pitch = 1.02; u.volume = 1;
+        u.onstart = () => { if(play) play.textContent = "⏹ Stop"; setStatus("Lecture…"); };
+        u.onend = () => { if(play) play.textContent = "▶ Écouter"; setStatus("Terminé"); };
+        u.onerror = () => { if(play) play.textContent = "▶ Écouter"; setStatus("Interrompu"); };
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      }
+
+      play?.addEventListener("click", speak);
+      stop?.addEventListener("click", stopSpeech);
+      window.addEventListener("pagehide", stopSpeech);
+
+      boot();
+    })();
   </script>
-
-<script>
-/* ══ DIGIY VOICE — JOBS ══ */
-(function(){
-  "use strict";
-
-  var SPEAK =
-    "Bienvenue dans JOBS, le module Mes missions de Di-ji-laïf. " +
-    "Ici, le pro peut publier une mission, ouvrir NDIMBAL Express pour une mission courte urgente, suivre les candidatures, rapprocher missions et profils, faire circuler son QR et garder sa fiche visible. " +
-    "Publier une mission sert à créer une annonce claire pour le terrain. NDIMBAL Express sert aux coups de main rapides, petites missions et besoins urgents. Le bureau sert à lire les candidatures, appels et profils. Les matchs aident à rapprocher les missions et les personnes. " +
-    "Oreille JOBS permet de parler ou d’écrire peu : DIGIY prépare une mission, un besoin, une phrase de contact ou une trace de candidature, mais rien ne se confirme seul. " +
-    "Le lexique Wolof JOBS aide le pro à parler simplement avec le candidat ou l’employeur : offre, candidature, expérience, disponibilité et entretien. " +
-    "La fiche pro et le QR servent à faire circuler la confiance. PAY reste le cerveau argent : frais, paiement, avance ou dépense utile doivent laisser une trace. " +
-    "Règle importante : JOBS ne promet pas un emploi, ne valide pas un profil, ne confirme pas une mission et ne décide pas à la place du pro. Le logiciel prépare. Le terrain valide.";
-
-  var play = document.getElementById("digiyJobsAudioPlay");
-  var stop = document.getElementById("digiyJobsAudioStop");
-  var status = document.getElementById("digiyJobsAudioStatus");
-
-  function digiySpeakText(text){
-    return String(text || "")
-      .replace(/\bWave\b/g, "Wéïv")
-      .replace(/\bWhatsApp\b/g, "Ouatsap")
-      .replace(/\bDIGIYLYFE\b/g, "Di-ji-laïf");
-  }
-
-  function setStatus(message){
-    if(status) status.textContent = message;
-  }
-
-  function canSpeak(){
-    return "speechSynthesis" in window;
-  }
-
-  function pickVoice(){
-    if(!canSpeak()) return null;
-    var voices = window.speechSynthesis.getVoices() || [];
-    return voices.find(function(v){ return /^fr/i.test(v.lang || "") && /FR/i.test(v.lang || ""); })
-        || voices.find(function(v){ return /^fr/i.test(v.lang || ""); })
-        || voices[0]
-        || null;
-  }
-
-  function stopSpeech(){
-    if(canSpeak()) window.speechSynthesis.cancel();
-    if(play) play.textContent = "▶ Écouter";
-    setStatus("Lecture arrêtée");
-  }
-
-  function speak(){
-    if(!canSpeak()){
-      setStatus("Lecture vocale non disponible ici");
-      return;
-    }
-
-    if(window.speechSynthesis.paused){
-      window.speechSynthesis.resume();
-      if(play) play.textContent = "⏸ Pause";
-      setStatus("▶ Reprise…");
-      return;
-    }
-
-    if(window.speechSynthesis.speaking){
-      window.speechSynthesis.pause();
-      if(play) play.textContent = "▶ Reprendre";
-      setStatus("⏸ En pause");
-      return;
-    }
-
-    stopSpeech();
-
-    var u = new SpeechSynthesisUtterance(digiySpeakText(SPEAK));
-    u.lang = "fr-FR";
-    u.rate = 0.86;
-    u.pitch = 1.02;
-    u.volume = 1;
-
-    var voice = pickVoice();
-    if(voice) u.voice = voice;
-
-    u.onstart = function(){
-      if(play) play.textContent = "⏸ Pause";
-      setStatus("▶ DIGIY explique JOBS…");
-    };
-    u.onend = function(){
-      if(play) play.textContent = "▶ Écouter";
-      setStatus("✓ Lecture terminée");
-    };
-    u.onerror = function(){
-      if(play) play.textContent = "▶ Écouter";
-      setStatus("Lecture interrompue");
-    };
-
-    window.speechSynthesis.speak(u);
-  }
-
-  if(play) play.addEventListener("click", speak);
-  if(stop) stop.addEventListener("click", stopSpeech);
-
-  if(canSpeak()){
-    window.speechSynthesis.onvoiceschanged = pickVoice;
-  }
-
-  window.addEventListener("pagehide", stopSpeech);
-})();
-</script>
-<script src="./assets/js/action-digiy-pro-orient.js?v=action-digiy-pro-orient-20260606" defer></script>
-  
+  <script src="./assets/js/action-digiy-pro-orient.js?v=action-digiy-pro-orient-20260606" defer></script>
 </body>
 </html>
+
 
 
 
