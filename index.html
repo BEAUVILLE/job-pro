@@ -139,7 +139,7 @@
       background:linear-gradient(135deg,rgba(250,204,21,.13),rgba(56,189,248,.09));display:grid;gap:8px;
     }
     .reader p{margin:0;color:rgba(236,255,244,.84);font-size:14px;line-height:1.38;font-weight:950}
-    .readerActions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .readerActions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
     .readerActions button{min-height:48px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);font-weight:1000}
     .readerActions .main{background:linear-gradient(135deg,var(--gold),var(--green));color:#171717}
     .status{color:var(--gold2);font-size:12px;font-weight:1000;min-height:18px}
@@ -218,6 +218,7 @@
       <div class="readerActions">
         <button class="main" id="prepareMissionBtn" type="button">🧠 Préparer</button>
         <button id="copyMissionBtn" type="button">📋 Copier</button>
+        <button id="clearMissionBtn" type="button">🧹 Effacer</button>
       </div>
 
       <div id="missionPrepared" class="status">Prêt</div>
@@ -376,6 +377,7 @@
       const prepared = document.getElementById("missionPrepared");
       const prepareBtn = document.getElementById("prepareMissionBtn");
       const copyBtn = document.getElementById("copyMissionBtn");
+      const clearBtn = document.getElementById("clearMissionBtn");
 
       function clean(v){ return String(v || "").trim(); }
 
@@ -419,13 +421,28 @@
         }
       }
 
+      function clearMission(){
+        if(draft) draft.value = "";
+        if(prepared) prepared.textContent = "Prêt";
+        try{
+          localStorage.removeItem("digiy_jobs_mission_draft");
+          localStorage.removeItem("digiy_jobs_mission_prepared");
+        }catch(_){}
+        draft?.focus();
+      }
+
       prepareBtn?.addEventListener("click", prepare);
       copyBtn?.addEventListener("click", copy);
+      clearBtn?.addEventListener("click", clearMission);
     })();
   </script>
 
 </body>
 </html>
+
+
+
+
 
 
 
