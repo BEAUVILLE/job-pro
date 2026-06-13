@@ -4,12 +4,12 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 
-  <title>Mes missions — Menu</title>
+  <title>DIGIY JOBS PRO — Page principale</title>
 
   <meta name="theme-color" content="#061b14"/>
-  <meta name="description" content="DIGIY JOBS PRO — menu direct mobile : parler mission, publier, NDIMBAL Express, bureau, fiche, QR, PAY et session."/>
+  <meta name="description" content="DIGIY JOBS PRO — page principale terrain : publier une mission, parler, suivre le bureau, ouvrir NDIMBAL Express, PAY, QR et session."/>
   <meta name="robots" content="noindex,nofollow,noarchive,nosnippet"/>
-  <meta name="digiy-build" content="jobs-menu-compact-plus-20260612"/>
+  <meta name="digiy-build" content="jobs-pro-page-principale-doctrine-20260613"/>
 
   <script>
     window.DIGIY_SUPABASE_URL = "https://wesqmwjjtsefyjnluosj.supabase.co";
@@ -19,7 +19,7 @@
     window.DIGIY_MODULE = "JOBS";
     window.DIGIY_ABOS_MODULE = "JOBS";
     window.DIGIY_LOGIN_URL = "./pin.html";
-    window.DIGIY_PAY_URL = "https://pay.digiylyfe.com/";
+    window.DIGIY_PAY_URL = "https://pro-pay.digiylyfe.com/";
   </script>
 
   <style>
@@ -180,46 +180,69 @@
 
   <main class="wrap">
     <section class="head">
-      <div class="eyebrow">💼 JOBS PRO</div>
-      <h1>Que veux-tu faire ?</h1>
-      <div class="hubSub">Le pro choisit un geste : parler une mission, publier, ouvrir NDIMBAL Express ou piloter ses candidats.</div>
-    </section>
-
-    <section class="quick" aria-label="Départ rapide JOBS">
-      <div class="quickTitle"><span>Départ rapide</span><span>3 gestes</span></div>
-      <div class="quickGrid">
-        <a class="quickBtn hot" href="./oreille.html?mode=mission"><strong>🎙️ Parler</strong><span>Mission ou besoin.</span></a>
-        <a class="quickBtn green" href="./publier-mission.html"><strong>➕ Mission</strong><span>Publier clair.</span></a>
-        <a class="quickBtn" href="./ndimbal-express.html"><strong>⚡ Express</strong><span>Urgent / court.</span></a>
+      <div class="eyebrow">💼 JOBS PRO · PAGE PRINCIPALE</div>
+      <h1>Publier une mission.</h1>
+      <div class="hubSub">
+        La racine JOBS ne doit plus être un simple menu. Le pro arrive ici et peut agir tout de suite :
+        parler une mission, publier, suivre les réponses. Le reste reste derrière Plus.
       </div>
     </section>
 
-    <section class="group" aria-label="Portes principales JOBS">
-      <div class="groupLabel">Portes utiles</div>
-      <div class="tileGrid">
-        <a class="tile gold" href="./bureau.html">
-          <div class="tileTop"><div class="tileIcon">📥</div><div class="tileTag">Bureau</div></div>
-          <div><b>Bureau</b><span>Candidatures, appels, profils.</span></div>
+    <section class="quick" aria-label="Action principale JOBS">
+      <div class="quickTitle"><span>Action centrale</span><span>Le geste du jour</span></div>
+      <div class="quickGrid">
+        <a class="quickBtn green" href="./publier-mission.html">
+          <strong>➕ Publier</strong>
+          <span>Créer une mission maintenant.</span>
         </a>
+        <a class="quickBtn hot" href="./oreille.html?mode=mission">
+          <strong>🎙️ Parler</strong>
+          <span>Dicter la mission terrain.</span>
+        </a>
+        <a class="quickBtn" href="./bureau.html">
+          <strong>📥 Bureau</strong>
+          <span>Voir candidats et retours.</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="reader" aria-label="Mission rapide JOBS">
+      <div class="eyebrow">🧠 Mission rapide</div>
+      <p>
+        Écris la mission en langage terrain. DIGIY prépare une phrase claire.
+        Ensuite le pro copie ou ouvre la vraie page de publication.
+      </p>
+
+      <textarea id="missionDraft" rows="4" placeholder="Ex : Cherche serveur samedi soir à Saly, 18h à 23h, paiement fin de service." style="width:100%;min-height:112px;resize:vertical;border-radius:18px;border:1px solid rgba(250,204,21,.34);background:rgba(255,255,255,.94);color:#061b14;padding:14px;font-size:17px;font-weight:1000;line-height:1.28;outline:none;"></textarea>
+
+      <div class="readerActions">
+        <button class="main" id="prepareMissionBtn" type="button">🧠 Préparer</button>
+        <button id="copyMissionBtn" type="button">📋 Copier</button>
+      </div>
+
+      <div id="missionPrepared" class="status">Prêt</div>
+      <a class="quickBtn green" href="./publier-mission.html" style="min-height:58px;align-items:center;text-align:center;">
+        <strong>➕ Ouvrir publication</strong>
+        <span>Passer à la page métier.</span>
+      </a>
+    </section>
+
+    <section class="group" aria-label="Portes essentielles JOBS">
+      <div class="groupLabel">Essentiel visible</div>
+      <div class="tileGrid">
+        <a class="tile gold" href="./ndimbal-express.html">
+          <div class="tileTop"><div class="tileIcon">⚡</div><div class="tileTag">Express</div></div>
+          <div><b>NDIMBAL</b><span>Mission courte / urgente.</span></div>
+        </a>
+
         <a class="tile blue" href="./match.html">
           <div class="tileTop"><div class="tileIcon">🤝</div><div class="tileTag">Match</div></div>
           <div><b>Matchs</b><span>Missions et profils.</span></div>
         </a>
-        <a class="tile" href="./fiche.html">
-          <div class="tileTop"><div class="tileIcon">🪪</div><div class="tileTag">Fiche</div></div>
-          <div><b>Fiche</b><span>Confiance, activité, zones.</span></div>
-        </a>
-        <a class="tile" href="./qr.html">
-          <div class="tileTop"><div class="tileIcon">🔳</div><div class="tileTag">QR</div></div>
-          <div><b>QR</b><span>Faire circuler.</span></div>
-        </a>
-        <a class="tile pay" href="https://pay.digiylyfe.com/">
+
+        <a class="tile pay" href="https://pro-pay.digiylyfe.com/">
           <div class="tileTop"><div class="tileIcon">💳</div><div class="tileTag">PAY</div></div>
-          <div><b>PAY</b><span>Ouvrir l’argent.</span></div>
-        </a>
-        <a class="tile gold" href="https://jobs.digiylyfe.com/lexique-jobs.html?v=lexique-jobs-v2-mobile-20260607">
-          <div class="tileTop"><div class="tileIcon">🇸🇳</div><div class="tileTag">Wolof</div></div>
-          <div><b>Wolof</b><span>Offre, profil, entretien.</span></div>
+          <div><b>PAY PRO</b><span>Argent, traces, température.</span></div>
         </a>
       </div>
     </section>
@@ -227,7 +250,7 @@
 
   <nav class="bottomBar" aria-label="Navigation rapide JOBS">
     <div class="bottomInner">
-      <a class="active" href="./index.html"><span class="bi">🧭</span><span>Menu</span></a>
+      <a class="active" href="./index.html"><span class="bi">💼</span><span>Mission</span></a>
       <button type="button" id="openPlus"><span class="bi">☰</span><span>Plus</span></button>
     </div>
   </nav>
@@ -346,8 +369,67 @@
       boot();
     })();
   </script>
+
+  <script>
+    (() => {
+      const draft = document.getElementById("missionDraft");
+      const prepared = document.getElementById("missionPrepared");
+      const prepareBtn = document.getElementById("prepareMissionBtn");
+      const copyBtn = document.getElementById("copyMissionBtn");
+
+      function clean(v){ return String(v || "").trim(); }
+
+      try{
+        const saved = localStorage.getItem("digiy_jobs_mission_draft");
+        if(saved && draft) draft.value = saved;
+      }catch(_){}
+
+      draft?.addEventListener("input", () => {
+        try{ localStorage.setItem("digiy_jobs_mission_draft", draft.value); }catch(_){}
+      });
+
+      function buildMessage(){
+        const raw = clean(draft?.value);
+        if(!raw){
+          return "Mission JOBS à préciser : métier, zone, date, horaires, paiement, contact.";
+        }
+        return "Mission JOBS préparée : " + raw + "\n\nDIGIY prépare. Le pro valide.";
+      }
+
+      function prepare(){
+        const msg = buildMessage();
+        if(prepared) prepared.textContent = msg;
+        try{ localStorage.setItem("digiy_jobs_mission_prepared", msg); }catch(_){}
+        return msg;
+      }
+
+      function copy(){
+        const msg = prepare();
+        if(navigator.clipboard){
+          navigator.clipboard.writeText(msg).then(() => {
+            if(prepared) prepared.textContent = msg + " · Copié.";
+          }).catch(() => {});
+        }else{
+          const ta = document.createElement("textarea");
+          ta.value = msg;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+        }
+      }
+
+      prepareBtn?.addEventListener("click", prepare);
+      copyBtn?.addEventListener("click", copy);
+    })();
+  </script>
+
 </body>
 </html>
+
+
+
+
 
 
 
