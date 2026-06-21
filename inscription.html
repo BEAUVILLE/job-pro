@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#123c2d">
+  <title>Inscription PRO JOB — Tarifs & paiement DIGIY</title>
+  <meta name="description" content="Inscription PRO JOB DIGIY — abonnement recruteur, publication de missions structurées, candidatures, contact direct, paiement Wave et validation DIGIY avant accès pro.">
+  <meta name="digiy-page" content="pro-job-inscription-tarifs-wave-20260621">
+  <style>
+    :root{
+      --bg:#123c2d;
+      --bg2:#071b14;
+      --card:#fffdf7;
+      --paper:#f8fafc;
+      --ink:#11241b;
+      --muted:#64746b;
+      --green:#155f43;
+      --green2:#22c55e;
+      --gold:#facc15;
+      --gold2:#f59e0b;
+      --blue:#2563eb;
+      --red:#dc2626;
+      --line:rgba(17,36,27,.16);
+      --line-dark:rgba(255,255,255,.16);
+      --shadow:0 18px 48px rgba(0,0,0,.28);
+      --max:1160px;
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left,rgba(34,197,94,.18),transparent 34%),
+        radial-gradient(circle at bottom right,rgba(250,204,21,.14),transparent 32%),
+        linear-gradient(180deg,var(--bg),var(--bg2));
+      color:#f7fff9;
+      font-size:17px;
+      font-weight:820;
+      padding-bottom:calc(96px + var(--safe-bottom));
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    a{color:inherit;text-decoration:none}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .app{width:min(var(--max),calc(100% - 28px));margin:auto;padding:14px 0}
+    .top{
+      position:sticky;top:0;z-index:30;
+      margin:0 calc((100vw - min(var(--max),calc(100vw - 28px))) / -2) 14px;
+      padding:12px max(14px,calc((100vw - var(--max)) / 2));
+      background:rgba(18,60,45,.94);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line-dark);
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;
+    }
+    .brand{font-weight:1000;color:#fff8db;display:flex;gap:10px;align-items:center}
+    .brandMark{
+      width:48px;height:48px;border-radius:17px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--gold),var(--green2));color:#061b14;
+      box-shadow:0 14px 34px rgba(250,204,21,.18);flex:0 0 auto;font-size:23px;
+    }
+    .brand span{display:block;font-size:12px;color:rgba(247,255,249,.74);margin-top:2px;font-weight:900;letter-spacing:.08em}
+    .nav{display:flex;gap:8px;flex-wrap:wrap}
+    .btn,button,.nav a{
+      min-height:48px;border-radius:15px;border:1px solid var(--line-dark);
+      background:rgba(255,255,255,.08);color:#fff;padding:0 14px;font-weight:1000;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;
+      box-shadow:0 8px 20px rgba(0,0,0,.08);
+      transition:.18s ease;
+    }
+    .btn:hover,button:hover,.nav a:hover,.offer:hover{transform:translateY(-2px)}
+    .gold{background:linear-gradient(135deg,var(--gold),var(--gold2))!important;color:#061b14!important;border:0!important}
+    .green{background:linear-gradient(135deg,#22c55e,#16a34a)!important;color:#062014!important;border:0!important}
+    .blue{background:#dbeafe!important;color:#1e3a8a!important;border:1px solid rgba(37,99,235,.18)!important}
+    .clear{background:rgba(250,204,21,.12)!important;color:#fff8dc!important;border-color:rgba(250,204,21,.40)!important}
+    .danger{background:rgba(220,38,38,.14)!important;color:#fecaca!important;border-color:rgba(220,38,38,.30)!important}
+
+    .hero,.card,.contact-card{
+      border:1px solid var(--line-dark);
+      border-radius:28px;
+      background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.06));
+      box-shadow:var(--shadow);
+    }
+    .hero{
+      padding:22px;margin-bottom:14px;display:grid;grid-template-columns:1.08fr .92fr;gap:16px;align-items:start;overflow:hidden;position:relative
+    }
+    .hero:before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:linear-gradient(90deg,var(--green2),var(--gold),#38bdf8)}
+    .kicker{
+      display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(250,204,21,.34);
+      background:rgba(250,204,21,.12);color:#fff3b2;border-radius:999px;
+      padding:8px 12px;font-size:13px;font-weight:1000;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px
+    }
+    h1{margin:0;font-size:clamp(35px,6vw,66px);line-height:.98;font-weight:1000;letter-spacing:-.05em;color:#fff}
+    h2{margin:0 0 10px;color:#fff8db;font-size:clamp(24px,4vw,34px);line-height:1.08;letter-spacing:-.025em}
+    h3{margin:0;color:#10231b;font-size:21px;line-height:1.08;letter-spacing:-.02em}
+    p,.lead{color:rgba(247,255,249,.79);line-height:1.58;font-weight:850}
+    .lead{font-size:clamp(17px,2vw,20px);max-width:74ch}
+    .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .pill{border:1px solid rgba(255,255,255,.16);background:rgba(34,197,94,.10);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:1000;color:#dfffe9}
+    .pill.gold{background:rgba(250,204,21,.12);color:#fff8db;border-color:rgba(250,204,21,.28)}
+    .waveHero{padding:18px;border-radius:22px;background:linear-gradient(135deg,#facc15,#f59e0b);color:#06111f;border:1px solid rgba(250,204,21,.78);box-shadow:0 16px 34px rgba(0,0,0,.24)}
+    .waveHero small{display:block;font-size:13px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;opacity:.88;margin-bottom:7px}
+    .waveHero strong{display:block;font-size:clamp(23px,5.6vw,38px);line-height:1.12;font-weight:1000;letter-spacing:-.035em}
+    .waveHero p{color:#06111f;margin:12px 0 0;font-weight:1000;line-height:1.4}
+
+    .grid{display:grid;grid-template-columns:1.04fr .96fr;gap:14px;align-items:start}
+    .card{padding:16px}
+    .card.light{background:rgba(255,253,247,.97);color:var(--ink);border-color:rgba(255,255,255,.55)}
+    .card.light h2{color:#10231b}
+    .card.light p{color:var(--muted)}
+    .tarif-section{
+      margin:14px 0 10px;
+      padding:12px;
+      border:1px solid rgba(21,95,67,.22);
+      background:rgba(21,95,67,.08);
+      border-radius:18px;
+      font-weight:1000;
+      color:#0f3b2a;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .tarif-section span{font-size:13px;color:#617168;font-weight:900}
+    .offers{display:grid;gap:10px}
+    .offer{
+      border:1px solid rgba(17,36,27,.14);
+      background:#fff;
+      border-radius:20px;
+      padding:13px;
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:12px;
+      align-items:center;
+      transition:.18s ease;
+    }
+    .offer input{width:22px;height:22px;accent-color:var(--green)}
+    .offer .code{
+      width:max-content;border-radius:999px;border:1px solid rgba(250,204,21,.36);
+      background:rgba(250,204,21,.12);color:#7a4d00;padding:5px 9px;font-size:12px;font-weight:1000
+    }
+    .offer strong{display:block;font-size:18px;color:#10231b;font-weight:1000}
+    .offer small{display:block;margin-top:3px;color:#64746b;line-height:1.38;font-size:13px;font-weight:800}
+    .price{text-align:right;font-weight:1000;color:#123c2d;white-space:nowrap}
+    .price span{display:block;color:#64746b;font-size:12px;margin-top:3px}
+
+    .impact{
+      margin-top:12px;
+      border:1px solid rgba(250,204,21,.35);
+      background:rgba(250,204,21,.10);
+      border-radius:18px;
+      padding:12px;
+    }
+    .impact strong{display:block;color:#10231b;font-size:16px}
+    .impact ul{margin:8px 0 0;padding-left:18px;color:#53645b;font-weight:850;line-height:1.48;font-size:14px}
+    .emptyImpact{color:#64746b;font-weight:900}
+
+    .formGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field{display:grid;gap:6px;margin-top:10px}
+    .full{grid-column:1/-1}
+    label{display:block;color:#7a4d00;font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:.06em}
+    input,textarea{
+      width:100%;border-radius:16px;border:1px solid rgba(17,36,27,.18);background:#fff;color:var(--ink);padding:13px;font-weight:900;outline:none
+    }
+    textarea{min-height:118px;resize:vertical;line-height:1.45}
+    input:focus,textarea:focus{border-color:#facc15;box-shadow:0 0 0 4px rgba(250,204,21,.16)}
+
+    .summary{position:sticky;top:88px}
+    .selected,.totals,.dateBox,.payment,.noteBox,.contactBox{
+      margin-top:12px;border:1px solid rgba(250,204,21,.42);border-radius:18px;background:rgba(250,204,21,.10);padding:12px
+    }
+    .payment{background:linear-gradient(135deg,#facc15,#f59e0b);color:#06111f;border:0}
+    .payment h3{color:#06111f}
+    .bigAmount{font-size:32px;font-weight:1000;letter-spacing:-.04em}
+    .kv{display:grid;grid-template-columns:1fr auto;gap:8px;border-bottom:1px solid rgba(17,36,27,.12);padding:8px 0;color:#173528}
+    .kv:last-child{border-bottom:0}
+    .kv span{color:#657168}
+    .kv strong{font-weight:1000;text-align:right;color:#10231b}
+    .noteText{white-space:pre-wrap;color:#10231b;background:#fff;border:1px dashed rgba(17,36,27,.18);border-radius:16px;padding:12px;line-height:1.45;font-weight:850;min-height:128px}
+    .warning{display:none;margin-top:10px;border:1px solid rgba(220,38,38,.30);background:rgba(220,38,38,.10);color:#fecaca;border-radius:16px;padding:10px 12px;font-weight:950}
+    .warning.show{display:block}
+    .status{margin-top:10px;color:#dfffe9;font-size:13px;line-height:1.45}
+
+    .actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+    .actions .fullAction{grid-column:1/-1}
+
+    .contact-card{
+      margin-top:14px;
+      padding:16px;
+      background:
+        radial-gradient(circle at top left,rgba(250,204,21,.16),transparent 36%),
+        linear-gradient(145deg,rgba(255,255,255,.10),rgba(34,197,94,.08));
+    }
+    .contact-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+    .contact-title h2{margin:0;color:#fff8db}
+    .contact-title p{margin:8px 0 0}
+    .contact-actions{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:12px}
+    .qrBox{
+      margin-top:12px;display:flex;justify-content:space-between;gap:12px;align-items:center;
+      border:1px solid rgba(255,255,255,.16);border-radius:20px;background:rgba(255,255,255,.07);padding:12px
+    }
+    .qrBox strong{display:block;color:#fff8db}
+    .qrBox span{display:block;margin-top:4px;color:rgba(247,255,249,.72);font-size:13px}
+    .qrLink img{width:118px;height:118px;border-radius:16px;background:#fff;padding:6px;display:block}
+    .footer{text-align:center;color:rgba(247,255,249,.66);font-size:13px;font-weight:1000;padding:18px 0 0}
+    .sticky{
+      position:fixed;left:0;right:0;bottom:0;z-index:50;
+      padding:10px 12px calc(10px + var(--safe-bottom));
+      background:linear-gradient(180deg,rgba(7,27,20,0),rgba(7,27,20,.94) 24%,rgba(7,27,20,.98));
+      backdrop-filter:blur(10px)
+    }
+    .stickyInner{width:min(var(--max),100%);margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .sticky a{min-height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-weight:1000}
+    .sticky .main{background:linear-gradient(135deg,#22c55e,#facc15);color:#061b14}
+    .sticky .sub{background:#0f172a;border:1px solid rgba(255,255,255,.14);color:#fff}
+    .toast{
+      position:fixed;left:50%;bottom:calc(92px + var(--safe-bottom));transform:translateX(-50%) translateY(12px);
+      z-index:80;opacity:0;pointer-events:none;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#06111f;padding:11px 15px;font-weight:1000;transition:.18s;box-shadow:0 16px 40px rgba(0,0,0,.25)
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    @media(max-width:900px){
+      .hero,.grid{grid-template-columns:1fr}.summary{position:static}.formGrid{grid-template-columns:1fr}.actions{grid-template-columns:1fr 1fr}
+      .contact-actions{grid-template-columns:1fr}
+    }
+    @media(max-width:620px){
+      .offer{grid-template-columns:auto 1fr}.price{grid-column:2;text-align:left}
+      .top{align-items:flex-start}.brand,.nav,.btn,button,.nav a{width:100%}.nav{width:100%}
+      .stickyInner{grid-template-columns:1fr}
+      .actions{grid-template-columns:1fr}
+      .qrBox{align-items:flex-start}
+      .qrLink img{width:96px;height:96px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <a class="brand" href="https://jobs.digiylyfe.com/" aria-label="Retour DIGIY JOBS">
+        <span class="brandMark">💼</span>
+        <strong>PRO JOB<span>INSCRIPTION RECRUTEUR · TARIFS · WAVE</span></strong>
+      </a>
+      <nav class="nav" aria-label="Navigation">
+        <a href="https://jobs.digiylyfe.com/">← JOBS public</a>
+        <a href="https://digiy-hub.digiylyfe.com/">🧭 HUB</a>
+        <a class="clear" href="https://ndimbal-express.digiylyfe.com/">⚡ NDIMBAL séparé</a>
+        <a class="gold" href="#tarifs">Voir les tarifs</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="kicker">Inscription · PRO JOB · recruteur · validation DIGIY</div>
+        <h1>Publier des missions structurées.</h1>
+        <p class="lead">
+          PRO JOB est la porte recruteur de DIGIY JOBS : publier des missions, recevoir les candidatures, garder le contact direct et suivre les demandes.
+          Un visiteur non-abonné ne rentre pas directement dans l’espace pro : il choisit son abonnement, règle par Wave, envoie la preuve, puis DIGIY ouvre l’accès.
+        </p>
+        <div class="pills">
+          <span class="pill gold">0% commission</span>
+          <span class="pill">Contact direct</span>
+          <span class="pill">Missions structurées</span>
+          <span class="pill">Candidatures</span>
+          <span class="pill">Accès pro après validation</span>
+          <span class="pill gold">Séparé de NDIMBAL Express</span>
+        </div>
+      </div>
+      <aside class="waveHero">
+        <small>Paiement Wave officiel</small>
+        <strong>JB BEAUVILLE<br>+221 77 134 28 89</strong>
+        <p>Après paiement, envoie la preuve par WhatsApp ou SMS. DIGIY vérifie puis accompagne l’ouverture PRO JOB.</p>
+      </aside>
+    </section>
+
+    <section class="grid" id="tarifs">
+      <article class="card light">
+        <h2>Tarifs PRO JOB</h2>
+        <p>Clique un ou plusieurs choix. Rien n’est précoché. Si tu te trompes, efface.</p>
+
+        <div class="tarif-section">💼 Abonnement PRO JOB <span>Pour recruteurs, missions et candidatures</span></div>
+        <div class="offers">
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="J1" data-label="PRO JOB Essentiel" data-amount="19900" data-eur="29" data-impact="Fiche recruteur, publication de missions simples, contact direct WhatsApp, QR et réception des candidatures.">
+            <span><span class="code">J1</span><strong>PRO JOB Essentiel</strong><small>Fiche recruteur, missions simples, contact direct et candidatures.</small></span>
+            <span class="price">19 900 FCFA<span>29 €</span></span>
+          </label>
+
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="J2" data-label="PRO JOB Pro" data-amount="29900" data-eur="49" data-impact="Missions structurées, textes prêts, réception des candidatures, suivi plus clair et meilleure présentation recruteur.">
+            <span><span class="code">J2</span><strong>PRO JOB Pro</strong><small>Missions structurées, textes prêts, candidatures et suivi plus clair.</small></span>
+            <span class="price">29 900 FCFA<span>49 €</span></span>
+          </label>
+
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="J3" data-label="PRO JOB Recrutement" data-amount="45000" data-eur="69" data-impact="Présence renforcée pour recruteurs actifs, besoins répétés, plusieurs missions et accompagnement de structuration.">
+            <span><span class="code">J3</span><strong>PRO JOB Recrutement</strong><small>Présence renforcée pour besoins répétés, équipes et plusieurs missions.</small></span>
+            <span class="price">45 000 FCFA<span>69 €</span></span>
+          </label>
+        </div>
+
+        <div class="tarif-section">✨ BOOST visibilité <span>Projecteur temporaire</span></div>
+        <div class="offers">
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="E1" data-label="Boost Local" data-amount="5000" data-impact="Petit projecteur local sur la mission ou la fiche recruteur.">
+            <span><span class="code">E1</span><strong>Boost Local</strong><small>Petit projecteur local.</small></span>
+            <span class="price">5 000 FCFA</span>
+          </label>
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="E2" data-label="Boost Standard" data-amount="10000" data-impact="Mise en avant renforcée pour attirer plus de candidats.">
+            <span><span class="code">E2</span><strong>Boost Standard</strong><small>Mise en avant renforcée.</small></span>
+            <span class="price">10 000 FCFA</span>
+          </label>
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="E3" data-label="Boost Premium" data-amount="20000" data-impact="Visibilité maximale autour de la mission, de la zone ou du besoin recruteur.">
+            <span><span class="code">E3</span><strong>Boost Premium</strong><small>Visibilité maximale.</small></span>
+            <span class="price">20 000 FCFA</span>
+          </label>
+        </div>
+
+        <div class="tarif-section">📣 RÉSEAU abonné / FIRST non-abonné <span>Visibilité qualifiée</span></div>
+        <div class="offers">
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="R7" data-label="RÉSEAU abonné — 7 jours" data-amount="15000" data-impact="Mise en visibilité 7 jours pour un pro déjà abonné DIGIY.">
+            <span><span class="code">R7</span><strong>RÉSEAU abonné — 7 jours</strong><small>Pour pro déjà abonné DIGIY.</small></span>
+            <span class="price">15 000 FCFA</span>
+          </label>
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="R15" data-label="RÉSEAU abonné — 15 jours" data-amount="25000" data-impact="Mise en visibilité 15 jours pour un pro déjà abonné DIGIY.">
+            <span><span class="code">R15</span><strong>RÉSEAU abonné — 15 jours</strong><small>Pour pro déjà abonné DIGIY.</small></span>
+            <span class="price">25 000 FCFA</span>
+          </label>
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="R30" data-label="RÉSEAU abonné — 1 mois" data-amount="45000" data-impact="Mise en visibilité 1 mois pour un pro déjà abonné DIGIY.">
+            <span><span class="code">R30</span><strong>RÉSEAU abonné — 1 mois</strong><small>Pour pro déjà abonné DIGIY.</small></span>
+            <span class="price">45 000 FCFA</span>
+          </label>
+          <label class="offer">
+            <input type="checkbox" class="choice" data-code="FIRST" data-label="Mise en classe FIRST — non-abonné" data-amount="150000" data-eur="229" data-impact="Qualification, fiche/vitrine, QR, lien, messages prêts, visibilité qualifiée et accompagnement prioritaire.">
+            <span><span class="code">FIRST</span><strong>Mise en classe FIRST — non-abonné</strong><small>Qualification, fiche/vitrine, QR, lien, messages prêts, visibilité qualifiée.</small></span>
+            <span class="price">150 000 FCFA<span>1 mois</span></span>
+          </label>
+        </div>
+
+        <div class="impact" aria-live="polite">
+          <strong>Ce que l’abonnement m’apporte</strong>
+          <div id="impactList" class="emptyImpact">Aucun choix sélectionné. Rien n’est précoché.</div>
+        </div>
+
+        <div class="tarif-section">Infos pro pour le paiement <span>Pour identifier la demande</span></div>
+        <p>Ces infos servent seulement à identifier ta demande dans le message WhatsApp / SMS. La fiche recruteur complète se construit ensuite dans l’espace PRO JOB.</p>
+
+        <div class="formGrid">
+          <div class="field">
+            <label for="proName">Nom / responsable</label>
+            <input id="proName" placeholder="Ex : Mamadou Diop">
+          </div>
+          <div class="field">
+            <label for="proPhone">Téléphone / WhatsApp</label>
+            <input id="proPhone" placeholder="Ex : +221 77 000 00 00">
+          </div>
+          <div class="field">
+            <label for="zone">Zone / ville</label>
+            <input id="zone" placeholder="Ex : Saly, Mbour, Dakar">
+          </div>
+          <div class="field">
+            <label for="activity">Activité / besoin</label>
+            <input id="activity" placeholder="Ex : restaurant, hôtel, chantier, boutique">
+          </div>
+          <div class="field full">
+            <label for="note">Note libre</label>
+            <textarea id="note" placeholder="Ex : Je veux publier une mission serveur / chauffeur / vendeur / manœuvre."></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="danger fullAction" id="clearInfoBtn" type="button">🧹 Effacer mes infos</button>
+        </div>
+      </article>
+
+      <aside class="card light summary" aria-label="Résumé PRO JOB">
+        <h2>Résumé</h2>
+        <div class="selected">
+          <div class="kv"><span>Module</span><strong>PRO JOB</strong></div>
+          <div class="kv"><span>Choix</span><strong id="sumChoice">Aucun choix</strong></div>
+          <div class="kv"><span>Sous-total</span><strong id="sumSubtotal">0 FCFA</strong></div>
+          <div class="kv"><span>Ajustement / remise</span><strong>0 FCFA</strong></div>
+          <div class="kv"><span>Total</span><strong id="sumTotal">0 FCFA</strong></div>
+        </div>
+
+        <div class="payment">
+          <h3>💳 Paiement Wave</h3>
+          <p>Nom et numéro de paiement</p>
+          <div class="bigAmount" id="waveAmount">0 FCFA</div>
+          <div class="kv"><span>Wave</span><strong>JB BEAUVILLE</strong></div>
+          <div class="kv"><span>Téléphone</span><strong>+221 77 134 28 89</strong></div>
+        </div>
+
+        <div class="noteBox">
+          <h3>📝 Note / preuve paiement</h3>
+          <div class="noteText" id="summaryText"></div>
+        </div>
+
+        <div class="actions">
+          <a class="btn green" id="waBtn" href="#" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+          <a class="btn blue" id="smsBtn" href="#">📱 SMS</a>
+          <button class="danger" id="clearBtn" type="button">🧹 Effacer</button>
+          <button class="gold" id="copyBtn" type="button">📋 Copier Wave</button>
+          <a class="btn clear fullAction" id="proofBtn" href="#" target="_blank" rel="noopener noreferrer">📸 Envoyer preuve</a>
+        </div>
+
+        <div class="warning" id="warning">⚠️ Choisis au moins une offre avant d’envoyer.</div>
+        <div class="status" id="status">Résumé prêt.</div>
+      </aside>
+    </section>
+
+    <section class="contact-card" aria-label="Contact numérique PRO JOB">
+      <div class="contact-top">
+        <div class="contact-title">
+          <div class="kicker">Contact numérique DIGIY</div>
+          <h2>Écris, enregistre, partage.</h2>
+          <p>Pas besoin d’avoir DIGIY dans ton répertoire. Clique le QR sur téléphone, ou scanne-le depuis un autre appareil.</p>
+        </div>
+      </div>
+      <div class="contact-actions">
+        <a class="btn green" id="contactWaBtn" href="#" target="_blank" rel="noopener noreferrer">📲 Écrire sur WhatsApp</a>
+        <button class="btn clear" id="saveContactBtn" type="button">👤 Ajouter aux contacts</button>
+        <button class="btn gold" id="shareBtn" type="button">🔗 Partager cette page</button>
+      </div>
+      <div class="qrBox">
+        <div>
+          <strong>QR WhatsApp cliquable</strong>
+          <span>Clique sur téléphone. Scanne sur affiche, carte ou autre appareil.</span>
+        </div>
+        <a class="qrLink" id="qrLink" href="#" target="_blank" rel="noopener noreferrer">
+          <img id="qrImg" src="" alt="QR WhatsApp PRO JOB DIGIY">
+        </a>
+      </div>
+    </section>
+
+    <div class="footer">DIGIYLYFE · PRO JOB · INSCRIPTION RECRUTEUR · 0% COMMISSION · CONTACT DIRECT · NDIMBAL EXPRESS RESTE SÉPARÉ</div>
+  </main>
+
+  <div class="sticky" aria-label="Actions rapides">
+    <div class="stickyInner">
+      <a class="main" id="stickyWa" href="#" target="_blank" rel="noopener noreferrer">📸 Envoyer preuve WhatsApp</a>
+      <a class="sub" href="#tarifs">📋 Revoir les tarifs</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copié ✅</div>
+
+  <script>
+    (function(){
+      "use strict";
+
+      const DIGIY_WA = "221771342889";
+      const DIGIY_PHONE_DISPLAY = "+221 77 134 28 89";
+      const DIGIY_PAY_NAME = "JB BEAUVILLE";
+      const PAGE_URL = "https://jobs.digiylyfe.com/inscription-jobs.html";
+      const $ = id => document.getElementById(id);
+      const nf = new Intl.NumberFormat("fr-FR");
+      const fields = ["proName","proPhone","zone","activity","note"];
+
+      function money(n){
+        return nf.format(Number(n || 0)).replace(/\u202f/g," ") + " FCFA";
+      }
+      function val(id){
+        return String($(id)?.value || "").trim();
+      }
+      function dash(v){
+        return v || "—";
+      }
+      function nowText(){
+        try{
+          return new Intl.DateTimeFormat("fr-FR",{
+            weekday:"long",year:"numeric",month:"long",day:"numeric",
+            hour:"2-digit",minute:"2-digit"
+          }).format(new Date());
+        }catch(_){
+          return new Date().toLocaleString("fr-FR");
+        }
+      }
+      function selectedChoices(){
+        return Array.from(document.querySelectorAll(".choice:checked")).map(input => ({
+          code: input.dataset.code || "",
+          label: input.dataset.label || "",
+          amount: Number(input.dataset.amount || 0),
+          eur: input.dataset.eur || "",
+          impact: input.dataset.impact || ""
+        }));
+      }
+      function total(){
+        return selectedChoices().reduce((sum,item) => sum + item.amount, 0);
+      }
+      function choiceText(){
+        const choices = selectedChoices();
+        if(!choices.length) return "Aucun choix";
+        return choices.map(c => c.code + " — " + c.label + " — " + money(c.amount) + (c.eur ? " · " + c.eur + " €" : "")).join("\n");
+      }
+      function noteText(){
+        const t = total();
+        const choices = selectedChoices();
+        const selectedLine = choices.length ? choiceText() : "Aucun choix sélectionné";
+        return "💼 PRO JOB — Inscription recruteur DIGIY\n"
+          + "Choix :\n" + selectedLine + "\n\n"
+          + "Sous-total : " + money(t) + "\n"
+          + "Ajustement / remise : 0 FCFA\n"
+          + "Total à payer : " + money(t) + "\n\n"
+          + "Paiement Wave :\n"
+          + "Nom : " + DIGIY_PAY_NAME + "\n"
+          + "Téléphone : " + DIGIY_PHONE_DISPLAY + "\n\n"
+          + "Infos pro :\n"
+          + "Nom / responsable : " + dash(val("proName")) + "\n"
+          + "Téléphone / WhatsApp : " + dash(val("proPhone")) + "\n"
+          + "Zone / ville : " + dash(val("zone")) + "\n"
+          + "Activité / besoin : " + dash(val("activity")) + "\n"
+          + "Note : " + dash(val("note")) + "\n\n"
+          + "Date de demande : " + nowText() + "\n\n"
+          + "Après paiement Wave, envoie la capture ou la preuve par WhatsApp. DIGIY vérifie puis accompagne l’ouverture PRO JOB.\n"
+          + "Rappel : PRO JOB est séparé de NDIMBAL Express.";
+      }
+      function refreshImpact(){
+        const choices = selectedChoices();
+        const target = $("impactList");
+        if(!target) return;
+        if(!choices.length){
+          target.className = "emptyImpact";
+          target.textContent = "Aucun choix sélectionné. Rien n’est précoché.";
+          return;
+        }
+        target.className = "";
+        target.innerHTML = "<ul>" + choices.map(c => "<li><b>" + c.code + " — " + c.label + " :</b> " + c.impact + "</li>").join("") + "</ul>";
+      }
+      function validate(){
+        const ok = selectedChoices().length > 0;
+        $("warning").classList.toggle("show", !ok);
+        return ok;
+      }
+      function refresh(){
+        const t = total();
+        const choices = selectedChoices();
+        $("sumChoice").textContent = choices.length ? choices.map(c => c.code).join(" + ") : "Aucun choix";
+        $("sumSubtotal").textContent = money(t);
+        $("sumTotal").textContent = money(t);
+        $("waveAmount").textContent = money(t);
+        $("summaryText").textContent = noteText();
+
+        const encoded = encodeURIComponent(noteText());
+        const wa = "https://wa.me/" + DIGIY_WA + "?text=" + encoded;
+        $("waBtn").href = wa;
+        $("proofBtn").href = wa;
+        $("stickyWa").href = wa;
+        $("smsBtn").href = "sms:" + DIGIY_PHONE_DISPLAY.replace(/\s/g,"") + "?&body=" + encoded;
+
+        const contactMsg = "Bonjour DIGIY, je viens de la page PRO JOB. Je veux des informations sur l’inscription recruteur.";
+        const contactUrl = "https://wa.me/" + DIGIY_WA + "?text=" + encodeURIComponent(contactMsg);
+        $("contactWaBtn").href = contactUrl;
+        $("qrLink").href = contactUrl;
+        $("qrImg").src = "https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=" + encodeURIComponent(contactUrl);
+
+        refreshImpact();
+        validate();
+      }
+      function toast(msg){
+        const t = $("toast");
+        t.textContent = msg || "Copié ✅";
+        t.classList.add("show");
+        clearTimeout(window.__digiyToast);
+        window.__digiyToast = setTimeout(() => t.classList.remove("show"),1700);
+      }
+
+      document.querySelectorAll(".choice").forEach(el => el.addEventListener("change", refresh));
+      fields.forEach(id => {
+        const el = $(id);
+        if(el){
+          el.addEventListener("input", refresh);
+          el.addEventListener("change", refresh);
+        }
+      });
+
+      $("copyBtn").addEventListener("click", async function(){
+        const text = noteText();
+        try{
+          await navigator.clipboard.writeText(text);
+          toast("Note Wave copiée ✅");
+        }catch(e){
+          prompt("Copie le résumé :", text);
+        }
+      });
+
+      $("clearBtn").addEventListener("click", function(){
+        document.querySelectorAll(".choice").forEach(c => c.checked = false);
+        fields.forEach(id => { const el = $(id); if(el) el.value = ""; });
+        refresh();
+        toast("Page effacée");
+      });
+
+      $("clearInfoBtn").addEventListener("click", function(){
+        fields.forEach(id => { const el = $(id); if(el) el.value = ""; });
+        refresh();
+        toast("Infos effacées");
+      });
+
+      $("saveContactBtn").addEventListener("click", function(){
+        const vcard = [
+          "BEGIN:VCARD",
+          "VERSION:3.0",
+          "FN:DIGIYLYFE PRO JOB",
+          "ORG:DIGIYLYFE",
+          "TEL;TYPE=CELL:" + DIGIY_PHONE_DISPLAY,
+          "URL:" + PAGE_URL,
+          "NOTE:PRO JOB DIGIY — inscription recruteur, missions structurées, candidatures et contact direct.",
+          "END:VCARD"
+        ].join("\n");
+        const blob = new Blob([vcard], {type:"text/vcard;charset=utf-8"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "DIGIYLYFE-PRO-JOB-contact.vcf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast("Contact prêt à enregistrer ✅");
+      });
+
+      $("shareBtn").addEventListener("click", async function(){
+        const title = "Inscription PRO JOB — DIGIYLYFE";
+        const text = "Je te partage la page PRO JOB DIGIY : inscription recruteur, missions structurées, candidatures et contact direct.";
+        try{
+          if(navigator.share){
+            await navigator.share({title, text, url: PAGE_URL});
+            toast("Partage ouvert ✅");
+          }else{
+            await navigator.clipboard.writeText(text + " " + PAGE_URL);
+            toast("Lien copié ✅");
+          }
+        }catch(_){}
+      });
+
+      refresh();
+    })();
+  </script>
+</body>
+</html>
