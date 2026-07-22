@@ -1,49 +1,84 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" style="visibility:hidden">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>DIGIY JOBS — QR public stable</title>
-<meta name="theme-color" content="#061b14">
-<meta name="description" content="DIGIY JOBS PRO — QR public stable vers les missions ou une fiche mission, sans librairie QR locale fragile.">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="digiy-build" content="jobs-qr-stable-sans-lib-locale-20260618">
+<meta name="theme-color" content="#061b14">
+<meta name="digiy-build" content="jobs-qr-public-domain-v4-20260722">
+<title>PRO JOB — Mon QR public</title>
 <script>
 window.DIGIY_MODULE="JOBS";
 window.DIGIY_LOGIN_URL="./pin.html";
-window.DIGIY_SUPABASE_URL=window.DIGIY_SUPABASE_URL||"https://wesqmwjjtsefyjnluosj.supabase.co";
-window.DIGIY_SUPABASE_ANON_KEY=window.DIGIY_SUPABASE_ANON_KEY||"sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
-window.DIGIY_SUPABASE_ANON=window.DIGIY_SUPABASE_ANON||window.DIGIY_SUPABASE_ANON_KEY;
+window.DIGIY_SUPABASE_URL="https://wesqmwjjtsefyjnluosj.supabase.co";
+window.DIGIY_SUPABASE_ANON_KEY="sb_publishable_tGHItRgeWDmGjnd0CK1DVQ_BIep4Ug3";
+window.DIGIY_SUPABASE_ANON=window.DIGIY_SUPABASE_ANON_KEY;
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./guard.js?v=jobs-guard-strict-pin8h-20260716" onerror="location.replace('./pin.html')"></script>
 <style>
-:root{--bg:#061b14;--bg2:#0a2b1f;--gold:#facc15;--green:#22c55e;--blue:#38bdf8;--text:#ecfff4;--muted:rgba(236,255,244,.78);--line:rgba(255,255,255,.15);--card:rgba(255,255,255,.08);--shadow:0 16px 38px rgba(0,0,0,.28);--font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100svh;color:var(--text);font-family:var(--font);font-weight:900;background:radial-gradient(720px 420px at 10% -6%,rgba(250,204,21,.15),transparent 60%),radial-gradient(520px 330px at 92% 2%,rgba(56,189,248,.11),transparent 52%),linear-gradient(180deg,var(--bg) 0%,var(--bg2) 54%,#030b08 100%);padding-bottom:92px}a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer;color:inherit}.wrap{width:min(940px,calc(100% - 24px));margin:0 auto}.top{position:sticky;top:0;z-index:50;background:rgba(6,27,20,.96);border-bottom:1px solid rgba(250,204,21,.18);backdrop-filter:blur(14px)}.topin{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}.brand{display:flex;align-items:center;gap:10px;min-width:0}.logo{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),var(--green));color:#061b14;font-size:24px;box-shadow:0 10px 28px rgba(0,0,0,.22)}.brand b{display:block;color:var(--gold);font-size:14px;letter-spacing:.13em;text-transform:uppercase;font-weight:1000}.brand span{display:block;color:var(--muted);font-size:12px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pill{min-height:40px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.07);display:inline-flex;align-items:center;justify-content:center;padding:0 12px;font-size:12px;font-weight:1000;color:#fff}.pill.gold{border:0;background:linear-gradient(135deg,var(--gold),var(--green));color:#061b14}.hero{padding:16px 0}.card{border:1px solid rgba(250,204,21,.24);border-radius:30px;background:var(--card);box-shadow:var(--shadow);padding:18px;margin-bottom:12px}.kicker{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:999px;border:1px solid rgba(250,204,21,.28);background:rgba(250,204,21,.11);color:#fde68a;font-size:12px;font-weight:1000;letter-spacing:.09em;text-transform:uppercase}h1{margin:12px 0 8px;font-size:clamp(38px,8vw,76px);line-height:.92;letter-spacing:-.06em;font-weight:1000}p{margin:0;color:var(--muted);line-height:1.5}.grid{display:grid;grid-template-columns:1fr .95fr;gap:12px}.qrBox{min-height:360px;border-radius:26px;border:1px dashed rgba(250,204,21,.36);background:rgba(0,0,0,.16);display:grid;place-items:center;padding:16px}.qrShell{width:min(420px,100%);border-radius:28px;border:1px solid rgba(250,204,21,.30);background:radial-gradient(420px 200px at 50% 0%,rgba(250,204,21,.15),transparent 62%),linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.035));padding:18px;text-align:center;display:grid;gap:12px}.qrImg{width:min(320px,100%);height:auto;border-radius:22px;background:#fff;padding:12px;border:1px solid rgba(250,204,21,.45);display:block;margin:0 auto}.qrTitle{color:#fde68a;font-size:24px;font-weight:1000;line-height:1.12}.qrText{color:var(--muted);font-size:15px;line-height:1.45}.btns{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.btn{min-height:58px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.08);display:inline-flex;align-items:center;justify-content:center;text-align:center;padding:0 14px;font-weight:1000}.btn.gold{border:0;background:linear-gradient(135deg,var(--gold),var(--green));color:#061b14}.btn.blue{border-color:rgba(56,189,248,.34);background:rgba(56,189,248,.12);color:#bae6fd}.note{margin-top:12px;border:1px solid rgba(34,197,94,.30);background:rgba(34,197,94,.10);color:#bbf7d0;border-radius:18px;padding:13px;line-height:1.45;font-size:14px;white-space:pre-wrap}.note.warn{border-color:rgba(250,204,21,.30);background:rgba(250,204,21,.09);color:#fde68a}.link{word-break:break-all;color:#dbeafe;font-size:14px;line-height:1.45;border:1px solid var(--line);background:rgba(0,0,0,.18);border-radius:16px;padding:12px;margin-top:12px}.bottom{position:fixed;left:0;right:0;bottom:0;z-index:70;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(6,27,20,.97);border-top:1px solid rgba(250,204,21,.18);backdrop-filter:blur(12px)}.bottomin{width:min(700px,100%);margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.bottom a{min-height:54px;border-radius:15px;display:grid;place-items:center;align-content:center;gap:2px;text-align:center;color:rgba(236,255,244,.78);font-size:11px;font-weight:1000}.bottom .active{background:linear-gradient(135deg,var(--gold),var(--green));color:#061b14}.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(18px);opacity:0;pointer-events:none;z-index:100;border-radius:999px;background:rgba(0,0,0,.82);border:1px solid var(--line);color:#fff;padding:12px 16px;font-weight:1000;transition:.18s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}@media(max-width:780px){.grid{grid-template-columns:1fr}.btns{grid-template-columns:1fr}.card{padding:15px;border-radius:24px}.bottomin{grid-template-columns:repeat(5,1fr)}}
+:root{--bg:#061b14;--bg2:#0b2a1e;--gold:#facc15;--green:#22c55e;--ink:#effff5;--muted:rgba(239,255,245,.72);--line:rgba(255,255,255,.15)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;padding:16px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(700px 400px at 10% -5%,rgba(250,204,21,.16),transparent 60%),linear-gradient(180deg,var(--bg2),var(--bg));display:grid;place-items:center}
+main{width:min(580px,100%);padding:20px;border:1px solid rgba(250,204,21,.26);border-radius:28px;background:rgba(255,255,255,.065);box-shadow:0 24px 65px rgba(0,0,0,.34);text-align:center}
+.kicker{color:#fde68a;font-size:12px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase}
+h1{margin:8px 0 8px;font-size:clamp(38px,9vw,62px);line-height:.94}
+p{color:var(--muted);font-weight:800;line-height:1.5}
+.qr{margin:18px auto;padding:14px;border-radius:24px;background:#fff;width:min(360px,100%)}
+.qr img{display:block;width:100%;height:auto}
+.url{margin:12px 0;padding:11px;border-radius:15px;background:rgba(0,0,0,.22);color:#dbeafe;font-size:13px;font-weight:850;word-break:break-all}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.actions a,.actions button{min-height:52px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.08);color:#fff;font:inherit;font-weight:1000;text-decoration:none;display:flex;align-items:center;justify-content:center;padding:10px;cursor:pointer}
+.actions .main{border:0;background:linear-gradient(135deg,var(--gold),var(--green));color:#061b14}
+.note{margin-top:12px;padding:11px;border:1px solid rgba(34,197,94,.28);border-radius:15px;background:rgba(34,197,94,.10);color:#bbf7d0;font-weight:900;line-height:1.45}
+@media(max-width:520px){.actions{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./guard.js?v=jobs-qr-stable-20260618"></script>
-<header class="top"><div class="wrap topin"><a class="brand" href="./index.html"><div class="logo">🔳</div><div><b>DIGIY JOBS</b><span>QR public stable</span></div></a><a class="pill gold" id="sessionPill" href="./session.html">Session</a></div></header>
-<main class="wrap">
-<section class="hero"><div class="card"><span class="kicker">JOBS PRO · QR sans librairie locale</span><h1>Mon QR propre.</h1><p>Ce QR partage le mur public des missions ou une fiche mission. Il ne dépend plus d’une librairie QR locale : donc plus d’erreur “Librairie QR introuvable”.</p></div></section>
-<section class="grid"><div class="card"><h2 style="margin:0 0 10px;color:#facc15;font-size:26px">QR public JOBS</h2><div class="qrBox"><a id="qrAnchor" href="#" target="_blank" rel="noopener"><div class="qrShell"><img id="qrImg" class="qrImg" alt="QR public DIGIY JOBS"><div class="qrTitle" id="qrTitle">Scanne pour voir les missions</div><div class="qrText" id="qrText">Le public arrive sur les opportunités visibles. Le coffre reste derrière le PIN.</div></div></a></div></div><div class="card"><h2 style="margin:0 0 10px;color:#facc15;font-size:26px">Actions QR</h2><p>Teste le QR avec un téléphone avant impression.</p><div class="btns"><button class="btn gold" id="btnCopy" type="button">📋 Copier le lien</button><button class="btn blue" id="btnOpen" type="button">↗️ Ouvrir public</button><a class="btn" id="btnQr" href="#" target="_blank" rel="noopener">🔳 Ouvrir QR</a><a class="btn" id="btnQrXL" href="#" target="_blank" rel="noopener">🟩 QR XL</a><button class="btn" id="btnWhatsapp" type="button">📲 WhatsApp</button><a class="btn" href="./index.html">← Retour JOBS</a></div><div class="link" id="urlBox"></div><div class="note" id="note">Préparation…</div></div></section>
+<main>
+<div class="kicker">PRO JOB · QR public</div>
+<h1>Mon QR JOBS</h1>
+<p>Le QR ouvre le mur public des missions. Aucun PIN, téléphone ou identifiant interne n’apparaît dans le lien.</p>
+<div class="qr"><img id="qrImg" alt="QR public DIGIY JOBS"></div>
+<div class="url" id="urlBox"></div>
+<div class="actions">
+<a class="main" id="openPublic" href="#" target="_blank" rel="noopener noreferrer">Ouvrir les missions</a>
+<button id="copyBtn" type="button">Copier le lien</button>
+<button id="shareBtn" type="button">Partager</button>
+<a href="./index.html">Retour PRO JOB</a>
+</div>
+<div class="note" id="note">Préparation du QR…</div>
 </main>
-<nav class="bottom"><div class="bottomin"><a href="./index.html"><span>🏠</span><span>Accueil</span></a><a href="./publier-mission.html"><span>➕</span><span>Poste</span></a><a href="./bureau.html"><span>🗂️</span><span>Bureau</span></a><a href="./match.html"><span>🎯</span><span>Match</span></a><a class="active" href="./qr.html"><span>🔳</span><span>QR</span></a></div></nav>
-<div class="toast" id="toast">OK</div>
 <script>
-(function(){
-  const $=id=>document.getElementById(id);
-  const SENSITIVE=['phone','tel','resa_tel','owner_phone','owner_id','business_code','keybox_code','keybox_location','access_note','pin','token','session_token'];
-  let publicUrl='';
-  function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1700)}
-  function cleanVisibleUrl(){try{const u=new URL(location.href);let changed=false;SENSITIVE.forEach(k=>{if(u.searchParams.has(k)){u.searchParams.delete(k);changed=true}});if(changed)history.replaceState({},'',u.pathname+u.search+u.hash)}catch(e){}}
-  function offerId(){try{const p=new URLSearchParams(location.search);return String(p.get('offer')||p.get('id')||'').trim()}catch(e){return''}}
-  function buildPublicUrl(){const id=offerId();if(id){const u=new URL('./mission.html',location.href);u.searchParams.set('id',id);$('qrTitle').textContent='Scanne pour voir cette mission';$('qrText').textContent='Le QR ouvre directement la fiche mission publique.';return u.toString()}const u=new URL('./mur%20des%20missions.html',location.href);$('qrTitle').textContent='Scanne pour voir les missions';$('qrText').textContent='Le QR ouvre le mur public des missions.';return u.toString()}
-  function qrImgUrl(text,size){const s=Math.max(220,Number(size)||720);return 'https://api.qrserver.com/v1/create-qr-code/?size='+s+'x'+s+'&margin=16&data='+encodeURIComponent(text)}
-  async function copyText(text){if(navigator.clipboard?.writeText)return navigator.clipboard.writeText(text);const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
-  function render(){publicUrl=buildPublicUrl();const qr=qrImgUrl(publicUrl,720),xl=qrImgUrl(publicUrl,1200);$('qrAnchor').href=publicUrl;$('qrImg').src=qr;$('btnQr').href=qr;$('btnQrXL').href=xl;$('btnOpen').onclick=()=>window.open(publicUrl,'_blank','noopener');$('btnWhatsapp').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent('Voir les missions DIGIY JOBS : '+publicUrl),'_blank','noopener');$('urlBox').innerHTML='<b>Lien public :</b><br>'+publicUrl;$('note').textContent='✅ QR prêt. Génération par image distante stable. Aucun PIN, téléphone ou donnée interne dans le lien.';$('note').className='note';$('qrImg').onerror=()=>{$('note').textContent='⚠️ Le service image QR ne répond pas ici. Le lien public reste copiable et ouvrable.';$('note').className='note warn'};}
-  $('btnCopy').onclick=async()=>{try{await copyText(publicUrl);toast('Lien copié')}catch(e){toast('Copie bloquée')}};
-  cleanVisibleUrl();
-  render();
+(async()=>{
+"use strict";
+const PUBLIC_BASE="https://jobs.digiylyfe.com/";
+const PUBLIC_MISSIONS=new URL("missions.html",PUBLIC_BASE).toString();
+const $=id=>document.getElementById(id);
+const sensitive=["slug","phone","tel","owner_phone","contact_phone","pin","code","token","session","access","module","offer","id"];
+function cleanUrl(){try{const u=new URL(location.href);let changed=false;sensitive.forEach(k=>{if(u.searchParams.has(k)){u.searchParams.delete(k);changed=true}});if(changed)history.replaceState({},document.title,u.pathname+u.search+u.hash)}catch(_){}}
+function qrUrl(value){return "https://api.qrserver.com/v1/create-qr-code/?size=720x720&margin=18&data="+encodeURIComponent(value)}
+async function copy(text){if(navigator.clipboard?.writeText)return navigator.clipboard.writeText(text);const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove()}
+cleanUrl();
+try{
+  const session=await window.DIGIY_GUARD.ready({redirect:true});
+  if(!session?.access_ok)return;
+  document.documentElement.style.visibility="";
+  $("qrImg").src=qrUrl(PUBLIC_MISSIONS);
+  $("urlBox").textContent=PUBLIC_MISSIONS;
+  $("openPublic").href=PUBLIC_MISSIONS;
+  $("copyBtn").onclick=async()=>{try{await copy(PUBLIC_MISSIONS);$("note").textContent="Lien public copié."}catch(_){$("note").textContent=PUBLIC_MISSIONS}};
+  $("shareBtn").onclick=()=>{
+    const text="Voir les missions DIGIY JOBS : "+PUBLIC_MISSIONS;
+    if(navigator.share){navigator.share({title:"DIGIY JOBS",text,url:PUBLIC_MISSIONS}).catch(()=>{})}
+    else window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank","noopener");
+  };
+  $("qrImg").onerror=()=>{$("note").textContent="Le service image QR ne répond pas. Le lien public reste utilisable."};
+  $("note").textContent="✅ QR prêt vers le vrai domaine public JOBS.";
+}catch(error){
+  console.error("[JOBS QR]",error);
+  location.replace("./pin.html");
+}
 })();
 </script>
 </body>
