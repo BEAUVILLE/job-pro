@@ -109,9 +109,16 @@ jobs:
               match = re.search(r'-?\d+(?:\.\d+)?', str(value))
               return float(match.group(0)) if match else fallback
 
+          def has_visible_svg_signature(text: str) -> bool:
+              return bool(
+                  re.search(r'>\s*(?:BY\s+)?DIGIYLYFE\.COM\s*<', text, re.I)
+                  or re.search(r'aria-label\s*=\s*["\'](?:BY\s+)?DIGIYLYFE\.COM["\']', text, re.I)
+                  or re.search(r'id\s*=\s*["\']digiylyfe-com-signature["\']', text, re.I)
+              )
+
           def sign_svg(path: Path):
               text = path.read_text(encoding='utf-8')
-              if SIGNATURE in text.upper():
+              if has_visible_svg_signature(text):
                   return
 
               viewbox = re.search(r'viewBox\s*=\s*["\']([^"\']+)["\']', text, re.I)
@@ -141,24 +148,26 @@ jobs:
               if not is_card(path):
                   continue
               key = path.as_posix()
-              current = digest(path)
-              if signed.get(key) == current:
+              before = digest(path)
+              if signed.get(key) == before:
                   continue
               if path.suffix.lower() == '.svg':
                   sign_svg(path)
               else:
                   sign_raster(path)
-              signed[key] = digest(path)
-              changed.append(key)
+              after = digest(path)
+              signed[key] = after
+              if after != before:
+                  changed.append(key)
 
           MANIFEST.write_text(json.dumps(signed, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-          print('Cartes signees:', ', '.join(changed) if changed else 'aucune modification')
+          print('Cartes signees:', ', '.join(changed) if changed else 'aucune modification visuelle')
           PY
 
       - name: Commit et push
         shell: bash
         run: |
-          if git diff --quiet && git diff --cached --quiet; then
+          if [ -z "$(git status --porcelain)" ]; then
             echo "Aucune carte a signer."
             exit 0
           fi
